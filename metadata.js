@@ -6,11 +6,15 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 0.8.1
+// @version 1.0.0
 // ==/UserScript==
  * todo
  *  link to recent viewed forum (only 1?)
  * changelog
+ * 1.0.1
+ *  Now includes jade o/
+ * 1.0.0
+ *  Made it to the userscript build!
  * 0.8.1
  *  Made it work on chrome, won't override stuff etc
  *  Now uses localStorage for settings (instead of cookies)

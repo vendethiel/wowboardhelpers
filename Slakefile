@@ -1,4 +1,4 @@
-require! <[fs LiveScript stylus]>
+require! <[fs LiveScript stylus jade]>
 
 ls = -> ["#it/#file" for file in fs.readdirSync it]
 
@@ -17,10 +17,21 @@ compile = (it, options) ->
 
 wrap = -> "let\n\t#{read it .replace /\n/g '\n\t'}"
 
-compile-css = (cb) ->
+compile-styles = (cb) ->
   # XXX kind of relying on lexicographic ordering here
-  source = [read .. for ls \style] * \\n
+  source = [read .. for ls \styles] * \\n
   nib source .render cb
+
+compile-templates = ->
+  source = ["var templates = {};"]
+  try
+    for filename in ls \templates
+      name = filename.slice(10 -5)replace /-(.)/g -> it.1.toUpperCase! #templates/*.jade
+      source.push "templates.#name = #{jade.compile read(filename), {+client, -compileDebug, filename}}"
+  catch
+    throw new Error "Jade error on #filename : #{e.message}"
+
+  source * \\n
 
 wrap-css = ->
   return "" unless it
@@ -59,27 +70,27 @@ outfile = \script.js
 metadata = read \metadata.js
 
 task \build 'build userscript' ->
-  err, css <- compile-css
+  err, css <- compile-styles
   try
     throw err if err
     fs.writeFileSync do
       outfile
-      join do
+      join do #can't use strict cause jade :(
         "(function(){"
-        '"use strict";'
         metadata
+        read "node_modules/jade/runtime.min.js"
+        compile-templates!
         compile-ls <[
           common
           lang
           update-count
-          view-changer
           mar
           stickies
           last-updated
           current-forum
           improved-topic
         ]>
-        wrap-css compile-css!
+        wrap-css compile-styles!
         "}).call(this)"
     console.log "compiled script to #outfile"
   catch
@@ -97,7 +108,7 @@ debounce = (delay, fn) ->
 
 task \watch 'watch for changes and rebuild automatically' ->
   invoke \build
-  for it in <[style src]>
+  for it in <[styles src templates metadata.js]>
     fs.watch it, interval: 1000, debounce 1000 (event, filename) ->
       console.log "#event event detected on #filename. rebuilding..."
       invoke \build

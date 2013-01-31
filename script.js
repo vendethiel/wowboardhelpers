@@ -1,5 +1,4 @@
 (function(){
-"use strict";
 /*
 // ==UserScript==
 // @name last updated
@@ -8,11 +7,15 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 0.8.1
+// @version 1.0.0
 // ==/UserScript==
  * todo
  *  link to recent viewed forum (only 1?)
  * changelog
+ * 1.0.1
+ *  Now includes jade o/
+ * 1.0.0
+ *  Made it to the userscript build!
  * 0.8.1
  *  Made it work on chrome, won't override stuff etc
  *  Now uses localStorage for settings (instead of cookies)
@@ -38,6 +41,31 @@
  *  Now works with advanced mode
  *  Fix a bug when logged off
 */
+jade=function(exports){Array.isArray||(Array.isArray=function(arr){return"[object Array]"==Object.prototype.toString.call(arr)}),Object.keys||(Object.keys=function(obj){var arr=[];for(var key in obj)obj.hasOwnProperty(key)&&arr.push(key);return arr}),exports.merge=function merge(a,b){var ac=a["class"],bc=b["class"];if(ac||bc)ac=ac||[],bc=bc||[],Array.isArray(ac)||(ac=[ac]),Array.isArray(bc)||(bc=[bc]),ac=ac.filter(nulls),bc=bc.filter(nulls),a["class"]=ac.concat(bc).join(" ");for(var key in b)key!="class"&&(a[key]=b[key]);return a};function nulls(val){return val!=null}return exports.attrs=function attrs(obj,escaped){var buf=[],terse=obj.terse;delete obj.terse;var keys=Object.keys(obj),len=keys.length;if(len){buf.push("");for(var i=0;i<len;++i){var key=keys[i],val=obj[key];"boolean"==typeof val||null==val?val&&(terse?buf.push(key):buf.push(key+'="'+key+'"')):0==key.indexOf("data")&&"string"!=typeof val?buf.push(key+"='"+JSON.stringify(val)+"'"):"class"==key&&Array.isArray(val)?buf.push(key+'="'+exports.escape(val.join(" "))+'"'):escaped&&escaped[key]?buf.push(key+'="'+exports.escape(val)+'"'):buf.push(key+'="'+val+'"')}}return buf.join(" ")},exports.escape=function escape(html){return String(html).replace(/&(?!(\w+|\#\d+);)/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")},exports.rethrow=function rethrow(err,filename,lineno){if(!filename)throw err;var context=3,str=require("fs").readFileSync(filename,"utf8"),lines=str.split("\n"),start=Math.max(lineno-context,0),end=Math.min(lines.length,lineno+context),context=lines.slice(start,end).map(function(line,i){var curr=i+start+1;return(curr==lineno?"  > ":"    ")+curr+"| "+line}).join("\n");throw err.path=filename,err.message=(filename||"Jade")+":"+lineno+"\n"+context+"\n\n"+err.message,err},exports}({});
+var templates = {};
+templates.defaultPagination = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<ul class="ui-pagination"><li><a');
+buf.push(attrs({ 'data-pagenum':(1), 'rel':('np'), 'href':(href) }, {"data-pagenum":true,"rel":true,"href":true}));
+buf.push('>1</a></li></ul>');
+}
+return buf.join("");
+}
+templates.ttLastUpdated = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<span class="tt-last-updated"><br/>');
+var __val__ = text
+buf.push(null == __val__ ? "" : __val__);
+buf.push('</span>');
+}
+return buf.join("");
+}
 var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, replace$ = ''.replace, join$ = [].join, slice$ = [].slice;
 (function(){
   var thread, w, posts;
@@ -144,45 +172,6 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   w.localStorage.setItem("topic_lp_" + topicId, lastPosterName);
 }.call(this));
 (function(){
-  var mode, i$, ref$, len$, link;
-  if (thread) {
-    return;
-  }
-  out$.mode = mode = posts.getAttribute('class');
-  function setView(type, target){
-    var i$, ref$, len$, el, results$ = [];
-    mode = type;
-    if (type === 'simple') {
-      lastPostTh.style.display = 'none';
-      hideAll('.post-last-updated');
-      for (i$ = 0, len$ = (ref$ = showAll('.tt-last-updated')).length; i$ < len$; ++i$) {
-        el = ref$[i$];
-        results$.push(el.style.display = '');
-      }
-      return results$;
-    } else {
-      lastPostTh.style.display = '';
-      showAll('.post-last-updated');
-      return hideAll('.tt-last-updated');
-    }
-  }
-  for (i$ = 0, len$ = (ref$ = QSA('a.simple, a.advanced')).length; i$ < len$; ++i$) {
-    link = ref$[i$];
-    (fn$.call(this, link.onclick, link));
-  }
-  function fn$(old, link){
-    link.onclick = function(){
-      var type;
-      old.call(this);
-      type = this.classList.contains('simple') ? 'simple' : 'advanced';
-      if (type === mode) {
-        return;
-      }
-      return setView(type, this);
-    };
-  }
-}.call(this));
-(function(){
   var allRead, buttonMar;
   if (thread) {
     return;
@@ -239,7 +228,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   document.getElementsByClassName('forum-options')[0].appendChild(buttonSticky);
 }.call(this));
 (function(){
-  var characters, res$, i$, ref$, len$, name, ref1$, lastPostTh, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, hasUnread, post, children, div, a, href, td, lastPostTd, topicId, x, pages, lastPost, lastPostLink, replies, author, postCount, x$, y$, postOnly, text, authorName, span, inlineText, simplifiedTime, state, that;
+  var characters, res$, i$, ref$, len$, name, ref1$, lastPostTh, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, hasUnread, post, children, div, a, td, lastPostTd, topicId, pages, lastPost, lastPostLink, replies, author, postCount, postOnly, text, authorName, inlineText, simplifiedTime, state, that;
   if (thread) {
     return;
   }
@@ -252,19 +241,17 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     }
     characters = res$;
   }
-  lastPostTh = node('td', {
+  out$.lastPostTh = lastPostTh = node('td', {
+    className: 'last-post-th',
     innerHTML: lang.lastMessage
   });
   QS('.post-th').appendChild(lastPostTh);
-  if (mode !== 'advanced') {
-    lastPostTh.style.display = 'none';
-  }
   TSTATE_UNK = 0;
   TSTATE_ALR = 1;
   TSTATE_CHK = 2;
   hasUnread = false;
   for (i$ = 0, len$ = (ref$ = document.getElementsByClassName('post-title')).length; i$ < len$; ++i$) {
-    post = ref$[i$], children = post.children, div = children[0], a = children[1], href = a.href, td = post.parentNode;
+    post = ref$[i$], children = post.children, div = children[0], a = children[1], td = post.parentNode;
     if (children.length > 2) {
       lastPostTd = node('td', {
         className: 'post-last-updated',
@@ -274,19 +261,14 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
       continue;
     }
     topicId = div.id.slice('thread_tt_'.length);
-    x = fetchSiblings(post, {
+    ref1$ = fetchSiblings(post, {
       slice: 5
-    }), pages = x.pages, lastPost = x.lastPost, lastPostLink = lastPost.children[0], replies = x.replies, author = x.author;
+    }), pages = ref1$.pages, lastPost = ref1$.lastPost, lastPostLink = lastPost.children[0], replies = ref1$.replies, author = ref1$.author;
     postCount = (split$.call(lastPostLink.href, '#'))[1];
     if (!pages.querySelector('ul')) {
-      pages.appendChild((x$ = node('ul', {
-        className: 'ui-pagination'
-      }), x$.appendChild((y$ = node('li'), y$.appendChild(node('a', {
-        innerHTML: '1',
-        dataPagenum: 1,
-        rel: 'np',
-        href: href
-      })), y$)), x$));
+      pages.innerHTML = templates.defaultPagination({
+        href: a.href
+      });
     }
     postOnly = false;
     text = split$.call(div.querySelector('.tt_info').innerHTML, '\n');
@@ -294,15 +276,10 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
       ? text[2]
       : (postOnly = true, div.querySelector('.tt_time').innerHTML);
     text = text.replace(RegExp('(' + (authorName = lastPostLink.innerHTML.trim()) + ')'), fn$);
-    a.style.display = 'inline';
-    span = node('span', {
-      className: 'tt-last-updated',
-      innerHTML: "<br />" + text
+    post.innerHTML += templates.ttLastUpdated({
+      text: text
     });
-    post.appendChild(span);
-    if (mode === 'advanced') {
-      span.style.display = 'none';
-    }
+    ref1$ = post.children, div = ref1$[0], a = ref1$[1];
     inlineText = text;
     if (!postOnly) {
       inlineText = inlineText.slice(text.indexOf('(') + 1, -1);
@@ -313,12 +290,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
       innerHTML: simplifiedTime
     });
     td.appendChild(lastPostTd);
-    if (mode !== 'advanced') {
-      lastPostTd.style.display = 'none';
-    }
     state = checkTopic(topicId, postCount, authorName);
     /*used to work, but blizzard marks some posts are marked even tho THEY'RE FUCKING NOT
-    if 'read' is td.className.trim! #used to work :))))))
+    if 'read' is td.className.trim!
     	TSTATE_CHK
     else
     	check-topic topic-id, post-count*/
@@ -424,6 +398,6 @@ function in$(x, arr){
 }
 var style = document.createElement('style');
 style.type = 'text/css';
-style.innerHTML = '.karma //post margin when disconnected {  white-space: normal !important;}.post-user .avatar //black pixel under avatars {  top: 27px !important;}.poster {  font-weight: bold;}.own-poster {  text-decoration: underline;}';
+style.innerHTML = '.karma //post margin when disconnected {  white-space: normal !important;}.post-user .avatar //black pixel under avatars {  top: 27px !important;}a[data-tooltip] {  display: inline !important;}.poster {  font-weight: bold;}.own-poster {  text-decoration: underline;}#posts.advanced .tt-last-updated {  display: none;}#posts.simple .last-post-th {  display: none;}#posts.simple .post-last-updated {  display: none;}';
 document.head.appendChild(style);
 }).call(this)
