@@ -40,7 +40,7 @@ wrap-css = ->
   code = """
 var style = document.createElement('style');
 style.type = 'text/css';
-style.innerHTML = '#{it.replace("'" "\'") - /\n/g}';
+style.innerHTML = '#{it.replace "'" "\'" .replace /\n/g '\\n'}';
 document.head.appendChild(style);
   """
 
@@ -78,6 +78,7 @@ task \build 'build userscript' ->
       join do #can't use strict cause jade :(
         "(function(){"
         metadata
+        wrap-css compile-styles!
         read "node_modules/jade/runtime.min.js"
         compile-templates!
         compile-ls <[
@@ -89,8 +90,9 @@ task \build 'build userscript' ->
           last-updated
           current-forum
           improved-topic
+          reply-rememberer
+          clear-textarea
         ]>
-        wrap-css compile-styles!
         "}).call(this)"
     console.log "compiled script to #outfile"
   catch

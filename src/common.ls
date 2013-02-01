@@ -1,22 +1,25 @@
-thread = document.getElementById 'thread'
 w = unsafeWindow ? w
+forum-options = QS '.forum-options'
+
+if thread = document.getElementById 'thread'
+	thread.dataset.id = Number (document.location / '/')[*-1]
+
 posts = document.getElementById 'posts'
 
 #@todo add `...childs` ? slow downs a lot =(
 function node(tag, props = {})
 	(document.createElement tag) <<< props
 
-function hide-all(selector)
-	for el in elements = QSA selector
-		el.style.display = 'none'
+/**
+ * processes a template
+ * and returns 
+ */
+function template(name, locals)
+	name .= replace /-([a-z])/g -> it.1.toUpperCase!
 
-	elements
-
-function show-all(selector)
-	for el in elements = QSA selector
-		el.style.display = 'block'
-
-	elements
+	innerHTML = templates[name] locals
+	
+	node('div' {innerHTML})lastChild
 
 /**
  * fetches nextElementSibling
@@ -30,4 +33,4 @@ function QSA then document.querySelectorAll it
 function QS then document.querySelector it
 
 
-export posts, thread, w, node, hide-all, show-all, QSA, QS, fetch-siblings
+export w, thread, posts, forum-options, node, template, QSA, QS, fetch-siblings

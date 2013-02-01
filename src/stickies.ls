@@ -1,6 +1,6 @@
 return if thread
 
-#remove sticky part (%tbody.sticky)
+#remove sticky part (tbody.sticky)
 tbody-sticky = document.getElementsByClassName 'sticky' .0
 	unless 'show' is w.localStorage.getItem 'show-stickies'
 		..style.display = 'none'
@@ -15,4 +15,4 @@ button-sticky = node 'a' innerHTML: 'Post-its' title: lang.toggle-sticky, onclic
 
 button-sticky.style.cursor = 'pointer'
 
-document.getElementsByClassName 'forum-options' .0.appendChild button-sticky
+forum-options.appendChild button-sticky

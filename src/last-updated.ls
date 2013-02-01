@@ -54,8 +54,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 			"own-poster"] + "'>#author-name</span>"
 
 
-	post.innerHTML += templates.tt-last-updated {text}
-	[div, a] = post.children
+	post.appendChild template 'tt-last-updated' {text}
 
 	
 	inline-text = text

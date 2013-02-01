@@ -41,8 +41,21 @@
  *  Now works with advanced mode
  *  Fix a bug when logged off
 */
+var style = document.createElement('style');
+style.type = 'text/css';
+style.innerHTML = '.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n.post-pages a.last-read {\n  display: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  padding: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n}\n';
+document.head.appendChild(style);
 jade=function(exports){Array.isArray||(Array.isArray=function(arr){return"[object Array]"==Object.prototype.toString.call(arr)}),Object.keys||(Object.keys=function(obj){var arr=[];for(var key in obj)obj.hasOwnProperty(key)&&arr.push(key);return arr}),exports.merge=function merge(a,b){var ac=a["class"],bc=b["class"];if(ac||bc)ac=ac||[],bc=bc||[],Array.isArray(ac)||(ac=[ac]),Array.isArray(bc)||(bc=[bc]),ac=ac.filter(nulls),bc=bc.filter(nulls),a["class"]=ac.concat(bc).join(" ");for(var key in b)key!="class"&&(a[key]=b[key]);return a};function nulls(val){return val!=null}return exports.attrs=function attrs(obj,escaped){var buf=[],terse=obj.terse;delete obj.terse;var keys=Object.keys(obj),len=keys.length;if(len){buf.push("");for(var i=0;i<len;++i){var key=keys[i],val=obj[key];"boolean"==typeof val||null==val?val&&(terse?buf.push(key):buf.push(key+'="'+key+'"')):0==key.indexOf("data")&&"string"!=typeof val?buf.push(key+"='"+JSON.stringify(val)+"'"):"class"==key&&Array.isArray(val)?buf.push(key+'="'+exports.escape(val.join(" "))+'"'):escaped&&escaped[key]?buf.push(key+'="'+exports.escape(val)+'"'):buf.push(key+'="'+val+'"')}}return buf.join(" ")},exports.escape=function escape(html){return String(html).replace(/&(?!(\w+|\#\d+);)/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")},exports.rethrow=function rethrow(err,filename,lineno){if(!filename)throw err;var context=3,str=require("fs").readFileSync(filename,"utf8"),lines=str.split("\n"),start=Math.max(lineno-context,0),end=Math.min(lines.length,lineno+context),context=lines.slice(start,end).map(function(line,i){var curr=i+start+1;return(curr==lineno?"  > ":"    ")+curr+"| "+line}).join("\n");throw err.path=filename,err.message=(filename||"Jade")+":"+lineno+"\n"+context+"\n\n"+err.message,err},exports}({});
 var templates = {};
+templates.clearTextarea = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<div class="clear-textarea">X</div>');
+}
+return buf.join("");
+}
 templates.defaultPagination = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
@@ -66,31 +79,32 @@ buf.push('</span>');
 }
 return buf.join("");
 }
-var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, replace$ = ''.replace, join$ = [].join, slice$ = [].slice;
+var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.replace, join$ = [].join, slice$ = [].slice;
 (function(){
-  var thread, w, posts;
-  thread = document.getElementById('thread');
+  var w, forumOptions, thread, ref$, posts;
   w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : w;
+  forumOptions = QS('.forum-options');
+  if (thread = document.getElementById('thread')) {
+    thread.dataset.id = Number((ref$ = split$.call(document.location, '/'))[ref$.length - 1]);
+  }
   posts = document.getElementById('posts');
   function node(tag, props){
     props == null && (props = {});
     return import$(document.createElement(tag), props);
   }
-  function hideAll(selector){
-    var i$, ref$, elements, len$, el;
-    for (i$ = 0, len$ = (ref$ = elements = QSA(selector)).length; i$ < len$; ++i$) {
-      el = ref$[i$];
-      el.style.display = 'none';
-    }
-    return elements;
-  }
-  function showAll(selector){
-    var i$, ref$, elements, len$, el;
-    for (i$ = 0, len$ = (ref$ = elements = QSA(selector)).length; i$ < len$; ++i$) {
-      el = ref$[i$];
-      el.style.display = 'block';
-    }
-    return elements;
+  /**
+   * processes a template
+   * and returns 
+   */
+  function template(name, locals){
+    var innerHTML;
+    name = name.replace(/-([a-z])/g, function(it){
+      return it[1].toUpperCase();
+    });
+    innerHTML = templates[name](locals);
+    return node('div', {
+      innerHTML: innerHTML
+    }).lastChild;
   }
   /**
    * fetches nextElementSibling
@@ -109,12 +123,12 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   function QS(it){
     return document.querySelector(it);
   }
-  out$.posts = posts;
-  out$.thread = thread;
   out$.w = w;
+  out$.thread = thread;
+  out$.posts = posts;
+  out$.forumOptions = forumOptions;
   out$.node = node;
-  out$.hideAll = hideAll;
-  out$.showAll = showAll;
+  out$.template = template;
   out$.QSA = QSA;
   out$.QS = QS;
   out$.fetchSiblings = fetchSiblings;
@@ -154,22 +168,18 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   }
 }.call(this));
 (function(){
-  var pages, l, c, topicId, ref$, postCount, lastPosterName;
+  var pages, postCount, ref$, lastPosterName;
   if (!thread) {
     return;
   }
-  if ((pages = QSA('#forum-actions-top .ui-pagination li:not(.cap-item)')) != null) {
-    l = pages.length;
-  }
-  if (l && 'current' !== (c = pages[pages.length - 1].className)) {
+  pages = QSA('#forum-actions-top .ui-pagination li:not(.cap-item)');
+  if ((pages != null && pages.length) && 'current' !== pages[pages.length - 1].className) {
     return;
   }
-  l || (l = 1);
-  topicId = (split$.call((ref$ = split$.call(document.location, '/'))[ref$.length - 1], '?'))[0];
   postCount = (ref$ = thread.getElementsByClassName('post-info'))[ref$.length - 1].getElementsByTagName('a')[0].getAttribute('href').slice(1);
   lastPosterName = (ref$ = thread.getElementsByClassName('char-name-code'))[ref$.length - 1].innerHTML.trim();
-  w.localStorage.setItem("topic_" + topicId, postCount);
-  w.localStorage.setItem("topic_lp_" + topicId, lastPosterName);
+  w.localStorage.setItem("topic_" + thread.dataset.id, postCount);
+  w.localStorage.setItem("topic_lp_" + thread.dataset.id, lastPosterName);
 }.call(this));
 (function(){
   var allRead, buttonMar;
@@ -204,7 +214,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     }
   });
   buttonMar.style.cursor = 'pointer';
-  document.getElementsByClassName('forum-options')[0].appendChild(buttonMar);
+  forumOptions.appendChild(buttonMar);
 }.call(this));
 (function(){
   var x$, tbodySticky, buttonSticky;
@@ -225,7 +235,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     }
   });
   buttonSticky.style.cursor = 'pointer';
-  document.getElementsByClassName('forum-options')[0].appendChild(buttonSticky);
+  forumOptions.appendChild(buttonSticky);
 }.call(this));
 (function(){
   var characters, res$, i$, ref$, len$, name, ref1$, lastPostTh, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, hasUnread, post, children, div, a, td, lastPostTd, topicId, pages, lastPost, lastPostLink, replies, author, postCount, postOnly, text, authorName, inlineText, simplifiedTime, state, that;
@@ -276,10 +286,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
       ? text[2]
       : (postOnly = true, div.querySelector('.tt_time').innerHTML);
     text = text.replace(RegExp('(' + (authorName = lastPostLink.innerHTML.trim()) + ')'), fn$);
-    post.innerHTML += templates.ttLastUpdated({
+    post.appendChild(template('tt-last-updated', {
       text: text
-    });
-    ref1$ = post.children, div = ref1$[0], a = ref1$[1];
+    }));
     inlineText = text;
     if (!postOnly) {
       inlineText = inlineText.slice(text.indexOf('(') + 1, -1);
@@ -386,6 +395,35 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     }
   }
 }.call(this));
+(function(){
+  var textarea, submit;
+  if (!thread) {
+    return;
+  }
+  textarea = QS('#post-edit textarea');
+  submit = QS('.post [type=submit]');
+  textarea.value = localStorage.getItem("post_" + thread.dataset.id) || '';
+  textarea.onkeyup = function(){
+    return w.localStorage.setItem("post_" + thread.dataset.id, this.value);
+  };
+  submit.onclick = function(){
+    return w.localStorage.removeItem("post_" + thread.dataset.id);
+  };
+}.call(this));
+(function(){
+  var clearer, x$, textarea;
+  if (!thread) {
+    return;
+  }
+  clearer = template('clear-textarea');
+  x$ = QS('.editor1');
+  textarea = x$.querySelector('textarea');
+  x$.insertBefore(clearer, textarea);
+  clearer.onclick = function(){
+    textarea.value = '';
+    return w.localStorage.removeItem("post_" + thread.dataset.id);
+  };
+}.call(this));
 function import$(obj, src){
   var own = {}.hasOwnProperty;
   for (var key in src) if (own.call(src, key)) obj[key] = src[key];
@@ -396,8 +434,4 @@ function in$(x, arr){
   while (++i < l) if (x === arr[i] && i in arr) return true;
   return false;
 }
-var style = document.createElement('style');
-style.type = 'text/css';
-style.innerHTML = '.karma //post margin when disconnected {  white-space: normal !important;}.post-user .avatar //black pixel under avatars {  top: 27px !important;}a[data-tooltip] {  display: inline !important;}.poster {  font-weight: bold;}.own-poster {  text-decoration: underline;}#posts.advanced .tt-last-updated {  display: none;}#posts.simple .last-post-th {  display: none;}#posts.simple .post-last-updated {  display: none;}';
-document.head.appendChild(style);
 }).call(this)

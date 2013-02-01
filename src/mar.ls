@@ -21,5 +21,4 @@ export button-mar = node 'a' innerHTML: 'MAR' title: lang.mar, onclick: !->
 
 button-mar.style.cursor = 'pointer'
 
-document.getElementsByClassName 'forum-options' .0
-	.appendChild button-mar
+forum-options.appendChild button-mar
