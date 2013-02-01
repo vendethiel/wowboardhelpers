@@ -12,6 +12,11 @@
  * todo
  *  link to recent viewed forum (only 1?)
  * changelog
+ * 1.1
+ *  Now automatically saves your textarea on input
+ *   and clears saved data on submit
+ *  Added an "X" button to clear textarea (+ saved data)
+ *  Keeps css formatting, just in case
  * 1.0.1
  *  Now includes jade o/
  * 1.0.0
@@ -43,7 +48,7 @@
 */
 var style = document.createElement('style');
 style.type = 'text/css';
-style.innerHTML = '.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n.post-pages a.last-read {\n  display: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  padding: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n}\n';
+style.innerHTML = '.clear-textarea {\n  display: block;\n  padding: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n.post-pages a.last-read {\n  display: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n';
 document.head.appendChild(style);
 jade=function(exports){Array.isArray||(Array.isArray=function(arr){return"[object Array]"==Object.prototype.toString.call(arr)}),Object.keys||(Object.keys=function(obj){var arr=[];for(var key in obj)obj.hasOwnProperty(key)&&arr.push(key);return arr}),exports.merge=function merge(a,b){var ac=a["class"],bc=b["class"];if(ac||bc)ac=ac||[],bc=bc||[],Array.isArray(ac)||(ac=[ac]),Array.isArray(bc)||(bc=[bc]),ac=ac.filter(nulls),bc=bc.filter(nulls),a["class"]=ac.concat(bc).join(" ");for(var key in b)key!="class"&&(a[key]=b[key]);return a};function nulls(val){return val!=null}return exports.attrs=function attrs(obj,escaped){var buf=[],terse=obj.terse;delete obj.terse;var keys=Object.keys(obj),len=keys.length;if(len){buf.push("");for(var i=0;i<len;++i){var key=keys[i],val=obj[key];"boolean"==typeof val||null==val?val&&(terse?buf.push(key):buf.push(key+'="'+key+'"')):0==key.indexOf("data")&&"string"!=typeof val?buf.push(key+"='"+JSON.stringify(val)+"'"):"class"==key&&Array.isArray(val)?buf.push(key+'="'+exports.escape(val.join(" "))+'"'):escaped&&escaped[key]?buf.push(key+'="'+exports.escape(val)+'"'):buf.push(key+'="'+val+'"')}}return buf.join(" ")},exports.escape=function escape(html){return String(html).replace(/&(?!(\w+|\#\d+);)/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")},exports.rethrow=function rethrow(err,filename,lineno){if(!filename)throw err;var context=3,str=require("fs").readFileSync(filename,"utf8"),lines=str.split("\n"),start=Math.max(lineno-context,0),end=Math.min(lines.length,lineno+context),context=lines.slice(start,end).map(function(line,i){var curr=i+start+1;return(curr==lineno?"  > ":"    ")+curr+"| "+line}).join("\n");throw err.path=filename,err.message=(filename||"Jade")+":"+lineno+"\n"+context+"\n\n"+err.message,err},exports}({});
 var templates = {};
@@ -85,7 +90,7 @@ var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, 
   w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : w;
   forumOptions = QS('.forum-options');
   if (thread = document.getElementById('thread')) {
-    thread.dataset.id = Number((ref$ = split$.call(document.location, '/'))[ref$.length - 1]);
+    thread.dataset.id = (split$.call((ref$ = split$.call(document.location, '/'))[ref$.length - 1], '?'))[0];
   }
   posts = document.getElementById('posts');
   function node(tag, props){
@@ -354,7 +359,7 @@ var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, 
     var ref$;
     switch (ref$ = [w.localStorage.getItem("topic_" + id)], false) {
     case !(function(it){
-      return it >= count;
+      return it > count;
     })(ref$[0]):
       if (lastPoster === getLastPoster(id)) {
         return TSTATE_CHK;
@@ -362,6 +367,10 @@ var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, 
         return TSTATE_ALR;
       }
       break;
+    case !(function(it){
+        return it === count;
+      })(ref$[0]):
+      return TSTATE_CHK;
     case !(0 === ref$[0] || null === ref$[0]):
       return TSTATE_UNK;
     default:

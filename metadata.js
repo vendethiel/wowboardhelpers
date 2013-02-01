@@ -15,6 +15,7 @@
  *  Now automatically saves your textarea on input
  *   and clears saved data on submit
  *  Added an "X" button to clear textarea (+ saved data)
+ *  Keeps css formatting, just in case
  * 1.0.1
  *  Now includes jade o/
  * 1.0.0

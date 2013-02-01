@@ -126,10 +126,11 @@ unless has-unread
  */
 function check-topic(id, count, last-poster)
 	match w.localStorage.getItem "topic_#id"
-	| (>= count)
+	| (> count)
 		if last-poster == get-last-poster id
 		then TSTATE_CHK
 		else TSTATE_ALR
+	| (== count) => TSTATE_CHK
 	| 0 or null  => TSTATE_UNK
 	| _          => TSTATE_ALR
 
