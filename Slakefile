@@ -17,6 +17,29 @@ compile = (it, options) ->
 
 wrap = -> "let\n\t#{read it .replace /\n/g '\n\t'}"
 
+
+##########
+# CONFIG #
+##########
+outfile = \wowboardhelpers.user.js
+metadata = read \metadata.js
+sources = <[
+  common
+  lang
+  update-count
+  mar
+  stickies
+  last-updated
+  current-forum
+  improved-topic
+  remember-reply
+  clear-textarea
+  hide-topic
+]>
+
+
+
+
 compile-styles = (cb) ->
   # XXX kind of relying on lexicographic ordering here
   source = [read .. for ls \styles] * \\n
@@ -66,9 +89,6 @@ compile-ls = (paths) ->
 
 nib = -> stylus it .use require(\nib)!
 
-outfile = \script.js
-metadata = read \metadata.js
-
 task \build 'build userscript' ->
   err, css <- compile-styles
   try
@@ -76,24 +96,12 @@ task \build 'build userscript' ->
     fs.writeFileSync do
       outfile
       join do #can't use strict cause jade :(
-        "(function(){"
         metadata
+        "(function(){"
         wrap-css compile-styles!
         read "node_modules/jade/runtime.min.js"
         compile-templates!
-        compile-ls <[
-          common
-          lang
-          update-count
-          mar
-          stickies
-          last-updated
-          current-forum
-          improved-topic
-          remember-reply
-          clear-textarea
-          hide-topic
-        ]>
+        compile-ls sources
         "}).call(this)"
     console.log "compiled script to #outfile"
   catch

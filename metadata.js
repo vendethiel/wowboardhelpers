@@ -8,6 +8,19 @@
 // @author Tel
 // @version 1.1.0
 // ==/UserScript==
+ * todo
+ *  Cms.Forum.setView redraws for IE6/7 which breaks my ref
+ *  could be hotfixed like that :
+ *  ```
+ 	->
+ 		posts = QS '#posts'
+ 		old.call @
+ 		new = QS '#posts'
+ 		next = new.nextElementSibling
+ 		next.parentNode.removeChild new
+ 		next.parentNode.insertBefore posts, next
+ * ```
+ *  but that seems horrible
  * changelog
  * 1.2
  *  Now allows to hide topics (not stickies),

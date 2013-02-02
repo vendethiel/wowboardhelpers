@@ -3,6 +3,8 @@ forum-options = QS '.forum-options'
 
 if thread = document.getElementById 'thread'
 	thread.dataset.id = ((document.location / '/')[*-1] / '?')0
+else
+	export tbody-regular = QS 'tbody.regular'
 
 posts = document.getElementById 'posts'
 

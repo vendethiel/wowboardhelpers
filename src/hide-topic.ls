@@ -14,9 +14,6 @@ function save-hiddens
 	if it.querySelector '.hide-topic'
 		that.parentNode.removeChild that
 
-#keep a ref
-tbody-regular = QS 'tbody.regular'
-
 for post-pages in QSA 'tbody.regular .post-pages'
 	if post-pages.querySelector '.last-read'
 		#we're gonna use .last-read as a placeholder, and we have to remove the old anyway

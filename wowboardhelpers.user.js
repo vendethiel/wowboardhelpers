@@ -1,4 +1,3 @@
-(function(){
 /*
 // ==UserScript==
 // @name last updated
@@ -9,7 +8,23 @@
 // @author Tel
 // @version 1.1.0
 // ==/UserScript==
+ * todo
+ *  Cms.Forum.setView redraws for IE6/7 which breaks my ref
+ *  could be hotfixed like that :
+ *  ```
+ 	->
+ 		posts = QS '#posts'
+ 		old.call @
+ 		new = QS '#posts'
+ 		next = new.nextElementSibling
+ 		next.parentNode.removeChild new
+ 		next.parentNode.insertBefore posts, next
+ * ```
+ *  but that seems horrible
  * changelog
+ * 1.2
+ *  Now allows to hide topics (not stickies),
+ *   they'll just get moved to the bottom
  * 1.1
  *  Now automatically saves your textarea on input
  *   and clears saved data on submit
@@ -44,6 +59,7 @@
  *  Now works with advanced mode
  *  Fix a bug when logged off
 */
+(function(){
 var style = document.createElement('style');
 style.type = 'text/css';
 style.innerHTML = '.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\na.hide-topic {\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n';
@@ -93,11 +109,13 @@ return buf.join("");
 }
 var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.replace, join$ = [].join, slice$ = [].slice;
 (function(){
-  var w, forumOptions, thread, ref$, posts;
+  var w, forumOptions, thread, ref$, tbodyRegular, posts;
   w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : w;
   forumOptions = QS('.forum-options');
   if (thread = document.getElementById('thread')) {
     thread.dataset.id = (split$.call((ref$ = split$.call(document.location, '/'))[ref$.length - 1], '?'))[0];
+  } else {
+    out$.tbodyRegular = tbodyRegular = QS('tbody.regular');
   }
   posts = document.getElementById('posts');
   function node(tag, props){
@@ -435,7 +453,7 @@ var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, 
   };
 }.call(this));
 (function(){
-  var hiddenTopics, tbodyRegular, i$, ref$, len$, postPages, that, tr, topicId;
+  var hiddenTopics, i$, ref$, len$, postPages, that, tr, topicId;
   if (thread) {
     return;
   }
@@ -451,7 +469,6 @@ var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, 
       that.parentNode.removeChild(that);
     }
   }
-  tbodyRegular = QS('tbody.regular');
   for (i$ = 0, len$ = (ref$ = QSA('tbody.regular .post-pages')).length; i$ < len$; ++i$) {
     postPages = ref$[i$];
     if (that = postPages.querySelector('.last-read')) {
