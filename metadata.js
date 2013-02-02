@@ -9,6 +9,9 @@
 // @version 1.1.0
 // ==/UserScript==
  * changelog
+ * 1.2
+ *  Now allows to hide topics (not stickies),
+ *   they'll just get moved to the bottom
  * 1.1
  *  Now automatically saves your textarea on input
  *   and clears saved data on submit

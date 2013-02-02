@@ -92,6 +92,7 @@ task \build 'build userscript' ->
           improved-topic
           remember-reply
           clear-textarea
+          hide-topic
         ]>
         "}).call(this)"
     console.log "compiled script to #outfile"
