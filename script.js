@@ -7,10 +7,8 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.0.0
+// @version 1.1.0
 // ==/UserScript==
- * todo
- *  link to recent viewed forum (only 1?)
  * changelog
  * 1.1
  *  Now automatically saves your textarea on input
@@ -222,20 +220,19 @@ var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, 
   forumOptions.appendChild(buttonMar);
 }.call(this));
 (function(){
-  var x$, tbodySticky, buttonSticky;
+  var buttonSticky;
   if (thread) {
     return;
   }
-  x$ = tbodySticky = document.getElementsByClassName('sticky')[0];
   if ('show' !== w.localStorage.getItem('show-stickies')) {
-    x$.style.display = 'none';
+    QS('.sticky').style.display = 'none';
   }
   buttonSticky = node('a', {
     innerHTML: 'Post-its',
     title: lang.toggleSticky,
     onclick: function(){
       var s;
-      (s = tbodySticky.style).display = s.display === 'none' ? '' : 'none';
+      (s = QS('.sticky').style).display = s.display === 'none' ? '' : 'none';
       w.localStorage.setItem('show-stickies', s.display || 'show');
     }
   });
@@ -305,11 +302,6 @@ var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, 
     });
     td.appendChild(lastPostTd);
     state = checkTopic(topicId, postCount, authorName);
-    /*used to work, but blizzard marks some posts are marked even tho THEY'RE FUCKING NOT
-    if 'read' is td.className.trim!
-    	TSTATE_CHK
-    else
-    	check-topic topic-id, post-count*/
     if (state !== TSTATE_CHK) {
       if (that = characters && authorName) {
         if (in$(that, characters)) {

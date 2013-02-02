@@ -6,10 +6,8 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.0.0
+// @version 1.1.0
 // ==/UserScript==
- * todo
- *  link to recent viewed forum (only 1?)
  * changelog
  * 1.1
  *  Now automatically saves your textarea on input

@@ -69,21 +69,15 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 
 	state = check-topic topic-id, post-count, author-name
 
-	/*used to work, but blizzard marks some posts are marked even tho THEY'RE FUCKING NOT
-	if 'read' is td.className.trim!
-		TSTATE_CHK
-	else
-		check-topic topic-id, post-count*/
-
 	#perform few more guesses
 	unless state is TSTATE_CHK
 		#we're logged in, and we know the last poster
 		if characters and author-name #last is an empty string : "last message by pseudo (..."
-			#we know the last poster - even more, we're him ! (I KNEW IT)
+			#we know the last poster - even more, it's us ! (I KNEW IT)
 			state = TSTATE_CHK if that in characters
 
 		#we created the topic and no one answered yet
-		if replies ~= 0 and author.innerHTML.trim! in characters #waiting on "infix ops close implicit calls"
+		if replies ~= 0 and author.innerHTML.trim! in characters
 			state = TSTATE_CHK
 
 	#we've read the last answer
@@ -94,7 +88,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 			pages.removeChild that
 	else
 		has-unread = true
-		td.className = '' #reset it ("used to work")
+		td.className = '' #fix blizzcrap
 
 	#if we already went to the topic
 	unless state is TSTATE_UNK

@@ -90,7 +90,7 @@ task \build 'build userscript' ->
           last-updated
           current-forum
           improved-topic
-          reply-rememberer
+          remember-reply
           clear-textarea
         ]>
         "}).call(this)"
