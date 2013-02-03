@@ -1,4 +1,4 @@
-return if thread
+return unless posts
 
 hidden-topics = (w.localStorage.getItem "hidden_topics" or "") / ";"
 
@@ -13,7 +13,6 @@ hidden-topics = (w.localStorage.getItem "hidden_topics" or "") / ";"
 
 	if it.querySelector '.last-read'
 		that.parentNode.removeChild that
-		#replace-with that, template 'hide-topic' hidden: true
 
 
 
@@ -33,7 +32,6 @@ for post-pages in QSA 'tbody.regular .post-pages'
 			..onclick = ->
 				if topic-id in hidden-topics
 					post-pages.removeChild ..
-					#replace-with .., template 'hide-topic' hidden: false
 					hidden-topics.splice hidden-topics.indexOf(topic-id), 1
 				else
 					hide tr

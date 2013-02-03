@@ -9,17 +9,7 @@
 // @version 1.1.0
 // ==/UserScript==
  * todo
- *  Cms.Forum.setView redraws for IE6/7 which breaks my ref
- *  could be hotfixed like that :
- *  ```
- 	->
- 		posts = QS '#posts'
- 		old.call @
- 		new = QS '#posts'
- 		next = new.nextElementSibling
- 		next.parentNode.removeChild new
- 		next.parentNode.insertBefore posts, next
- * ```
+ *  Cms.Forum.setView redraws for IE6/7 which breaks my ref (basically doing .html(.html()))
  *  but that seems horrible
  * changelog
  * 1.2
@@ -114,17 +104,8 @@ buf.push('</span>');
 }
 return buf.join("");
 }
-var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.replace, join$ = [].join, slice$ = [].slice;
+var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, replace$ = ''.replace, join$ = [].join, slice$ = [].slice;
 (function(){
-  var w, forumOptions, thread, ref$, tbodyRegular, posts;
-  w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : w;
-  forumOptions = QS('.forum-options');
-  if (thread = document.getElementById('thread')) {
-    thread.dataset.id = (split$.call((ref$ = split$.call(document.location, '/'))[ref$.length - 1], '?'))[0];
-  } else {
-    out$.tbodyRegular = tbodyRegular = QS('tbody.regular');
-  }
-  posts = document.getElementById('posts');
   function node(tag, props){
     props == null && (props = {});
     return import$(document.createElement(tag), props);
@@ -171,16 +152,27 @@ var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, 
   function QS(it){
     return document.querySelector(it);
   }
-  out$.w = w;
-  out$.thread = thread;
-  out$.posts = posts;
-  out$.forumOptions = forumOptions;
   out$.node = node;
   out$.replaceWith = replaceWith;
   out$.template = template;
   out$.QSA = QSA;
   out$.QS = QS;
   out$.fetchSiblings = fetchSiblings;
+}.call(this));
+(function(){
+  var w, forumOptions, topic, ref$, tbodyRegular, posts;
+  w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : w;
+  forumOptions = QS('.forum-options');
+  if (topic = document.getElementById('thread')) {
+    topic.dataset.id = (split$.call((ref$ = split$.call(document.location, '/'))[ref$.length - 1], '?'))[0];
+  } else {
+    out$.tbodyRegular = tbodyRegular = QS('tbody.regular');
+  }
+  posts = document.getElementById('posts');
+  out$.w = w;
+  out$.topic = topic;
+  out$.posts = posts;
+  out$.forumOptions = forumOptions;
 }.call(this));
 (function(){
   var l, langs, lang, timeTable;
@@ -218,21 +210,21 @@ var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, 
 }.call(this));
 (function(){
   var pages, postCount, ref$, lastPosterName;
-  if (!thread) {
+  if (!topic) {
     return;
   }
   pages = QSA('#forum-actions-top .ui-pagination li:not(.cap-item)');
   if ((pages != null && pages.length) && 'current' !== pages[pages.length - 1].className) {
     return;
   }
-  postCount = (ref$ = thread.getElementsByClassName('post-info'))[ref$.length - 1].getElementsByTagName('a')[0].getAttribute('href').slice(1);
-  lastPosterName = (ref$ = thread.getElementsByClassName('char-name-code'))[ref$.length - 1].innerHTML.trim();
-  w.localStorage.setItem("topic_" + thread.dataset.id, postCount);
-  w.localStorage.setItem("topic_lp_" + thread.dataset.id, lastPosterName);
+  postCount = (ref$ = topic.getElementsByClassName('post-info'))[ref$.length - 1].getElementsByTagName('a')[0].getAttribute('href').slice(1);
+  lastPosterName = (ref$ = topic.getElementsByClassName('char-name-code'))[ref$.length - 1].innerHTML.trim();
+  w.localStorage.setItem("topic_" + topic.dataset.id, postCount);
+  w.localStorage.setItem("topic_lp_" + topic.dataset.id, lastPosterName);
 }.call(this));
 (function(){
   var allRead, buttonMar;
-  if (thread) {
+  if (!posts) {
     return;
   }
   allRead = false;
@@ -267,7 +259,7 @@ var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, 
 }.call(this));
 (function(){
   var buttonSticky;
-  if (thread) {
+  if (!posts) {
     return;
   }
   if ('show' !== w.localStorage.getItem('show-stickies')) {
@@ -287,7 +279,7 @@ var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, 
 }.call(this));
 (function(){
   var characters, res$, i$, ref$, len$, name, ref1$, lastPostTh, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, hasUnread, post, children, div, a, td, lastPostTd, topicId, pages, lastPost, lastPostLink, replies, author, postCount, postOnly, text, authorName, inlineText, simplifiedTime, state, that;
-  if (thread) {
+  if (!posts) {
     return;
   }
   characters = QSA('.user-plate .overview');
@@ -424,14 +416,14 @@ var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, 
 }.call(this));
 (function(){
   var ref$, currentForumHref, currentForumName;
-  if (thread) {
+  if (!posts) {
     return;
   }
   ref$ = (ref$ = document.getElementsByClassName('ui-breadcrumb')[0].children)[ref$.length - 1].children[0], currentForumHref = ref$.href, currentForumName = ref$.innerHTML;
 }.call(this));
 (function(){
   var i$, ref$, len$, infos, realm, ref1$;
-  if (!thread) {
+  if (!topic) {
     return;
   }
   for (i$ = 0, len$ = (ref$ = document.getElementsByClassName('character-info')).length; i$ < len$; ++i$) {
@@ -444,22 +436,22 @@ var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, 
 }.call(this));
 (function(){
   var textarea, submit;
-  if (!thread) {
+  if (!topic) {
     return;
   }
   textarea = QS('#post-edit textarea');
   submit = QS('.post [type=submit]');
-  textarea.value = localStorage.getItem("post_" + thread.dataset.id) || '';
+  textarea.value = localStorage.getItem("post_" + topic.dataset.id) || '';
   textarea.onkeyup = function(){
-    return w.localStorage.setItem("post_" + thread.dataset.id, this.value);
+    return w.localStorage.setItem("post_" + topic.dataset.id, this.value);
   };
   submit.onclick = function(){
-    return w.localStorage.removeItem("post_" + thread.dataset.id);
+    return w.localStorage.removeItem("post_" + topic.dataset.id);
   };
 }.call(this));
 (function(){
   var clearer, x$, textarea;
-  if (!thread) {
+  if (!topic) {
     return;
   }
   clearer = template('clear-textarea');
@@ -468,12 +460,12 @@ var split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, 
   x$.insertBefore(clearer, textarea);
   clearer.onclick = function(){
     textarea.value = '';
-    return w.localStorage.removeItem("post_" + thread.dataset.id);
+    return w.localStorage.removeItem("post_" + topic.dataset.id);
   };
 }.call(this));
 (function(){
   var hiddenTopics, i$, ref$, len$, postPages, that, tr, topicId;
-  if (thread) {
+  if (!posts) {
     return;
   }
   hiddenTopics = split$.call(w.localStorage.getItem("hidden_topics") || "", ";");

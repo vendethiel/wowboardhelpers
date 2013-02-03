@@ -1,4 +1,4 @@
-return if thread
+return unless posts
 
 #get account's character names
 characters = QSA '.user-plate .overview'
@@ -30,6 +30,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 
 		continue
 
+	#NO IT'S NOT A JOKE this class is named "thread". W T F
 	topic-id = div.id.slice 'thread_tt_'length
 
 	{pages, {children: [last-post-link]}:last-post, replies, author} = fetch-siblings post, slice: 5 #defaults to className, slice 'post-'

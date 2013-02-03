@@ -1,4 +1,4 @@
-return if thread
+return unless posts
 all-read = false
 
 export button-mar = node 'a' innerHTML: 'MAR' title: lang.mar, onclick: !->

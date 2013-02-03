@@ -7,6 +7,7 @@ flatten = -> []concat ...it # shallow flatten
 join = -> flatten & .join \\n
 read = -> fs.readFileSync it, \utf8
 
+loaded = [] #keep ahold on which files we loaded
 
 ##########
 # CONFIG #
@@ -14,6 +15,7 @@ read = -> fs.readFileSync it, \utf8
 outfile = \wowboardhelpers.user.js
 metadata = read \metadata.js
 sources = <[
+  dom-helpers
   common
   lang
   update-count
@@ -32,7 +34,9 @@ sources = <[
 
 compile-styles = (cb) ->
   # XXX kind of relying on lexicographic ordering here
-  source = [read .. for ls \styles] * \\n
+  styles = ls \styles
+  loaded ++= styles
+  source = [read .. for styles] * \\n
   nib source .render cb
 
 wrap-css = ->
@@ -81,6 +85,7 @@ compile-ls = (paths) ->
       source.push wrap "src/#path.ls"
 
   try
+#    fs.writeFileSync outfile + ".ls" source * \\n
     LiveScript.compile source * \\n {+bare}
   catch
     throw new Error "Compiling all:\n\t#{e.message}"

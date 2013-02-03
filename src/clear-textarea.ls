@@ -1,4 +1,4 @@
-return unless thread
+return unless topic
 
 clearer = template 'clear-textarea'
 
@@ -9,4 +9,4 @@ QS '.editor1'
 	clearer.onclick = ->
 		textarea.value = ''
 		#manually clearing localStorage is something I'd like to avoid
-		w.localStorage.removeItem "post_#{thread.dataset.id}"
+		w.localStorage.removeItem "post_#{topic.dataset.id}"
