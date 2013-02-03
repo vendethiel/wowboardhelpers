@@ -3,7 +3,7 @@ return if thread
 hidden-topics = (w.localStorage.getItem "hidden_topics" or "") / ";"
 
 # propagates hidden list to localStorage
-function save-hiddens
+!function save-hiddens
 	w.localStorage.setItem "hidden_topics" hidden-topics * ";"
 
 # hides a topic, doing dom interactions
@@ -11,8 +11,11 @@ function save-hiddens
 	it.parentNode.removeChild it
 	tbody-regular.appendChild it
 
-	if it.querySelector '.hide-topic'
+	if it.querySelector '.last-read'
 		that.parentNode.removeChild that
+		#replace-with that, template 'hide-topic' hidden: true
+
+
 
 for post-pages in QSA 'tbody.regular .post-pages'
 	if post-pages.querySelector '.last-read'
@@ -24,14 +27,18 @@ for post-pages in QSA 'tbody.regular .post-pages'
 
 	if topic-id in hidden-topics
 		hide tr
-		continue
 
 	let tr, topic-id
-		template 'hide-topic'
+		template 'hide-topic' hidden: topic-id in hidden-topics
 			..onclick = ->
-				hide tr
+				if topic-id in hidden-topics
+					post-pages.removeChild ..
+					#replace-with .., template 'hide-topic' hidden: false
+					hidden-topics.splice hidden-topics.indexOf(topic-id), 1
+				else
+					hide tr
+					hidden-topics.push topic-id
 
-				hidden-topics.push topic-id
 				save-hiddens!
 
 			#add it as the first element in .post-pages

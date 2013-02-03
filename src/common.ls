@@ -12,6 +12,17 @@ posts = document.getElementById 'posts'
 function node(tag, props = {})
 	(document.createElement tag) <<< props
 
+function replace-with(from-node, new-node)
+	parent = from-node.parentNode
+
+	# do we have to insert it at some pos ?
+	if from-node.nextSibling
+		parent.removeChild from-node
+		parent.insertBefore new-node, that
+	else
+		parent.removeChild from-node
+		parent.appendChild new-node
+
 /**
  * processes a template
  * and returns 
@@ -21,7 +32,7 @@ function template(name, locals)
 
 	innerHTML = templates[name] locals
 	
-	node('div' {innerHTML})lastChild
+	node('div' {innerHTML})firstChild
 
 /**
  * fetches nextElementSibling
@@ -35,4 +46,5 @@ function QSA then document.querySelectorAll it
 function QS then document.querySelector it
 
 
-export w, thread, posts, forum-options, node, template, QSA, QS, fetch-siblings
+export w, thread, posts, forum-options
+export node, replace-with, template, QSA, QS, fetch-siblings

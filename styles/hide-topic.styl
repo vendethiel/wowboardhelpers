@@ -1,5 +1,9 @@
-a.hide-topic
-	color: red
+types = show hide
+colors = green red
+for type, i in types
+	a.{type}-topic
+		cursor: pointer
+		color: colors[i]
 
-	&:hover
-		color: red !important
+		&:hover
+			color: colors[i] !important
