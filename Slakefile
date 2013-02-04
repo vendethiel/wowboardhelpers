@@ -7,26 +7,29 @@ flatten = -> []concat ...it # shallow flatten
 join = -> flatten & .join \\n
 read = -> fs.readFileSync it, \utf8
 
-loaded = [] #keep ahold on which files we loaded
 
 ##########
 # CONFIG #
 ##########
 outfile = \wowboardhelpers.user.js
 metadata = read \metadata.js
+#  current-forum
 sources = <[
   dom-helpers
   common
   lang
-  update-count
+  
   mar
   stickies
+
   last-updated
-  current-forum
+  move-redirects
+  hide-topic
+
+  update-count
   improve-topic
   remember-reply
   clear-textarea
-  hide-topic
 ]>
 
 
@@ -35,7 +38,6 @@ sources = <[
 compile-styles = (cb) ->
   # XXX kind of relying on lexicographic ordering here
   styles = ls \styles
-  loaded ++= styles
   source = [read .. for styles] * \\n
   nib source .render cb
 

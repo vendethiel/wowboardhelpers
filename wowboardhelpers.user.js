@@ -8,9 +8,6 @@
 // @author Tel
 // @version 1.1.0
 // ==/UserScript==
- * todo
- *  Cms.Forum.setView redraws for IE6/7 which breaks my ref (basically doing .html(.html()))
- *  but that seems horrible
  * changelog
  * 1.2
  *  Now allows to hide topics (not stickies),
@@ -209,20 +206,6 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   }
 }.call(this));
 (function(){
-  var pages, postCount, ref$, lastPosterName;
-  if (!topic) {
-    return;
-  }
-  pages = QSA('#forum-actions-top .ui-pagination li:not(.cap-item)');
-  if ((pages != null && pages.length) && 'current' !== pages[pages.length - 1].className) {
-    return;
-  }
-  postCount = (ref$ = topic.getElementsByClassName('post-info'))[ref$.length - 1].getElementsByTagName('a')[0].getAttribute('href').slice(1);
-  lastPosterName = (ref$ = topic.getElementsByClassName('char-name-code'))[ref$.length - 1].innerHTML.trim();
-  w.localStorage.setItem("topic_" + topic.dataset.id, postCount);
-  w.localStorage.setItem("topic_lp_" + topic.dataset.id, lastPosterName);
-}.call(this));
-(function(){
   var allRead, buttonMar;
   if (!posts) {
     return;
@@ -415,53 +398,16 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   }
 }.call(this));
 (function(){
-  var ref$, currentForumHref, currentForumName;
+  var i$, ref$, len$, status, tr;
   if (!posts) {
     return;
   }
-  ref$ = (ref$ = document.getElementsByClassName('ui-breadcrumb')[0].children)[ref$.length - 1].children[0], currentForumHref = ref$.href, currentForumName = ref$.innerHTML;
-}.call(this));
-(function(){
-  var i$, ref$, len$, infos, realm, ref1$;
-  if (!topic) {
-    return;
+  for (i$ = 0, len$ = (ref$ = tbodyRegular.querySelectorAll('.post-status')).length; i$ < len$; ++i$) {
+    status = ref$[i$];
+    tr = status.parentNode.parentNode;
+    tbodyRegular.removeChild(tr);
+    tbodyRegular.appendChild(tr);
   }
-  for (i$ = 0, len$ = (ref$ = document.getElementsByClassName('character-info')).length; i$ < len$; ++i$) {
-    infos = ref$[i$];
-    realm = infos.querySelector('.context-user span').innerHTML;
-    if ((ref1$ = infos.querySelector('.character-desc')) != null) {
-      ref1$.innerHTML += "<br />" + realm;
-    }
-  }
-}.call(this));
-(function(){
-  var textarea, submit;
-  if (!topic) {
-    return;
-  }
-  textarea = QS('#post-edit textarea');
-  submit = QS('.post [type=submit]');
-  textarea.value = localStorage.getItem("post_" + topic.dataset.id) || '';
-  textarea.onkeyup = function(){
-    return w.localStorage.setItem("post_" + topic.dataset.id, this.value);
-  };
-  submit.onclick = function(){
-    return w.localStorage.removeItem("post_" + topic.dataset.id);
-  };
-}.call(this));
-(function(){
-  var clearer, x$, textarea;
-  if (!topic) {
-    return;
-  }
-  clearer = template('clear-textarea');
-  x$ = QS('.editor1');
-  textarea = x$.querySelector('textarea');
-  x$.insertBefore(clearer, textarea);
-  clearer.onclick = function(){
-    textarea.value = '';
-    return w.localStorage.removeItem("post_" + topic.dataset.id);
-  };
 }.call(this));
 (function(){
   var hiddenTopics, i$, ref$, len$, postPages, that, tr, topicId;
@@ -509,6 +455,62 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     };
     postPages.insertBefore(x$, postPages.children[0]);
   }
+}.call(this));
+(function(){
+  var pages, postCount, ref$, lastPosterName;
+  if (!topic) {
+    return;
+  }
+  pages = QSA('#forum-actions-top .ui-pagination li:not(.cap-item)');
+  if ((pages != null && pages.length) && 'current' !== pages[pages.length - 1].className) {
+    return;
+  }
+  postCount = (ref$ = topic.getElementsByClassName('post-info'))[ref$.length - 1].getElementsByTagName('a')[0].getAttribute('href').slice(1);
+  lastPosterName = (ref$ = topic.getElementsByClassName('char-name-code'))[ref$.length - 1].innerHTML.trim();
+  w.localStorage.setItem("topic_" + topic.dataset.id, postCount);
+  w.localStorage.setItem("topic_lp_" + topic.dataset.id, lastPosterName);
+}.call(this));
+(function(){
+  var i$, ref$, len$, infos, realm, ref1$;
+  if (!topic) {
+    return;
+  }
+  for (i$ = 0, len$ = (ref$ = document.getElementsByClassName('character-info')).length; i$ < len$; ++i$) {
+    infos = ref$[i$];
+    realm = infos.querySelector('.context-user span').innerHTML;
+    if ((ref1$ = infos.querySelector('.character-desc')) != null) {
+      ref1$.innerHTML += "<br />" + realm;
+    }
+  }
+}.call(this));
+(function(){
+  var textarea, submit;
+  if (!topic) {
+    return;
+  }
+  textarea = QS('#post-edit textarea');
+  submit = QS('.post [type=submit]');
+  textarea.value = localStorage.getItem("post_" + topic.dataset.id) || '';
+  textarea.onkeyup = function(){
+    return w.localStorage.setItem("post_" + topic.dataset.id, this.value);
+  };
+  submit.onclick = function(){
+    return w.localStorage.removeItem("post_" + topic.dataset.id);
+  };
+}.call(this));
+(function(){
+  var clearer, x$, textarea;
+  if (!topic) {
+    return;
+  }
+  clearer = template('clear-textarea');
+  x$ = QS('.editor1');
+  textarea = x$.querySelector('textarea');
+  x$.insertBefore(clearer, textarea);
+  clearer.onclick = function(){
+    textarea.value = '';
+    return w.localStorage.removeItem("post_" + topic.dataset.id);
+  };
 }.call(this));
 function import$(obj, src){
   var own = {}.hasOwnProperty;
