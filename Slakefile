@@ -21,6 +21,7 @@ sources = <[
   
   mar
   stickies
+  move-actions
 
   last-updated
   move-redirects
@@ -30,6 +31,7 @@ sources = <[
   improve-topic
   remember-reply
   clear-textarea
+  quick-quote
 ]>
 
 
