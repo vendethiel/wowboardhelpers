@@ -9,6 +9,10 @@
 // @version 1.1.0
 // ==/UserScript==
  * changelog
+ * 1.2.2
+ *  Better handling of CMs
+ * 1.2.1
+ *  Redirects are moved at the end (before hidden topics)
  * 1.2
  *  Now allows to hide topics (not stickies),
  *   they'll just get moved to the bottom

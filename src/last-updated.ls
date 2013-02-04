@@ -50,10 +50,13 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 		post-only = true
 		div.querySelector '.tt_time' .innerHTML #does not
 
-	text .= replace //(#{author-name = last-post-link.innerHTML.trim!})// ->
-		"<span class='poster " + [if it in characters #we posted the last message - H4xx0R
-			"own-poster"] + "'>#author-name</span>"
+	is-cm = false
+	if last-post-link.querySelector 'span'
+		last-post-link = that
+		is-cm = true
 
+	text .= replace //(#{author-name = last-post-link.innerHTML.trim!})// ->
+		templates.author name: it, own: it in characters, cm: is-cm
 
 	post.appendChild template 'tt-last-updated' {text}
 
