@@ -9,6 +9,9 @@
 // @version 1.1.0
 // ==/UserScript==
  * changelog
+ * 1.4.0
+ *  Added autolink handling edge cases
+ *   Also links youtube videos (iframe embedding)
  * 1.3.0
  *  Added `r` as hotkey for "quickquote"
  * 1.2.2
@@ -55,7 +58,7 @@
 (function(){
 var style = document.createElement('style');
 style.type = 'text/css';
-style.innerHTML = '.forum .forum-actions {\n  padding: 0px;\n}\n.forum .actions-panel {\n  margin-right: 15px;\n}\n.forum .forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n';
+style.innerHTML = '.forum .forum-actions {\n  padding: 0px;\n}\n.forum .actions-panel {\n  margin-right: 15px;\n}\n.forum .forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\n#memebox {\n  position: relative;\n  float: right;\n  width: 100px;\n  left: -50px;\n  top: 5px;\n}\n#memebox h1 {\n  font-size: 2em;\n}\n#memebox ul#memes {\n  margin-top: 10px;\n  margin-left: 30px;\n  list-style-type: circle;\n}\n#memebox li {\n  font-weight: bold;\n  color: link;\n  text-decoration: underline;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n';
 document.head.appendChild(style);
 jade=function(exports){Array.isArray||(Array.isArray=function(arr){return"[object Array]"==Object.prototype.toString.call(arr)}),Object.keys||(Object.keys=function(obj){var arr=[];for(var key in obj)obj.hasOwnProperty(key)&&arr.push(key);return arr}),exports.merge=function merge(a,b){var ac=a["class"],bc=b["class"];if(ac||bc)ac=ac||[],bc=bc||[],Array.isArray(ac)||(ac=[ac]),Array.isArray(bc)||(bc=[bc]),ac=ac.filter(nulls),bc=bc.filter(nulls),a["class"]=ac.concat(bc).join(" ");for(var key in b)key!="class"&&(a[key]=b[key]);return a};function nulls(val){return val!=null}return exports.attrs=function attrs(obj,escaped){var buf=[],terse=obj.terse;delete obj.terse;var keys=Object.keys(obj),len=keys.length;if(len){buf.push("");for(var i=0;i<len;++i){var key=keys[i],val=obj[key];"boolean"==typeof val||null==val?val&&(terse?buf.push(key):buf.push(key+'="'+key+'"')):0==key.indexOf("data")&&"string"!=typeof val?buf.push(key+"='"+JSON.stringify(val)+"'"):"class"==key&&Array.isArray(val)?buf.push(key+'="'+exports.escape(val.join(" "))+'"'):escaped&&escaped[key]?buf.push(key+'="'+exports.escape(val)+'"'):buf.push(key+'="'+val+'"')}}return buf.join(" ")},exports.escape=function escape(html){return String(html).replace(/&(?!(\w+|\#\d+);)/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")},exports.rethrow=function rethrow(err,filename,lineno){if(!filename)throw err;var context=3,str=require("fs").readFileSync(filename,"utf8"),lines=str.split("\n"),start=Math.max(lineno-context,0),end=Math.min(lines.length,lineno+context),context=lines.slice(start,end).map(function(line,i){var curr=i+start+1;return(curr==lineno?"  > ":"    ")+curr+"| "+line}).join("\n");throw err.path=filename,err.message=(filename||"Jade")+":"+lineno+"\n"+context+"\n\n"+err.message,err},exports}({});
 var templates = {};
@@ -122,6 +125,15 @@ var buf = [];
 with (locals || {}) {
 var interp;
 buf.push('<div class="clear-textarea">X</div>');
+}
+return buf.join("");
+}
+templates.memebox = templates['reply/memebox'] =function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<div id="memebox"><h1>MemeBOX</h1><input placeholder="meme" id="meme-search" size="15"/><ul id="memes"></ul></div>');
 }
 return buf.join("");
 }
@@ -544,7 +556,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   }
 }.call(this));
 (function(){
-  var rules, replace, i$, ref$, len$, post, x, e;
+  var rules, replace, i$, ref$, len$, post, h, e;
   if (!topic) {
     return;
   }
@@ -560,10 +572,10 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   for (i$ = 0, len$ = (ref$ = QSA('.post-detail')).length; i$ < len$; ++i$) {
     post = ref$[i$];
     try {
-      post.innerHTML = x = replace(post.innerHTML);
+      post.innerHTML = h = replace(post.innerHTML);
     } catch (e$) {
       e = e$;
-      console.log("fail lol " + x);
+      console.log("Unable to generate valid HTML : " + h);
     }
   }
 }.call(this));
@@ -626,6 +638,59 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
       return document.location += '#forum-actions-bottom';
     }
   });
+}.call(this));
+(function(){
+  var memes, postWrapper, ref$, textarea, addMeme, memebox, ul;
+  memes = {
+    challengeaccepted: 'http://troll-face.fr/wp-content/uploads/2012/12/challenge-accepted.png',
+    foreveralone: 'http://i1.kym-cdn.com/entries/icons/original/000/003/619/Untitled-1.jpg',
+    bitchplease: 'http://www.troll.me/images/yao-ming/bitch-please.jpg',
+    youdontsay: 'http://bearsharkaxe.com/wp-content/uploads/2012/06/you-dont-say.jpg',
+    fullretard: 'http://www.osborneink.com/wp-content/uploads/2012/11/never_go_full_retard1.jpg',
+    seriously: 'http://i3.kym-cdn.com/entries/icons/original/000/005/545/OpoQQ.jpg',
+    trollface: 'http://www.mes-coloriages-preferes.com/Images/Large/Personnages-celebres-Troll-face-28324.png',
+    fuckyeah: 'http://cdn.ebaumsworld.com/mediaFiles/picture/2168064/82942867.jpg',
+    pedobear: 'http://aserres.free.fr/pedobear/pedobear.png',
+    megusta: 'http://a400.idata.over-blog.com/5/08/51/37/me_gusta_by_projectendo-d2z3rku.jpg',
+    notbad: 'http://www.reactionface.info/sites/default/files/images/YvEN9.png',
+    ohcrap: 'http://i1.kym-cdn.com/entries/icons/original/000/004/077/Raisins_Face.jpg',
+    yuno: 'http://i1.kym-cdn.com/entries/icons/original/000/004/006/y-u-no-guy.jpg',
+    okay: 'http://cache.ohinternet.com/images/e/e6/Okay_guy.jpg',
+    no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
+  };
+  postWrapper = QS('.post.general');
+  postWrapper.removeChild((ref$ = postWrapper.children)[ref$.length - 1]);
+  textarea = QS('#post-edit textarea');
+  if (!textarea) {
+    return;
+  }
+  addMeme = function(url){
+    return function(){
+      return textarea.value += (textarea.value ? "\n" : "") + url;
+    };
+  };
+  memebox = template('memebox');
+  ul = memebox.querySelector('#memes');
+  memebox.querySelector('#meme-search').onkeyup = function(){
+    var value, i, name, ref$, url, x$, results$ = [];
+    value = this.value.replace(/[\s_-]+/, '');
+    ul.innerHTML = '';
+    if (!value) {
+      return;
+    }
+    i = 0;
+    for (name in ref$ = memes) {
+      url = ref$[name];
+      if (~name.indexOf(value)) {
+        ul.appendChild((x$ = document.createElement('li'), x$.innerHTML = name, x$.onclick = addMeme(url), x$));
+      }
+      if (++i > 10) {
+        break;
+      }
+    }
+    return results$;
+  };
+  postWrapper.appendChild(memebox);
 }.call(this));
 function import$(obj, src){
   var own = {}.hasOwnProperty;

@@ -60,6 +60,6 @@ replace = ->
 
 for post in QSA '.post-detail'
 	try
-		post.innerHTML = x=replace post.innerHTML
+		post.innerHTML = h=replace post.innerHTML
 	catch
-		console.log "fail lol #x"
+		console.log "Unable to generate valid HTML : #h"

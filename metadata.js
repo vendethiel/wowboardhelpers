@@ -9,6 +9,9 @@
 // @version 1.1.0
 // ==/UserScript==
  * changelog
+ * 1.4.0
+ *  Added autolink handling edge cases
+ *   Also links youtube videos (iframe embedding)
  * 1.3.0
  *  Added `r` as hotkey for "quickquote"
  * 1.2.2
