@@ -6,11 +6,9 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.4.0
+// @version 1.1.0
 // ==/UserScript==
  * changelog
- * 1.4.0
- *  Added autolink
  * 1.3.0
  *  Added `r` as hotkey for "quickquote"
  * 1.2.2
@@ -184,7 +182,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
 }.call(this));
 (function(){
   var w, forumOptions, topic, ref$, tbodyRegular, posts;
-  w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : w;
+  w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
   forumOptions = QS('.forum-options');
   if (topic = document.getElementById('thread')) {
     topic.dataset.id = (split$.call((ref$ = split$.call(document.location, '/'))[ref$.length - 1], '?'))[0];
@@ -550,7 +548,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   if (!topic) {
     return;
   }
-  textarea = QS('#post-edit textarea');
+  if (!(textarea = QS('#post-edit textarea'))) {
+    return;
+  }
   submit = QS('.post [type=submit]');
   textarea.value = localStorage.getItem("post_" + topic.dataset.id) || '';
   textarea.onkeyup = function(){
@@ -567,6 +567,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   }
   clearer = template('clear-textarea');
   x$ = QS('.editor1');
+  if (!x$) {
+    return;
+  }
   textarea = x$.querySelector('textarea');
   x$.insertBefore(clearer, textarea);
   clearer.onclick = function(){
@@ -605,7 +608,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   if (!topic) {
     return;
   }
-  rules = [[/(?:https?:\/\/)?(?:www\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g, '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0"></iframe>'], [/\((https?:\/\/)([^<\s\)]+)\)/g, '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" target="_blank">$2</a>)'], [/([^"']|^)(https?:\/\/)([^<\s]+)/g, '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" target="_blank">$3</a>'], [/(^|>|;|\s)([\w\.\-]+\.(?:com|net|org|eu|jp|us|co\.uk)(\/[^<\s]*)?(?=[\s<]|$))/g, '$1<a class="external" rel="noreferrer" href="http://$2" title="$2" target="_blank">$2</a>']];
+  rules = [[/(?:https?:\/\/)?(?:www\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g, '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0"></iframe>'], [/\((https?:\/\/)([^<\s\)]+)\)/g, '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" target="_blank">$2</a>)'], [/([^"']|^)(https?:\/\/)([^<\s\)]+)/g, '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" target="_blank">$3</a>'], [/(^|>|;|\s)([\w\.\-]+\.(?:com|net|org|eu|jp|us|co\.uk)(\/[^<\s]*)?(?=[\s<]|$))/g, '$1<a class="external" rel="noreferrer" href="http://$2" title="$2" target="_blank">$2</a>']];
   replace = function(it){
     var i$, ref$, len$, ref1$, pattern, replacement;
     for (i$ = 0, len$ = (ref$ = rules).length; i$ < len$; ++i$) {

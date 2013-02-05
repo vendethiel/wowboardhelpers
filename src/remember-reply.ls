@@ -1,6 +1,7 @@
 return unless topic
 
-textarea = QS '#post-edit textarea'
+return unless textarea = QS '#post-edit textarea'
+
 submit = QS '.post [type=submit]'
 
 textarea.value = localStorage.getItem "post_#{topic.dataset.id}" or ''

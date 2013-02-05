@@ -31,7 +31,7 @@ rules =
 
 	# linkify links not preceded by a quote or double-quote (should avoid
 	# relinkifying href= urls)
-	* * /([^"']|^)(https?:\/\/)([^<\s]+)/g
+	* * /([^"']|^)(https?:\/\/)([^<\s\)]+)/g
 			* '$1<a class="external" \
 					rel="noreferrer" \
 					href="$2$3" \

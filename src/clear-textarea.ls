@@ -3,7 +3,9 @@ return unless topic
 clearer = template 'clear-textarea'
 
 QS '.editor1'
+	return unless ..
 	textarea = ..querySelector 'textarea'
+
 	..insertBefore clearer, textarea
 
 	clearer.onclick = ->
