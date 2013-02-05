@@ -4,15 +4,14 @@ rules =
 	# youtube thumbnails
 	* * //
 			(?:https?:\/\/)? # optional protocol
-			(?:www\.)?			 # optional subdomain (some people add it
+			(?:(?:www|m)\.)?			 # optional subdomain (some people add it)
 			(
 				youtu\.be\/ # short links
 					([\w\-_]+) # video id
 					(\?[&=\w\-_;\#]*)? # options
 				|
 				youtube\.com\/watch\?
-					([&=\w\-_;\.\?\#\%]*) # pre video id options (annoying, since this
-															# will have to give up matches)
+					([&=\w\-_;\.\?\#\%]*) # pre video id options
 					v=([\w\-_]+) # video id
 					([&=\w\-\._;\?\#\%]*) # post vieo id options
 			)

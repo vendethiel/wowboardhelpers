@@ -608,7 +608,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   if (!topic) {
     return;
   }
-  rules = [[/(?:https?:\/\/)?(?:www\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g, '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0"></iframe>'], [/\((https?:\/\/)([^<\s\)]+)\)/g, '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" target="_blank">$2</a>)'], [/([^"']|^)(https?:\/\/)([^<\s\)]+)/g, '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" target="_blank">$3</a>'], [/(^|>|;|\s)([\w\.\-]+\.(?:com|net|org|eu|jp|us|co\.uk)(\/[^<\s]*)?(?=[\s<]|$))/g, '$1<a class="external" rel="noreferrer" href="http://$2" title="$2" target="_blank">$2</a>']];
+  rules = [[/(?:https?:\/\/)?(?:(?:www|m)\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g, '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0"></iframe>'], [/\((https?:\/\/)([^<\s\)]+)\)/g, '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" target="_blank">$2</a>)'], [/([^"']|^)(https?:\/\/)([^<\s\)]+)/g, '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" target="_blank">$3</a>'], [/(^|>|;|\s)([\w\.\-]+\.(?:com|net|org|eu|jp|us|co\.uk)(\/[^<\s]*)?(?=[\s<]|$))/g, '$1<a class="external" rel="noreferrer" href="http://$2" title="$2" target="_blank">$2</a>']];
   replace = function(it){
     var i$, ref$, len$, ref1$, pattern, replacement;
     for (i$ = 0, len$ = (ref$ = rules).length; i$ < len$; ++i$) {
