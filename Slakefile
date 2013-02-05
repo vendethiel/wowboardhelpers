@@ -1,9 +1,8 @@
 require! <[fs LiveScript stylus jade]>
 
 ls = -> ["#it/#file" for file in fs.readdirSync it]
-
 flatten = -> []concat ...it # shallow flatten
-
+camelcase = -> it.replace /-(.)/g -> it.1.toUpperCase!
 join = -> flatten & .join \\n
 read = -> fs.readFileSync it, \utf8
 
@@ -15,25 +14,26 @@ outfile = \wowboardhelpers.user.js
 metadata = read \metadata.js
 #  current-forum
 sources = <[
-  dom-helpers
-  common
-  lang
-  content-class
+  shared/dom-helpers
+  shared/common
+  shared/lang
+  shared/content-class
   
-  mar
-  stickies
-  move-actions
+  forum/mar
+  forum/stickies
+  forum/move-actions
 
-  last-updated
-  move-redirects
-  hide-topic
+  forum-topics/last-updated
+  forum-topics/move-redirects
+  forum-topics/hide-topic
 
-  update-count
-  improve-topic
-  remember-reply
-  clear-textarea
-  quick-quote
-  autolink
+  topic/update-count
+  topic/improve-topic
+  topic/autolink
+  
+  reply/remember-reply
+  reply/clear-textarea
+  reply/quick-quote
 ]>
 
 
@@ -41,9 +41,13 @@ sources = <[
 
 compile-styles = (cb) ->
   # XXX kind of relying on lexicographic ordering here
-  styles = ls \styles
-  source = [read .. for styles] * \\n
-  nib source .render cb
+  source = []
+  for dir in ls \src
+    if fs.existsSync "#dir/styles/"
+      for file in ls "#dir/styles/"
+        source.push read file
+
+  nib source * '\n' .render cb
 
 wrap-css = ->
   return "" unless it
@@ -58,10 +62,15 @@ document.head.appendChild(style);
 compile-templates = ->
   source = ["var templates = {};"]
   try
-    for filename in ls \templates
-      #templates/do-it.jade => doIt
-      name = filename.slice(10 -5)replace /-(.)/g -> it.1.toUpperCase!
-      source.push "templates.#name = #{jade.compile read(filename), {+client, -compileDebug, filename}}"
+    for dir in ls \src
+      if fs.existsSync "#dir/templates/"
+        for filename in ls "#dir/templates/"
+          filename .= replace \// \/
+          name-parts = filename / '/' #<[src forum-topics templates author.jade]>
+          name = camelcase name-parts[3]slice 0 -5
+          full-name = "#{name-parts.1}/#{name-parts.3.slice 0 -5}" #no camelcasing : templates'abc/d-e'
+          source.push "templates.#name = templates['#full-name'] =
+          #{jade.compile read(filename), {+client, -compileDebug, filename}}"
   catch
     throw new Error "Jade error on #filename : #{e.message}"
 
@@ -107,7 +116,7 @@ task \build 'build userscript' ->
       join do #can't use strict cause jade :(
         metadata
         "(function(){"
-        wrap-css compile-styles!
+        wrap-css css
         read "node_modules/jade/runtime.min.js"
         compile-templates!
         compile-ls sources
