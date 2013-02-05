@@ -6,9 +6,13 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.1.0
+// @version 1.4.0
 // ==/UserScript==
  * changelog
+ * 1.4.0
+ *  Added autolink
+ * 1.3.0
+ *  Added `r` as hotkey for "quickquote"
  * 1.2.2
  *  Better handling of CMs
  * 1.2.1
@@ -53,7 +57,7 @@
 (function(){
 var style = document.createElement('style');
 style.type = 'text/css';
-style.innerHTML = '.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.forum-actions {\n  padding: 0px;\n}\n.actions-panel {\n  margin-right: 15px;\n}\n.forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n';
+style.innerHTML = '.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.forum .forum-actions {\n  padding: 0px;\n}\n.forum .actions-panel {\n  margin-right: 15px;\n}\n.forum .forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n';
 document.head.appendChild(style);
 jade=function(exports){Array.isArray||(Array.isArray=function(arr){return"[object Array]"==Object.prototype.toString.call(arr)}),Object.keys||(Object.keys=function(obj){var arr=[];for(var key in obj)obj.hasOwnProperty(key)&&arr.push(key);return arr}),exports.merge=function merge(a,b){var ac=a["class"],bc=b["class"];if(ac||bc)ac=ac||[],bc=bc||[],Array.isArray(ac)||(ac=[ac]),Array.isArray(bc)||(bc=[bc]),ac=ac.filter(nulls),bc=bc.filter(nulls),a["class"]=ac.concat(bc).join(" ");for(var key in b)key!="class"&&(a[key]=b[key]);return a};function nulls(val){return val!=null}return exports.attrs=function attrs(obj,escaped){var buf=[],terse=obj.terse;delete obj.terse;var keys=Object.keys(obj),len=keys.length;if(len){buf.push("");for(var i=0;i<len;++i){var key=keys[i],val=obj[key];"boolean"==typeof val||null==val?val&&(terse?buf.push(key):buf.push(key+'="'+key+'"')):0==key.indexOf("data")&&"string"!=typeof val?buf.push(key+"='"+JSON.stringify(val)+"'"):"class"==key&&Array.isArray(val)?buf.push(key+'="'+exports.escape(val.join(" "))+'"'):escaped&&escaped[key]?buf.push(key+'="'+exports.escape(val)+'"'):buf.push(key+'="'+val+'"')}}return buf.join(" ")},exports.escape=function escape(html){return String(html).replace(/&(?!(\w+|\#\d+);)/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")},exports.rethrow=function rethrow(err,filename,lineno){if(!filename)throw err;var context=3,str=require("fs").readFileSync(filename,"utf8"),lines=str.split("\n"),start=Math.max(lineno-context,0),end=Math.min(lines.length,lineno+context),context=lines.slice(start,end).map(function(line,i){var curr=i+start+1;return(curr==lineno?"  > ":"    ")+curr+"| "+line}).join("\n");throw err.path=filename,err.message=(filename||"Jade")+":"+lineno+"\n"+context+"\n\n"+err.message,err},exports}({});
 var templates = {};
@@ -226,6 +230,20 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     }
     return it;
   }
+}.call(this));
+(function(){
+  var content;
+  content = QS('#content');
+  content.className = (function(){
+    switch (false) {
+    case !topic:
+      return "topic";
+    case !posts:
+      return "forum";
+    default:
+      return "";
+    }
+  }());
 }.call(this));
 (function(){
   var allRead, buttonMar;
@@ -581,6 +599,30 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
       return document.location += '#forum-actions-bottom';
     }
   });
+}.call(this));
+(function(){
+  var rules, replace, i$, ref$, len$, post, x, e;
+  if (!topic) {
+    return;
+  }
+  rules = [[/(?:https?:\/\/)?(?:www\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g, '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0"></iframe>'], [/\((https?:\/\/)([^<\s\)]+)\)/g, '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" target="_blank">$2</a>)'], [/([^"']|^)(https?:\/\/)([^<\s]+)/g, '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" target="_blank">$3</a>'], [/(^|>|;|\s)([\w\.\-]+\.(?:com|net|org|eu|jp|us|co\.uk)(\/[^<\s]*)?(?=[\s<]|$))/g, '$1<a class="external" rel="noreferrer" href="http://$2" title="$2" target="_blank">$2</a>']];
+  replace = function(it){
+    var i$, ref$, len$, ref1$, pattern, replacement;
+    for (i$ = 0, len$ = (ref$ = rules).length; i$ < len$; ++i$) {
+      ref1$ = ref$[i$], pattern = ref1$[0], replacement = ref1$[1];
+      it = it.replace(pattern, replacement);
+    }
+    return it;
+  };
+  for (i$ = 0, len$ = (ref$ = QSA('.post-detail')).length; i$ < len$; ++i$) {
+    post = ref$[i$];
+    try {
+      post.innerHTML = x = replace(post.innerHTML);
+    } catch (e$) {
+      e = e$;
+      console.log("fail lol " + x);
+    }
+  }
 }.call(this));
 function import$(obj, src){
   var own = {}.hasOwnProperty;

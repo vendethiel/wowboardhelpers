@@ -18,6 +18,7 @@ sources = <[
   dom-helpers
   common
   lang
+  content-class
   
   mar
   stickies
@@ -32,6 +33,7 @@ sources = <[
   remember-reply
   clear-textarea
   quick-quote
+  autolink
 ]>
 
 
