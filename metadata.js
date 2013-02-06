@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.1.0
+// @version 1.5.0
 // ==/UserScript==
  * changelog
+ * 1.5.0
+ *  Added the memebox, allowing you to select memes
  * 1.4.0
  *  Added autolink handling edge cases
  *   Also links youtube videos (iframe embedding)

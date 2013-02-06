@@ -37,12 +37,13 @@ memebox.querySelector '#meme-search' .onkeyup = ->
 	i = 0
 	for name, url of memes
 		if ~name.indexOf value
+			break if ++i > 10
+
 			ul.appendChild <| do
 				document.createElement 'li'
 					..innerHTML = name
 					..onclick = add-meme url
 
-		break if ++i > 10
 
 
 post-wrapper.appendChild memebox
