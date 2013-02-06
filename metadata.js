@@ -6,9 +6,13 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.5.0
+// @version 1.5.1
 // ==/UserScript==
  * changelog
+ * 1.6.0
+ *  Added relative time (updated every 10 seconds, should try to calculate when date will be stale)
+ *  Make sure we aren't overriding a text in reply rememberer
+ *  Checking for updates every 15s
  * 1.5.0
  *  Added the memebox, allowing you to select memes
  * 1.4.0

@@ -1,4 +1,4 @@
-return unless posts
+return unless forum
 
 #get account's character names
 characters = QSA '.user-plate .overview'
@@ -58,17 +58,20 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 	text .= replace //(#{author-name = last-post-link.innerHTML.trim!})// ->
 		templates.author name: it, own: it in characters, cm: is-cm
 
-	post.appendChild template 'tt-last-updated' {text}
-
 	
 	inline-text = text
 	inline-text .= slice (text.index-of '(') + 1, -1 unless post-only
-	simplified-time = if -1 is inline-text.indexOf '/'
+	simplified-time = if ~inline-text.indexOf '/'
+		inline-text #post is so old it's DD/MM/YYYY
+	else
 		simplified-time = (inline-text / ' ')[lang.time-index to lang.time-outdex-1] * ' '
 		post.dataset <<< {simplified-time}
+		text .= replace simplified-time, "<span class='simplified-time'>#simplified-time</span>"
+
 		simplify-time simplified-time
-	else
-		inline-text #post is so old it's DD/MM/YYYY
+
+	#manipulated to en<span simplified time (if necessary)
+	post.appendChild template 'tt-last-updated' {text}
 
 	#last-updated <td for ADV mode
 	last-post-td = node 'td' className: 'post-last-updated' innerHTML: simplified-time

@@ -1,4 +1,4 @@
-return unless posts
+return unless forum
 
 hidden-topics = (w.localStorage.getItem "hidden_topics" or "") / ";"
 

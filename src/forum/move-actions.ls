@@ -1,4 +1,4 @@
-return unless posts
+return unless forum
 
 QS '.forum-options'
 	..parentNode.removeChild ..

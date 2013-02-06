@@ -4,9 +4,10 @@ forum-options = QS '.forum-options'
 
 if topic = document.getElementById 'thread'
 	topic.dataset.id = ((document.location / '/')[*-1] / '?')0
-else
+
+if forum = document.getElementById 'posts'
+	forum.dataset.id = ((document.location / '/')[*-2] / '?')0
+	
 	export tbody-regular = QS 'tbody.regular'
 
-posts = document.getElementById 'posts'
-
-export w, topic, posts, forum-options
+export w, topic, forum, forum-options

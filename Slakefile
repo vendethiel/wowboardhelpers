@@ -19,15 +19,19 @@ sources = <[
   shared/common
   shared/lang
   shared/content-class
+
+  utils/date
   
   forum/mar
   forum/stickies
   forum/move-actions
+  forum/check-updates
 
   forum-topics/last-updated
   forum-topics/move-redirects
   forum-topics/hide-topic
   forum-topics/times
+
 
   topic/update-count
   topic/improve-topic
