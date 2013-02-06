@@ -18,7 +18,7 @@ const TSTATE_UNK = 0, #no information, either new or never read
 
 has-unread = false
 
-#let's update rows
+#we can't skip directly to tbody-regular cause we'd break post-its display
 #THAT DESTRUCTURING.
 for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 'post-title'
 	if children.length > 2 #sticky, redirects, etc
@@ -64,8 +64,11 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 	inline-text = text
 	inline-text .= slice (text.index-of '(') + 1, -1 unless post-only
 	simplified-time = if -1 is inline-text.indexOf '/'
-	then simplify-time (inline-text / ' ')[lang.time-index to lang.time-outdex-1] * ' '
-	else inline-text #post is so old it's DD/MM/YYYY
+		simplified-time = (inline-text / ' ')[lang.time-index to lang.time-outdex-1] * ' '
+		post.dataset <<< {simplified-time}
+		simplify-time simplified-time
+	else
+		inline-text #post is so old it's DD/MM/YYYY
 
 	#last-updated <td for ADV mode
 	last-post-td = node 'td' className: 'post-last-updated' innerHTML: simplified-time
@@ -111,6 +114,7 @@ unless has-unread
  * `state` must be a TSTATE_* constant
  */
 !function mark-state({innerHTML}:node, state)
+	#❢ = HEAVY EXCLAMATION MARK ORNAMENT
 	states = <[? ! ✓]>
 	
 	node.innerHTML = "<b>[#{states[state]}]</b> #innerHTML"

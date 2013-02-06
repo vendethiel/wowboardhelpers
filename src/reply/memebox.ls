@@ -1,7 +1,10 @@
+return unless topic
+
 memes =
 	challengeaccepted: 'http://troll-face.fr/wp-content/uploads/2012/12/challenge-accepted.png'
 	foreveralone: 'http://i1.kym-cdn.com/entries/icons/original/000/003/619/Untitled-1.jpg'
 	bitchplease: 'http://www.troll.me/images/yao-ming/bitch-please.jpg'
+	stfuandgtfo: 'http://4.bp.blogspot.com/-cD0QmZLGuAY/TnHyAD269EI/AAAAAAAAAkU/6O4rA1REcdI/s1600/STFU_and_GTFO.jpg'
 	youdontsay: 'http://bearsharkaxe.com/wp-content/uploads/2012/06/you-dont-say.jpg'
 	fullretard: 'http://www.osborneink.com/wp-content/uploads/2012/11/never_go_full_retard1.jpg'
 	seriously: 'http://i3.kym-cdn.com/entries/icons/original/000/005/545/OpoQQ.jpg'
@@ -28,7 +31,7 @@ add-meme = (url) ->
 
 memebox = template 'memebox'
 ul = memebox.querySelector '#memes'
-memebox.querySelector '#meme-search' .onkeyup = ->
+memebox.querySelector '#meme-search' .onkeyup = !->
 	value = @value.replace /[\s_-]+/ ''
 	ul.innerHTML = ''
 

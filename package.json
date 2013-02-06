@@ -6,7 +6,6 @@
 		"LiveScript": "1.1.1",
 		"stylus": "0.32.x",
 		"nib": "0.9.x",
-		"jade": "0.28.x",
-		"chokidar": "0.5.x"
+		"jade": "0.28.x"
 	}
 }

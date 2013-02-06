@@ -27,6 +27,7 @@ sources = <[
   forum-topics/last-updated
   forum-topics/move-redirects
   forum-topics/hide-topic
+  forum-topics/times
 
   topic/update-count
   topic/improve-topic

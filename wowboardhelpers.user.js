@@ -135,7 +135,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="memebox"><h1>MemeBOX</h1><input placeholder="meme" id="meme-search" size="15"/><ul id="memes"></ul></div>');
+buf.push('<div id="memebox"><h1>MemeBOX</h1><input placeholder="meme" id="meme-search" autocomplete="off" size="15"/><ul id="memes"></ul></div>');
 }
 return buf.join("");
 }
@@ -382,7 +382,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     if (!postOnly) {
       inlineText = inlineText.slice(text.indexOf('(') + 1, -1);
     }
-    simplifiedTime = -1 === inlineText.indexOf('/') ? simplifyTime(join$.call(slice$.call(split$.call(inlineText, ' '), lang.timeIndex, lang.timeOutdex - 1 + 1 || 9e9), ' ')) : inlineText;
+    simplifiedTime = -1 === inlineText.indexOf('/') ? (simplifiedTime = join$.call(slice$.call(split$.call(inlineText, ' '), lang.timeIndex, lang.timeOutdex - 1 + 1 || 9e9), ' '), post.dataset.simplifiedTime = simplifiedTime, simplifyTime(simplifiedTime)) : inlineText;
     lastPostTd = node('td', {
       className: 'post-last-updated',
       innerHTML: simplifiedTime
@@ -590,12 +590,14 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     return;
   }
   submit = QS('.post [type=submit]');
-  textarea.value = localStorage.getItem("post_" + topic.dataset.id) || '';
+  if (!textarea.value) {
+    textarea.value = localStorage.getItem("post_" + topic.dataset.id) || '';
+  }
   textarea.onkeyup = function(){
     return w.localStorage.setItem("post_" + topic.dataset.id, this.value);
   };
   submit.onclick = function(){
-    return w.localStorage.removeItem("post_" + topic.dataset.id);
+    return w.localStorage.setItem("post_" + topic.dataset.id, "");
   };
 }.call(this));
 (function(){
@@ -643,10 +645,14 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
 }.call(this));
 (function(){
   var memes, postWrapper, ref$, textarea, addMeme, memebox, ul;
+  if (!topic) {
+    return;
+  }
   memes = {
     challengeaccepted: 'http://troll-face.fr/wp-content/uploads/2012/12/challenge-accepted.png',
     foreveralone: 'http://i1.kym-cdn.com/entries/icons/original/000/003/619/Untitled-1.jpg',
     bitchplease: 'http://www.troll.me/images/yao-ming/bitch-please.jpg',
+    stfuandgtfo: 'http://4.bp.blogspot.com/-cD0QmZLGuAY/TnHyAD269EI/AAAAAAAAAkU/6O4rA1REcdI/s1600/STFU_and_GTFO.jpg',
     youdontsay: 'http://bearsharkaxe.com/wp-content/uploads/2012/06/you-dont-say.jpg',
     fullretard: 'http://www.osborneink.com/wp-content/uploads/2012/11/never_go_full_retard1.jpg',
     seriously: 'http://i3.kym-cdn.com/entries/icons/original/000/005/545/OpoQQ.jpg',
@@ -674,7 +680,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   memebox = template('memebox');
   ul = memebox.querySelector('#memes');
   memebox.querySelector('#meme-search').onkeyup = function(){
-    var value, i, name, ref$, url, x$, results$ = [];
+    var value, i, name, ref$, url, x$;
     value = this.value.replace(/[\s_-]+/, '');
     ul.innerHTML = '';
     if (!value) {
@@ -687,10 +693,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
         if (++i > 10) {
           break;
         }
-        results$.push(ul.appendChild((x$ = document.createElement('li'), x$.innerHTML = name, x$.onclick = addMeme(url), x$)));
+        ul.appendChild((x$ = document.createElement('li'), x$.innerHTML = name, x$.onclick = addMeme(url), x$));
       }
     }
-    return results$;
   };
   postWrapper.appendChild(memebox);
 }.call(this));
