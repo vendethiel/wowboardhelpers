@@ -89,6 +89,7 @@ compile-templates = ->
 
   source * \\n
 
+/**XXX remove them since they're not used anymore??
 compile-templates.html = ->
   code = read it
   """
@@ -106,9 +107,12 @@ compile-templates.htmls = ->
   \"""
   """ {+bare}
   .replace('this.' 'locals.')
+*/
 
 compile-templates.hamlc = ->
   runtime.haml ?= "var c$ = " + (text) ->
+    return text * " " if Array.isArray text
+
     switch text
     | null void  => ''
     | true false => '\u0093' + text
@@ -121,8 +125,15 @@ compile-templates.hamlc = ->
     escape-attributes: false
     uglify: true
     customCleanValue: 'c$'
+    placement: 'standalone'
+
   code = hamlCoffee.template read(it), name, "w.templates", opts
-  code.replace "w.templates['#name'] = " "return "
+  code = (code.trim! / '\n')[1 to -2] * '\n'
+
+  code = code #crappy hotfixes :(
+    .replace '$o.join("\\n").replace(/\s(?:id|class)=([\'"])(\1)/mg, "");' '$o.join("")'
+    .replace 'return function(context) {' 'function(context) {'
+    .trim!
 
 compile = (it, options) ->
   try
@@ -131,7 +142,7 @@ compile = (it, options) ->
   catch
     throw new Error "Compiling #it:\n\t#{e.message}"
 
-wrap = -> "let\n\t#{read it .replace /\n/g '\n\t'}"
+wrap = -> "do\n\t#{read it .replace /\n/g '\n\t'}"
 
 # stuff each file into a `let` IEFE, and then compile, which
 # avoids LiveScript's redefinition of boilerplate
@@ -170,13 +181,17 @@ task \build 'build userscript' ->
         var w;
         w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
         'use strict';
+        console.time('userscript');
         (function () {
         """
         wrap-css css
         [v for , v of runtime] * ';\n'
         templates
         compile-ls sources
-        "}).call(w)"
+        """
+        }).call(w)
+        console.timeEnd('userscript');
+        """
     console.log "compiled script to #outfile"
   catch
     console.error e.message

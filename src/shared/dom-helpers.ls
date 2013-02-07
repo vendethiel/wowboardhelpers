@@ -1,9 +1,9 @@
 #@todo add `...childs` ? slow downs a lot =(
-function node(tag, props = {})
+node = (tag, props = {}) ->
 	(document.createElement tag) <<< props
 
 
-function replace-with(from-node, new-node)
+replace-with = (from-node, new-node) ->
 	parent = from-node.parentNode
 
 	# do we have to insert it at some pos ?
@@ -18,7 +18,7 @@ function replace-with(from-node, new-node)
  * processes a template
  * and returns 
  */
-function template(name, locals)
+template = (name, locals) ->
 	name .= replace /-([a-z])/g -> it.1.toUpperCase!
 
 	innerHTML = templates[name] locals
@@ -28,11 +28,10 @@ function template(name, locals)
 /**
  * fetches nextElementSibling
  */
-function fetch-siblings(elem, {slice = 0, index-by = 'className'})
+fetch-siblings = (elem, {slice = 0, index-by = 'className'}) ->
 	{[elem[index-by]slice slice; elem] while elem?.=nextElementSibling}
 
-#QSA = document.querySelectorAll ? (requires this to be moved up)
-function QSA then document.querySelectorAll it
+QSA = -> document.querySelectorAll it
+QS = -> document.querySelector it
 
-function QS then document.querySelector it
 export node, replace-with, template, QSA, QS, fetch-siblings

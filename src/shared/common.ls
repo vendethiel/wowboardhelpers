@@ -8,4 +8,4 @@ if forum = document.getElementById 'posts'
 	
 	export tbody-regular = QS 'tbody.regular'
 
-export w, topic, forum, forum-options
+export topic, forum, forum-options
