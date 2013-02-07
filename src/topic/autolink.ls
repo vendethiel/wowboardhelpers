@@ -58,11 +58,11 @@ rules =
 	* * //
 			(^|>|;|\s) # to avoid linking parts of urls inside hrefs
 			(
-				(?!(?:www\.)?dropbox) # broken shit
+				(?!(?:www\.)?dropbox) # broken shit (non-exhaustive)
 				[\w\.\-]+\. # domain
 				#extensions # non-exhaustive
 				(/[^.<\s]*)
-				\.(jpg|png)
+				\.(jpg|png|gif|jpeg)
 				(?=[\s<]|$)
 			|
 				puu\.sh/[a-zA-Z0-9]+
