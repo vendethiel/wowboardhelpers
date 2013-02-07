@@ -32,7 +32,6 @@ sources = <[
   forum-topics/hide-topic
   forum-topics/times
 
-
   topic/update-count
   topic/improve-topic
   topic/autolink
@@ -77,15 +76,37 @@ compile-templates = ->
           compiled.push filename
 
           name-parts = filename / '/' #<[src forum-topics templates author.jade]>
-          name = camelcase name-parts[3]slice 0 -5
+          [name, ext] = name-parts.3 / '.'
 
-          full-name = "#{name-parts.1}/#{name-parts.3.slice 0 -5}" #no camelcasing : templates'abc/d-e'
-          source.push "templates.#name = templates['#full-name'] =
-          #{jade.compile read(filename), {+client, -compileDebug, filename}}"
+          full-name = "#{name-parts.1}/#name" #no camelcasing : templates'abc/d-e'
+          
+          template = compile-templates[ext] filename
+          source.push "templates.#{camelcase name} = templates['#full-name'] = #template"
   catch
-    throw new Error "Jade error on #filename : #{e.message}"
+    throw new Error "#ext error on #filename : #{e.message}"
 
   source * \\n
+
+compile-templates.jade = ->
+  jade.compile(read it; {+client, -compileDebug, filename: it})
+
+compile-templates.html = ->
+  code = read it
+  """
+  function (locals) {
+    return '#code';
+  }
+  """
+
+compile-templates.htmls = ->
+  code = read it
+  LiveScript.compile """
+(locals) ->
+  \"""
+  #{String(code)replace '"""', '\\"\\"\\"'}
+  \"""
+  """ {+bare}
+  .replace('this.' 'locals.')
 
 compile = (it, options) ->
   try

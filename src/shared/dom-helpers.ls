@@ -23,7 +23,7 @@ function template(name, locals)
 
 	innerHTML = templates[name] locals
 	
-	node('div' {innerHTML})firstChild
+	node('div' {innerHTML})firstElementChild
 
 /**
  * fetches nextElementSibling

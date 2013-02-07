@@ -68,7 +68,7 @@ style.innerHTML = '#forum-actions-top h1 {\n  text-align: center;\n  margin-left
 document.head.appendChild(style);
 jade=function(exports){Array.isArray||(Array.isArray=function(arr){return"[object Array]"==Object.prototype.toString.call(arr)}),Object.keys||(Object.keys=function(obj){var arr=[];for(var key in obj)obj.hasOwnProperty(key)&&arr.push(key);return arr}),exports.merge=function merge(a,b){var ac=a["class"],bc=b["class"];if(ac||bc)ac=ac||[],bc=bc||[],Array.isArray(ac)||(ac=[ac]),Array.isArray(bc)||(bc=[bc]),ac=ac.filter(nulls),bc=bc.filter(nulls),a["class"]=ac.concat(bc).join(" ");for(var key in b)key!="class"&&(a[key]=b[key]);return a};function nulls(val){return val!=null}return exports.attrs=function attrs(obj,escaped){var buf=[],terse=obj.terse;delete obj.terse;var keys=Object.keys(obj),len=keys.length;if(len){buf.push("");for(var i=0;i<len;++i){var key=keys[i],val=obj[key];"boolean"==typeof val||null==val?val&&(terse?buf.push(key):buf.push(key+'="'+key+'"')):0==key.indexOf("data")&&"string"!=typeof val?buf.push(key+"='"+JSON.stringify(val)+"'"):"class"==key&&Array.isArray(val)?buf.push(key+'="'+exports.escape(val.join(" "))+'"'):escaped&&escaped[key]?buf.push(key+'="'+exports.escape(val)+'"'):buf.push(key+'="'+val+'"')}}return buf.join(" ")},exports.escape=function escape(html){return String(html).replace(/&(?!(\w+|\#\d+);)/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")},exports.rethrow=function rethrow(err,filename,lineno){if(!filename)throw err;var context=3,str=require("fs").readFileSync(filename,"utf8"),lines=str.split("\n"),start=Math.max(lineno-context,0),end=Math.min(lines.length,lineno+context),context=lines.slice(start,end).map(function(line,i){var curr=i+start+1;return(curr==lineno?"  > ":"    ")+curr+"| "+line}).join("\n");throw err.path=filename,err.message=(filename||"Jade")+":"+lineno+"\n"+context+"\n\n"+err.message,err},exports}({});
 var templates = {};
-templates.author = templates['forum-topics/author'] =function anonymous(locals, attrs, escape, rethrow, merge) {
+templates.author = templates['forum-topics/author'] = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -86,7 +86,7 @@ buf.push('</span>');
 }
 return buf.join("");
 }
-templates.defaultPagination = templates['forum-topics/default-pagination'] =function anonymous(locals, attrs, escape, rethrow, merge) {
+templates.defaultPagination = templates['forum-topics/default-pagination'] = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -97,7 +97,7 @@ buf.push('>1</a></li></ul>');
 }
 return buf.join("");
 }
-templates.hideTopic = templates['forum-topics/hide-topic'] =function anonymous(locals, attrs, escape, rethrow, merge) {
+templates.hideTopic = templates['forum-topics/hide-topic'] = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -113,28 +113,13 @@ buf.push('<a class="last-read hide-topic">X</a>');
 }
 return buf.join("");
 }
-templates.ttLastUpdated = templates['forum-topics/tt-last-updated'] =function anonymous(locals, attrs, escape, rethrow, merge) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
-var buf = [];
-with (locals || {}) {
-var interp;
-buf.push('<span class="tt-last-updated"><br/>');
-var __val__ = text
-buf.push(null == __val__ ? "" : __val__);
-buf.push('</span>');
+templates.ttLastUpdated = templates['forum-topics/tt-last-updated'] = (function(locals){
+  return "<span class=\"tt-last-updated\">\n	<br/>\n	" + locals.text + "\n</span>";
+});
+templates.clearTextarea = templates['reply/clear-textarea'] = function (locals) {
+  return '<div class="clear-textarea">X</div>';
 }
-return buf.join("");
-}
-templates.clearTextarea = templates['reply/clear-textarea'] =function anonymous(locals, attrs, escape, rethrow, merge) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
-var buf = [];
-with (locals || {}) {
-var interp;
-buf.push('<div class="clear-textarea">X</div>');
-}
-return buf.join("");
-}
-templates.memebox = templates['reply/memebox'] =function anonymous(locals, attrs, escape, rethrow, merge) {
+templates.memebox = templates['reply/memebox'] = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -172,7 +157,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     innerHTML = templates[name](locals);
     return node('div', {
       innerHTML: innerHTML
-    }).firstChild;
+    }).firstElementChild;
   }
   /**
    * fetches nextElementSibling
@@ -370,13 +355,13 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   QS('.content-trail').appendChild(x$);
 }.call(this));
 (function(){
-  var firstTopicId, trHtml, aEnd, tbodyHtml, x$, h1, ref$, refresh, timeout, checkUpdates;
+  var firstTopicId, trHtml, aEndHtml, tbodyHtml, x$, h1, ref$, refresh, timeout, checkUpdates;
   if (!forum) {
     return;
   }
   firstTopicId = tbodyRegular.children[0].id.slice('postRow'.length);
   trHtml = "<tr id=\"postRow" + firstTopicId;
-  aEnd = 'data-tooltip-options=\'{"location": "mouse"}\'>';
+  aEndHtml = 'data-tooltip-options=\'{"location": "mouse"}\'>';
   tbodyHtml = '<tbody class="regular">';
   x$ = QS('#forum-actions-top');
   x$.insertBefore(h1 = node('h1'), (ref$ = x$.children)[ref$.length - 1]);
@@ -398,10 +383,10 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
           return h1.innerHTML = "";
         }, 1500);
       } else {
-        startPos = aEnd.length + afterRegular.indexOf(aEnd);
+        startPos = aEndHtml.length + afterRegular.indexOf(aEndHtml);
         afterRegular = afterRegular.slice(startPos);
         title = afterRegular.slice(0, afterRegular.indexOf('<')).trim();
-        h1.innerHTML = "<a href='" + document.location + "'>" + lang.newMessages + "</a> : " + title;
+        h1.innerHTML = "<a href='" + document.location + "'>" + lang.newMessages + "</a> : " + [title.length > 50 ? '<br />' : void 8] + title;
       }
     };
     x$.send();

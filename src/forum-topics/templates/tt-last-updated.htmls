@@ -1,0 +1,4 @@
+<span class="tt-last-updated">
+	<br/>
+	#{@text}
+</span>
