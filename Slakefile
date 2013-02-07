@@ -1,4 +1,4 @@
-require! <[fs LiveScript stylus jade haml-coffee]>
+require! <[fs LiveScript stylus haml-coffee]>
 
 ls = -> ["#it/#file" for file in fs.readdirSync it]
 flatten = -> []concat ...it # shallow flatten
@@ -76,7 +76,7 @@ compile-templates = ->
           filename .= replace \// \/ #windows??
           compiled.push filename
 
-          name-parts = filename / '/' #<[src forum-topics templates author.jade]>
+          name-parts = filename / '/' #<[src forum-topics templates author.hamlc]>
           [name, ext] = name-parts.3 / '.'
 
           full-name = "#{name-parts.1}/#name" #no camelcasing : templates'abc/d-e'
@@ -88,10 +88,6 @@ compile-templates = ->
     throw new Error "#ext error on #filename : #{e.message}"
 
   source * \\n
-
-compile-templates.jade = ->
-  runtime.jade ?= read "node_modules/jade/runtime.min.js"
-  jade.compile(read it; {+client, -compileDebug, filename: it})
 
 compile-templates.html = ->
   code = read it
@@ -112,22 +108,12 @@ compile-templates.htmls = ->
   .replace('this.' 'locals.')
 
 compile-templates.hamlc = ->
-  runtime.haml ?= """
-var c$ = function (text) {
-  switch (text) {
-    case null:
-    case undefined:
-      return '';
+  runtime.haml ?= "var c$ = " + (text) ->
+    switch text
+    | null void  => ''
+    | true false => '\u0093' + text
+    | otherwise  => text
 
-    case true:
-    case false:
-      return '\u0093' + text;
-
-    default:
-      return text;
-  }
-}
-  """
   name = camelcase (it / '/')[*-1]replace(/\..*$/ '')
   opts =
     format: 'xhtml'
@@ -178,18 +164,19 @@ task \build 'build userscript' ->
     templates = compile-templates! #process now to populate runtime
     fs.writeFileSync do
       outfile
-      join do #can't use strict cause jade :(
+      join do
         metadata
-        "(function(){"
-        wrap-css css
         """
         var w;
         w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
+        'use strict';
+        (function () {
         """
+        wrap-css css
         [v for , v of runtime] * ';\n'
         templates
         compile-ls sources
-        "}).call(this)"
+        "}).call(w)"
     console.log "compiled script to #outfile"
   catch
     console.error e.message

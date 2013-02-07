@@ -64,74 +64,92 @@
  *  Now works with advanced mode
  *  Fix a bug when logged off
 */
-(function(){
+var w;
+w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
+'use strict';
+(function () {
 var style = document.createElement('style');
 style.type = 'text/css';
 style.innerHTML = '#forum-actions-top h1 {\n  text-align: center;\n  margin-left: 200px;\n}\n.forum .forum-actions {\n  padding: 0px;\n}\n.forum .actions-panel {\n  margin-right: 15px;\n}\n.forum .forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.simple .tt-last-updated {\n  display: inline;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\n#memebox {\n  position: relative;\n  float: right;\n  width: 100px;\n  left: -50px;\n  top: 5px;\n}\n#memebox h1 {\n  font-size: 2em;\n}\n#memebox ul#memes {\n  margin-top: 10px;\n  margin-left: 30px;\n  list-style-type: circle;\n}\n#memebox li {\n  font-weight: bold;\n  color: link;\n  text-decoration: underline;\n}\nimg.autolink {\n  border: 2px solid #000;\n  max-width: 540px;\n  max-height: 500px;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n';
 document.head.appendChild(style);
-var w;
-w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
-jade=function(exports){Array.isArray||(Array.isArray=function(arr){return"[object Array]"==Object.prototype.toString.call(arr)}),Object.keys||(Object.keys=function(obj){var arr=[];for(var key in obj)obj.hasOwnProperty(key)&&arr.push(key);return arr}),exports.merge=function merge(a,b){var ac=a["class"],bc=b["class"];if(ac||bc)ac=ac||[],bc=bc||[],Array.isArray(ac)||(ac=[ac]),Array.isArray(bc)||(bc=[bc]),ac=ac.filter(nulls),bc=bc.filter(nulls),a["class"]=ac.concat(bc).join(" ");for(var key in b)key!="class"&&(a[key]=b[key]);return a};function nulls(val){return val!=null}return exports.attrs=function attrs(obj,escaped){var buf=[],terse=obj.terse;delete obj.terse;var keys=Object.keys(obj),len=keys.length;if(len){buf.push("");for(var i=0;i<len;++i){var key=keys[i],val=obj[key];"boolean"==typeof val||null==val?val&&(terse?buf.push(key):buf.push(key+'="'+key+'"')):0==key.indexOf("data")&&"string"!=typeof val?buf.push(key+"='"+JSON.stringify(val)+"'"):"class"==key&&Array.isArray(val)?buf.push(key+'="'+exports.escape(val.join(" "))+'"'):escaped&&escaped[key]?buf.push(key+'="'+exports.escape(val)+'"'):buf.push(key+'="'+val+'"')}}return buf.join(" ")},exports.escape=function escape(html){return String(html).replace(/&(?!(\w+|\#\d+);)/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")},exports.rethrow=function rethrow(err,filename,lineno){if(!filename)throw err;var context=3,str=require("fs").readFileSync(filename,"utf8"),lines=str.split("\n"),start=Math.max(lineno-context,0),end=Math.min(lines.length,lineno+context),context=lines.slice(start,end).map(function(line,i){var curr=i+start+1;return(curr==lineno?"  > ":"    ")+curr+"| "+line}).join("\n");throw err.path=filename,err.message=(filename||"Jade")+":"+lineno+"\n"+context+"\n\n"+err.message,err},exports}({});;
-var c$ = function (text) {
-  switch (text) {
+var c$ = function (text){
+    switch (text) {
     case null:
-    case undefined:
+    case void 8:
       return '';
-
     case true:
     case false:
-      return '' + text;
-
+      return '\u0093' + text;
     default:
       return text;
+    }
   }
-}
 var templates = {};
-templates.author = templates['forum-topics/author'] = function anonymous(locals, attrs, escape, rethrow, merge) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
-var buf = [];
-with (locals || {}) {
-var interp;
-buf.push('<span');
-buf.push(attrs({ "class": (["poster", own && "own-poster", cm && "type-blizzard"]) }, {"class":true}));
-buf.push('>');
-var __val__ = name
-buf.push(escape(null == __val__ ? "" : __val__));
-if ( cm)
-{
-buf.push('<img src="/wow/static/images/layout/cms/icon_blizzard.gif" alt=""/>');
-}
-buf.push('</span>');
-}
-return buf.join("");
-}
-templates.defaultPagination = templates['forum-topics/default-pagination'] = function anonymous(locals, attrs, escape, rethrow, merge) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
-var buf = [];
-with (locals || {}) {
-var interp;
-buf.push('<ul class="ui-pagination"><li><a');
-buf.push(attrs({ 'data-pagenum':(1), 'rel':('np'), 'href':(href) }, {"data-pagenum":true,"rel":true,"href":true}));
-buf.push('>1</a></li></ul>');
-}
-return buf.join("");
-}
-templates.hideTopic = templates['forum-topics/hide-topic'] = function anonymous(locals, attrs, escape, rethrow, merge) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
-var buf = [];
-with (locals || {}) {
-var interp;
-if ( hidden)
-{
-buf.push('<a class="last-read show-topic">✓</a>');
-}
-else
-{
-buf.push('<a class="last-read hide-topic">X</a>');
-}
-}
-return buf.join("");
-}
+templates.author = templates['forum-topics/author'] = (function() {
+  var _ref;
+
+  if ((_ref = w.templates) == null) {
+    w.templates = {};
+  }
+
+  return function(context) {
+    return (function() {
+      var $c, $o;
+      $c = c$;
+      $o = [];
+      $o.push("<span class='" + ($c(["poster", this.own ? "own-poster" : void 0, this.own ? "type-blizzard" : void 0])) + "'>");
+      $o.push("" + $c(this.name));
+      if (this.cm) {
+        $o.push("<img src='/wow/static/images/layout/cms/icon_blizzard.gif' alt='' />");
+      }
+      $o.push("</span>");
+      return $o.join("\n").replace(/\s(\w+)='true'/mg, " $1='$1'").replace(/\s(\w+)='false'/mg, '').replace(/\s(?:id|class)=(['"])(\1)/mg, "");
+    }).call(context);
+  };
+
+}).call(this);
+
+templates.defaultPagination = templates['forum-topics/default-pagination'] = (function() {
+  var _ref;
+
+  if ((_ref = w.templates) == null) {
+    w.templates = {};
+  }
+
+  return function(context) {
+    return (function() {
+      var $c, $o;
+      $c = c$;
+      $o = [];
+      $o.push("<ul class='ui-pagination'>\n<li>\n<a data-pagenum='" + ($c(1)) + "' rel='np' href='" + ($c(this.href)) + "'>1</a>\n</li>\n</ul>");
+      return $o.join("\n").replace(/\s(\w+)='true'/mg, " $1='$1'").replace(/\s(\w+)='false'/mg, '').replace(/\s(?:id|class)=(['"])(\1)/mg, "");
+    }).call(context);
+  };
+
+}).call(this);
+
+templates.hideTopic = templates['forum-topics/hide-topic'] = (function() {
+  var _ref;
+
+  if ((_ref = w.templates) == null) {
+    w.templates = {};
+  }
+
+  return function(context) {
+    return (function() {
+      var $o;
+      $o = [];
+      if (this.hidden) {
+        $o.push("<a class='last-read show-topic'>✓</a>");
+      } else {
+        $o.push("<a class='hide-topic last-read'>X</a>");
+      }
+      return $o.join("\n").replace(/\s(?:id|class)=(['"])(\1)/mg, "");
+    }).call(context);
+  };
+
+}).call(this);
+
 templates.ttLastUpdated = templates['forum-topics/tt-last-updated'] = (function() {
   var _ref;
 
@@ -156,15 +174,25 @@ templates.ttLastUpdated = templates['forum-topics/tt-last-updated'] = (function(
 templates.clearTextarea = templates['reply/clear-textarea'] = function (locals) {
   return '<div class="clear-textarea">X</div>';
 }
-templates.memebox = templates['reply/memebox'] = function anonymous(locals, attrs, escape, rethrow, merge) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
-var buf = [];
-with (locals || {}) {
-var interp;
-buf.push('<div id="memebox"><h1>MemeBOX</h1><input placeholder="meme" id="meme-search" autocomplete="off" size="15"/><ul id="memes"></ul></div>');
-}
-return buf.join("");
-}
+templates.memebox = templates['reply/memebox'] = (function() {
+  var _ref;
+
+  if ((_ref = w.templates) == null) {
+    w.templates = {};
+  }
+
+  return function(context) {
+    return (function() {
+      var $c, $o;
+      $c = c$;
+      $o = [];
+      $o.push("<div id='memebox'>\n<h1>MemeBOX</h1>\n<input id='meme-search' placeholder='meme' autocomplete='off' size='" + ($c(15)) + "' />\n<ul id='memes'></ul>\n</div>");
+      return $o.join("\n").replace(/\s(\w+)='true'/mg, " $1='$1'").replace(/\s(\w+)='false'/mg, '').replace(/\s(?:id|class)=(['"])(\1)/mg, "");
+    }).call(context);
+  };
+
+}).call(this);
+
 var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, replace$ = ''.replace, join$ = [].join, slice$ = [].slice;
 (function(){
   function node(tag, props){
@@ -873,4 +901,4 @@ function in$(x, arr){
   while (++i < l) if (x === arr[i] && i in arr) return true;
   return false;
 }
-}).call(this)
+}).call(w)
