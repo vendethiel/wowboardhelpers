@@ -18,9 +18,9 @@ refresh = ->
 			return unless @status is 200
 
 			h1.innerHTML = lang.checking-new
-			after-regular = @response.slice tbody-html.length+@response.indexOf tbody-html .trim!
+			after-regular = @response.slice(tbody-html.length + @response.indexOf tbody-html)trim!
 
-			#XXX should not notice for update if post is ignored.
+			#XXX should not notice for update if post is hidden.
 			if tr-html is after-regular.substr 0 tr-html.length
 				setTimeout refresh, timeout #there we go again
 				h1.innerHTML += " <u>#{lang.no-new}</u>"

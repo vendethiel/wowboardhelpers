@@ -112,12 +112,29 @@ compile-templates.htmls = ->
   .replace('this.' 'locals.')
 
 compile-templates.hamlc = ->
+  runtime.haml ?= """
+var c$ = function (text) {
+  switch (text) {
+    case null:
+    case undefined:
+      return '';
+
+    case true:
+    case false:
+      return '\u0093' + text;
+
+    default:
+      return text;
+  }
+}
+  """
   name = camelcase (it / '/')[*-1]replace(/\..*$/ '')
   opts =
     format: 'xhtml'
     escape-html: false
     escape-attributes: false
     uglify: true
+    customCleanValue: 'c$'
   code = hamlCoffee.template read(it), name, "w.templates", opts
   code.replace "w.templates['#name'] = " "return "
 
@@ -169,7 +186,7 @@ task \build 'build userscript' ->
         var w;
         w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
         """
-        [v for , v of runtime] * '; '
+        [v for , v of runtime] * ';\n'
         templates
         compile-ls sources
         "}).call(this)"

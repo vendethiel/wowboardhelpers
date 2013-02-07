@@ -16,4 +16,5 @@ Topic :
  - Si vous commencez à écrire un message sans l'envoyer, il sera sauvegardé pour que vous puissiez le retrouver plus tard
  - "X" pour vider le contenu du message
  - Transforme en lien les adresses sans protocoles (http://), entre parenthèses et transforme les liens youtube en vidéos cliquables
+ - Affiche les images
  - Affiche une "memebox" pour mettre des memes rapidement

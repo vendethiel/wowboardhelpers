@@ -28,15 +28,6 @@ rules =
 				 title="$1$2" \
 				 target="_blank">$2</a>)'
 
-	# linkify links not preceded by a quote or double-quote (should avoid
-	# relinkifying href= urls)
-	* * /([^"']|^)(https?:\/\/)([^<\s\)]+)/g
-			* '$1<a class="external" \
-					rel="noreferrer" \
-					href="$2$3" \
-					title="$2$3" \
-					target="_blank">$3</a>'
-
 	# specialcase linkify urls without a protocol but with a common tld
 	* * //
 			(^|>|;|\s) # to avoid linking parts of urls inside hrefs, must start
@@ -52,6 +43,28 @@ rules =
 					href="http://$2" \
 					title="$2" \
 					target="_blank">$2</a>'
+
+
+	# linkify links not preceded by a quote or double-quote (should avoid
+	# relinkifying href= urls)
+	* * /([^"']|^)(https?:\/\/)([^<\s\)]+)/g
+			* '$1<a class="external" \
+					rel="noreferrer" \
+					href="$2$3" \
+					title="$2$3" \
+					target="_blank">$3</a>'
+
+	* * //
+			(^|>|;|\s) # to avoid linking parts of urls inside hrefs
+			(
+				[\w\.\-]+\. # domain
+				(?:com|net|org|eu|jp|us|co\.uk) # non-exhaustive
+				(/[^.<\s]*)
+				\.(jpg|png)
+				(?=[\s<]|$)
+			)
+		//g
+			* '$1<img src="http://$2" alt="" class="autolink" />'
 
 replace = ->
 	for [pattern, replacement] in rules

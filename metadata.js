@@ -6,9 +6,12 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.5.1
+// @version 1.6.1
 // ==/UserScript==
  * changelog
+ * 1.6.1
+ *  Autolink now works against images too
+ *  Rendering should be faster
  * 1.6.0
  *  Added relative time (updated every 10 seconds, should try to calculate when date will be stale)
  *  Make sure we aren't overriding a text in reply rememberer
