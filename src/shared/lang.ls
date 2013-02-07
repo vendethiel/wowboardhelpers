@@ -30,7 +30,7 @@ langs =
 		checking-new: 'Checking new messages ...'
 		no-new: 'No new message.'
 
-export lang = langs[l] ? langs.en
+lang := langs[l] ? langs.en
 
 for k in <[minute hour day year]>
 	lang[k] ?= k
@@ -61,8 +61,10 @@ time-table =
 /**
  * simplifies time based on table replacement
  */
-export function simplify-time
+simplify-time := ->
 	for [convert-from, convert-to] in time-table
 		it .= replace convert-from, convert-to
 
 	it
+
+#export lang, simplify-time

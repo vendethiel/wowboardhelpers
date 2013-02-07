@@ -1,11 +1,11 @@
-forum-options = QS '.forum-options'
+forum-options := QS '.forum-options'
 
-if topic = document.getElementById 'thread'
+if topic := document.getElementById 'thread'
 	topic.dataset.id = ((document.location / '/')[*-1] / '?')0
 
-if forum = document.getElementById 'posts'
+if forum := document.getElementById 'posts'
 	forum.dataset.id = ((document.location / '/')[*-2] / '?')0
 	
-	export tbody-regular = QS 'tbody.regular'
+	tbody-regular := QS 'tbody.regular'
 
-export topic, forum, forum-options
+#export topic, forum, forum-options, tbody-regular

@@ -43,6 +43,13 @@ sources = <[
   reply/memebox
 ]>
 
+#FUCK YOU FIREFOX FUCK FUCK FUCK FUCK
+base-source = """
+var topic, forum, forum-options, tbody-regular
+var node, replace-with, template, QSA, QS, fetch-siblings
+var lang, simplify-time
+"""
+
 
 
 
@@ -142,21 +149,22 @@ compile = (it, options) ->
   catch
     throw new Error "Compiling #it:\n\t#{e.message}"
 
-wrap = -> "do\n\t#{read it .replace /\n/g '\n\t'}"
+wrap = -> "let\n\t#{read it .replace /\n/g '\n\t'}"
 
 # stuff each file into a `let` IEFE, and then compile, which
 # avoids LiveScript's redefinition of boilerplate
 compile-ls = (paths) ->
-  source = []
+  source = [base-source]
+  #disabled compile errors because they're failing on compound assign
   for path in paths
     if fs.existsSync "src/#path/"
       # directory
       for file in ls "src/#path/"
-        compile file # detect compile errors
+        #compile file # detect compile errors
         source.push wrap file
     else
       # single file
-      compile "src/#path.ls"
+      #compile "src/#path.ls"
       source.push wrap "src/#path.ls"
 
   try
