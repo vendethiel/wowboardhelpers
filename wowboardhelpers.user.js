@@ -9,9 +9,10 @@
 // @version 1.5.1
 // ==/UserScript==
  * changelog
- * 1.5.1
+ * 1.6.0
  *  Added relative time (updated every 10 seconds, should try to calculate when date will be stale)
  *  Make sure we aren't overriding a text in reply rememberer
+ *  Checking for updates every 15s
  * 1.5.0
  *  Added the memebox, allowing you to select memes
  * 1.4.0
@@ -315,13 +316,12 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     innerHTML: 'MAR',
     title: lang.mar,
     onclick: function(){
-      var postRows, i$, ref$, len$, row, topicId, siblings;
+      var i$, ref$, len$, row, topicId, siblings;
       if (allRead) {
         return;
       }
       allRead = !allRead;
-      postRows = document.getElementsByClassName('regular')[0];
-      for (i$ = 0, len$ = (ref$ = postRows.children).length; i$ < len$; ++i$) {
+      for (i$ = 0, len$ = (ref$ = tbodyRegular.children).length; i$ < len$; ++i$) {
         row = ref$[i$];
         if (row.className.trim() === 'read') {
           continue;
@@ -332,7 +332,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
         });
         w.localStorage.setItem("topic_" + topicId, (split$.call(siblings.lastPost.children[0].href, '#'))[1]);
         w.localStorage.setItem("topic_lp_" + topicId, siblings.author.innerHTML.trim());
-        row.className = 'read';
+        row.className += ' read';
       }
       forumOptions.removeChild(buttonMar);
     }
@@ -370,25 +370,27 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   QS('.content-trail').appendChild(x$);
 }.call(this));
 (function(){
-  var firstTopicId, trHtml, x$, h1, ref$, refresh, timeout;
+  var firstTopicId, trHtml, aEnd, tbodyHtml, x$, h1, ref$, refresh, timeout, checkUpdates;
   if (!forum) {
     return;
   }
   firstTopicId = tbodyRegular.children[0].id.slice('postRow'.length);
   trHtml = "<tr id=\"postRow" + firstTopicId;
+  aEnd = 'data-tooltip-options=\'{"location": "mouse"}\'>';
+  tbodyHtml = '<tbody class="regular">';
   x$ = QS('#forum-actions-top');
   x$.insertBefore(h1 = node('h1'), (ref$ = x$.children)[ref$.length - 1]);
-  setTimeout(refresh = function(){
+  refresh = function(){
     var x$;
     x$ = new XMLHttpRequest;
     x$.open('GET', document.location);
     x$.onload = function(){
-      var afterRegular;
+      var afterRegular, startPos, title;
       if (this.status !== 200) {
         return;
       }
       h1.innerHTML = lang.checkingNew;
-      afterRegular = this.response.slice(24 + this.response.indexOf('<tbody class="regular">')).trim();
+      afterRegular = this.response.slice(tbodyHtml.length + this.response.indexOf(tbodyHtml)).trim();
       if (trHtml === afterRegular.substr(0, trHtml.length)) {
         setTimeout(refresh, timeout);
         h1.innerHTML += " <u>" + lang.noNew + "</u>";
@@ -396,12 +398,17 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
           return h1.innerHTML = "";
         }, 1500);
       } else {
-        h1.innerHTML = "<a href='" + document.location + "'>" + lang.newMessages + "</a>";
+        startPos = aEnd.length + afterRegular.indexOf(aEnd);
+        afterRegular = afterRegular.slice(startPos);
+        title = afterRegular.slice(0, afterRegular.indexOf('<')).trim();
+        h1.innerHTML = "<a href='" + document.location + "'>" + lang.newMessages + "</a> : " + title;
       }
     };
     x$.send();
     return x$;
-  }, timeout = 15 * 1000);
+  };
+  timeout = 15 * 1000;
+  out$.checkUpdates = checkUpdates = setTimeout(refresh, timeout);
 }.call(this));
 (function(){
   var characters, res$, i$, ref$, len$, name, ref1$, lastPostTh, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, hasUnread, post, children, div, a, td, lastPostTd, topicId, pages, lastPost, lastPostLink, replies, author, postCount, postOnly, text, isCm, that, authorName, inlineText, simplifiedTime, state;
@@ -559,6 +566,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   for (i$ = 0, len$ = (ref$ = tbodyRegular.querySelectorAll('.post-status')).length; i$ < len$; ++i$) {
     status = ref$[i$];
     tr = status.parentNode.parentNode;
+    tr.className += ' hidden redirect';
     tbodyRegular.removeChild(tr);
     tbodyRegular.appendChild(tr);
   }
@@ -576,6 +584,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     var that;
     it.parentNode.removeChild(it);
     tbodyRegular.appendChild(it);
+    it.className += ' hidden';
     if (that = it.querySelector('.last-read')) {
       that.parentNode.removeChild(that);
     }
@@ -591,6 +600,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
       hide(tr);
     }
     (fn$.call(this, tr, topicId, postPages));
+  }
+  if (QS('tbody.regular tr:not(.hidden):not(.read)')) {
+    clearTimeout(checkUpdates);
   }
   function fn$(tr, topicId, postPages){
     var x$;

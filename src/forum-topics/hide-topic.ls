@@ -10,6 +10,7 @@ hidden-topics = (w.localStorage.getItem "hidden_topics" or "") / ";"
 !function hide
 	it.parentNode.removeChild it
 	tbody-regular.appendChild it
+	it.className += ' hidden'
 
 	if it.querySelector '.last-read'
 		that.parentNode.removeChild that
@@ -41,3 +42,7 @@ for post-pages in QSA 'tbody.regular .post-pages'
 
 			#add it as the first element in .post-pages
 			post-pages.insertBefore .., post-pages.children.0
+
+#ensure we don't check updates if we already have updates
+if QS 'tbody.regular tr:not(.hidden):not(.read)'
+	clearTimeout check-updates

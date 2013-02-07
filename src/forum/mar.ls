@@ -5,8 +5,7 @@ export button-mar = node 'a' innerHTML: 'MAR' title: lang.mar, onclick: !->
 	return if all-read
 	!:=all-read
 
-	post-rows = document.getElementsByClassName 'regular' .0
-	for row in post-rows.children
+	for row in tbody-regular.children
 		continue if row.className.trim! is 'read'
 
 		topic-id = row.id.slice 'postRow'length
@@ -15,7 +14,7 @@ export button-mar = node 'a' innerHTML: 'MAR' title: lang.mar, onclick: !->
 		w.localStorage.setItem "topic_#topic-id" (siblings.last-post.children.0.href / '#')1
 		w.localStorage.setItem "topic_lp_#topic-id" siblings.author.innerHTML.trim!
 
-		row.className = 'read'
+		row.className += ' read'
 
 	forum-options.removeChild button-mar
 
