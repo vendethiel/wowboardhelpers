@@ -6,6 +6,7 @@
 		"LiveScript": "1.1.1",
 		"stylus": "0.32.x",
 		"nib": "0.9.x",
-		"jade": "0.28.x"
+		"jade": "0.28.x",
+		"haml-coffee": "1.9.x"
 	}
 }

@@ -1,4 +1,4 @@
-require! <[fs LiveScript stylus jade]>
+require! <[fs LiveScript stylus jade haml-coffee]>
 
 ls = -> ["#it/#file" for file in fs.readdirSync it]
 flatten = -> []concat ...it # shallow flatten
@@ -7,6 +7,7 @@ join = -> flatten & .join \\n
 read = -> fs.readFileSync it, \utf8
 
 compiled = []
+runtime = {}
 
 ##########
 # CONFIG #
@@ -83,11 +84,13 @@ compile-templates = ->
           template = compile-templates[ext] filename
           source.push "templates.#{camelcase name} = templates['#full-name'] = #template"
   catch
+    console.log e.stack
     throw new Error "#ext error on #filename : #{e.message}"
 
   source * \\n
 
 compile-templates.jade = ->
+  runtime.jade ?= read "node_modules/jade/runtime.min.js"
   jade.compile(read it; {+client, -compileDebug, filename: it})
 
 compile-templates.html = ->
@@ -107,6 +110,16 @@ compile-templates.htmls = ->
   \"""
   """ {+bare}
   .replace('this.' 'locals.')
+
+compile-templates.hamlc = ->
+  name = camelcase (it / '/')[*-1]replace(/\..*$/ '')
+  opts =
+    format: 'xhtml'
+    escape-html: false
+    escape-attributes: false
+    uglify: true
+  code = hamlCoffee.template read(it), name, "w.templates", opts
+  code.replace "w.templates['#name'] = " "return "
 
 compile = (it, options) ->
   try
@@ -145,14 +158,19 @@ task \build 'build userscript' ->
   err, css <- compile-styles
   try
     throw err if err
+    templates = compile-templates! #process now to populate runtime
     fs.writeFileSync do
       outfile
       join do #can't use strict cause jade :(
         metadata
         "(function(){"
         wrap-css css
-        read "node_modules/jade/runtime.min.js"
-        compile-templates!
+        """
+        var w;
+        w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
+        """
+        [v for , v of runtime] * '; '
+        templates
         compile-ls sources
         "}).call(this)"
     console.log "compiled script to #outfile"

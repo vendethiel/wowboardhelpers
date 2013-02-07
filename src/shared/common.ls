@@ -1,5 +1,3 @@
-w = unsafeWindow ? window
-
 forum-options = QS '.forum-options'
 
 if topic = document.getElementById 'thread'
