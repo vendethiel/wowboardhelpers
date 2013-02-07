@@ -29,6 +29,12 @@ add-meme = (url) ->
 	->
 		textarea.value += (if textarea.value then "\n" else "") + url
 
+append-meme = (name, url) ->
+	ul.appendChild <| do
+		document.createElement 'li'
+			..innerHTML = name
+			..onclick = add-meme url
+
 
 memebox = template 'memebox'
 ul = memebox.querySelector '#memes'
@@ -38,15 +44,18 @@ memebox.querySelector '#meme-search' .onkeyup = !->
 
 	return unless value
 
-	i = 0
+	approximates = []; i = 0
 	for name, url of memes
-		if ~name.indexOf value
-			break if ++i > 10
+		switch name.indexOf value
+		| -1 =>
+		| 0  => append-meme name, url
+		| _  => approximates.push [name, url]
 
-			ul.appendChild <| do
-				document.createElement 'li'
-					..innerHTML = name
-					..onclick = add-meme url
+		break if ++i > 10
+
+	for [name, url] in approximates
+		append-meme name, url
+
 
 
 

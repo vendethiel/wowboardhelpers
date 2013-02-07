@@ -1,5 +1,7 @@
 return unless topic
 
+extensions = '(?:com|net|org|eu|fr|jp|us|co\.uk)'
+
 rules =
 	# youtube thumbnails
 	* * //
@@ -34,7 +36,7 @@ rules =
 										 # with one of these
 			(
 				[\w\.\-]+\. # domain
-				(?:com|net|org|eu|jp|us|co\.uk) # non-exhaustive
+				#extensions # non-exhaustive
 				(/[^<\s]*)?(?=[\s<]|$) # rest of the url until space or <br> or end
 			)
 		//g
@@ -53,18 +55,20 @@ rules =
 					href="$2$3" \
 					title="$2$3" \
 					target="_blank">$3</a>'
-
 	* * //
 			(^|>|;|\s) # to avoid linking parts of urls inside hrefs
 			(
+				(?!(?:www\.)?dropbox) # broken shit
 				[\w\.\-]+\. # domain
-				(?:com|net|org|eu|jp|us|co\.uk) # non-exhaustive
+				#extensions # non-exhaustive
 				(/[^.<\s]*)
 				\.(jpg|png)
 				(?=[\s<]|$)
+			|
+				puu\.sh/[a-zA-Z0-9]+
 			)
 		//g
-			* '$1<img src="http://$2" alt="" class="autolink" />'
+			* '$1<img src="http://$2" alt="$2" class="autolink" />'
 
 replace = ->
 	for [pattern, replacement] in rules

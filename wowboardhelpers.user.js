@@ -6,9 +6,12 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.5.1
+// @version 1.6.1
 // ==/UserScript==
  * changelog
+ * 1.6.1
+ *  Autolink now works against images too
+ *  Rendering should be faster
  * 1.6.0
  *  Added relative time (updated every 10 seconds, should try to calculate when date will be stale)
  *  Make sure we aren't overriding a text in reply rememberer
@@ -64,7 +67,7 @@
 (function(){
 var style = document.createElement('style');
 style.type = 'text/css';
-style.innerHTML = '#forum-actions-top h1 {\n  text-align: center;\n  margin-left: 200px;\n}\n.forum .forum-actions {\n  padding: 0px;\n}\n.forum .actions-panel {\n  margin-right: 15px;\n}\n.forum .forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.simple .tt-last-updated {\n  display: inline;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\n#memebox {\n  position: relative;\n  float: right;\n  width: 100px;\n  left: -50px;\n  top: 5px;\n}\n#memebox h1 {\n  font-size: 2em;\n}\n#memebox ul#memes {\n  margin-top: 10px;\n  margin-left: 30px;\n  list-style-type: circle;\n}\n#memebox li {\n  font-weight: bold;\n  color: link;\n  text-decoration: underline;\n}\nimg.autolink {\n  border: 2px solid #000;\n  float: middle;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n';
+style.innerHTML = '#forum-actions-top h1 {\n  text-align: center;\n  margin-left: 200px;\n}\n.forum .forum-actions {\n  padding: 0px;\n}\n.forum .actions-panel {\n  margin-right: 15px;\n}\n.forum .forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.simple .tt-last-updated {\n  display: inline;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\n#memebox {\n  position: relative;\n  float: right;\n  width: 100px;\n  left: -50px;\n  top: 5px;\n}\n#memebox h1 {\n  font-size: 2em;\n}\n#memebox ul#memes {\n  margin-top: 10px;\n  margin-left: 30px;\n  list-style-type: circle;\n}\n#memebox li {\n  font-weight: bold;\n  color: link;\n  text-decoration: underline;\n}\nimg.autolink {\n  border: 2px solid #000;\n  max-width: 540px;\n  max-height: 500px;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n';
 document.head.appendChild(style);
 var w;
 w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
@@ -702,11 +705,12 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   }
 }.call(this));
 (function(){
-  var rules, replace, i$, ref$, len$, post, h, e;
+  var extensions, rules, replace, i$, ref$, len$, post, h, e;
   if (!topic) {
     return;
   }
-  rules = [[/(?:https?:\/\/)?(?:(?:www|m)\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g, '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0"></iframe>'], [/\((https?:\/\/)([^<\s\)]+)\)/g, '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" target="_blank">$2</a>)'], [/(^|>|;|\s)([\w\.\-]+\.(?:com|net|org|eu|jp|us|co\.uk)(\/[^<\s]*)?(?=[\s<]|$))/g, '$1<a class="external" rel="noreferrer" href="http://$2" title="$2" target="_blank">$2</a>'], [/([^"']|^)(https?:\/\/)([^<\s\)]+)/g, '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" target="_blank">$3</a>'], [/(^|>|;|\s)([\w\.\-]+\.(?:com|net|org|eu|jp|us|co\.uk)(\/[^.<\s]*)\.(jpg|png)(?=[\s<]|$))/g, '$1<img src="http://$2" alt="" class="autolink" />']];
+  extensions = '(?:com|net|org|eu|fr|jp|us|co.uk)';
+  rules = [[/(?:https?:\/\/)?(?:(?:www|m)\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g, '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0"></iframe>'], [/\((https?:\/\/)([^<\s\)]+)\)/g, '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" target="_blank">$2</a>)'], [RegExp('(^|>|;|\\s)([\\w\\.\\-]+\\.' + extensions + '(/[^<\\s]*)?(?=[\\s<]|$))', 'g'), '$1<a class="external" rel="noreferrer" href="http://$2" title="$2" target="_blank">$2</a>'], [/([^"']|^)(https?:\/\/)([^<\s\)]+)/g, '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" target="_blank">$3</a>'], [RegExp('(^|>|;|\\s)((?!(?:www\\.)?dropbox)[\\w\\.\\-]+\\.' + extensions + '(/[^.<\\s]*)\\.(jpg|png)(?=[\\s<]|$)|puu\\.sh/[a-zA-Z0-9]+)', 'g'), '$1<img src="http://$2" alt="$2" class="autolink" />']];
   replace = function(it){
     var i$, ref$, len$, ref1$, pattern, replacement;
     for (i$ = 0, len$ = (ref$ = rules).length; i$ < len$; ++i$) {
@@ -788,7 +792,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   });
 }.call(this));
 (function(){
-  var memes, postWrapper, ref$, textarea, addMeme, memebox, ul;
+  var memes, postWrapper, ref$, textarea, addMeme, appendMeme, memebox, ul;
   if (!topic) {
     return;
   }
@@ -822,24 +826,39 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
       return textarea.value += (textarea.value ? "\n" : "") + url;
     };
   };
+  appendMeme = function(name, url){
+    var x$;
+    return ul.appendChild((x$ = document.createElement('li'), x$.innerHTML = name, x$.onclick = addMeme(url), x$));
+  };
   memebox = template('memebox');
   ul = memebox.querySelector('#memes');
   memebox.querySelector('#meme-search').onkeyup = function(){
-    var value, i, name, ref$, url, x$;
+    var value, approximates, i, name, ref$, url, i$, len$;
     value = this.value.replace(/[\s_-]+/, '');
     ul.innerHTML = '';
     if (!value) {
       return;
     }
+    approximates = [];
     i = 0;
     for (name in ref$ = memes) {
       url = ref$[name];
-      if (~name.indexOf(value)) {
-        if (++i > 10) {
-          break;
-        }
-        ul.appendChild((x$ = document.createElement('li'), x$.innerHTML = name, x$.onclick = addMeme(url), x$));
+      switch (name.indexOf(value)) {
+      case -1:
+        break;
+      case 0:
+        appendMeme(name, url);
+        break;
+      default:
+        approximates.push([name, url]);
       }
+      if (++i > 10) {
+        break;
+      }
+    }
+    for (i$ = 0, len$ = approximates.length; i$ < len$; ++i$) {
+      ref$ = approximates[i$], name = ref$[0], url = ref$[1];
+      appendMeme(name, url);
     }
   };
   postWrapper.appendChild(memebox);
