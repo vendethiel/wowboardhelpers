@@ -20,7 +20,7 @@ memes =
 	okay: 'http://cache.ohinternet.com/images/e/e6/Okay_guy.jpg'
 	no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
 
-post-wrapper = QS '.post.general'
+return unless post-wrapper = QS '.post.general'
 post-wrapper.removeChild post-wrapper.children[*-1] #remove span.clear
 
 textarea = QS '#post-edit textarea'

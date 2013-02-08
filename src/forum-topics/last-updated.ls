@@ -37,7 +37,6 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 
 	post-count = (last-post-link.href / '#')1
 
-
 	unless pages.querySelector 'ul' #no pages
 		pages.innerHTML = templates.default-pagination {a.href}
 
@@ -74,8 +73,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 	post.appendChild template 'tt-last-updated' {text}
 
 	#last-updated <td for ADV mode
-	last-post-td = node 'td' className: 'post-last-updated' innerHTML: simplified-time
-	td.appendChild last-post-td
+	td.appendChild.innerHTML += "<td class='post-last-updated'>#simplified-time</td>"
 
 	state = check-topic topic-id, post-count, author-name
 
@@ -103,13 +101,12 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 	#if we already went to the topic
 	unless state is TSTATE_UNK
 		#make the actual link go to the last page
-		a.href = pages.querySelectorAll '.ui-pagination a' .[*-1]href
+		a.href = pages.getElementsByTagName 'a' .[*-1]href
 
 	mark-state post, state
 
 unless has-unread
 	forum-options.removeChild button-mar
-
 
 /**
  * prepends state to a topic

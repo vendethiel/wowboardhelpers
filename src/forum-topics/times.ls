@@ -15,9 +15,13 @@ for post-title in post-titles
 		#use lang to get correct unit
 		total += count * units[lang[lang.singularize unit]]
 
-	post-title.dataset.timestamp = new Date(timestamp - total)getTime!
+	date = new Date timestamp - total
+	#post-title.innerHTML .= replace '>)' ">, #{date.getHours!}:#{date.getMinutes!})"
+	#post-title.querySelector '.simplified-time' .datetime = date.toString!
+	post-title.dataset.timestamp = date.getTime!
 
-setTimeout refresh = ->
+timeout = 10 * units.second #1 minute
+refresh = ->
 	for post-title in post-titles
 		d = new Date Number post-title.dataset.timestamp
 
@@ -25,4 +29,4 @@ setTimeout refresh = ->
 			.innerHTML = d.relative-time!
 
 	setTimeout refresh, timeout
-, timeout = 10 * units.second #1 minute
+refresh!

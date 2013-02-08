@@ -69,6 +69,11 @@ rules =
 			)
 		//g
 			* '$1<img src="http://$2" alt="$2" class="autolink" />'
+	* * //
+			>
+			[a-zA-Z]{2}\.battle\.net/wow/[a-zA-Z]{2}/character/([a-zA-Z]+)/([A-Za-z_$\xAA-\uFFDC]+)
+		//g
+			* '>$1/$2'
 
 replace = ->
 	for [pattern, replacement] in rules
@@ -77,6 +82,19 @@ replace = ->
 
 for post in QSA '.post-detail'
 	try
-		post.innerHTML = h=replace post.innerHTML
+		h = replace post.innerHTML
+
+		### now let's move on more specific rules
+		# replace wow forum links
+		r = //\>([a-z]{2}\.battle\.net/wow/[a-z]{2}/forum/topic/[0-9]+)//g
+		while [, url]? = r.exec h
+			let url, post
+				<-! ajax.get "http://#url"
+				if /<title>(.+)<\/title>/ == @response
+					post.innerHTML .= replace ">#url" ">#{that.1}"
+
+
+		post.innerHTML = h
 	catch
-		console.log "Unable to generate valid HTML : #h"
+		console.log "Unable to generate valid HTML : #h (#e)"
+		break

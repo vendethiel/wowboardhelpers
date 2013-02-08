@@ -18,10 +18,10 @@ metadata = read \metadata.js
 sources = <[
   shared/dom-helpers
   shared/common
+  shared/css
   shared/lang
   shared/content-class
-
-  utils/date
+  shared/utils/
   
   forum/mar
   forum/stickies
@@ -43,13 +43,6 @@ sources = <[
   reply/memebox
 ]>
 
-#FUCK YOU FIREFOX FUCK FUCK FUCK FUCK
-base-source = """
-var topic, forum, forum-options, tbody-regular
-var node, replace-with, template, QSA, QS, fetch-siblings
-var lang, simplify-time
-"""
-
 
 
 
@@ -64,16 +57,6 @@ compile-styles = (cb) ->
 
   nib source * '\n' .render cb
 
-wrap-css = ->
-  return "" unless it
-
-  code = """
-var style = document.createElement('style');
-style.type = 'text/css';
-style.innerHTML = '#{it.replace "'" "\'" .replace /\n/g '\\n'}';
-document.head.appendChild(style);
-  """
-
 compile-templates = ->
   source = ["var templates = {};"]
   try
@@ -86,7 +69,7 @@ compile-templates = ->
           name-parts = filename / '/' #<[src forum-topics templates author.hamlc]>
           [name, ext] = name-parts.3 / '.'
 
-          full-name = "#{name-parts.1}/#name" #no camelcasing : templates'abc/d-e'
+          full-name = "#{name-parts[1 3] * '/' - ".#ext"}" #no camelcasing : templates'abc/d-e'
           
           template = compile-templates[ext] filename
           source.push "templates.#{camelcase name} = templates['#full-name'] = #template"
@@ -95,26 +78,6 @@ compile-templates = ->
     throw new Error "#ext error on #filename : #{e.message}"
 
   source * \\n
-
-/**XXX remove them since they're not used anymore??
-compile-templates.html = ->
-  code = read it
-  """
-  function (locals) {
-    return '#code';
-  }
-  """
-
-compile-templates.htmls = ->
-  code = read it
-  LiveScript.compile """
-(locals) ->
-  \"""
-  #{String(code)replace '"""', '\\"\\"\\"'}
-  \"""
-  """ {+bare}
-  .replace('this.' 'locals.')
-*/
 
 compile-templates.hamlc = ->
   runtime.haml ?= "var c$ = " + (text) ->
@@ -138,38 +101,53 @@ compile-templates.hamlc = ->
   code = (code.trim! / '\n')[1 to -2] * '\n'
 
   code = code #crappy hotfixes :(
-    .replace '$o.join("\\n").replace(/\s(?:id|class)=([\'"])(\1)/mg, "");' '$o.join("")'
-    .replace 'return function(context) {' 'function(context) {'
+    .replace do #return left from coffee's {-bare} wrapper
+      'return function(context) {'
+      'function(context) {'
+    .replace /\n  /g '\n' #cut an indent level
+    .replace do #we don't need this!
+      '''
+$o.join("\\n").replace(/\\s(\\w+)='true'/mg, " $1='$1'").replace(/\\s(\\w+)='false'/mg, '').replace(/\\s(?:id|class)=(['"])(\\1)/mg, "");
+      '''
+      '$o.join("");
+      '
     .trim!
 
 compile = (it, options) ->
   try
-    compiled.push "#it"
+    compiled.push it
     LiveScript.compile read(it), options
   catch
     throw new Error "Compiling #it:\n\t#{e.message}"
 
-wrap = -> "let\n\t#{read it .replace /\n/g '\n\t'}"
+wrap = -> "
+\nlet ##it
+\n\tconsole.time '#it'
+\n\t#{read it .replace /\n/g '\n\t'}
+\n\tconsole.timeEnd '#it'"
 
 # stuff each file into a `let` IEFE, and then compile, which
 # avoids LiveScript's redefinition of boilerplate
-compile-ls = (paths) ->
-  source = [base-source]
+compile-ls = (paths, css) ->
+  source = []
   #disabled compile errors because they're failing on compound assign
   for path in paths
     if fs.existsSync "src/#path/"
       # directory
       for file in ls "src/#path/"
-        #compile file # detect compile errors
+        compile file # detect compile errors
         source.push wrap file
     else
       # single file
-      #compile "src/#path.ls"
+      compile "src/#path.ls"
       source.push wrap "src/#path.ls"
 
+  source *= \\n
+  source .= replace '%css%' css - /\t/
+
   try
-#    fs.writeFileSync outfile + ".ls" source * \\n
-    LiveScript.compile source * \\n {+bare}
+    spit outfile.replace("js" "ls"), source
+    LiveScript.compile source, {+bare}
   catch
     throw new Error "Compiling all:\n\t#{e.message}"
 
@@ -180,7 +158,9 @@ task \build 'build userscript' ->
   err, css <- compile-styles
   try
     throw err if err
+    
     templates = compile-templates! #process now to populate runtime
+
     fs.writeFileSync do
       outfile
       join do
@@ -189,16 +169,15 @@ task \build 'build userscript' ->
         var w;
         w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
         'use strict';
-        console.time('userscript');
+        console.time('wowboardhelpers');
         (function () {
         """
-        wrap-css css
         [v for , v of runtime] * ';\n'
         templates
-        compile-ls sources
+        compile-ls sources, css
         """
-        }).call(w)
-        console.timeEnd('userscript');
+        }).call(this)
+        console.timeEnd('wowboardhelpers');
         """
     console.log "compiled script to #outfile"
   catch

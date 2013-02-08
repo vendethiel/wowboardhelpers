@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.6.1
+// @version 1.6.2
 // ==/UserScript==
  * changelog
+ * 1.6.2
+ *  Now display forum links by their titles rather than their URL
  * 1.6.1
  *  Autolink now works against images too
  *  Rendering should be faster
