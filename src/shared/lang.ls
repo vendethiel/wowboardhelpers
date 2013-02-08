@@ -5,7 +5,6 @@ langs =
 		time-index: 3
 		time-outdex: 0
 
-		last-message: 'Dernier'
 		toggle-sticky: 'Afficher/Cacher les post-its'
 		mar: 'Tout marquer comme lu'
 		new-messages: 'Il y a des nouveau(x) message(s)'
@@ -20,6 +19,11 @@ langs =
 		hour: 'heure'
 		jour: 'day'
 		day: 'jour'
+
+		last-message: 'Message' #.last-post-th
+		html-overrides:
+			'.replies': 'REPS'
+			'.poster': 'Dernier'
 	en:
 		time-index: 0
 		time-outdex: -1

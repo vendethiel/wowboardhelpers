@@ -2,10 +2,6 @@
 	.tt-last-updated
 		display: none
 
-	//change <td> sizes
-	.last-post-th
-		width: 35px
-
 	.post-author
 		width: 10px
 
@@ -13,7 +9,7 @@
 		width: 15px
 
 	.post-lastPost
-		width: 100px
+		width: 90px
 		text-align: center
 
 		//remove useless >
@@ -22,19 +18,24 @@
 
 	//updates THs
 	.post-th
-		.poster
-			text-align: center
-			font-weight: normal //why is that bold ??
-
 		//update the th accordingly
 		.replies
 			padding-right: 2px
 			text-align: center
 
+		.poster
+			text-align: right
+			font-weight: normal //why is that bold ??
+			padding-right: 5px
+
+		.last-post-th
+			width: 35px
+			text-align: left
+
 	//last column
 	.post-last-updated
 		text-align: right
-		padding-right: 5px
+		padding-right: 7px
 
 	//align replies to get closer to views
 	.post-replies

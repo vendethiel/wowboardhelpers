@@ -1,7 +1,7 @@
 return unless topic
 
 memes =
-	challengeaccepted: 'http://troll-face.fr/wp-content/uploads/2012/12/challenge-accepted.png'
+	challengeaccepted: 'http://sambacentral.files.wordpress.com/2012/11/challenge-accepted.jpg'
 	foreveralone: 'http://i1.kym-cdn.com/entries/icons/original/000/003/619/Untitled-1.jpg'
 	bitchplease: 'http://www.troll.me/images/yao-ming/bitch-please.jpg'
 	stfuandgtfo: 'http://4.bp.blogspot.com/-cD0QmZLGuAY/TnHyAD269EI/AAAAAAAAAkU/6O4rA1REcdI/s1600/STFU_and_GTFO.jpg'

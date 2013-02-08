@@ -124,9 +124,9 @@ compile = (it, options) ->
 
 wrap = -> "
 \nlet ##it
-\n\t# console.time '#it'
+\n\tconsole.time '#it'
 \n\t#{read it .replace /\n/g '\n\t'}
-\n\t# console.timeEnd '#it'"
+\n\tconsole.timeEnd '#it'"
 
 # stuff each file into a `let` IEFE, and then compile, which
 # avoids LiveScript's redefinition of boilerplate
