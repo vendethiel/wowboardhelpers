@@ -6,9 +6,12 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.6.3
+// @version 1.6.4
 // ==/UserScript==
  * changelog
+ * 1.6.4
+ *  Better french headers in ADV mode (takes less space)
+ *  Fixed a bug when visiting a thread with #[0-9]+ in the url
  * 1.6.3
  *  Added a fix for blizzard's menu thinking JS has autovivification and shit
  *  Tweaked autolink for accents
