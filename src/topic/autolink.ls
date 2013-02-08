@@ -2,7 +2,7 @@ return unless topic
 
 extensions = '(?:com|net|org|eu|fr|jp|us|co\.uk)'
 
-rules =
+rules = # indent looks nasty because array star is just `void =` which adds 2 indents
 	# youtube thumbnails
 	* * //
 			(?:https?:\/\/)? # optional protocol
@@ -69,11 +69,15 @@ rules =
 			)
 		//g
 			* '$1<img src="http://$2" alt="$2" class="autolink" />'
+
+	# recognize character names
 	* * //
 			>
-			[a-zA-Z]{2}\.battle\.net/wow/[a-zA-Z]{2}/character/([a-zA-Z]+)/([A-Za-z_$\xAA-\uFFDC]+)
-		//g
-			* '>$1/$2'
+			[a-z]{2}\.battle\.net/wow/[a-z]{2}/character/([a-z]+)/([a-z_$\xAA-\uFFDC%0-9]+)
+		//i
+			* -> #indentation says "fuck like" here : d
+						[..., realm, pseudo] = it / '/' 
+						">#realm/#{decodeURIComponent pseudo}"
 
 replace = ->
 	for [pattern, replacement] in rules

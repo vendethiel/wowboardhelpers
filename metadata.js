@@ -6,11 +6,16 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.6.2
+// @version 1.6.3
 // ==/UserScript==
  * changelog
+ * 1.6.3
+ *  Added a fix for blizzard's menu thinking JS has autovivification and shit
+ *  Tweaked autolink for accents
+ *  Changed ADV styling to please Lord Dryaan (jk he preps in rogue duels)
  * 1.6.2
  *  Now display forum links by their titles rather than their URL
+ *  Now display characters by their realm/pseudo rather than their URL
  * 1.6.1
  *  Autolink now works against images too
  *  Rendering should be faster

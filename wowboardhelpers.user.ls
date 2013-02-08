@@ -1,6 +1,6 @@
 
 let #src/shared/dom-helpers.ls
-	console.time 'src/shared/dom-helpers.ls'
+	# console.time 'src/shared/dom-helpers.ls'
 	#@todo add `...childs` ? slow downs a lot =(
 	function node(tag, props = {})
 		(document.createElement tag) <<< props
@@ -38,10 +38,10 @@ let #src/shared/dom-helpers.ls
 	function QS then document.querySelector it
 	
 	export node, replace-with, template, QSA, QS, fetch-siblings
-	console.timeEnd 'src/shared/dom-helpers.ls'
+	# console.timeEnd 'src/shared/dom-helpers.ls'
 
 let #src/shared/common.ls
-	console.time 'src/shared/common.ls'
+	# console.time 'src/shared/common.ls'
 	forum-options = QS '.forum-options'
 	
 	if topic = document.getElementById 'thread'
@@ -53,10 +53,10 @@ let #src/shared/common.ls
 		export tbody-regular = QS 'tbody.regular'
 	
 	export topic, forum, forum-options
-	console.timeEnd 'src/shared/common.ls'
+	# console.timeEnd 'src/shared/common.ls'
 
 let #src/shared/css.ls
-	console.time 'src/shared/css.ls'
+	# console.time 'src/shared/css.ls'
 	style = node 'style' type: 'text/css' innerHTML: '''
 	/*slake:build#compile-ls embeds css*/
 	#forum-actions-top h1 {
@@ -105,6 +105,39 @@ tr:not(.stickied) a[data-tooltip] {
 }
 #posts.advanced .tt-last-updated {
   display: none;
+}
+#posts.advanced .last-post-th {
+  width: 35px;
+}
+#posts.advanced .post-author {
+  width: 10px;
+}
+#posts.advanced .post-views {
+  width: 15px;
+}
+#posts.advanced .post-lastPost {
+  width: 100px;
+  text-align: center;
+}
+#posts.advanced .post-lastPost .more-arrow {
+  display: none;
+}
+#posts.advanced .post-th .poster {
+  text-align: center;
+  font-weight: normal;
+}
+#posts.advanced .post-th .replies {
+  padding-right: 2px;
+  text-align: center;
+}
+#posts.advanced .post-last-updated {
+  text-align: right;
+  padding-right: 5px;
+}
+#posts.advanced .post-replies {
+  width: 10px;
+  text-align: right;
+  padding-right: 10px;
 }
 #posts.simple .tt-last-updated {
   display: inline;
@@ -159,10 +192,10 @@ img.autolink {
 	'''
 	
 	document.head.appendChild style
-	console.timeEnd 'src/shared/css.ls'
+	# console.timeEnd 'src/shared/css.ls'
 
 let #src/shared/lang.ls
-	console.time 'src/shared/lang.ls'
+	# console.time 'src/shared/lang.ls'
 	l = (document.location / '/')4
 	
 	langs =
@@ -170,7 +203,7 @@ let #src/shared/lang.ls
 			time-index: 3
 			time-outdex: 0
 	
-			last-message: 'Dernier message'
+			last-message: 'Dernier'
 			toggle-sticky: 'Afficher/Cacher les post-its'
 			mar: 'Tout marquer comme lu'
 			new-messages: 'Il y a des nouveau(x) message(s)'
@@ -179,6 +212,8 @@ let #src/shared/lang.ls
 	
 			few-seconds-ago: 'il y a quelques secondes'
 			#table FR to EN for time parsing
+			seconde: 'second'
+			second: 'seconde'
 			heure: 'hour'
 			hour: 'heure'
 			jour: 'day'
@@ -187,7 +222,7 @@ let #src/shared/lang.ls
 			time-index: 0
 			time-outdex: -1
 	
-			last-message: 'Last message'
+			last-message: 'Last'
 			toggle-sticky: 'Show/Hide stickies'
 			mar: 'Mark all as read'
 			few-seconds-ago: 'few seconds ago'
@@ -223,6 +258,10 @@ let #src/shared/lang.ls
 		* 'days'    'd'
 		* 'day'     'd'
 	
+		* 'secondes' 's'
+		* 'seconds' 's'
+		* 'second' 's'
+	
 	/**
 	 * simplifies time based on table replacement
 	 */
@@ -231,30 +270,30 @@ let #src/shared/lang.ls
 			it .= replace convert-from, convert-to
 	
 		it
-	console.timeEnd 'src/shared/lang.ls'
+	# console.timeEnd 'src/shared/lang.ls'
 
 let #src/shared/content-class.ls
-	console.time 'src/shared/content-class.ls'
+	# console.time 'src/shared/content-class.ls'
 	content = QS '#content'
 	
 	content.className = switch
 	| topic => "topic"
 	| forum => "forum"
 	| otherwise => ""
-	console.timeEnd 'src/shared/content-class.ls'
+	# console.timeEnd 'src/shared/content-class.ls'
 
 let #src/shared/utils///ajax.ls
-	console.time 'src/shared/utils///ajax.ls'
+	# console.time 'src/shared/utils///ajax.ls'
 	export class ajax
 		@get = (url, success) ->
 			new XMLHttpRequest
 				..open 'GET' url
 				..onload = success
 				..send!
-	console.timeEnd 'src/shared/utils///ajax.ls'
+	# console.timeEnd 'src/shared/utils///ajax.ls'
 
 let #src/shared/utils///date.ls
-	console.time 'src/shared/utils///date.ls'
+	# console.time 'src/shared/utils///date.ls'
 	Date::relative-time = ->
 		if ( days = ( ( diff = Date.now! - @getTime! ) / 86400000 ) ) > 1
 			lang.pluralize days, \day
@@ -266,19 +305,31 @@ let #src/shared/utils///date.ls
 			lang.pluralize seconds, \second
 		else
 			lang.few-seconds-ago
-	console.timeEnd 'src/shared/utils///date.ls'
+	# console.timeEnd 'src/shared/utils///date.ls'
 
 let #src/shared/utils///string.ls
-	console.time 'src/shared/utils///string.ls'
+	# console.time 'src/shared/utils///string.ls'
 	#FUCK YOU IDC I EXTEND NATIVE OBJECTS
 	String::pad = (len, str) ->
 		return if @length >= len
 	
 		@ + "#str" * (len - @length)
-	console.timeEnd 'src/shared/utils///string.ls'
+	# console.timeEnd 'src/shared/utils///string.ls'
+
+let #src/fix///menu.ls
+	# console.time 'src/fix///menu.ls'
+	# fixes Blizzard's menu
+	# which seems to think js has autovivification
+	
+	old = w.Menu.show
+	w.Menu.show = (, , options = {}) ->
+		w.Menu.dataIndex[options.set ? 'base'] ?= []
+	
+		old ...
+	# console.timeEnd 'src/fix///menu.ls'
 
 let #src/forum/mar.ls
-	console.time 'src/forum/mar.ls'
+	# console.time 'src/forum/mar.ls'
 	return unless forum
 	all-read = false
 	
@@ -302,10 +353,10 @@ let #src/forum/mar.ls
 	button-mar.style.cursor = 'pointer'
 	
 	forum-options.appendChild button-mar
-	console.timeEnd 'src/forum/mar.ls'
+	# console.timeEnd 'src/forum/mar.ls'
 
 let #src/forum/stickies.ls
-	console.time 'src/forum/stickies.ls'
+	# console.time 'src/forum/stickies.ls'
 	return unless forum
 	
 	#remove sticky part (tbody.sticky)
@@ -323,20 +374,20 @@ let #src/forum/stickies.ls
 	button-sticky.style.cursor = 'pointer'
 	
 	forum-options.appendChild button-sticky
-	console.timeEnd 'src/forum/stickies.ls'
+	# console.timeEnd 'src/forum/stickies.ls'
 
 let #src/forum/move-actions.ls
-	console.time 'src/forum/move-actions.ls'
+	# console.time 'src/forum/move-actions.ls'
 	return unless forum
 	
 	QS '.forum-options'
 		..parentNode.removeChild ..
 	
 		QS '.content-trail' .appendChild ..
-	console.timeEnd 'src/forum/move-actions.ls'
+	# console.timeEnd 'src/forum/move-actions.ls'
 
 let #src/forum/check-updates.ls
-	console.time 'src/forum/check-updates.ls'
+	# console.time 'src/forum/check-updates.ls'
 	return unless forum
 	
 	#we DON'T delay execution because server reponse won't be ordered
@@ -350,6 +401,10 @@ let #src/forum/check-updates.ls
 			h1 = node 'h1'
 			..children[*-1]
 	
+	
+	# XXX should not notice for update if post is hidden.
+	# BUT it should notice if 2 posts have been updated, first is hidden
+	# and second is not
 	refresh = ->
 		ajax.get document.location, !->
 			return unless @status is 200
@@ -357,7 +412,6 @@ let #src/forum/check-updates.ls
 			h1.innerHTML = lang.checking-new
 			after-regular = @response.slice(tbody-html.length + @response.indexOf tbody-html)trim!
 	
-			#XXX should not notice for update if post is hidden.
 			if tr-html is after-regular.substr 0 tr-html.length
 				setTimeout refresh, timeout #there we go again
 				h1.innerHTML += " <u>#{lang.no-new}</u>"
@@ -376,10 +430,10 @@ let #src/forum/check-updates.ls
 	
 	#timeout clearing is in hide-topic
 	export check-updates = setTimeout refresh, timeout
-	console.timeEnd 'src/forum/check-updates.ls'
+	# console.timeEnd 'src/forum/check-updates.ls'
 
 let #src/forum-topics/last-updated.ls
-	console.time 'src/forum-topics/last-updated.ls'
+	# console.time 'src/forum-topics/last-updated.ls'
 	return unless forum
 	
 	#get account's character names
@@ -455,7 +509,7 @@ let #src/forum-topics/last-updated.ls
 		post.appendChild template 'tt-last-updated' {text}
 	
 		#last-updated <td for ADV mode
-		td.appendChild.innerHTML += "<td class='post-last-updated'>#simplified-time</td>"
+		td.innerHTML += "<td class='post-last-updated'>#simplified-time</td>"
 	
 		state = check-topic topic-id, post-count, author-name
 	
@@ -521,10 +575,10 @@ let #src/forum-topics/last-updated.ls
 	
 	function get-last-poster
 		w.localStorage.getItem "topic_lp_#it"
-	console.timeEnd 'src/forum-topics/last-updated.ls'
+	# console.timeEnd 'src/forum-topics/last-updated.ls'
 
 let #src/forum-topics/move-redirects.ls
-	console.time 'src/forum-topics/move-redirects.ls'
+	# console.time 'src/forum-topics/move-redirects.ls'
 	return unless forum
 	
 	for status in tbody-regular.querySelectorAll '.post-status'
@@ -534,10 +588,10 @@ let #src/forum-topics/move-redirects.ls
 		#set it at the end
 		tbody-regular.removeChild tr
 		tbody-regular.appendChild tr
-	console.timeEnd 'src/forum-topics/move-redirects.ls'
+	# console.timeEnd 'src/forum-topics/move-redirects.ls'
 
 let #src/forum-topics/hide-topic.ls
-	console.time 'src/forum-topics/hide-topic.ls'
+	# console.time 'src/forum-topics/hide-topic.ls'
 	return unless forum
 	
 	hidden-topics = (w.localStorage.getItem "hidden_topics" or "") / ";"
@@ -586,10 +640,10 @@ let #src/forum-topics/hide-topic.ls
 	#ensure we don't check updates if we already have updates
 	if QS 'tbody.regular tr:not(.hidden):not(.read)'
 		clearTimeout check-updates
-	console.timeEnd 'src/forum-topics/hide-topic.ls'
+	# console.timeEnd 'src/forum-topics/hide-topic.ls'
 
 let #src/forum-topics/times.ls
-	console.time 'src/forum-topics/times.ls'
+	# console.time 'src/forum-topics/times.ls'
 	units =
 		second: 1000ms
 		minute: 60_000ms
@@ -622,10 +676,10 @@ let #src/forum-topics/times.ls
 	
 		setTimeout refresh, timeout
 	refresh!
-	console.timeEnd 'src/forum-topics/times.ls'
+	# console.timeEnd 'src/forum-topics/times.ls'
 
 let #src/topic/update-count.ls
-	console.time 'src/topic/update-count.ls'
+	# console.time 'src/topic/update-count.ls'
 	return unless topic
 	
 	#pagination
@@ -645,10 +699,10 @@ let #src/topic/update-count.ls
 	#mark as read
 	w.localStorage.setItem "topic_#{topic.dataset.id}" post-count
 	w.localStorage.setItem "topic_lp_#{topic.dataset.id}" last-poster-name
-	console.timeEnd 'src/topic/update-count.ls'
+	# console.timeEnd 'src/topic/update-count.ls'
 
 let #src/topic/improve-topic.ls
-	console.time 'src/topic/improve-topic.ls'
+	# console.time 'src/topic/improve-topic.ls'
 	return unless topic
 	
 	for infos in document.getElementsByClassName 'character-info'
@@ -657,15 +711,15 @@ let #src/topic/improve-topic.ls
 		realm .= innerHTML
 	
 		infos.querySelector '.character-desc' ?.innerHTML += "<br />#realm"
-	console.timeEnd 'src/topic/improve-topic.ls'
+	# console.timeEnd 'src/topic/improve-topic.ls'
 
 let #src/topic/autolink.ls
-	console.time 'src/topic/autolink.ls'
+	# console.time 'src/topic/autolink.ls'
 	return unless topic
 	
 	extensions = '(?:com|net|org|eu|fr|jp|us|co\.uk)'
 	
-	rules =
+	rules = # indent looks nasty because array star is just `void =` which adds 2 indents
 		# youtube thumbnails
 		* * //
 				(?:https?:\/\/)? # optional protocol
@@ -732,11 +786,15 @@ let #src/topic/autolink.ls
 				)
 			//g
 				* '$1<img src="http://$2" alt="$2" class="autolink" />'
+	
+		# recognize character names
 		* * //
 				>
-				[a-zA-Z]{2}\.battle\.net/wow/[a-zA-Z]{2}/character/([a-zA-Z]+)/([A-Za-z_$\xAA-\uFFDC]+)
-			//g
-				* '>$1/$2'
+				[a-z]{2}\.battle\.net/wow/[a-z]{2}/character/([a-z]+)/([a-z_$\xAA-\uFFDC%0-9]+)
+			//i
+				* -> #indentation says "fuck like" here : d
+							[..., realm, pseudo] = it / '/' 
+							">#realm/#{decodeURIComponent pseudo}"
 	
 	replace = ->
 		for [pattern, replacement] in rules
@@ -761,10 +819,10 @@ let #src/topic/autolink.ls
 		catch
 			console.log "Unable to generate valid HTML : #h (#e)"
 			break
-	console.timeEnd 'src/topic/autolink.ls'
+	# console.timeEnd 'src/topic/autolink.ls'
 
 let #src/reply/remember-reply.ls
-	console.time 'src/reply/remember-reply.ls'
+	# console.time 'src/reply/remember-reply.ls'
 	return unless topic
 	
 	return unless textarea = QS '#post-edit textarea'
@@ -779,10 +837,10 @@ let #src/reply/remember-reply.ls
 	
 	submit.onclick = -> #clear on submit
 		w.localStorage.setItem "post_#{topic.dataset.id}" ""
-	console.timeEnd 'src/reply/remember-reply.ls'
+	# console.timeEnd 'src/reply/remember-reply.ls'
 
 let #src/reply/clear-textarea.ls
-	console.time 'src/reply/clear-textarea.ls'
+	# console.time 'src/reply/clear-textarea.ls'
 	return unless topic
 	
 	clearer = template 'clear-textarea'
@@ -797,10 +855,10 @@ let #src/reply/clear-textarea.ls
 			textarea.value = ''
 			#manually clearing localStorage is something I'd like to avoid
 			w.localStorage.removeItem "post_#{topic.dataset.id}"
-	console.timeEnd 'src/reply/clear-textarea.ls'
+	# console.timeEnd 'src/reply/clear-textarea.ls'
 
 let #src/reply/quick-quote.ls
-	console.time 'src/reply/quick-quote.ls'
+	# console.time 'src/reply/quick-quote.ls'
 	return unless topic
 	
 	key-code = 82 #'r' key
@@ -816,10 +874,10 @@ let #src/reply/quick-quote.ls
 			textarea.selectionStart = textarea.selectionEnd = textarea.value.length
 			textarea.focus!
 			document.location += '#forum-actions-bottom'
-	console.timeEnd 'src/reply/quick-quote.ls'
+	# console.timeEnd 'src/reply/quick-quote.ls'
 
 let #src/reply/memebox.ls
-	console.time 'src/reply/memebox.ls'
+	# console.time 'src/reply/memebox.ls'
 	return unless topic
 	
 	memes =
@@ -837,6 +895,7 @@ let #src/reply/memebox.ls
 		megusta: 'http://a400.idata.over-blog.com/5/08/51/37/me_gusta_by_projectendo-d2z3rku.jpg'
 		notbad: 'http://www.reactionface.info/sites/default/files/images/YvEN9.png'
 		ohcrap: 'http://i1.kym-cdn.com/entries/icons/original/000/004/077/Raisins_Face.jpg'
+		trauma: 'http://global3.memecdn.com/trauma_c_629591.jpg'
 		yuno: 'http://i1.kym-cdn.com/entries/icons/original/000/004/006/y-u-no-guy.jpg'
 		fulloffuck: 'http://www.mememaker.net/static/images/templates/14288.jpg'
 		okay: 'http://cache.ohinternet.com/images/e/e6/Okay_guy.jpg'
@@ -883,4 +942,4 @@ let #src/reply/memebox.ls
 	
 	
 	post-wrapper.appendChild memebox
-	console.timeEnd 'src/reply/memebox.ls'
+	# console.timeEnd 'src/reply/memebox.ls'

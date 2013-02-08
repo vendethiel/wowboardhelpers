@@ -15,6 +15,7 @@ memes =
 	megusta: 'http://a400.idata.over-blog.com/5/08/51/37/me_gusta_by_projectendo-d2z3rku.jpg'
 	notbad: 'http://www.reactionface.info/sites/default/files/images/YvEN9.png'
 	ohcrap: 'http://i1.kym-cdn.com/entries/icons/original/000/004/077/Raisins_Face.jpg'
+	trauma: 'http://global3.memecdn.com/trauma_c_629591.jpg'
 	yuno: 'http://i1.kym-cdn.com/entries/icons/original/000/004/006/y-u-no-guy.jpg'
 	fulloffuck: 'http://www.mememaker.net/static/images/templates/14288.jpg'
 	okay: 'http://cache.ohinternet.com/images/e/e6/Okay_guy.jpg'

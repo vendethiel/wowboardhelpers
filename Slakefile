@@ -22,6 +22,8 @@ sources = <[
   shared/lang
   shared/content-class
   shared/utils/
+
+  fix/
   
   forum/mar
   forum/stickies
@@ -122,9 +124,9 @@ compile = (it, options) ->
 
 wrap = -> "
 \nlet ##it
-\n\tconsole.time '#it'
+\n\t# console.time '#it'
 \n\t#{read it .replace /\n/g '\n\t'}
-\n\tconsole.timeEnd '#it'"
+\n\t# console.timeEnd '#it'"
 
 # stuff each file into a `let` IEFE, and then compile, which
 # avoids LiveScript's redefinition of boilerplate
@@ -166,18 +168,27 @@ task \build 'build userscript' ->
       join do
         metadata
         """
-        var w;
-        w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
-        'use strict';
-        console.time('wowboardhelpers');
-        (function () {
+var w;
+w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
+'use strict';
+
+w.Cms || ( //let's detect this, 'tis something comin' from Blizzard Forums
+  unsafeWindow = w = w.unsafeWindow = (function() {
+    var el = document.createElement('p');
+    el.setAttribute('onclick', 'return window;');
+    return el.onclick();
+  }())
+);
+
+console.time('wowboardhelpers');
+(function () {
         """
         [v for , v of runtime] * ';\n'
         templates
         compile-ls sources, css
         """
-        }).call(this)
-        console.timeEnd('wowboardhelpers');
+}).call(this)
+console.timeEnd('wowboardhelpers');
         """
     console.log "compiled script to #outfile"
   catch

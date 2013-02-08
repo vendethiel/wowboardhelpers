@@ -11,6 +11,7 @@
  * changelog
  * 1.6.2
  *  Now display forum links by their titles rather than their URL
+ *  Now display characters by their realm/pseudo rather than their URL
  * 1.6.1
  *  Autolink now works against images too
  *  Rendering should be faster
@@ -66,9 +67,14 @@
  *  Now works with advanced mode
  *  Fix a bug when logged off
 */
-var w;
-w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
-'use strict';
+window.unsafeWindow || (
+  unsafeWindow = (function() {
+    var el = document.createElement('p');
+    el.setAttribute('onclick', 'return window;');
+    return el.onclick();
+  }())
+);
+var w = unsafeWindow;
 console.time('wowboardhelpers');
 (function () {
 var c$ = function (text){
@@ -152,7 +158,6 @@ templates.memebox = templates['reply/memebox'] = function(context) {
 };
 var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, replace$ = ''.replace, join$ = [].join, slice$ = [].slice;
 (function(){
-  console.time('src/shared/dom-helpers.ls');
   function node(tag, props){
     props == null && (props = {});
     return import$(document.createElement(tag), props);
@@ -205,11 +210,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   out$.QSA = QSA;
   out$.QS = QS;
   out$.fetchSiblings = fetchSiblings;
-  console.timeEnd('src/shared/dom-helpers.ls');
 }.call(this));
 (function(){
   var forumOptions, topic, ref$, forum, tbodyRegular;
-  console.time('src/shared/common.ls');
   forumOptions = QS('.forum-options');
   if (topic = document.getElementById('thread')) {
     topic.dataset.id = (split$.call((ref$ = split$.call(document.location, '/'))[ref$.length - 1], '?'))[0];
@@ -221,33 +224,31 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   out$.topic = topic;
   out$.forum = forum;
   out$.forumOptions = forumOptions;
-  console.timeEnd('src/shared/common.ls');
 }.call(this));
 (function(){
   var style;
-  console.time('src/shared/css.ls');
   style = node('style', {
     type: 'text/css',
-    innerHTML: '	/*slake:build#compile-ls embeds css*/\n	#forum-actions-top h1 {\n  text-align: center;\n  margin-left: 200px;\n}\n.forum .forum-actions {\n  padding: 0px;\n}\n.forum .actions-panel {\n  margin-right: 15px;\n}\n.forum .forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.simple .tt-last-updated {\n  display: inline;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\n#memebox {\n  position: relative;\n  float: right;\n  width: 100px;\n  left: -50px;\n  top: 5px;\n}\n#memebox h1 {\n  font-size: 2em;\n}\n#memebox ul#memes {\n  margin-top: 10px;\n  margin-left: 30px;\n  list-style-type: circle;\n}\n#memebox li {\n  font-weight: bold;\n  color: link;\n  text-decoration: underline;\n}\nimg.autolink {\n  border: 5px solid #000;\n  max-width: 540px;\n  max-height: 500px;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n'
+    innerHTML: '	/*slake:build#compile-ls embeds css*/\n	#forum-actions-top h1 {\n  text-align: center;\n  margin-left: 200px;\n}\n.forum .forum-actions {\n  padding: 0px;\n}\n.forum .actions-panel {\n  margin-right: 15px;\n}\n.forum .forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.advanced .last-post-th {\n  width: 35px;\n}\n#posts.advanced .post-author {\n  width: 10px;\n}\n#posts.advanced .post-views {\n  width: 15px;\n}\n#posts.advanced .post-lastPost {\n  width: 100px;\n  text-align: center;\n}\n#posts.advanced .post-lastPost .more-arrow {\n  display: none;\n}\n#posts.advanced .post-th .poster {\n  text-align: center;\n  font-weight: normal;\n}\n#posts.advanced .post-th .replies {\n  padding-right: 2px;\n  text-align: center;\n}\n#posts.advanced .post-last-updated {\n  text-align: right;\n  padding-right: 5px;\n}\n#posts.advanced .post-replies {\n  width: 10px;\n  text-align: right;\n  padding-right: 10px;\n}\n#posts.simple .tt-last-updated {\n  display: inline;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\n#memebox {\n  position: relative;\n  float: right;\n  width: 100px;\n  left: -50px;\n  top: 5px;\n}\n#memebox h1 {\n  font-size: 2em;\n}\n#memebox ul#memes {\n  margin-top: 10px;\n  margin-left: 30px;\n  list-style-type: circle;\n}\n#memebox li {\n  font-weight: bold;\n  color: link;\n  text-decoration: underline;\n}\nimg.autolink {\n  border: 5px solid #000;\n  max-width: 540px;\n  max-height: 500px;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n'
   });
   document.head.appendChild(style);
-  console.timeEnd('src/shared/css.ls');
 }.call(this));
 (function(){
   var l, langs, lang, ref$, i$, len$, k, timeTable;
-  console.time('src/shared/lang.ls');
   l = (split$.call(document.location, '/'))[4];
   langs = {
     fr: {
       timeIndex: 3,
       timeOutdex: 0,
-      lastMessage: 'Dernier message',
+      lastMessage: 'Dernier',
       toggleSticky: 'Afficher/Cacher les post-its',
       mar: 'Tout marquer comme lu',
       newMessages: 'Il y a des nouveau(x) message(s)',
       checkingNew: 'Vérification des nouveaux messages ...',
       noNew: 'Pas de nouveau message.',
       fewSecondsAgo: 'il y a quelques secondes',
+      seconde: 'second',
+      second: 'seconde',
       heure: 'hour',
       hour: 'heure',
       jour: 'day',
@@ -256,7 +257,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     en: {
       timeIndex: 0,
       timeOutdex: -1,
-      lastMessage: 'Last message',
+      lastMessage: 'Last',
       toggleSticky: 'Show/Hide stickies',
       mar: 'Mark all as read',
       fewSecondsAgo: 'few seconds ago',
@@ -282,7 +283,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
       return it;
     }
   });
-  timeTable = [['heures', 'h'], ['heure', 'h'], ['houres', 'h'], ['hour', 'h'], ['minutes', 'm'], ['minute', 'm'], ['jours', 'j'], ['jour', 'j'], ['days', 'd'], ['day', 'd']];
+  timeTable = [['heures', 'h'], ['heure', 'h'], ['houres', 'h'], ['hour', 'h'], ['minutes', 'm'], ['minute', 'm'], ['jours', 'j'], ['jour', 'j'], ['days', 'd'], ['day', 'd'], ['secondes', 's'], ['seconds', 's'], ['second', 's']];
   /**
    * simplifies time based on table replacement
    */
@@ -295,11 +296,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     }
     return it;
   }
-  console.timeEnd('src/shared/lang.ls');
 }.call(this));
 (function(){
   var content;
-  console.time('src/shared/content-class.ls');
   content = QS('#content');
   content.className = (function(){
     switch (false) {
@@ -311,11 +310,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
       return "";
     }
   }());
-  console.timeEnd('src/shared/content-class.ls');
 }.call(this));
 (function(){
   var ajax;
-  console.time('src/shared/utils///ajax.ls');
   out$.ajax = ajax = (function(){
     ajax.displayName = 'ajax';
     var prototype = ajax.prototype, constructor = ajax;
@@ -330,10 +327,8 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     function ajax(){}
     return ajax;
   }());
-  console.timeEnd('src/shared/utils///ajax.ls');
 }.call(this));
 (function(){
-  console.time('src/shared/utils///date.ls');
   Date.prototype.relativeTime = function(){
     var days, diff, hours, minutes, seconds;
     if ((days = (diff = Date.now() - this.getTime()) / 86400000) > 1) {
@@ -348,21 +343,27 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
       return lang.fewSecondsAgo;
     }
   };
-  console.timeEnd('src/shared/utils///date.ls');
 }.call(this));
 (function(){
-  console.time('src/shared/utils///string.ls');
   String.prototype.pad = function(len, str){
     if (this.length >= len) {
       return;
     }
     return this + repeatString$(str + "", len - this.length);
   };
-  console.timeEnd('src/shared/utils///string.ls');
+}.call(this));
+(function(){
+  var old;
+  old = w.Menu.show;
+  w.Menu.show = function(arg$, arg1$, options){
+    var ref$, key$, ref1$;
+    options == null && (options = {});
+    (ref$ = w.Menu.dataIndex)[key$ = (ref1$ = options.set) != null ? ref1$ : 'base'] == null && (ref$[key$] = []);
+    return old.apply(this, arguments);
+  };
 }.call(this));
 (function(){
   var allRead, buttonMar;
-  console.time('src/forum/mar.ls');
   if (!forum) {
     return;
   }
@@ -394,11 +395,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   });
   buttonMar.style.cursor = 'pointer';
   forumOptions.appendChild(buttonMar);
-  console.timeEnd('src/forum/mar.ls');
 }.call(this));
 (function(){
   var buttonSticky;
-  console.time('src/forum/stickies.ls');
   if (!forum) {
     return;
   }
@@ -416,22 +415,18 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   });
   buttonSticky.style.cursor = 'pointer';
   forumOptions.appendChild(buttonSticky);
-  console.timeEnd('src/forum/stickies.ls');
 }.call(this));
 (function(){
   var x$;
-  console.time('src/forum/move-actions.ls');
   if (!forum) {
     return;
   }
   x$ = QS('.forum-options');
   x$.parentNode.removeChild(x$);
   QS('.content-trail').appendChild(x$);
-  console.timeEnd('src/forum/move-actions.ls');
 }.call(this));
 (function(){
   var firstTopicId, trHtml, aEndHtml, tbodyHtml, x$, h1, ref$, refresh, timeout, checkUpdates;
-  console.time('src/forum/check-updates.ls');
   if (!forum) {
     return;
   }
@@ -465,11 +460,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   };
   timeout = 15 * 1000;
   out$.checkUpdates = checkUpdates = setTimeout(refresh, timeout);
-  console.timeEnd('src/forum/check-updates.ls');
 }.call(this));
 (function(){
   var characters, res$, i$, ref$, len$, name, ref1$, lastPostTh, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, hasUnread, post, children, div, a, td, lastPostTd, topicId, pages, lastPost, lastPostLink, replies, author, postCount, postOnly, text, isCm, that, authorName, inlineText, simplifiedTime, state;
-  console.time('src/forum-topics/last-updated.ls');
   if (!forum) {
     return;
   }
@@ -532,7 +525,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     post.appendChild(template('tt-last-updated', {
       text: text
     }));
-    td.appendChild.innerHTML += "<td class='post-last-updated'>" + simplifiedTime + "</td>";
+    td.innerHTML += "<td class='post-last-updated'>" + simplifiedTime + "</td>";
     state = checkTopic(topicId, postCount, authorName);
     if (state !== TSTATE_CHK) {
       if (that = characters && authorName) {
@@ -604,7 +597,6 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   function getLastPoster(it){
     return w.localStorage.getItem("topic_lp_" + it);
   }
-  console.timeEnd('src/forum-topics/last-updated.ls');
   function fn$(it){
     return templates.author({
       name: it,
@@ -615,7 +607,6 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
 }.call(this));
 (function(){
   var i$, ref$, len$, status, tr;
-  console.time('src/forum-topics/move-redirects.ls');
   if (!forum) {
     return;
   }
@@ -626,11 +617,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     tbodyRegular.removeChild(tr);
     tbodyRegular.appendChild(tr);
   }
-  console.timeEnd('src/forum-topics/move-redirects.ls');
 }.call(this));
 (function(){
   var hiddenTopics, i$, ref$, len$, postPages, that, tr, topicId;
-  console.time('src/forum-topics/hide-topic.ls');
   if (!forum) {
     return;
   }
@@ -662,7 +651,6 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   if (QS('tbody.regular tr:not(.hidden):not(.read)')) {
     clearTimeout(checkUpdates);
   }
-  console.timeEnd('src/forum-topics/hide-topic.ls');
   function fn$(tr, topicId, postPages){
     var x$;
     x$ = template('hide-topic', {
@@ -683,7 +671,6 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
 }.call(this));
 (function(){
   var units, timestamp, postTitles, i$, len$, postTitle, total, j$, ref$, len1$, timespan, ref1$, count, unit, date, timeout, refresh;
-  console.time('src/forum-topics/times.ls');
   units = {
     second: 1000,
     minute: 60000,
@@ -714,11 +701,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     return setTimeout(refresh, timeout);
   };
   refresh();
-  console.timeEnd('src/forum-topics/times.ls');
 }.call(this));
 (function(){
   var pages, postCount, ref$, lastPosterName;
-  console.time('src/topic/update-count.ls');
   if (!topic) {
     return;
   }
@@ -730,11 +715,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   lastPosterName = (ref$ = topic.getElementsByClassName('char-name-code'))[ref$.length - 1].innerHTML.trim();
   w.localStorage.setItem("topic_" + topic.dataset.id, postCount);
   w.localStorage.setItem("topic_lp_" + topic.dataset.id, lastPosterName);
-  console.timeEnd('src/topic/update-count.ls');
 }.call(this));
 (function(){
   var i$, ref$, len$, infos, realm, ref1$;
-  console.time('src/topic/improve-topic.ls');
   if (!topic) {
     return;
   }
@@ -749,16 +732,22 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
       ref1$.innerHTML += "<br />" + realm;
     }
   }
-  console.timeEnd('src/topic/improve-topic.ls');
 }.call(this));
 (function(){
   var extensions, rules, replace, i$, ref$, len$, post, h, r, ref1$, url, e;
-  console.time('src/topic/autolink.ls');
   if (!topic) {
     return;
   }
   extensions = '(?:com|net|org|eu|fr|jp|us|co.uk)';
-  rules = [[/(?:https?:\/\/)?(?:(?:www|m)\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g, '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0"></iframe>'], [/\((https?:\/\/)([^<\s\)]+)\)/g, '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" target="_blank">$2</a>)'], [RegExp('(^|>|;|\\s)([\\w\\.\\-]+\\.' + extensions + '(/[^<\\s]*)?(?=[\\s<]|$))', 'g'), '$1<a class="external" rel="noreferrer" href="http://$2" title="$2" target="_blank">$2</a>'], [/([^"']|^)(https?:\/\/)([^<\s\)]+)/g, '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" target="_blank">$3</a>'], [RegExp('(^|>|;|\\s)((?!(?:www\\.)?dropbox)[\\w\\.\\-]+\\.' + extensions + '(/[^.<\\s]*)\\.(jpg|png|gif|jpeg)(?=[\\s<]|$)|puu\\.sh/[a-zA-Z0-9]+)', 'g'), '$1<img src="http://$2" alt="$2" class="autolink" />'], [/>[a-zA-Z]{2}\.battle\.net\/wow\/[a-zA-Z]{2}\/character\/([a-zA-Z]+)\/([A-Za-z_$\xAA-\uFFDC]+)/g, '>$1/$2']];
+  rules = [
+    [/(?:https?:\/\/)?(?:(?:www|m)\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g, '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0"></iframe>'], [/\((https?:\/\/)([^<\s\)]+)\)/g, '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" target="_blank">$2</a>)'], [RegExp('(^|>|;|\\s)([\\w\\.\\-]+\\.' + extensions + '(/[^<\\s]*)?(?=[\\s<]|$))', 'g'), '$1<a class="external" rel="noreferrer" href="http://$2" title="$2" target="_blank">$2</a>'], [/([^"']|^)(https?:\/\/)([^<\s\)]+)/g, '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" target="_blank">$3</a>'], [RegExp('(^|>|;|\\s)((?!(?:www\\.)?dropbox)[\\w\\.\\-]+\\.' + extensions + '(/[^.<\\s]*)\\.(jpg|png|gif|jpeg)(?=[\\s<]|$)|puu\\.sh/[a-zA-Z0-9]+)', 'g'), '$1<img src="http://$2" alt="$2" class="autolink" />'], [
+      />[a-z]{2}\.battle\.net\/wow\/[a-z]{2}\/character\/([a-z]+)\/([a-z_$\xAA-\uFFDC%0-9]+)/i, function(it){
+        var ref$, i$, realm, pseudo;
+        ref$ = split$.call(it, '/'), i$ = ref$.length - 2, realm = ref$[i$], pseudo = ref$[i$ + 1];
+        return ">" + realm + "/" + decodeURIComponent(pseudo);
+      }
+    ]
+  ];
   replace = function(it){
     var i$, ref$, len$, ref1$, pattern, replacement;
     for (i$ = 0, len$ = (ref$ = rules).length; i$ < len$; ++i$) {
@@ -782,7 +771,6 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
       break;
     }
   }
-  console.timeEnd('src/topic/autolink.ls');
   function fn$(url, post){
     ajax.get("http://" + url, function(){
       var that;
@@ -794,7 +782,6 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
 }.call(this));
 (function(){
   var textarea, submit;
-  console.time('src/reply/remember-reply.ls');
   if (!topic) {
     return;
   }
@@ -811,11 +798,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
   submit.onclick = function(){
     return w.localStorage.setItem("post_" + topic.dataset.id, "");
   };
-  console.timeEnd('src/reply/remember-reply.ls');
 }.call(this));
 (function(){
   var clearer, x$, textarea;
-  console.time('src/reply/clear-textarea.ls');
   if (!topic) {
     return;
   }
@@ -830,11 +815,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     textarea.value = '';
     return w.localStorage.removeItem("post_" + topic.dataset.id);
   };
-  console.timeEnd('src/reply/clear-textarea.ls');
 }.call(this));
 (function(){
   var keyCode, textarea;
-  console.time('src/reply/quick-quote.ls');
   if (!topic) {
     return;
   }
@@ -858,11 +841,9 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
       return document.location += '#forum-actions-bottom';
     }
   });
-  console.timeEnd('src/reply/quick-quote.ls');
 }.call(this));
 (function(){
   var memes, postWrapper, ref$, textarea, addMeme, appendMeme, memebox, ul;
-  console.time('src/reply/memebox.ls');
   if (!topic) {
     return;
   }
@@ -881,6 +862,7 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     megusta: 'http://a400.idata.over-blog.com/5/08/51/37/me_gusta_by_projectendo-d2z3rku.jpg',
     notbad: 'http://www.reactionface.info/sites/default/files/images/YvEN9.png',
     ohcrap: 'http://i1.kym-cdn.com/entries/icons/original/000/004/077/Raisins_Face.jpg',
+    trauma: 'http://global3.memecdn.com/trauma_c_629591.jpg',
     yuno: 'http://i1.kym-cdn.com/entries/icons/original/000/004/006/y-u-no-guy.jpg',
     fulloffuck: 'http://www.mememaker.net/static/images/templates/14288.jpg',
     okay: 'http://cache.ohinternet.com/images/e/e6/Okay_guy.jpg',
@@ -935,7 +917,6 @@ var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, 
     }
   };
   postWrapper.appendChild(memebox);
-  console.timeEnd('src/reply/memebox.ls');
 }.call(this));
 function import$(obj, src){
   var own = {}.hasOwnProperty;

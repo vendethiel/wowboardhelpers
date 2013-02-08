@@ -73,7 +73,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 	post.appendChild template 'tt-last-updated' {text}
 
 	#last-updated <td for ADV mode
-	td.appendChild.innerHTML += "<td class='post-last-updated'>#simplified-time</td>"
+	td.innerHTML += "<td class='post-last-updated'>#simplified-time</td>"
 
 	state = check-topic topic-id, post-count, author-name
 

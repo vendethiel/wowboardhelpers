@@ -5,7 +5,7 @@ langs =
 		time-index: 3
 		time-outdex: 0
 
-		last-message: 'Dernier message'
+		last-message: 'Dernier'
 		toggle-sticky: 'Afficher/Cacher les post-its'
 		mar: 'Tout marquer comme lu'
 		new-messages: 'Il y a des nouveau(x) message(s)'
@@ -14,6 +14,8 @@ langs =
 
 		few-seconds-ago: 'il y a quelques secondes'
 		#table FR to EN for time parsing
+		seconde: 'second'
+		second: 'seconde'
 		heure: 'hour'
 		hour: 'heure'
 		jour: 'day'
@@ -22,7 +24,7 @@ langs =
 		time-index: 0
 		time-outdex: -1
 
-		last-message: 'Last message'
+		last-message: 'Last'
 		toggle-sticky: 'Show/Hide stickies'
 		mar: 'Mark all as read'
 		few-seconds-ago: 'few seconds ago'
@@ -57,6 +59,10 @@ time-table =
 	* 'jour'    'j'
 	* 'days'    'd'
 	* 'day'     'd'
+
+	* 'secondes' 's'
+	* 'seconds' 's'
+	* 'second' 's'
 
 /**
  * simplifies time based on table replacement
