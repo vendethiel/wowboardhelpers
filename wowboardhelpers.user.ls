@@ -107,7 +107,7 @@ tr:not(.stickied) a[data-tooltip] {
   display: none;
 }
 #posts.advanced .post-author {
-  width: 10px;
+  width: 15px;
 }
 #posts.advanced .post-views {
   width: 15px;
@@ -140,6 +140,9 @@ tr:not(.stickied) a[data-tooltip] {
   width: 10px;
   text-align: right;
   padding-right: 10px;
+}
+#posts.advanced .last-read {
+  display: none;
 }
 #posts.simple .tt-last-updated {
   display: inline;
