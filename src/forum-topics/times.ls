@@ -12,8 +12,13 @@ for post-title in post-titles
 	for timespan in post-title.dataset.simplified-time / ', '
 		[count, unit] = timespan / ' '
 
+		if count is lang 'few'
+			count = 5
+			unit = lang 'second'
+
 		#use lang to get correct unit
-		total += count * units[lang[lang.singularize unit]]
+		total += count * units[lang lang.singularize unit]
+		console.log count, lang.singularize unit if total isnt total
 
 	date = new Date timestamp - total
 	#post-title.innerHTML .= replace '>)' ">, #{date.getHours!}:#{date.getMinutes!})"

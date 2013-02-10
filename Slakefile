@@ -15,6 +15,9 @@ runtime = {}
 outfile = \wowboardhelpers.user.js
 metadata = read \metadata.js
 #  current-forum
+# common/autolink ? I don't think shared is the right place
+# or maybe rename shared to boot
+# or rename shared to common?
 sources = <[
   shared/dom-helpers
   shared/common
@@ -22,6 +25,8 @@ sources = <[
   shared/lang
   shared/content-class
   shared/utils/
+
+  common/autolink
 
   fix/
   
@@ -43,6 +48,7 @@ sources = <[
   reply/clear-textarea
   reply/quick-quote
   reply/memebox
+  reply/preview
 ]>
 
 
@@ -124,9 +130,9 @@ compile = (it, options) ->
 
 wrap = -> "
 \nlet ##it
-\n\tconsole.time '#it'
+\n\t# console.time '#it'
 \n\t#{read it .replace /\n/g '\n\t'}
-\n\tconsole.timeEnd '#it'"
+\n\t# console.timeEnd '#it'"
 
 # stuff each file into a `let` IEFE, and then compile, which
 # avoids LiveScript's redefinition of boilerplate

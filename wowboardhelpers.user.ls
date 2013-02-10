@@ -1,6 +1,6 @@
 
 let #src/shared/dom-helpers.ls
-	console.time 'src/shared/dom-helpers.ls'
+	# console.time 'src/shared/dom-helpers.ls'
 	#@todo add `...childs` ? slow downs a lot =(
 	function node(tag, props = {})
 		(document.createElement tag) <<< props
@@ -38,10 +38,10 @@ let #src/shared/dom-helpers.ls
 	function QS then document.querySelector it
 	
 	export node, replace-with, template, QSA, QS, fetch-siblings
-	console.timeEnd 'src/shared/dom-helpers.ls'
+	# console.timeEnd 'src/shared/dom-helpers.ls'
 
 let #src/shared/common.ls
-	console.time 'src/shared/common.ls'
+	# console.time 'src/shared/common.ls'
 	forum-options = QS '.forum-options'
 	
 	if topic = document.getElementById 'thread'
@@ -53,10 +53,10 @@ let #src/shared/common.ls
 		export tbody-regular = QS 'tbody.regular'
 	
 	export topic, forum, forum-options
-	console.timeEnd 'src/shared/common.ls'
+	# console.timeEnd 'src/shared/common.ls'
 
 let #src/shared/css.ls
-	console.time 'src/shared/css.ls'
+	# console.time 'src/shared/css.ls'
 	style = node 'style' type: 'text/css' innerHTML: '''
 	/*slake:build#compile-ls embeds css*/
 	#forum-actions-top h1 {
@@ -95,6 +95,12 @@ a.hide-topic {
 }
 a.hide-topic:hover {
   color: #f00 !important;
+}
+.last-read {
+  opacity: 0;
+}
+tr:hover .last-read {
+  opacity: 1;
 }
 .post-pages .last-read {
   background-image: none !important;
@@ -140,9 +146,6 @@ tr:not(.stickied) a[data-tooltip] {
   width: 10px;
   text-align: right;
   padding-right: 10px;
-}
-#posts.advanced .last-read {
-  display: none;
 }
 #posts.simple .tt-last-updated {
   display: inline;
@@ -197,10 +200,10 @@ img.autolink {
 	'''
 	
 	document.head.appendChild style
-	console.timeEnd 'src/shared/css.ls'
+	# console.timeEnd 'src/shared/css.ls'
 
 let #src/shared/lang.ls
-	console.time 'src/shared/lang.ls'
+	# console.time 'src/shared/lang.ls'
 	l = (document.location / '/')4
 	
 	langs =
@@ -222,6 +225,7 @@ let #src/shared/lang.ls
 			hour: 'heure'
 			jour: 'day'
 			day: 'jour'
+			few: 'quelques' #[il y a]
 	
 			last-message: 'Message' #.last-post-th
 			html-overrides:
@@ -239,19 +243,18 @@ let #src/shared/lang.ls
 			checking-new: 'Checking new messages ...'
 			no-new: 'No new message.'
 	
-	export lang = langs[l] ? langs.en
+	export class lang # acts like a proxy to avoid unneeded keys
+		import langs[l] ? langs.en
+		-> return lang[it] ? it
 	
-	for k in <[minute hour day year]>
-		lang[k] ?= k
+		@pluralize ?= (count, key) ~>
+			"#{Math.round count} #{@ key}#{['s' if count > 1.5]}"
 	
-	lang.pluralize ?= (count, key) ->
-		"#{Math.round count} #{@[key]}#{['s' if count > 1.5]}"
-	
-	lang.singularize ?= ->
-		if it[*-1] is 's'
-			it.slice 0 -1
-		else
-			it
+		@singularize ?= ->
+			if it[*-1] is 's'
+				it.slice 0 -1
+			else
+				it
 	
 	time-table =
 		* 'heures'  'h'
@@ -268,8 +271,8 @@ let #src/shared/lang.ls
 		* 'day'     'd'
 	
 		* 'secondes' 's'
-		* 'seconds' 's'
-		* 'second' 's'
+		* 'seconds'  's'
+		* 'second'   's'
 	
 	/**
 	 * simplifies time based on table replacement
@@ -279,30 +282,30 @@ let #src/shared/lang.ls
 			it .= replace convert-from, convert-to
 	
 		it
-	console.timeEnd 'src/shared/lang.ls'
+	# console.timeEnd 'src/shared/lang.ls'
 
 let #src/shared/content-class.ls
-	console.time 'src/shared/content-class.ls'
+	# console.time 'src/shared/content-class.ls'
 	content = QS '#content'
 	
 	content.className = switch
 	| topic => "topic"
 	| forum => "forum"
 	| otherwise => ""
-	console.timeEnd 'src/shared/content-class.ls'
+	# console.timeEnd 'src/shared/content-class.ls'
 
 let #src/shared/utils///ajax.ls
-	console.time 'src/shared/utils///ajax.ls'
+	# console.time 'src/shared/utils///ajax.ls'
 	export class ajax
 		@get = (url, success) ->
 			new XMLHttpRequest
 				..open 'GET' url
 				..onload = success
 				..send!
-	console.timeEnd 'src/shared/utils///ajax.ls'
+	# console.timeEnd 'src/shared/utils///ajax.ls'
 
 let #src/shared/utils///date.ls
-	console.time 'src/shared/utils///date.ls'
+	# console.time 'src/shared/utils///date.ls'
 	Date::relative-time = ->
 		if ( days = ( ( diff = Date.now! - @getTime! ) / 86400000 ) ) > 1
 			lang.pluralize days, \day
@@ -314,26 +317,131 @@ let #src/shared/utils///date.ls
 			lang.pluralize seconds, \second
 		else
 			lang.few-seconds-ago
-	console.timeEnd 'src/shared/utils///date.ls'
+	# console.timeEnd 'src/shared/utils///date.ls'
 
 let #src/shared/utils///string.ls
-	console.time 'src/shared/utils///string.ls'
+	# console.time 'src/shared/utils///string.ls'
 	#FUCK YOU IDC I EXTEND NATIVE OBJECTS
 	String::pad = (len, str) ->
 		return if @length >= len
 	
 		@ + "#str" * (len - @length)
-	console.timeEnd 'src/shared/utils///string.ls'
+	# console.timeEnd 'src/shared/utils///string.ls'
+
+let #src/common/autolink.ls
+	# console.time 'src/common/autolink.ls'
+	extensions = '(?:com|net|org|eu|fr|jp|us|co\.uk|me)'
+	
+	rules = # indent looks nasty because array star is just `void =` which adds 2 indents
+		# youtube thumbnails
+		* * //
+				(?:https?:\/\/)? # optional protocol
+				(?:(?:www|m)\.)?			 # optional subdomain (some people add it)
+				(
+					youtu\.be\/ # short links
+						([\w\-_]+) # video id
+						(\?[&=\w\-_;\#]*)? # options
+					|
+					youtube\.com\/watch\?
+						([&=\w\-_;\.\?\#\%]*) # pre video id options
+						v=([\w\-_]+) # video id
+						([&=\w\-\._;\?\#\%]*) # post vieo id options
+				)
+	//g
+				* '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0">
+	</iframe>'
+	
+		# specialcase linkify urls without internal parenthesis surrounded by
+		# parenthesis like (http://google.com)
+		* * /\((https?:\/\/)([^<\s\)]+)\)/g
+				* '(<a class="external" \
+					 rel="noreferrer" \
+					 href="$1$2" \
+					 title="$1$2" \
+					 target="_blank">$2</a>)'
+	
+		# specialcase linkify urls without a protocol but with a common tld
+		* * //
+				(^|>|;|\s) # to avoid linking parts of urls inside hrefs, must start
+											 # with one of these
+				(
+					[\w\.\-]+\. # domain
+					#extensions # non-exhaustive
+					(/[^<\s]*)?(?=[\s<]|$) # rest of the url until space or <br> or end
+				)
+			//g
+				* '$1<a class="external" \
+						rel="noreferrer" \
+						href="http://$2" \
+						title="$2" \
+						target="_blank">$2</a>'
+	
+	
+		# linkify links not preceded by a quote or double-quote (should avoid
+		# relinkifying href= urls)
+		* * /([^"']|^)(https?:\/\/)([^<\s\)]+)/g
+				* '$1<a class="external" \
+						rel="noreferrer" \
+						href="$2$3" \
+						title="$2$3" \
+						target="_blank">$3</a>'
+		* * //
+				(^|>|;|\s) # to avoid linking parts of urls inside hrefs
+				(
+					(?!(?:www\.)?dropbox) # broken shit (non-exhaustive)
+					[\w\.\-]+\. # domain
+					#extensions # non-exhaustive
+					(/[^.<\s]*)
+					\.(jpg|png|gif|jpeg)
+					(?=[\s<]|$)
+				|
+					puu\.sh/[a-zA-Z0-9]+
+				)
+			//g
+				* '$1<img src="http://$2" alt="$2" class="autolink" />'
+	
+		# recognize character names
+		* * //
+				>
+				[a-z]{2}\.battle\.net/wow/[a-z]{2}/character/([a-z]+)/([a-z_$\xAA-\uFFDC%0-9]+)
+			//i
+				* -> #indentation says "fuck like" here : d
+							[..., realm, pseudo] = it / '/' 
+							">#realm/#{decodeURIComponent pseudo}"
+	
+	export function autolink
+		for [pattern, replacement] in rules
+			it .= replace pattern, replacement
+		it
+	
+	export function el-autolink
+		try
+			h = autolink it.innerHTML
+	
+			### now let's move on more specific rules
+			# replace wow forum links
+			r = //\>([a-z]{2}\.battle\.net/wow/[a-z]{2}/forum/topic/[0-9]+)//g
+			while [, url]? = r.exec h
+				let url, it
+					<-! ajax.get "http://#url"
+					if /<title>(.+)<\/title>/ == @response
+						it.innerHTML .= replace ">#url" ">#{that.1}"
+	
+	
+			it.innerHTML = h
+		catch
+			console.log "Unable to generate valid HTML : #h (#e)"
+	# console.timeEnd 'src/common/autolink.ls'
 
 let #src/fix///html-overrides.ls
-	console.time 'src/fix///html-overrides.ls'
+	# console.time 'src/fix///html-overrides.ls'
 	if lang.html-overrides
 		for k, v of that
 			QS k ?.innerHTML = v
-	console.timeEnd 'src/fix///html-overrides.ls'
+	# console.timeEnd 'src/fix///html-overrides.ls'
 
 let #src/fix///menu.ls
-	console.time 'src/fix///menu.ls'
+	# console.time 'src/fix///menu.ls'
 	# fixes Blizzard's menu
 	# which seems to think js has autovivification
 	
@@ -342,10 +450,10 @@ let #src/fix///menu.ls
 		w.Menu.dataIndex[options.set ? 'base'] ?= []
 	
 		old ...
-	console.timeEnd 'src/fix///menu.ls'
+	# console.timeEnd 'src/fix///menu.ls'
 
 let #src/forum/mar.ls
-	console.time 'src/forum/mar.ls'
+	# console.time 'src/forum/mar.ls'
 	return unless forum
 	all-read = false
 	
@@ -369,10 +477,10 @@ let #src/forum/mar.ls
 	button-mar.style.cursor = 'pointer'
 	
 	forum-options.appendChild button-mar
-	console.timeEnd 'src/forum/mar.ls'
+	# console.timeEnd 'src/forum/mar.ls'
 
 let #src/forum/stickies.ls
-	console.time 'src/forum/stickies.ls'
+	# console.time 'src/forum/stickies.ls'
 	return unless forum
 	
 	#remove sticky part (tbody.sticky)
@@ -390,20 +498,20 @@ let #src/forum/stickies.ls
 	button-sticky.style.cursor = 'pointer'
 	
 	forum-options.appendChild button-sticky
-	console.timeEnd 'src/forum/stickies.ls'
+	# console.timeEnd 'src/forum/stickies.ls'
 
 let #src/forum/move-actions.ls
-	console.time 'src/forum/move-actions.ls'
+	# console.time 'src/forum/move-actions.ls'
 	return unless forum
 	
 	QS '.forum-options'
 		..parentNode.removeChild ..
 	
 		QS '.content-trail' .appendChild ..
-	console.timeEnd 'src/forum/move-actions.ls'
+	# console.timeEnd 'src/forum/move-actions.ls'
 
 let #src/forum/check-updates.ls
-	console.time 'src/forum/check-updates.ls'
+	# console.time 'src/forum/check-updates.ls'
 	return unless forum
 	
 	#we DON'T delay execution because server reponse won't be ordered
@@ -446,10 +554,10 @@ let #src/forum/check-updates.ls
 	
 	#timeout clearing is in hide-topic
 	export check-updates = setTimeout refresh, timeout
-	console.timeEnd 'src/forum/check-updates.ls'
+	# console.timeEnd 'src/forum/check-updates.ls'
 
 let #src/forum-topics/last-updated.ls
-	console.time 'src/forum-topics/last-updated.ls'
+	# console.time 'src/forum-topics/last-updated.ls'
 	return unless forum
 	
 	#get account's character names
@@ -579,7 +687,7 @@ let #src/forum-topics/last-updated.ls
 	 * returns 0 if no information were found
 	 */
 	function check-topic(id, count, last-poster)
-		match w.localStorage.getItem "topic_#id"
+		match localStorage.getItem "topic_#id"
 		| (> count)
 			if last-poster == get-last-poster id
 			then TSTATE_CHK
@@ -590,11 +698,11 @@ let #src/forum-topics/last-updated.ls
 	
 	
 	function get-last-poster
-		w.localStorage.getItem "topic_lp_#it"
-	console.timeEnd 'src/forum-topics/last-updated.ls'
+		localStorage.getItem "topic_lp_#it"
+	# console.timeEnd 'src/forum-topics/last-updated.ls'
 
 let #src/forum-topics/move-redirects.ls
-	console.time 'src/forum-topics/move-redirects.ls'
+	# console.time 'src/forum-topics/move-redirects.ls'
 	return unless forum
 	
 	for status in tbody-regular.querySelectorAll '.post-status'
@@ -604,10 +712,10 @@ let #src/forum-topics/move-redirects.ls
 		#set it at the end
 		tbody-regular.removeChild tr
 		tbody-regular.appendChild tr
-	console.timeEnd 'src/forum-topics/move-redirects.ls'
+	# console.timeEnd 'src/forum-topics/move-redirects.ls'
 
 let #src/forum-topics/hide-topic.ls
-	console.time 'src/forum-topics/hide-topic.ls'
+	# console.time 'src/forum-topics/hide-topic.ls'
 	return unless forum
 	
 	hidden-topics = (w.localStorage.getItem "hidden_topics" or "") / ";"
@@ -656,10 +764,10 @@ let #src/forum-topics/hide-topic.ls
 	#ensure we don't check updates if we already have updates
 	if QS 'tbody.regular tr:not(.hidden):not(.read)'
 		clearTimeout check-updates
-	console.timeEnd 'src/forum-topics/hide-topic.ls'
+	# console.timeEnd 'src/forum-topics/hide-topic.ls'
 
 let #src/forum-topics/times.ls
-	console.time 'src/forum-topics/times.ls'
+	# console.time 'src/forum-topics/times.ls'
 	units =
 		second: 1000ms
 		minute: 60_000ms
@@ -674,8 +782,13 @@ let #src/forum-topics/times.ls
 		for timespan in post-title.dataset.simplified-time / ', '
 			[count, unit] = timespan / ' '
 	
+			if count is lang 'few'
+				count = 5
+				unit = lang 'second'
+	
 			#use lang to get correct unit
-			total += count * units[lang[lang.singularize unit]]
+			total += count * units[lang lang.singularize unit]
+			console.log count, lang.singularize unit if total isnt total
 	
 		date = new Date timestamp - total
 		#post-title.innerHTML .= replace '>)' ">, #{date.getHours!}:#{date.getMinutes!})"
@@ -692,10 +805,10 @@ let #src/forum-topics/times.ls
 	
 		setTimeout refresh, timeout
 	refresh!
-	console.timeEnd 'src/forum-topics/times.ls'
+	# console.timeEnd 'src/forum-topics/times.ls'
 
 let #src/topic/update-count.ls
-	console.time 'src/topic/update-count.ls'
+	# console.time 'src/topic/update-count.ls'
 	return unless topic
 	
 	#pagination
@@ -715,10 +828,10 @@ let #src/topic/update-count.ls
 	#mark as read
 	w.localStorage.setItem "topic_#{topic.dataset.id}" post-count
 	w.localStorage.setItem "topic_lp_#{topic.dataset.id}" last-poster-name
-	console.timeEnd 'src/topic/update-count.ls'
+	# console.timeEnd 'src/topic/update-count.ls'
 
 let #src/topic/improve-topic.ls
-	console.time 'src/topic/improve-topic.ls'
+	# console.time 'src/topic/improve-topic.ls'
 	return unless topic
 	
 	for infos in document.getElementsByClassName 'character-info'
@@ -727,118 +840,18 @@ let #src/topic/improve-topic.ls
 		realm .= innerHTML
 	
 		infos.querySelector '.character-desc' ?.innerHTML += "<br />#realm"
-	console.timeEnd 'src/topic/improve-topic.ls'
+	# console.timeEnd 'src/topic/improve-topic.ls'
 
 let #src/topic/autolink.ls
-	console.time 'src/topic/autolink.ls'
+	# console.time 'src/topic/autolink.ls'
 	return unless topic
 	
-	extensions = '(?:com|net|org|eu|fr|jp|us|co\.uk)'
-	
-	rules = # indent looks nasty because array star is just `void =` which adds 2 indents
-		# youtube thumbnails
-		* * //
-				(?:https?:\/\/)? # optional protocol
-				(?:(?:www|m)\.)?			 # optional subdomain (some people add it)
-				(
-					youtu\.be\/ # short links
-						([\w\-_]+) # video id
-						(\?[&=\w\-_;\#]*)? # options
-					|
-					youtube\.com\/watch\?
-						([&=\w\-_;\.\?\#\%]*) # pre video id options
-						v=([\w\-_]+) # video id
-						([&=\w\-\._;\?\#\%]*) # post vieo id options
-				)
-	//g
-				* '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0">
-	</iframe>'
-	
-		# specialcase linkify urls without internal parenthesis surrounded by
-		# parenthesis like (http://google.com)
-		* * /\((https?:\/\/)([^<\s\)]+)\)/g
-				* '(<a class="external" \
-					 rel="noreferrer" \
-					 href="$1$2" \
-					 title="$1$2" \
-					 target="_blank">$2</a>)'
-	
-		# specialcase linkify urls without a protocol but with a common tld
-		* * //
-				(^|>|;|\s) # to avoid linking parts of urls inside hrefs, must start
-											 # with one of these
-				(
-					[\w\.\-]+\. # domain
-					#extensions # non-exhaustive
-					(/[^<\s]*)?(?=[\s<]|$) # rest of the url until space or <br> or end
-				)
-			//g
-				* '$1<a class="external" \
-						rel="noreferrer" \
-						href="http://$2" \
-						title="$2" \
-						target="_blank">$2</a>'
-	
-	
-		# linkify links not preceded by a quote or double-quote (should avoid
-		# relinkifying href= urls)
-		* * /([^"']|^)(https?:\/\/)([^<\s\)]+)/g
-				* '$1<a class="external" \
-						rel="noreferrer" \
-						href="$2$3" \
-						title="$2$3" \
-						target="_blank">$3</a>'
-		* * //
-				(^|>|;|\s) # to avoid linking parts of urls inside hrefs
-				(
-					(?!(?:www\.)?dropbox) # broken shit (non-exhaustive)
-					[\w\.\-]+\. # domain
-					#extensions # non-exhaustive
-					(/[^.<\s]*)
-					\.(jpg|png|gif|jpeg)
-					(?=[\s<]|$)
-				|
-					puu\.sh/[a-zA-Z0-9]+
-				)
-			//g
-				* '$1<img src="http://$2" alt="$2" class="autolink" />'
-	
-		# recognize character names
-		* * //
-				>
-				[a-z]{2}\.battle\.net/wow/[a-z]{2}/character/([a-z]+)/([a-z_$\xAA-\uFFDC%0-9]+)
-			//i
-				* -> #indentation says "fuck like" here : d
-							[..., realm, pseudo] = it / '/' 
-							">#realm/#{decodeURIComponent pseudo}"
-	
-	replace = ->
-		for [pattern, replacement] in rules
-			it .= replace pattern, replacement
-		it
-	
 	for post in QSA '.post-detail'
-		try
-			h = replace post.innerHTML
-	
-			### now let's move on more specific rules
-			# replace wow forum links
-			r = //\>([a-z]{2}\.battle\.net/wow/[a-z]{2}/forum/topic/[0-9]+)//g
-			while [, url]? = r.exec h
-				let url, post
-					<-! ajax.get "http://#url"
-					if /<title>(.+)<\/title>/ == @response
-						post.innerHTML .= replace ">#url" ">#{that.1}"
-	
-	
-			post.innerHTML = h
-		catch
-			console.log "Unable to generate valid HTML : #h (#e)"
-			break
-	console.timeEnd 'src/topic/autolink.ls'
+		el-autolink post
+	# console.timeEnd 'src/topic/autolink.ls'
 
 let #src/reply/remember-reply.ls
-	console.time 'src/reply/remember-reply.ls'
+	# console.time 'src/reply/remember-reply.ls'
 	return unless topic
 	
 	return unless textarea = QS '#post-edit textarea'
@@ -853,10 +866,10 @@ let #src/reply/remember-reply.ls
 	
 	submit.onclick = -> #clear on submit
 		w.localStorage.setItem "post_#{topic.dataset.id}" ""
-	console.timeEnd 'src/reply/remember-reply.ls'
+	# console.timeEnd 'src/reply/remember-reply.ls'
 
 let #src/reply/clear-textarea.ls
-	console.time 'src/reply/clear-textarea.ls'
+	# console.time 'src/reply/clear-textarea.ls'
 	return unless topic
 	
 	clearer = template 'clear-textarea'
@@ -871,10 +884,10 @@ let #src/reply/clear-textarea.ls
 			textarea.value = ''
 			#manually clearing localStorage is something I'd like to avoid
 			w.localStorage.removeItem "post_#{topic.dataset.id}"
-	console.timeEnd 'src/reply/clear-textarea.ls'
+	# console.timeEnd 'src/reply/clear-textarea.ls'
 
 let #src/reply/quick-quote.ls
-	console.time 'src/reply/quick-quote.ls'
+	# console.time 'src/reply/quick-quote.ls'
 	return unless topic
 	
 	key-code = 82 #'r' key
@@ -890,10 +903,10 @@ let #src/reply/quick-quote.ls
 			textarea.selectionStart = textarea.selectionEnd = textarea.value.length
 			textarea.focus!
 			document.location += '#forum-actions-bottom'
-	console.timeEnd 'src/reply/quick-quote.ls'
+	# console.timeEnd 'src/reply/quick-quote.ls'
 
 let #src/reply/memebox.ls
-	console.time 'src/reply/memebox.ls'
+	# console.time 'src/reply/memebox.ls'
 	return unless topic
 	
 	memes =
@@ -904,7 +917,7 @@ let #src/reply/memebox.ls
 		youdontsay: 'http://bearsharkaxe.com/wp-content/uploads/2012/06/you-dont-say.jpg'
 		fullretard: 'http://www.osborneink.com/wp-content/uploads/2012/11/never_go_full_retard1.jpg'
 		seriously: 'http://i3.kym-cdn.com/entries/icons/original/000/005/545/OpoQQ.jpg'
-		trollface: 'http://www.mes-coloriages-preferes.com/Images/Large/Personnages-celebres-Troll-face-28324.png'
+		trollface: 'http://fc09.deviantart.net/fs70/f/2012/342/5/a/troll_face_by_bmsproductionz-d5ng9k6.png'
 		fuckyeah: 'http://cdn.ebaumsworld.com/mediaFiles/picture/2168064/82942867.jpg'
 		pedobear: 'http://aserres.free.fr/pedobear/pedobear.png'
 		slowpoke: 'https://0-media-cdn.foolz.us/ffuuka/board/a/image/1351/43/1351437155488.png'
@@ -916,6 +929,13 @@ let #src/reply/memebox.ls
 		fulloffuck: 'http://www.mememaker.net/static/images/templates/14288.jpg'
 		okay: 'http://cache.ohinternet.com/images/e/e6/Okay_guy.jpg'
 		no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
+	
+	/*# disabled as per dryaan
+	extra-memes = {}
+	if localStorage.getItem "memes"
+		extra-memes = JSON.parse that
+		# extra work on these is done at the bottom, after memebox is appended to dom
+	*/
 	
 	return unless post-wrapper = QS '.post.general'
 	post-wrapper.removeChild post-wrapper.children[*-1] #remove span.clear
@@ -943,7 +963,7 @@ let #src/reply/memebox.ls
 		return unless value
 	
 		approximates = []; i = 0
-		for name, url of memes
+		for name, url of memes # {...extra-memes, ...memes}
 			switch name.indexOf value
 			| -1 =>
 			| 0  => append-meme name, url
@@ -954,8 +974,26 @@ let #src/reply/memebox.ls
 		for [name, url] in approximates
 			append-meme name, url
 	
-	
-	
-	
 	post-wrapper.appendChild memebox
-	console.timeEnd 'src/reply/memebox.ls'
+	
+	# now let's move on user memes
+	# console.timeEnd 'src/reply/memebox.ls'
+
+let #src/reply/preview.ls
+	# console.time 'src/reply/preview.ls'
+	return unless topic
+	
+	return unless post-preview = QS '#post-preview'
+	
+	# let's replace BML preview to add
+	# our autolink feature
+	old = w.BML.preview.bind w.BML
+	w.BML.preview = (content, target, c) ->
+		# let's bind our autolink
+		callback = ->
+			c!
+			el-autolink post-preview
+	
+		# and imitate old behavior
+		old content, target, callback
+	# console.timeEnd 'src/reply/preview.ls'

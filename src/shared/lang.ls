@@ -19,6 +19,7 @@ langs =
 		hour: 'heure'
 		jour: 'day'
 		day: 'jour'
+		few: 'quelques' #[il y a]
 
 		last-message: 'Message' #.last-post-th
 		html-overrides:
@@ -36,19 +37,18 @@ langs =
 		checking-new: 'Checking new messages ...'
 		no-new: 'No new message.'
 
-export lang = langs[l] ? langs.en
+export class lang # acts like a proxy to avoid unneeded keys
+	import langs[l] ? langs.en
+	-> return lang[it] ? it
 
-for k in <[minute hour day year]>
-	lang[k] ?= k
+	@pluralize ?= (count, key) ~>
+		"#{Math.round count} #{@ key}#{['s' if count > 1.5]}"
 
-lang.pluralize ?= (count, key) ->
-	"#{Math.round count} #{@[key]}#{['s' if count > 1.5]}"
-
-lang.singularize ?= ->
-	if it[*-1] is 's'
-		it.slice 0 -1
-	else
-		it
+	@singularize ?= ->
+		if it[*-1] is 's'
+			it.slice 0 -1
+		else
+			it
 
 time-table =
 	* 'heures'  'h'
@@ -65,8 +65,8 @@ time-table =
 	* 'day'     'd'
 
 	* 'secondes' 's'
-	* 'seconds' 's'
-	* 'second' 's'
+	* 'seconds'  's'
+	* 'second'   's'
 
 /**
  * simplifies time based on table replacement

@@ -127,7 +127,7 @@ unless has-unread
  * returns 0 if no information were found
  */
 function check-topic(id, count, last-poster)
-	match w.localStorage.getItem "topic_#id"
+	match localStorage.getItem "topic_#id"
 	| (> count)
 		if last-poster == get-last-poster id
 		then TSTATE_CHK
@@ -138,4 +138,4 @@ function check-topic(id, count, last-poster)
 
 
 function get-last-poster
-	w.localStorage.getItem "topic_lp_#it"
+	localStorage.getItem "topic_lp_#it"

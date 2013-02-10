@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.6.4
+// @version 1.6.5
 // ==/UserScript==
  * changelog
+ * 1.6.5
+ *  post preview is now autolink
  * 1.6.4
  *  Better french headers in ADV mode (takes less space)
  *  Fixed a bug when visiting a thread with #[0-9]+ in the url

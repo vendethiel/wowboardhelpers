@@ -1,0 +1,101 @@
+extensions = '(?:com|net|org|eu|fr|jp|us|co\.uk|me)'
+
+rules = # indent looks nasty because array star is just `void =` which adds 2 indents
+	# youtube thumbnails
+	* * //
+			(?:https?:\/\/)? # optional protocol
+			(?:(?:www|m)\.)?			 # optional subdomain (some people add it)
+			(
+				youtu\.be\/ # short links
+					([\w\-_]+) # video id
+					(\?[&=\w\-_;\#]*)? # options
+				|
+				youtube\.com\/watch\?
+					([&=\w\-_;\.\?\#\%]*) # pre video id options
+					v=([\w\-_]+) # video id
+					([&=\w\-\._;\?\#\%]*) # post vieo id options
+			)
+//g
+			* '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0">
+</iframe>'
+
+	# specialcase linkify urls without internal parenthesis surrounded by
+	# parenthesis like (http://google.com)
+	* * /\((https?:\/\/)([^<\s\)]+)\)/g
+			* '(<a class="external" \
+				 rel="noreferrer" \
+				 href="$1$2" \
+				 title="$1$2" \
+				 target="_blank">$2</a>)'
+
+	# specialcase linkify urls without a protocol but with a common tld
+	* * //
+			(^|>|;|\s) # to avoid linking parts of urls inside hrefs, must start
+										 # with one of these
+			(
+				[\w\.\-]+\. # domain
+				#extensions # non-exhaustive
+				(/[^<\s]*)?(?=[\s<]|$) # rest of the url until space or <br> or end
+			)
+		//g
+			* '$1<a class="external" \
+					rel="noreferrer" \
+					href="http://$2" \
+					title="$2" \
+					target="_blank">$2</a>'
+
+
+	# linkify links not preceded by a quote or double-quote (should avoid
+	# relinkifying href= urls)
+	* * /([^"']|^)(https?:\/\/)([^<\s\)]+)/g
+			* '$1<a class="external" \
+					rel="noreferrer" \
+					href="$2$3" \
+					title="$2$3" \
+					target="_blank">$3</a>'
+	* * //
+			(^|>|;|\s) # to avoid linking parts of urls inside hrefs
+			(
+				(?!(?:www\.)?dropbox) # broken shit (non-exhaustive)
+				[\w\.\-]+\. # domain
+				#extensions # non-exhaustive
+				(/[^.<\s]*)
+				\.(jpg|png|gif|jpeg)
+				(?=[\s<]|$)
+			|
+				puu\.sh/[a-zA-Z0-9]+
+			)
+		//g
+			* '$1<img src="http://$2" alt="$2" class="autolink" />'
+
+	# recognize character names
+	* * //
+			>
+			[a-z]{2}\.battle\.net/wow/[a-z]{2}/character/([a-z]+)/([a-z_$\xAA-\uFFDC%0-9]+)
+		//i
+			* -> #indentation says "fuck like" here : d
+						[..., realm, pseudo] = it / '/' 
+						">#realm/#{decodeURIComponent pseudo}"
+
+export function autolink
+	for [pattern, replacement] in rules
+		it .= replace pattern, replacement
+	it
+
+export function el-autolink
+	try
+		h = autolink it.innerHTML
+
+		### now let's move on more specific rules
+		# replace wow forum links
+		r = //\>([a-z]{2}\.battle\.net/wow/[a-z]{2}/forum/topic/[0-9]+)//g
+		while [, url]? = r.exec h
+			let url, it
+				<-! ajax.get "http://#url"
+				if /<title>(.+)<\/title>/ == @response
+					it.innerHTML .= replace ">#url" ">#{that.1}"
+
+
+		it.innerHTML = h
+	catch
+		console.log "Unable to generate valid HTML : #h (#e)"
