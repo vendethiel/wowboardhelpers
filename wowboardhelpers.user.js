@@ -378,15 +378,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
 (function(){
   var extensions, rules;
   extensions = '(?:com|net|org|eu|fr|jp|us|co.uk|me)';
-  rules = [
-    [/(?:https?:\/\/)?(?:(?:www|m)\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g, '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0"></iframe>'], [/\((https?:\/\/)([^<\s\)]+)\)/g, '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" target="_blank">$2</a>)'], [RegExp('(^|>|;|\\s)([\\w\\.\\-]+\\.' + extensions + '(/[^<\\s]*)?(?=[\\s<]|$))', 'g'), '$1<a class="external" rel="noreferrer" href="http://$2" title="$2" target="_blank">$2</a>'], [/([^"']|^)(https?:\/\/)([^<\s\)]+)/g, '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" target="_blank">$3</a>'], [RegExp('(^|>|;|\\s)((?!(?:www\\.)?dropbox)[\\w\\.\\-]+\\.' + extensions + '(/[^.<\\s]*)\\.(jpg|png|gif|jpeg)(?=[\\s<]|$)|puu\\.sh/[a-zA-Z0-9]+)', 'g'), '$1<img src="http://$2" alt="$2" class="autolink" />'], [
-      />[a-z]{2}\.battle\.net\/wow\/[a-z]{2}\/character\/([a-z]+)\/([a-z_$\xAA-\uFFDC%0-9]+)/i, function(it){
-        var ref$, i$, realm, pseudo;
-        ref$ = split$.call(it, '/'), i$ = ref$.length - 2, realm = ref$[i$], pseudo = ref$[i$ + 1];
-        return ">" + realm + "/" + decodeURIComponent(pseudo);
-      }
-    ]
-  ];
+  rules = [[/(?:https?:\/\/)?(?:(?:www|m)\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g, '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0"></iframe>'], [/\((https?:\/\/)([^<\s\)]+)\)/g, '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" data-autolink="paren-specialcase" target="_blank">$2</a>)'], [RegExp('(^|>|;|\\s)([\\w\\.\\-]+\\.' + extensions + '(/[^<\\s]*)?(?=[\\s<]|$))', 'g'), '$1<a class="external" rel="noreferrer" href="http://$2" data-autolink="protocol-specialcase" title="$2" target="_blank">$2</a>'], [/([^"']|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g, '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" data-autolink="quote-specialcase" target="_blank">$3</a>'], [RegExp('(^|>|;|\\s)((?!(?:www\\.)?dropbox)[\\w\\.\\-]+\\.' + extensions + '(/[^.<\\s]*)\\.(jpg|png|gif|jpeg)(?=[\\s<]|$)|puu\\.sh/[a-zA-Z0-9]+)', 'g'), '$1<img src="http://$2" alt="$2" class="autolink" />']];
   out$.autolink = autolink;
   function autolink(it){
     var i$, ref$, len$, ref1$, pattern, replacement;
@@ -397,24 +389,24 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     return it;
   }
   out$.elAutolink = elAutolink;
-  function elAutolink(it){
+  function elAutolink(el){
     var h, r, ref$, url, e;
     try {
-      h = autolink(it.innerHTML);
-      r = /\>([a-z]{2}\.battle\.net\/wow\/[a-z]{2}\/forum\/topic\/[0-9]+)/g;
+      h = autolink(el.innerHTML);
+      r = /\>(http:\/\/[a-z]{2}\.battle\.net\/[^<\s.]*)/g;
       while ((ref$ = r.exec(h)) != null && (url = ref$[1], ref$)) {
-        (fn$.call(this, url, it));
+        (fn$.call(this, url, el));
       }
-      return it.innerHTML = h;
+      return el.innerHTML = h;
     } catch (e$) {
       e = e$;
       return console.log("Unable to generate valid HTML : " + h + " (" + e + ")");
     }
-    function fn$(url, it){
-      ajax.get("http://" + url, function(it){
+    function fn$(url, el){
+      ajax.get(url, function(){
         var that;
         if (that = /<title>(.+)<\/title>/.exec(this.response)) {
-          it.innerHTML = it.innerHTML.replace(">" + url, ">" + that[1]);
+          el.innerHTML = el.innerHTML.replace(">" + url, ">" + (replace$.call(that[1], " - World of Warcraft", '')));
         }
       });
     }
@@ -435,10 +427,20 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   var old;
   old = w.Menu.show;
   w.Menu.show = function(arg$, arg1$, options){
-    var ref$, key$, ref1$;
+    var ref$, key$, x, ref1$;
     options == null && (options = {});
-    (ref$ = w.Menu.dataIndex)[key$ = (ref1$ = options.set) != null ? ref1$ : 'base'] == null && (ref$[key$] = []);
+    (ref$ = w.Menu.dataIndex)[key$ = x = (ref1$ = options.set) != null ? ref1$ : 'base'] == null && (ref$[key$] = []);
     return old.apply(this, arguments);
+  };
+}.call(this));
+(function(){
+  w.Cms.Forum.setView = function(type, target){
+    w.Cookie.create('forumView', type, {
+      path: "/",
+      expires: 8760
+    });
+    w.$(target).addClass('active').siblings().removeClass('active');
+    return w.$('#posts').attr('class', type);
   };
 }.call(this));
 (function(){
@@ -533,7 +535,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
         startPos = aEndHtml.length + afterRegular.indexOf(aEndHtml);
         afterRegular = afterRegular.slice(startPos);
         title = afterRegular.slice(0, afterRegular.indexOf('<')).trim();
-        h1.innerHTML = "<a href='" + document.location + "'>" + lang.newMessages + "</a> : " + [title.length > 50 ? '<br />' : void 8] + title;
+        h1.innerHTML = "<a href='" + document.location + "'>" + lang.newMessages + "</a> : " + [title.length > 30 ? '<br />' : void 8] + title;
       }
     });
   };

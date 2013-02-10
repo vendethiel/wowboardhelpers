@@ -23,7 +23,7 @@ refresh = ->
 		after-regular = @response.slice(tbody-html.length + @response.indexOf tbody-html)trim!
 
 		if tr-html is after-regular.substr 0 tr-html.length
-			setTimeout refresh, timeout #there we go again
+			setTimeout refresh, timeout # here we go again
 			h1.innerHTML += " <u>#{lang.no-new}</u>"
 			setTimeout -> #clear message
 				h1.innerHTML = ""
@@ -35,7 +35,7 @@ refresh = ->
 			title = after-regular.slice(0 after-regular.indexOf '<')trim!
 
 			h1.innerHTML = "<a href='#{document.location}'>#{lang.new-messages}</a> : 
-			#{['<br />' if title.length > 50]}#title"
+			#{['<br />' if title.length > 30]}#title"
 timeout = 15s * 1000ms #15s
 
 #timeout clearing is in hide-topic

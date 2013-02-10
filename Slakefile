@@ -14,10 +14,16 @@ runtime = {}
 ##########
 outfile = \wowboardhelpers.user.js
 metadata = read \metadata.js
-#  current-forum
-# common/autolink ? I don't think shared is the right place
-# or maybe rename shared to boot
-# or rename shared to common?
+
+# shared/ contains various utils
+# shared/utils contains wow-unrelated things & native class overrides
+# fix/ fixes some of the BROKEN wow behaviors
+#  (might be used for behavior overrides? fix/{reply,...}?)
+# forum contains forum-related things such as look etc (but not the table.#posts)
+# forum-topics contains topiclist-related things
+# topic contains viewtopic-related things
+# reply contains reply-related (textarea) thingss
+
 sources = <[
   shared/dom-helpers
   shared/common

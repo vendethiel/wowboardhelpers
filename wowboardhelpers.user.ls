@@ -358,6 +358,7 @@ let #src/common/autolink.ls
 					 rel="noreferrer" \
 					 href="$1$2" \
 					 title="$1$2" \
+					 data-autolink="paren-specialcase" \
 					 target="_blank">$2</a>)'
 	
 		# specialcase linkify urls without a protocol but with a common tld
@@ -373,17 +374,20 @@ let #src/common/autolink.ls
 				* '$1<a class="external" \
 						rel="noreferrer" \
 						href="http://$2" \
+						data-autolink="protocol-specialcase" \
 						title="$2" \
 						target="_blank">$2</a>'
 	
 	
 		# linkify links not preceded by a quote or double-quote (should avoid
 		# relinkifying href= urls)
-		* * /([^"']|^)(https?:\/\/)([^<\s\)]+)/g
+		# specialcase battle.net urls since they're autolinked by the forum
+		* * /([^"']|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g
 				* '$1<a class="external" \
 						rel="noreferrer" \
 						href="$2$3" \
 						title="$2$3" \
+						data-autolink="quote-specialcase" \
 						target="_blank">$3</a>'
 		* * //
 				(^|>|;|\s) # to avoid linking parts of urls inside hrefs
@@ -400,35 +404,26 @@ let #src/common/autolink.ls
 			//g
 				* '$1<img src="http://$2" alt="$2" class="autolink" />'
 	
-		# recognize character names
-		* * //
-				>
-				[a-z]{2}\.battle\.net/wow/[a-z]{2}/character/([a-z]+)/([a-z_$\xAA-\uFFDC%0-9]+)
-			//i
-				* -> #indentation says "fuck like" here : d
-							[..., realm, pseudo] = it / '/' 
-							">#realm/#{decodeURIComponent pseudo}"
-	
 	export function autolink
 		for [pattern, replacement] in rules
 			it .= replace pattern, replacement
 		it
 	
-	export function el-autolink
+	export function el-autolink(el)
 		try
-			h = autolink it.innerHTML
+			h = autolink el.innerHTML
 	
 			### now let's move on more specific rules
 			# replace wow forum links
-			r = //\>([a-z]{2}\.battle\.net/wow/[a-z]{2}/forum/topic/[0-9]+)//g
+			r = //\>(http:\/\/[a-z]{2}\.battle\.net/[^<\s.]*)//g
 			while [, url]? = r.exec h
-				let url, it
-					<-! ajax.get "http://#url"
+				let url, el
+					<-! ajax.get url
 					if /<title>(.+)<\/title>/ == @response
-						it.innerHTML .= replace ">#url" ">#{that.1}"
+						el.innerHTML .= replace ">#url" ">#{that.1 - " - World of Warcraft"}"
 	
 	
-			it.innerHTML = h
+			el.innerHTML = h
 		catch
 			console.log "Unable to generate valid HTML : #h (#e)"
 	# console.timeEnd 'src/common/autolink.ls'
@@ -444,13 +439,27 @@ let #src/fix///menu.ls
 	# console.time 'src/fix///menu.ls'
 	# fixes Blizzard's menu
 	# which seems to think js has autovivification
+	# NOTE : that will still fail when the extension hasn't been loaded yet
 	
 	old = w.Menu.show
 	w.Menu.show = (, , options = {}) ->
-		w.Menu.dataIndex[options.set ? 'base'] ?= []
+		w.Menu.dataIndex[x=options.set ? 'base'] ?= []
 	
 		old ...
 	# console.timeEnd 'src/fix///menu.ls'
+
+let #src/fix///set-view.ls
+	# console.time 'src/fix///set-view.ls'
+	# mere copypasta, removed last line (which redraws posts)
+	w.Cms.Forum.setView = (type, target) ->
+		w.Cookie.create 'forumView', type, path: "/" expires: 8760
+	
+		w.$(target)addClass 'active'
+			.siblings!
+			.removeClass 'active'
+			
+		w.$('#posts')attr 'class' type
+	# console.timeEnd 'src/fix///set-view.ls'
 
 let #src/forum/mar.ls
 	# console.time 'src/forum/mar.ls'
@@ -537,7 +546,7 @@ let #src/forum/check-updates.ls
 			after-regular = @response.slice(tbody-html.length + @response.indexOf tbody-html)trim!
 	
 			if tr-html is after-regular.substr 0 tr-html.length
-				setTimeout refresh, timeout #there we go again
+				setTimeout refresh, timeout # here we go again
 				h1.innerHTML += " <u>#{lang.no-new}</u>"
 				setTimeout -> #clear message
 					h1.innerHTML = ""
@@ -549,7 +558,7 @@ let #src/forum/check-updates.ls
 				title = after-regular.slice(0 after-regular.indexOf '<')trim!
 	
 				h1.innerHTML = "<a href='#{document.location}'>#{lang.new-messages}</a> : 
-				#{['<br />' if title.length > 50]}#title"
+				#{['<br />' if title.length > 30]}#title"
 	timeout = 15s * 1000ms #15s
 	
 	#timeout clearing is in hide-topic

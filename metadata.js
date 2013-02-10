@@ -10,7 +10,9 @@
 // ==/UserScript==
  * changelog
  * 1.6.5
- *  post preview is now autolink
+ *  post preview is now autolinked too
+ *  extended autotitleing to everything in blizzard.net
+ *   (everything out is prohibited because of xdomain policy)
  * 1.6.4
  *  Better french headers in ADV mode (takes less space)
  *  Fixed a bug when visiting a thread with #[0-9]+ in the url

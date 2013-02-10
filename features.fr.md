@@ -19,4 +19,5 @@ Topic :
  - Affiche les liens vers les sujets du forum via leur titre plutôt que leur adresse
  - Affiche les liens vers les persos via leur realm/pseudo plutôt que leur adresse
  - Affiche les images
+ - La preview est formatée suivant les règles précédentes
  - Affiche une "memebox" pour mettre des memes rapidement

@@ -26,6 +26,7 @@ rules = # indent looks nasty because array star is just `void =` which adds 2 in
 				 rel="noreferrer" \
 				 href="$1$2" \
 				 title="$1$2" \
+				 data-autolink="paren-specialcase" \
 				 target="_blank">$2</a>)'
 
 	# specialcase linkify urls without a protocol but with a common tld
@@ -41,17 +42,20 @@ rules = # indent looks nasty because array star is just `void =` which adds 2 in
 			* '$1<a class="external" \
 					rel="noreferrer" \
 					href="http://$2" \
+					data-autolink="protocol-specialcase" \
 					title="$2" \
 					target="_blank">$2</a>'
 
 
 	# linkify links not preceded by a quote or double-quote (should avoid
 	# relinkifying href= urls)
-	* * /([^"']|^)(https?:\/\/)([^<\s\)]+)/g
+	# specialcase battle.net urls since they're autolinked by the forum
+	* * /([^"']|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g
 			* '$1<a class="external" \
 					rel="noreferrer" \
 					href="$2$3" \
 					title="$2$3" \
+					data-autolink="quote-specialcase" \
 					target="_blank">$3</a>'
 	* * //
 			(^|>|;|\s) # to avoid linking parts of urls inside hrefs
@@ -68,34 +72,25 @@ rules = # indent looks nasty because array star is just `void =` which adds 2 in
 		//g
 			* '$1<img src="http://$2" alt="$2" class="autolink" />'
 
-	# recognize character names
-	* * //
-			>
-			[a-z]{2}\.battle\.net/wow/[a-z]{2}/character/([a-z]+)/([a-z_$\xAA-\uFFDC%0-9]+)
-		//i
-			* -> #indentation says "fuck like" here : d
-						[..., realm, pseudo] = it / '/' 
-						">#realm/#{decodeURIComponent pseudo}"
-
 export function autolink
 	for [pattern, replacement] in rules
 		it .= replace pattern, replacement
 	it
 
-export function el-autolink
+export function el-autolink(el)
 	try
-		h = autolink it.innerHTML
+		h = autolink el.innerHTML
 
 		### now let's move on more specific rules
 		# replace wow forum links
-		r = //\>([a-z]{2}\.battle\.net/wow/[a-z]{2}/forum/topic/[0-9]+)//g
+		r = //\>(http:\/\/[a-z]{2}\.battle\.net/[^<\s.]*)//g
 		while [, url]? = r.exec h
-			let url, it
-				<-! ajax.get "http://#url"
+			let url, el
+				<-! ajax.get url
 				if /<title>(.+)<\/title>/ == @response
-					it.innerHTML .= replace ">#url" ">#{that.1}"
+					el.innerHTML .= replace ">#url" ">#{that.1 - " - World of Warcraft"}"
 
 
-		it.innerHTML = h
+		el.innerHTML = h
 	catch
 		console.log "Unable to generate valid HTML : #h (#e)"
