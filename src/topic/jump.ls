@@ -8,4 +8,11 @@ document.addEventListener 'keydown' ->
 	it.preventDefault!
 
 	last-post-id = localStorage.getItem "topic_#{topic.dataset.id}"
-	document.location = (document.location / '#')0 + "##last-post-id"
+	last-post-page = Math.ceil last-post-id / 20
+
+
+	url = document.location
+	if topic.dataset.page < last-post-page
+		url = topic.dataset.url + "?page=#last-post-page"
+
+	document.location = url + "##last-post-id"

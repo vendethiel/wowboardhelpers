@@ -1,12 +1,12 @@
 /*
 // ==UserScript==
-// @name last updated
-// @description Shows last updated post on forum view
+// @name WoW Board Helpers
+// @description UserScript for the official WoW forum
 // @match http://eu.battle.net/wow/fr/forum/*
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.6.5
+// @version 1.6.6
 // ==/UserScript==
  * changelog
  * 1.6.6
@@ -229,10 +229,13 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   out$.fetchSiblings = fetchSiblings;
 }.call(this));
 (function(){
-  var forumOptions, topic, ref$, forum, tbodyRegular;
+  var forumOptions, topic, x$, topicUrl, ref$, forum, tbodyRegular;
   forumOptions = QS('.forum-options');
   if (topic = document.getElementById('thread')) {
-    topic.dataset.id = replace$.call((split$.call((ref$ = split$.call(document.location, '/'))[ref$.length - 1], '?'))[0], /#[0-9]+/, '');
+    x$ = topic.dataset;
+    x$.url = topicUrl = replace$.call((split$.call(document.location, '?'))[0], /#[0-9]+/, '');
+    x$.id = (ref$ = split$.call(x$.url, '/'))[ref$.length - 1];
+    x$.page = ((ref$ = /\?page=([0-9]+)/.exec(document.location)) != null ? ref$[1] : void 8) || 1;
   }
   if (forum = document.getElementById('posts')) {
     forum.dataset.id = (split$.call((ref$ = split$.call(document.location, '/'))[ref$.length - 2], '?'))[0];
@@ -845,7 +848,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   }
   keyCode = 74;
   document.addEventListener('keydown', function(it){
-    var lastPostId;
+    var lastPostId, lastPostPage, url;
     if (it.keyCode !== keyCode) {
       return;
     }
@@ -854,7 +857,12 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     }
     it.preventDefault();
     lastPostId = localStorage.getItem("topic_" + topic.dataset.id);
-    return document.location = (split$.call(document.location, '#'))[0] + ("#" + lastPostId);
+    lastPostPage = Math.ceil(lastPostId / 20);
+    url = document.location;
+    if (topic.dataset.page < lastPostPage) {
+      url = topic.dataset.url + ("?page=" + lastPostPage);
+    }
+    return document.location = url + ("#" + lastPostId);
   });
 }.call(this));
 (function(){

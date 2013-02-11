@@ -45,7 +45,10 @@ let #src/shared/common.ls
 	forum-options = QS '.forum-options'
 	
 	if topic = document.getElementById 'thread'
-		topic.dataset.id = ((document.location / '/')[*-1] / '?')0 - /#[0-9]+/
+		topic.dataset
+			..url = topic-url = (document.location / '?')0 - /#[0-9]+/
+			..id = (..url / '/')[*-1]
+			..page = (document.location == /\?page=([0-9]+)/)?1 or 1
 	
 	if forum = document.getElementById 'posts'
 		forum.dataset.id = ((document.location / '/')[*-2] / '?')0
@@ -871,7 +874,14 @@ let #src/topic/jump.ls
 		it.preventDefault!
 	
 		last-post-id = localStorage.getItem "topic_#{topic.dataset.id}"
-		document.location = (document.location / '#')0 + "##last-post-id"
+		last-post-page = Math.ceil last-post-id / 20
+	
+	
+		url = document.location
+		if topic.dataset.page < last-post-page
+			url = topic.dataset.url + "?page=#last-post-page"
+	
+		document.location = url + "##last-post-id"
 	# console.timeEnd 'src/topic/jump.ls'
 
 let #src/reply/remember-reply.ls

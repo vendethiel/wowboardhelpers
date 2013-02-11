@@ -6,7 +6,7 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.6.5
+// @version 1.6.6
 // ==/UserScript==
  * changelog
  * 1.6.6
