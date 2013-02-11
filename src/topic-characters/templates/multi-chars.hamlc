@@ -2,5 +2,5 @@
 	%h1= lang 'otherCharacters'
 
 	%ul
-		- for character in @characters when character isnt @current
-			%li= character
+		- for character in @characters when character.name isnt @current
+			%li= character.link

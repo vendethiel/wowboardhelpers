@@ -10,9 +10,9 @@
 // ==/UserScript==
  * changelog
  * 1.7
- *  Inline character links
  *  Added `j` as a hotkey for "jump to unread" in topic
- *  Now display recognized alts of people
+ *  Now display recognized alts of people !
+ *  Split ALL the code !
  * 1.6.5
  *  post preview is now autolinked too
  *  extended autotitleing to everything in blizzard.net
@@ -81,6 +81,9 @@
  * 0.4
  *  Now works with advanced mode
  *  Fix a bug when logged off
+ *
+ * REMOVED
+ *  Inline character links (1.7.0)
 */
 var w;
 w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
@@ -184,8 +187,8 @@ templates.multiChars = templates['topic-characters/multi-chars'] = function(cont
     _ref = this.characters;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       character = _ref[_i];
-      if (character !== this.current) {
-        $o.push("<li>" + ($c(character)) + "</li>");
+      if (character.name !== this.current) {
+        $o.push("<li>" + ($c(character.link)) + "</li>");
       }
     }
     $o.push("</ul>\n</div>");
@@ -839,7 +842,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   }
 }.call(this));
 (function(){
-  var accountCharacters, that, postCharacters, i$, len$, postCharacter, iconIgnore, name, ref$, account, acc, current;
+  var accountCharacters, that, postCharacters, i$, len$, postCharacter, iconIgnore, name, link, ref$, account, has, j$, len1$, character, current;
   if (!topic) {
     return;
   }
@@ -854,12 +857,25 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       continue;
     }
     name = postCharacter.querySelector('.char-name-code').innerHTML.trim();
+    link = postCharacter.querySelector('.user-name > a').outerHTML.trim();
+    link = replace$.call(link, "context-link ", '');
     ref$ = /ignore\(([0-9]+)/.exec(iconIgnore.onclick.toString()), account = ref$[1];
     ref$ = postCharacter.dataset;
     ref$.account = account;
     ref$.name = name;
-    if (!in$(name, acc = accountCharacters[account] || (accountCharacters[account] = []))) {
-      acc.push(name);
+    has = false;
+    for (j$ = 0, len1$ = (ref$ = accountCharacters[account] || (accountCharacters[account] = [])).length; j$ < len1$; ++j$) {
+      character = ref$[j$];
+      if (character.name === name) {
+        has = true;
+        break;
+      }
+    }
+    if (!has) {
+      accountCharacters[account].push({
+        name: name,
+        link: link
+      });
     }
   }
   localStorage.setItem("account-characters", JSON.stringify(accountCharacters));

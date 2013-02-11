@@ -9,13 +9,20 @@ for post-character in post-characters
 	icon-ignore = post-character.querySelector '.icon-ignore'
 	continue unless icon-ignore # self account
 	name = post-character.querySelector '.char-name-code' .innerHTML.trim!
+	link = post-character.querySelector '.user-name > a' .outerHTML.trim!
+	link -= "context-link " # remove class
 
 	[, account] = /ignore\(([0-9]+)/ == icon-ignore.onclick.toString!
 	
 	post-character.dataset <<< {account, name}
 
-	if name not in acc = account-characters[][account]
-		acc.push name
+	has = false
+	for character in account-characters[][account]
+		if character.name is name
+			has = true
+			break
+	unless has
+		account-characters[account]push {name, link}
 
 # save it !
 localStorage.setItem "account-characters" JSON.stringify account-characters

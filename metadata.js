@@ -11,7 +11,7 @@
  * changelog
  * 1.7
  *  Added `j` as a hotkey for "jump to unread" in topic
- *  Now display recognized alts of people !
+ *  Now display recognized alts of people ! (displays link)
  *  Split ALL the code !
  * 1.6.5
  *  post preview is now autolinked too
