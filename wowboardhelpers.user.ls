@@ -193,12 +193,17 @@ tr:not(.stickied) a[data-tooltip] {
   top: 27px !important;
 }
 #account-characters {
-  margin-top: 20px;
   margin-left: 30px;
+}
+#account-characters h1 {
+  display: inline;
 }
 #account-characters ul {
   list-style: circle;
   margin-left: 20px;
+}
+#account-characters a {
+  font-weight: bold;
 }
 img.autolink {
   border: 5px solid #000;
@@ -875,10 +880,32 @@ let #src/topic-characters/multi-chars.ls
 	for post-character in QSA '.post:not(.hidden) .post-character'
 		{account, name: current} = post-character.dataset
 		continue unless account
-		continue if account-characters[account]length is 1
+	
+		characters = account-characters[account]
+		continue if characters.length is 1
+	
+		post-detail = post-character.parentNode.querySelector '.post-detail'
+		height = post-detail.offset-height
+	
+		# base 130 (h1 = 15) + approx 15 for each char
+		toggle = height < 130 + characters.length * 15
 	
 		post-character.appendChild do
-			template 'multi-chars' {current, characters: account-characters[account]}
+			template 'multi-chars' {toggle, current, characters}
+	
+	
+		if toggle
+			ul = post-character.querySelector 'ul'
+			ul.style.display = 'none'
+			
+			toggle = post-character.querySelector '.toggle'
+	
+			let ul, toggle
+				toggle.onclick = ->
+					ul.style.display = ''
+					postCharacter.querySelector '.toggler' .style.display = 'none'
+	
+					toggle.onclick = ->
 	# console.timeEnd 'src/topic-characters/multi-chars.ls'
 
 let #src/topic-posts/update-count.ls
@@ -1000,6 +1027,7 @@ let #src/reply/memebox.ls
 		stfuandgtfo: 'http://4.bp.blogspot.com/-cD0QmZLGuAY/TnHyAD269EI/AAAAAAAAAkU/6O4rA1REcdI/s1600/STFU_and_GTFO.jpg'
 		youdontsay: 'http://bearsharkaxe.com/wp-content/uploads/2012/06/you-dont-say.jpg'
 		fullretard: 'http://www.osborneink.com/wp-content/uploads/2012/11/never_go_full_retard1.jpg'
+		susalenemi: 'http://img11.hostingpics.net/pics/311549libertlolxqt.png'
 		seriously: 'http://i3.kym-cdn.com/entries/icons/original/000/005/545/OpoQQ.jpg'
 		trollface: 'http://fc09.deviantart.net/fs70/f/2012/342/5/a/troll_face_by_bmsproductionz-d5ng9k6.png'
 		fuckyeah: 'http://cdn.ebaumsworld.com/mediaFiles/picture/2168064/82942867.jpg'

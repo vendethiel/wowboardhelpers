@@ -1,5 +1,10 @@
 #account-characters
-	%h1= lang 'otherCharacters'
+	%h1.toggle
+		= lang('otherCharacters')
+
+		- if @toggle
+			%span.toggler= ' [+]'
+	%br
 
 	%ul
 		- for character in @characters when character.name isnt @current

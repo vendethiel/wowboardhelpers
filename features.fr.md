@@ -22,5 +22,4 @@ Topic :
  - La preview est formatée suivant les règles précédentes
  - Affiche une "memebox" pour mettre des memes rapidement
  - Appuyer sur "j" vous amène au dernier message lu
- - Affiche les liens personnages
  - Montre les autres personnages avec qui un joueur a posté

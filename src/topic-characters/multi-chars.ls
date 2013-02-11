@@ -29,7 +29,29 @@ localStorage.setItem "account-characters" JSON.stringify account-characters
 for post-character in QSA '.post:not(.hidden) .post-character'
 	{account, name: current} = post-character.dataset
 	continue unless account
-	continue if account-characters[account]length is 1
+
+	characters = account-characters[account]
+	continue if characters.length is 1
+
+	post-detail = post-character.parentNode.querySelector '.post-detail'
+	height = post-detail.offset-height
+
+	# base 130 (h1 = 15) + approx 15 for each char
+	toggle = height < 130 + characters.length * 15
 
 	post-character.appendChild do
-		template 'multi-chars' {current, characters: account-characters[account]}
+		template 'multi-chars' {toggle, current, characters}
+
+
+	if toggle
+		ul = post-character.querySelector 'ul'
+		ul.style.display = 'none'
+		
+		toggle = post-character.querySelector '.toggle'
+
+		let ul, toggle
+			toggle.onclick = ->
+				ul.style.display = ''
+				postCharacter.querySelector '.toggler' .style.display = 'none'
+
+				toggle.onclick = ->
