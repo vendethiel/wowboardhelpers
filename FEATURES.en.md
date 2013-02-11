@@ -21,3 +21,4 @@ Topic :
  - Inlines images
  - Preview is updated to respect previous rules
  - Shows a memebox to rapidly insert memes in your answers
+ - Typing "j" makes you jump to the last read post

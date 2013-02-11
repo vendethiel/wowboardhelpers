@@ -9,8 +9,12 @@
 // @version 1.6.5
 // ==/UserScript==
  * changelog
+ * 1.6.6
+ *  Added `j` as a hotkey for "jump to unread" in topic
  * 1.6.5
- *  post preview is now autolink
+ *  post preview is now autolinked too
+ *  extended autotitleing to everything in blizzard.net
+ *   (everything out is prohibited because of xdomain policy)
  * 1.6.4
  *  Better french headers in ADV mode (takes less space)
  *  Fixed a bug when visiting a thread with #[0-9]+ in the url
@@ -833,6 +837,25 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     post = ref$[i$];
     elAutolink(post);
   }
+}.call(this));
+(function(){
+  var keyCode;
+  if (!topic) {
+    return;
+  }
+  keyCode = 74;
+  document.addEventListener('keydown', function(it){
+    var lastPostId;
+    if (it.keyCode !== keyCode) {
+      return;
+    }
+    if (it.target !== QS('html')) {
+      return;
+    }
+    it.preventDefault();
+    lastPostId = localStorage.getItem("topic_" + topic.dataset.id);
+    return document.location = (split$.call(document.location, '#'))[0] + ("#" + lastPostId);
+  });
 }.call(this));
 (function(){
   var textarea, submit;

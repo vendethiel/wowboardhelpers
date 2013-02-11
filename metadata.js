@@ -1,7 +1,7 @@
 /*
 // ==UserScript==
-// @name last updated
-// @description Shows last updated post on forum view
+// @name WoW Board Helpers
+// @description UserScript for the official WoW forum
 // @match http://eu.battle.net/wow/fr/forum/*
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
@@ -9,6 +9,8 @@
 // @version 1.6.5
 // ==/UserScript==
  * changelog
+ * 1.6.6
+ *  Added `j` as a hotkey for "jump to unread" in topic
  * 1.6.5
  *  post preview is now autolinked too
  *  extended autotitleing to everything in blizzard.net

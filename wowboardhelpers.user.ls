@@ -859,6 +859,21 @@ let #src/topic/autolink.ls
 		el-autolink post
 	# console.timeEnd 'src/topic/autolink.ls'
 
+let #src/topic/jump.ls
+	# console.time 'src/topic/jump.ls'
+	return unless topic
+	
+	key-code = 74 #'j' key
+	
+	document.addEventListener 'keydown' ->
+		return unless it.keyCode is key-code
+		return unless it.target is QS 'html' #not typing
+		it.preventDefault!
+	
+		last-post-id = localStorage.getItem "topic_#{topic.dataset.id}"
+		document.location = (document.location / '#')0 + "##last-post-id"
+	# console.timeEnd 'src/topic/jump.ls'
+
 let #src/reply/remember-reply.ls
 	# console.time 'src/reply/remember-reply.ls'
 	return unless topic

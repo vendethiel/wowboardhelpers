@@ -49,6 +49,7 @@ sources = <[
   topic/update-count
   topic/improve-topic
   topic/autolink
+  topic/jump
   
   reply/remember-reply
   reply/clear-textarea
