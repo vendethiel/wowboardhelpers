@@ -46,10 +46,12 @@ sources = <[
   forum-topics/hide-topic
   forum-topics/times
 
-  topic/update-count
-  topic/improve-topic
-  topic/autolink
-  topic/jump
+  topic-characters/improve-topic
+  topic-characters/multi-chars
+
+  topic-posts/update-count
+  topic-posts/autolink
+  topic-posts/jump
   
   reply/remember-reply
   reply/clear-textarea
@@ -57,6 +59,9 @@ sources = <[
   reply/memebox
   reply/preview
 ]>
+### REMOVED FEATURES
+# Please see removed/README.md
+# - topic-characters/context-links
 
 
 

@@ -11,8 +11,8 @@ document.addEventListener 'keydown' ->
 	last-post-page = Math.ceil last-post-id / 20
 
 
-	url = document.location
-	if topic.dataset.page < last-post-page
+	url = if topic.dataset.page < last-post-page
 		url = topic.dataset.url + "?page=#last-post-page"
+	else document.location
 
 	document.location = url + "##last-post-id"

@@ -114,9 +114,10 @@ unless has-unread
  * `state` must be a TSTATE_* constant
  */
 !function mark-state({innerHTML}:node, state)
-	#❢ = HEAVY EXCLAMATION MARK ORNAMENT
+	# ❢ = HEAVY EXCLAMATION MARK ORNAMENT
 	states = <[? ! ✓]>
 	
+	# could've used #<> but I'm using LS :(
 	node.innerHTML = "<b>[#{states[state]}]</b> #innerHTML"
 
 /**

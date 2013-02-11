@@ -138,12 +138,10 @@ tr:not(.stickied) a[data-tooltip] {
   padding-right: 5px;
 }
 #posts.advanced .post-th .last-post-th {
-  width: 35px;
   text-align: left;
 }
 #posts.advanced .post-last-updated {
-  text-align: right;
-  padding-right: 7px;
+  width: 70px;
 }
 #posts.advanced .post-replies {
   width: 10px;
@@ -188,16 +186,24 @@ tr:not(.stickied) a[data-tooltip] {
   color: link;
   text-decoration: underline;
 }
-img.autolink {
-  border: 5px solid #000;
-  max-width: 540px;
-  max-height: 500px;
-}
 .karma {
   white-space: normal !important;
 }
 .post-user .avatar {
   top: 27px !important;
+}
+#account-characters {
+  margin-top: 20px;
+  margin-left: 30px;
+}
+#account-characters ul {
+  list-style: circle;
+  margin-left: 20px;
+}
+img.autolink {
+  border: 5px solid #000;
+  max-width: 540px;
+  max-height: 500px;
 }
 
 	'''
@@ -234,6 +240,8 @@ let #src/shared/lang.ls
 			html-overrides:
 				'.replies': 'REPS'
 				'.poster': 'Dernier'
+	
+			other-characters: 'Autres personnages'
 		en:
 			time-index: 0
 			time-outdex: -1
@@ -245,6 +253,8 @@ let #src/shared/lang.ls
 			new-messages: 'There are new message(s)'
 			checking-new: 'Checking new messages ...'
 			no-new: 'No new message.'
+	
+			other-characters: 'Other characters'
 	
 	export class lang # acts like a proxy to avoid unneeded keys
 		import langs[l] ? langs.en
@@ -686,9 +696,10 @@ let #src/forum-topics/last-updated.ls
 	 * `state` must be a TSTATE_* constant
 	 */
 	!function mark-state({innerHTML}:node, state)
-		#❢ = HEAVY EXCLAMATION MARK ORNAMENT
+		# ❢ = HEAVY EXCLAMATION MARK ORNAMENT
 		states = <[? ! ✓]>
 		
+		# could've used #<> but I'm using LS :(
 		node.innerHTML = "<b>[#{states[state]}]</b> #innerHTML"
 	
 	/**
@@ -819,8 +830,53 @@ let #src/forum-topics/times.ls
 	refresh!
 	# console.timeEnd 'src/forum-topics/times.ls'
 
-let #src/topic/update-count.ls
-	# console.time 'src/topic/update-count.ls'
+let #src/topic-characters/improve-topic.ls
+	# console.time 'src/topic-characters/improve-topic.ls'
+	return unless topic
+	
+	for infos in document.getElementsByClassName 'character-info'
+		realm = infos.querySelector '.context-user span'
+		continue unless realm #cm etc
+		realm .= innerHTML
+	
+		infos.querySelector '.character-desc' ?.innerHTML += "<br />#realm"
+	# console.timeEnd 'src/topic-characters/improve-topic.ls'
+
+let #src/topic-characters/multi-chars.ls
+	# console.time 'src/topic-characters/multi-chars.ls'
+	return unless topic
+	
+	account-characters = if localStorage.getItem "account-characters"
+		JSON.parse that
+	else {}
+	
+	post-characters = QSA '.post-character'
+	for post-character in post-characters
+		icon-ignore = post-character.querySelector '.icon-ignore'
+		continue unless icon-ignore # self account
+		name = post-character.querySelector '.char-name-code' .innerHTML.trim!
+	
+		[, account] = /ignore\(([0-9]+)/ == icon-ignore.onclick.toString!
+		
+		post-character.dataset <<< {account, name}
+	
+		if name not in acc = account-characters[][account]
+			acc.push name
+	
+	# save it !
+	localStorage.setItem "account-characters" JSON.stringify account-characters
+	
+	for post-character in post-characters
+		{account, name: current} = post-character.dataset
+		continue unless account
+		continue if account-characters[account]length is 1
+	
+		post-character.appendChild do
+			template 'multi-chars' {current, characters: account-characters[account]}
+	# console.timeEnd 'src/topic-characters/multi-chars.ls'
+
+let #src/topic-posts/update-count.ls
+	# console.time 'src/topic-posts/update-count.ls'
 	return unless topic
 	
 	#pagination
@@ -840,30 +896,18 @@ let #src/topic/update-count.ls
 	#mark as read
 	w.localStorage.setItem "topic_#{topic.dataset.id}" post-count
 	w.localStorage.setItem "topic_lp_#{topic.dataset.id}" last-poster-name
-	# console.timeEnd 'src/topic/update-count.ls'
+	# console.timeEnd 'src/topic-posts/update-count.ls'
 
-let #src/topic/improve-topic.ls
-	# console.time 'src/topic/improve-topic.ls'
-	return unless topic
-	
-	for infos in document.getElementsByClassName 'character-info'
-		realm = infos.querySelector '.context-user span'
-		continue unless realm #cm etc
-		realm .= innerHTML
-	
-		infos.querySelector '.character-desc' ?.innerHTML += "<br />#realm"
-	# console.timeEnd 'src/topic/improve-topic.ls'
-
-let #src/topic/autolink.ls
-	# console.time 'src/topic/autolink.ls'
+let #src/topic-posts/autolink.ls
+	# console.time 'src/topic-posts/autolink.ls'
 	return unless topic
 	
 	for post in QSA '.post-detail'
 		el-autolink post
-	# console.timeEnd 'src/topic/autolink.ls'
+	# console.timeEnd 'src/topic-posts/autolink.ls'
 
-let #src/topic/jump.ls
-	# console.time 'src/topic/jump.ls'
+let #src/topic-posts/jump.ls
+	# console.time 'src/topic-posts/jump.ls'
 	return unless topic
 	
 	key-code = 74 #'j' key
@@ -877,12 +921,12 @@ let #src/topic/jump.ls
 		last-post-page = Math.ceil last-post-id / 20
 	
 	
-		url = document.location
-		if topic.dataset.page < last-post-page
+		url = if topic.dataset.page < last-post-page
 			url = topic.dataset.url + "?page=#last-post-page"
+		else document.location
 	
 		document.location = url + "##last-post-id"
-	# console.timeEnd 'src/topic/jump.ls'
+	# console.timeEnd 'src/topic-posts/jump.ls'
 
 let #src/reply/remember-reply.ls
 	# console.time 'src/reply/remember-reply.ls'

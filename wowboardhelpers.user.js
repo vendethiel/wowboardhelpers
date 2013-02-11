@@ -6,11 +6,13 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.6.6
+// @version 1.7.0
 // ==/UserScript==
  * changelog
- * 1.6.6
+ * 1.7
+ *  Inline character links
  *  Added `j` as a hotkey for "jump to unread" in topic
+ *  Now display recognized alts of people
  * 1.6.5
  *  post preview is now autolinked too
  *  extended autotitleing to everything in blizzard.net
@@ -173,6 +175,23 @@ templates.memebox = templates['reply/memebox'] = function(context) {
     return $o.join("");
   }).call(context);
 };
+templates.multiChars = templates['topic-characters/multi-chars'] = function(context) {
+  return (function() {
+    var $c, $o, character, _i, _len, _ref;
+    $c = c$;
+    $o = [];
+    $o.push("<div id='account-characters'>\n<h1>" + ($c(lang('otherCharacters'))) + "</h1>\n<ul>");
+    _ref = this.characters;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      character = _ref[_i];
+      if (character !== this.current) {
+        $o.push("<li>" + ($c(character)) + "</li>");
+      }
+    }
+    $o.push("</ul>\n</div>");
+    return $o.join("");
+  }).call(context);
+};
 var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.replace, split$ = ''.split, join$ = [].join, slice$ = [].slice;
 (function(){
   function node(tag, props){
@@ -249,7 +268,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   var style;
   style = node('style', {
     type: 'text/css',
-    innerHTML: '	/*slake:build#compile-ls embeds css*/\n	#forum-actions-top h1 {\n  text-align: center;\n  margin-left: 200px;\n}\n.forum .forum-actions {\n  padding: 0px;\n}\n.forum .actions-panel {\n  margin-right: 15px;\n}\n.forum .forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.last-read {\n  opacity: 0;\n}\ntr:hover .last-read {\n  opacity: 1;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.advanced .post-author {\n  width: 15px;\n}\n#posts.advanced .post-views {\n  width: 15px;\n}\n#posts.advanced .post-lastPost {\n  width: 90px;\n  text-align: center;\n}\n#posts.advanced .post-lastPost .more-arrow {\n  display: none;\n}\n#posts.advanced .post-th .replies {\n  padding-right: 2px;\n  text-align: center;\n}\n#posts.advanced .post-th .poster {\n  text-align: right;\n  font-weight: normal;\n  padding-right: 5px;\n}\n#posts.advanced .post-th .last-post-th {\n  width: 35px;\n  text-align: left;\n}\n#posts.advanced .post-last-updated {\n  text-align: right;\n  padding-right: 7px;\n}\n#posts.advanced .post-replies {\n  width: 10px;\n  text-align: right;\n  padding-right: 10px;\n}\n#posts.simple .tt-last-updated {\n  display: inline;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\n#memebox {\n  position: relative;\n  float: right;\n  width: 100px;\n  left: -50px;\n  top: 5px;\n}\n#memebox h1 {\n  font-size: 2em;\n}\n#memebox ul#memes {\n  margin-top: 10px;\n  margin-left: 30px;\n  list-style-type: circle;\n}\n#memebox li {\n  font-weight: bold;\n  color: link;\n  text-decoration: underline;\n}\nimg.autolink {\n  border: 5px solid #000;\n  max-width: 540px;\n  max-height: 500px;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n'
+    innerHTML: '	/*slake:build#compile-ls embeds css*/\n	#forum-actions-top h1 {\n  text-align: center;\n  margin-left: 200px;\n}\n.forum .forum-actions {\n  padding: 0px;\n}\n.forum .actions-panel {\n  margin-right: 15px;\n}\n.forum .forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.last-read {\n  opacity: 0;\n}\ntr:hover .last-read {\n  opacity: 1;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.advanced .post-author {\n  width: 15px;\n}\n#posts.advanced .post-views {\n  width: 15px;\n}\n#posts.advanced .post-lastPost {\n  width: 90px;\n  text-align: center;\n}\n#posts.advanced .post-lastPost .more-arrow {\n  display: none;\n}\n#posts.advanced .post-th .replies {\n  padding-right: 2px;\n  text-align: center;\n}\n#posts.advanced .post-th .poster {\n  text-align: right;\n  font-weight: normal;\n  padding-right: 5px;\n}\n#posts.advanced .post-th .last-post-th {\n  text-align: left;\n}\n#posts.advanced .post-last-updated {\n  width: 70px;\n}\n#posts.advanced .post-replies {\n  width: 10px;\n  text-align: right;\n  padding-right: 10px;\n}\n#posts.simple .tt-last-updated {\n  display: inline;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\n#memebox {\n  position: relative;\n  float: right;\n  width: 100px;\n  left: -50px;\n  top: 5px;\n}\n#memebox h1 {\n  font-size: 2em;\n}\n#memebox ul#memes {\n  margin-top: 10px;\n  margin-left: 30px;\n  list-style-type: circle;\n}\n#memebox li {\n  font-weight: bold;\n  color: link;\n  text-decoration: underline;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n#account-characters {\n  margin-top: 20px;\n  margin-left: 30px;\n}\n#account-characters ul {\n  list-style: circle;\n  margin-left: 20px;\n}\nimg.autolink {\n  border: 5px solid #000;\n  max-width: 540px;\n  max-height: 500px;\n}\n'
   });
   document.head.appendChild(style);
 }.call(this));
@@ -277,7 +296,8 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       htmlOverrides: {
         '.replies': 'REPS',
         '.poster': 'Dernier'
-      }
+      },
+      otherCharacters: 'Autres personnages'
     },
     en: {
       timeIndex: 0,
@@ -288,7 +308,8 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       fewSecondsAgo: 'few seconds ago',
       newMessages: 'There are new message(s)',
       checkingNew: 'Checking new messages ...',
-      noNew: 'No new message.'
+      noNew: 'No new message.',
+      otherCharacters: 'Other characters'
     }
   };
   out$.lang = lang = (function(){
@@ -801,20 +822,6 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   refresh();
 }.call(this));
 (function(){
-  var pages, postCount, ref$, lastPosterName;
-  if (!topic) {
-    return;
-  }
-  pages = QSA('#forum-actions-top .ui-pagination li:not(.cap-item)');
-  if ((pages != null && pages.length) && 'current' !== pages[pages.length - 1].className) {
-    return;
-  }
-  postCount = (ref$ = topic.getElementsByClassName('post-info'))[ref$.length - 1].getElementsByTagName('a')[0].getAttribute('href').slice(1);
-  lastPosterName = (ref$ = topic.getElementsByClassName('char-name-code'))[ref$.length - 1].innerHTML.trim();
-  w.localStorage.setItem("topic_" + topic.dataset.id, postCount);
-  w.localStorage.setItem("topic_lp_" + topic.dataset.id, lastPosterName);
-}.call(this));
-(function(){
   var i$, ref$, len$, infos, realm, ref1$;
   if (!topic) {
     return;
@@ -830,6 +837,60 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       ref1$.innerHTML += "<br />" + realm;
     }
   }
+}.call(this));
+(function(){
+  var accountCharacters, that, postCharacters, i$, len$, postCharacter, iconIgnore, name, ref$, account, acc, current;
+  if (!topic) {
+    return;
+  }
+  accountCharacters = (that = localStorage.getItem("account-characters"))
+    ? JSON.parse(that)
+    : {};
+  postCharacters = QSA('.post-character');
+  for (i$ = 0, len$ = postCharacters.length; i$ < len$; ++i$) {
+    postCharacter = postCharacters[i$];
+    iconIgnore = postCharacter.querySelector('.icon-ignore');
+    if (!iconIgnore) {
+      continue;
+    }
+    name = postCharacter.querySelector('.char-name-code').innerHTML.trim();
+    ref$ = /ignore\(([0-9]+)/.exec(iconIgnore.onclick.toString()), account = ref$[1];
+    ref$ = postCharacter.dataset;
+    ref$.account = account;
+    ref$.name = name;
+    if (!in$(name, acc = accountCharacters[account] || (accountCharacters[account] = []))) {
+      acc.push(name);
+    }
+  }
+  localStorage.setItem("account-characters", JSON.stringify(accountCharacters));
+  for (i$ = 0, len$ = postCharacters.length; i$ < len$; ++i$) {
+    postCharacter = postCharacters[i$];
+    ref$ = postCharacter.dataset, account = ref$.account, current = ref$.name;
+    if (!account) {
+      continue;
+    }
+    if (accountCharacters[account].length === 1) {
+      continue;
+    }
+    postCharacter.appendChild(template('multi-chars', {
+      current: current,
+      characters: accountCharacters[account]
+    }));
+  }
+}.call(this));
+(function(){
+  var pages, postCount, ref$, lastPosterName;
+  if (!topic) {
+    return;
+  }
+  pages = QSA('#forum-actions-top .ui-pagination li:not(.cap-item)');
+  if ((pages != null && pages.length) && 'current' !== pages[pages.length - 1].className) {
+    return;
+  }
+  postCount = (ref$ = topic.getElementsByClassName('post-info'))[ref$.length - 1].getElementsByTagName('a')[0].getAttribute('href').slice(1);
+  lastPosterName = (ref$ = topic.getElementsByClassName('char-name-code'))[ref$.length - 1].innerHTML.trim();
+  w.localStorage.setItem("topic_" + topic.dataset.id, postCount);
+  w.localStorage.setItem("topic_lp_" + topic.dataset.id, lastPosterName);
 }.call(this));
 (function(){
   var i$, ref$, len$, post;
@@ -858,10 +919,9 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     it.preventDefault();
     lastPostId = localStorage.getItem("topic_" + topic.dataset.id);
     lastPostPage = Math.ceil(lastPostId / 20);
-    url = document.location;
-    if (topic.dataset.page < lastPostPage) {
-      url = topic.dataset.url + ("?page=" + lastPostPage);
-    }
+    url = topic.dataset.page < lastPostPage
+      ? url = topic.dataset.url + ("?page=" + lastPostPage)
+      : document.location;
     return document.location = url + ("#" + lastPostId);
   });
 }.call(this));

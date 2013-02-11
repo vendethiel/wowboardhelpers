@@ -6,11 +6,13 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.6.6
+// @version 1.7.0
 // ==/UserScript==
  * changelog
- * 1.6.6
+ * 1.7
  *  Added `j` as a hotkey for "jump to unread" in topic
+ *  Now display recognized alts of people !
+ *  Split ALL the code !
  * 1.6.5
  *  post preview is now autolinked too
  *  extended autotitleing to everything in blizzard.net
@@ -79,4 +81,7 @@
  * 0.4
  *  Now works with advanced mode
  *  Fix a bug when logged off
+ *
+ * REMOVED
+ *  Inline character links (1.7.0)
 */

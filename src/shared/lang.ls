@@ -25,6 +25,8 @@ langs =
 		html-overrides:
 			'.replies': 'REPS'
 			'.poster': 'Dernier'
+
+		other-characters: 'Autres personnages'
 	en:
 		time-index: 0
 		time-outdex: -1
@@ -36,6 +38,8 @@ langs =
 		new-messages: 'There are new message(s)'
 		checking-new: 'Checking new messages ...'
 		no-new: 'No new message.'
+
+		other-characters: 'Other characters'
 
 export class lang # acts like a proxy to avoid unneeded keys
 	import langs[l] ? langs.en

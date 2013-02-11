@@ -22,3 +22,5 @@ Topic :
  - Preview is updated to respect previous rules
  - Shows a memebox to rapidly insert memes in your answers
  - Typing "j" makes you jump to the last read post
+ - Inline display of character links
+ - Display other characters in the account if used to post with for everybody

@@ -1,0 +1,6 @@
+#account-characters
+	%h1= lang 'otherCharacters'
+
+	%ul
+		- for character in @characters when character isnt @current
+			%li= character
