@@ -4,13 +4,12 @@ account-characters = if localStorage.getItem "account-characters"
 	JSON.parse that
 else {}
 
-post-characters = QSA '.post-character'
-for post-character in post-characters
+for post-character in QSA '.post-character'
 	icon-ignore = post-character.querySelector '.icon-ignore'
 	continue unless icon-ignore # self account
 	name = post-character.querySelector '.char-name-code' .innerHTML.trim!
 	link = post-character.querySelector '.user-name > a' .outerHTML.trim!
-	link -= "context-link " # remove class
+	link -= "context-link" # remove class
 
 	[, account] = /ignore\(([0-9]+)/ == icon-ignore.onclick.toString!
 	
@@ -27,7 +26,7 @@ for post-character in post-characters
 # save it !
 localStorage.setItem "account-characters" JSON.stringify account-characters
 
-for post-character in post-characters
+for post-character in QSA '.post:not(.hidden) .post-character'
 	{account, name: current} = post-character.dataset
 	continue unless account
 	continue if account-characters[account]length is 1

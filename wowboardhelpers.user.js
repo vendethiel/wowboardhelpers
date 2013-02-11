@@ -11,7 +11,7 @@
  * changelog
  * 1.7
  *  Added `j` as a hotkey for "jump to unread" in topic
- *  Now display recognized alts of people !
+ *  Now display recognized alts of people ! (displays link)
  *  Split ALL the code !
  * 1.6.5
  *  post preview is now autolinked too
@@ -842,30 +842,29 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   }
 }.call(this));
 (function(){
-  var accountCharacters, that, postCharacters, i$, len$, postCharacter, iconIgnore, name, link, ref$, account, has, j$, len1$, character, current;
+  var accountCharacters, that, i$, ref$, len$, postCharacter, iconIgnore, name, link, ref1$, account, has, j$, len1$, character, current;
   if (!topic) {
     return;
   }
   accountCharacters = (that = localStorage.getItem("account-characters"))
     ? JSON.parse(that)
     : {};
-  postCharacters = QSA('.post-character');
-  for (i$ = 0, len$ = postCharacters.length; i$ < len$; ++i$) {
-    postCharacter = postCharacters[i$];
+  for (i$ = 0, len$ = (ref$ = QSA('.post-character')).length; i$ < len$; ++i$) {
+    postCharacter = ref$[i$];
     iconIgnore = postCharacter.querySelector('.icon-ignore');
     if (!iconIgnore) {
       continue;
     }
     name = postCharacter.querySelector('.char-name-code').innerHTML.trim();
     link = postCharacter.querySelector('.user-name > a').outerHTML.trim();
-    link = replace$.call(link, "context-link ", '');
-    ref$ = /ignore\(([0-9]+)/.exec(iconIgnore.onclick.toString()), account = ref$[1];
-    ref$ = postCharacter.dataset;
-    ref$.account = account;
-    ref$.name = name;
+    link = replace$.call(link, "context-link", '');
+    ref1$ = /ignore\(([0-9]+)/.exec(iconIgnore.onclick.toString()), account = ref1$[1];
+    ref1$ = postCharacter.dataset;
+    ref1$.account = account;
+    ref1$.name = name;
     has = false;
-    for (j$ = 0, len1$ = (ref$ = accountCharacters[account] || (accountCharacters[account] = [])).length; j$ < len1$; ++j$) {
-      character = ref$[j$];
+    for (j$ = 0, len1$ = (ref1$ = accountCharacters[account] || (accountCharacters[account] = [])).length; j$ < len1$; ++j$) {
+      character = ref1$[j$];
       if (character.name === name) {
         has = true;
         break;
@@ -879,9 +878,9 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     }
   }
   localStorage.setItem("account-characters", JSON.stringify(accountCharacters));
-  for (i$ = 0, len$ = postCharacters.length; i$ < len$; ++i$) {
-    postCharacter = postCharacters[i$];
-    ref$ = postCharacter.dataset, account = ref$.account, current = ref$.name;
+  for (i$ = 0, len$ = (ref$ = QSA('.post:not(.hidden) .post-character')).length; i$ < len$; ++i$) {
+    postCharacter = ref$[i$];
+    ref1$ = postCharacter.dataset, account = ref1$.account, current = ref1$.name;
     if (!account) {
       continue;
     }
