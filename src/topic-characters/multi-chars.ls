@@ -1,33 +1,43 @@
 return unless topic
 
-account-characters = if localStorage.getItem "account-characters"
+# old version
+if localStorage.getItem 'account-characters'
+	console.log 'going to new format'
+	new-array = {[acc, [clean val.link for val in vals when val.link]] \
+		for acc, vals of JSON.parse that}
+
+	localStorage.setItem "accountCharacters" JSON.stringify new-array
+	localStorage.removeItem 'account-characters'
+
+
+# ok, back to our business ...
+account-characters = if localStorage.getItem 'accountCharacters'
 	JSON.parse that
 else {}
+
+function clean
+	it -= "context-link" # remove class
+	it -= "xmlns=\"http://www.w3.org/1999/xhtml\" " #xlmns
+	it
 
 for post-character in QSA '.post-character'
 	icon-ignore = post-character.querySelector '.icon-ignore'
 	continue unless icon-ignore # self account
-	name = post-character.querySelector '.char-name-code' .innerHTML.trim!
-	link = post-character.querySelector '.user-name > a' .outerHTML.trim!
-	link -= "context-link" # remove class
+	# yes <| binds tighter than <|, fuck LS
+	link = clean post-character.querySelector('.user-name > a')outerHTML.trim!
 
 	[, account] = /ignore\(([0-9]+)/ == icon-ignore.onclick.toString!
 	
-	post-character.dataset <<< {account, name}
+	post-character.dataset <<< {account, link}
 
-	has = false
-	for character in account-characters[][account]
-		if character.name is name
-			has = true
-			break
-	unless has
-		account-characters[account]push {name, link}
+	unless link in account-characters[][account]
+		account-characters[account]push link
 
 # save it !
-localStorage.setItem "account-characters" JSON.stringify account-characters
+localStorage.setItem "accountCharacters" JSON.stringify account-characters
 
 for post-character in QSA '.post:not(.hidden) .post-character'
-	{account, name: current} = post-character.dataset
+	{account, link: current} = post-character.dataset
 	continue unless account
 
 	characters = account-characters[account]
@@ -36,8 +46,15 @@ for post-character in QSA '.post:not(.hidden) .post-character'
 	post-detail = post-character.parentNode.querySelector '.post-detail'
 	height = post-detail.offset-height
 
+	# no toggler for one char (2 is because the current is ignored)
 	# base 130 (h1 = 15) + approx 15 for each char
-	toggle = height < 130 + characters.length * 15
+	toggle = characters.length > 2 and height < 130 + characters.length * 15
+
+	# penances
+	if account is "7889103"
+		post-character.appendChild node 'span' innerHTML: 'penances le retard'
+
+		continue
 
 	post-character.appendChild do
 		template 'multi-chars' {toggle, current, characters}

@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.7.0
+// @version 1.7.1
 // ==/UserScript==
  * changelog
+ * 1.7.1
+ *  Now the "other characters" list is hidden if bigger than post
  * 1.7
  *  Added `j` as a hotkey for "jump to unread" in topic
  *  Now display recognized alts of people ! (displays link)
@@ -192,8 +194,8 @@ templates.multiChars = templates['topic-characters/multi-chars'] = function(cont
     _ref = this.characters;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       character = _ref[_i];
-      if (character.name !== this.current) {
-        $o.push("<li>" + ($c(character.link)) + "</li>");
+      if (character !== this.current) {
+        $o.push("<li>" + ($c(character)) + "</li>");
       }
     }
     $o.push("</ul>\n</div>");
@@ -847,45 +849,55 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   }
 }.call(this));
 (function(){
-  var accountCharacters, that, i$, ref$, len$, postCharacter, iconIgnore, name, link, ref1$, account, has, j$, len1$, character, current, characters, postDetail, height, toggle, ul;
+  var that, newArray, res$, acc, ref$, vals, res1$, i$, len$, val, accountCharacters, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul;
   if (!topic) {
     return;
   }
-  accountCharacters = (that = localStorage.getItem("account-characters"))
+  if (that = localStorage.getItem('account-characters')) {
+    console.log('going to new format');
+    res$ = {};
+    for (acc in ref$ = JSON.parse(that)) {
+      vals = ref$[acc];
+      res1$ = [];
+      for (i$ = 0, len$ = vals.length; i$ < len$; ++i$) {
+        val = vals[i$];
+        if (val.link) {
+          res1$.push(clean(val.link));
+        }
+      }
+      res$[acc] = res1$;
+    }
+    newArray = res$;
+    localStorage.setItem("accountCharacters", JSON.stringify(newArray));
+    localStorage.removeItem('account-characters');
+  }
+  accountCharacters = (that = localStorage.getItem('accountCharacters'))
     ? JSON.parse(that)
     : {};
+  function clean(it){
+    it = replace$.call(it, "context-link", '');
+    it = replace$.call(it, "xmlns=\"http://www.w3.org/1999/xhtml\" ", '');
+    return it;
+  }
   for (i$ = 0, len$ = (ref$ = QSA('.post-character')).length; i$ < len$; ++i$) {
     postCharacter = ref$[i$];
     iconIgnore = postCharacter.querySelector('.icon-ignore');
     if (!iconIgnore) {
       continue;
     }
-    name = postCharacter.querySelector('.char-name-code').innerHTML.trim();
-    link = postCharacter.querySelector('.user-name > a').outerHTML.trim();
-    link = replace$.call(link, "context-link", '');
+    link = clean(postCharacter.querySelector('.user-name > a').outerHTML.trim());
     ref1$ = /ignore\(([0-9]+)/.exec(iconIgnore.onclick.toString()), account = ref1$[1];
     ref1$ = postCharacter.dataset;
     ref1$.account = account;
-    ref1$.name = name;
-    has = false;
-    for (j$ = 0, len1$ = (ref1$ = accountCharacters[account] || (accountCharacters[account] = [])).length; j$ < len1$; ++j$) {
-      character = ref1$[j$];
-      if (character.name === name) {
-        has = true;
-        break;
-      }
-    }
-    if (!has) {
-      accountCharacters[account].push({
-        name: name,
-        link: link
-      });
+    ref1$.link = link;
+    if (!in$(link, accountCharacters[account] || (accountCharacters[account] = []))) {
+      accountCharacters[account].push(link);
     }
   }
-  localStorage.setItem("account-characters", JSON.stringify(accountCharacters));
+  localStorage.setItem("accountCharacters", JSON.stringify(accountCharacters));
   for (i$ = 0, len$ = (ref$ = QSA('.post:not(.hidden) .post-character')).length; i$ < len$; ++i$) {
     postCharacter = ref$[i$];
-    ref1$ = postCharacter.dataset, account = ref1$.account, current = ref1$.name;
+    ref1$ = postCharacter.dataset, account = ref1$.account, current = ref1$.link;
     if (!account) {
       continue;
     }
@@ -895,7 +907,13 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     }
     postDetail = postCharacter.parentNode.querySelector('.post-detail');
     height = postDetail.offsetHeight;
-    toggle = height < 130 + characters.length * 15;
+    toggle = characters.length > 2 && height < 130 + characters.length * 15;
+    if (account === "7889103") {
+      postCharacter.appendChild(node('span', {
+        innerHTML: 'penances le retard'
+      }));
+      continue;
+    }
     postCharacter.appendChild(template('multi-chars', {
       toggle: toggle,
       current: current,
