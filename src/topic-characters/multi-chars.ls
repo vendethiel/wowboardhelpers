@@ -1,16 +1,5 @@
 return unless topic
 
-# old version
-if localStorage.getItem 'account-characters'
-	console.log 'going to new format'
-	new-array = {[acc, [clean val.link for val in vals when val.link isnt String::link]] \
-		for acc, vals of JSON.parse that}
-
-	localStorage.setItem "accountCharacters" JSON.stringify new-array
-	localStorage.removeItem 'account-characters'
-
-
-# ok, back to our business ...
 account-characters = if localStorage.getItem 'accountCharacters'
 	JSON.parse that
 else {}
