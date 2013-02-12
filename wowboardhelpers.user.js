@@ -861,7 +861,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       res1$ = [];
       for (i$ = 0, len$ = vals.length; i$ < len$; ++i$) {
         val = vals[i$];
-        if (val.link) {
+        if (val.link !== String.prototype.link) {
           res1$.push(clean(val.link));
         }
       }
@@ -907,13 +907,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     }
     postDetail = postCharacter.parentNode.querySelector('.post-detail');
     height = postDetail.offsetHeight;
-    toggle = characters.length > 2 && height < 130 + characters.length * 15;
-    if (account === "7889103") {
-      postCharacter.appendChild(node('span', {
-        innerHTML: 'penances le retard'
-      }));
-      continue;
-    }
+    toggle = characters.length > 2 ? (height - 130) / (characters.length * 15) : 1;
     postCharacter.appendChild(template('multi-chars', {
       toggle: toggle,
       current: current,
