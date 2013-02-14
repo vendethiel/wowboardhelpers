@@ -1,6 +1,6 @@
 
-let #src/shared/dom-helpers.ls
-	# console.time 'src/shared/dom-helpers.ls'
+let #src/shared/helpers///dom.ls
+	# console.time 'src/shared/helpers///dom.ls'
 	#@todo add `...childs` ? slow downs a lot =(
 	function node(tag, props = {})
 		(document.createElement tag) <<< props
@@ -38,7 +38,13 @@ let #src/shared/dom-helpers.ls
 	function QS then document.querySelector it
 	
 	export node, replace-with, template, QSA, QS, fetch-siblings
-	# console.timeEnd 'src/shared/dom-helpers.ls'
+	# console.timeEnd 'src/shared/helpers///dom.ls'
+
+let #src/shared/helpers///scroll.ls
+	# console.time 'src/shared/helpers///scroll.ls'
+	export scroll-to = ->
+		document.location = (document.location / '#')0 + "##it"
+	# console.timeEnd 'src/shared/helpers///scroll.ls'
 
 let #src/shared/common.ls
 	# console.time 'src/shared/common.ls'
@@ -56,6 +62,8 @@ let #src/shared/common.ls
 		export tbody-regular = QS 'tbody.regular'
 	
 	export topic, forum, forum-options
+	
+	export cheatsheet = {}
 	# console.timeEnd 'src/shared/common.ls'
 
 let #src/shared/css.ls
@@ -169,12 +177,26 @@ tr:not(.stickied) a[data-tooltip] {
 #memebox {
   position: relative;
   float: right;
-  width: 100px;
-  left: -50px;
+  width: 150px;
   top: 5px;
 }
 #memebox h1 {
-  font-size: 2em;
+  font-size: 1.8em;
+  display: inline;
+}
+#memebox .hider {
+  color: #f00;
+  display: none;
+}
+#memebox:hover .hider {
+  display: inline;
+}
+#memebox .unhider {
+  color: #008000;
+  display: none;
+}
+#memebox:hover .unhider {
+  display: inline;
 }
 #memebox ul#memes {
   margin-top: 10px;
@@ -247,6 +269,10 @@ let #src/shared/lang.ls
 				'.poster': 'Dernier'
 	
 			other-characters: 'Autres personnages'
+	
+			cheatsheet:
+				jump-to-last-read: 'Aller au dernier message lu'
+				quick-quote: 'Citer le bout de message sélectionné'
 		en:
 			time-index: 0
 			time-outdex: -1
@@ -260,6 +286,11 @@ let #src/shared/lang.ls
 			no-new: 'No new message.'
 	
 			other-characters: 'Other characters'
+	
+			cheatsheet:
+				jump-to-last-read: 'Jump to last read message'
+				quick-quote: 'Quote the selected part'
+	
 	
 	export class lang # acts like a proxy to avoid unneeded keys
 		import langs[l] ? langs.en
@@ -384,6 +415,8 @@ let #src/common/autolink.ls
 				(^|>|;|\s) # to avoid linking parts of urls inside hrefs, must start
 											 # with one of these
 				(
+					(?:https?:\/\/)? # still allow these because there's no autolinking
+					# (?![a-z]{2}\.battle\.net) # those SHOULD be autolinked but sometimes are not :(
 					[\w\.\-]+\. # domain
 					#extensions # non-exhaustive
 					(/[^<\s]*)?(?=[\s<]|$) # rest of the url until space or <br> or end
@@ -431,8 +464,7 @@ let #src/common/autolink.ls
 		try
 			h = autolink el.innerHTML
 	
-			### now let's move on more specific rules
-			# replace wow forum links
+			# replace wow links
 			r = //\>(http:\/\/[a-z]{2}\.battle\.net/[^<\s.]*)//g
 			while [, url]? = r.exec h
 				let url, el
@@ -800,7 +832,7 @@ let #src/forum-topics/times.ls
 		second: 1000ms
 		minute: 60_000ms
 		hour  : 3_600_000ms
-		day   : 8_640_000ms
+		day   : 86_400_000ms
 	
 	timestamp = new Date!getTime!
 	post-titles = QSA '.post-title[data-simplified-time]'
@@ -854,7 +886,7 @@ let #src/topic-characters/multi-chars.ls
 	# old version
 	if localStorage.getItem 'account-characters'
 		console.log 'going to new format'
-		new-array = {[acc, [clean val.link for val in vals when val.link isnt String::link]] \
+		new-array = {[acc, [clean val.link for val in vals when val.link]] \
 			for acc, vals of JSON.parse that}
 	
 		localStorage.setItem "accountCharacters" JSON.stringify new-array
@@ -898,28 +930,63 @@ let #src/topic-characters/multi-chars.ls
 		height = post-detail.offset-height
 	
 		# no toggler for one char (2 is because the current is ignored)
-		# base 130 (h1 = 15) + approx 15 for each char
-		toggle = if characters.length > 2
-			(height - 130) / (characters.length * 15)
-		else 1
+		# base 130 (h1 = 15) + approx 15 for each char (-1 for the current)
+		toggle = characters.length > 2 and height < 130 + (characters.length - 1) * 15
 	
 		post-character.appendChild do
 			template 'multi-chars' {toggle, current, characters}
 	
 	
-		if toggle
+		if toggle 
 			ul = post-character.querySelector 'ul'
-			ul.style.display = 'none'
-			
+	
+			if (limit = Math.ceil (height - 130) / 15) > 1
+				i = 0 # try to display properly as much as we can
+				while i < limit, i++
+					ul.children[i]style.display = ''
+	
 			toggle = post-character.querySelector '.toggle'
 	
 			let ul, toggle
 				toggle.onclick = ->
-					ul.style.display = ''
+					for li in ul.children
+						li.style.display = ''
 					postCharacter.querySelector '.toggler' .style.display = 'none'
 	
 					toggle.onclick = ->
 	# console.timeEnd 'src/topic-characters/multi-chars.ls'
+
+let #src/topic-posts/jump.ls
+	# console.time 'src/topic-posts/jump.ls'
+	return unless topic
+	
+	# cache it cause the script will modify it
+	return unless last-post-id = localStorage.getItem "topic_#{topic.dataset.id}"
+	
+	key-code = 74 #'j' key
+	cheatsheet.j = lang.cheatsheet.jump-to-last-read
+	
+	document.addEventListener 'keydown' ->
+		return unless it.keyCode is key-code
+		return unless it.target is QS 'html' #not typing
+		it.preventDefault!
+	
+		last-post-page = Math.ceil last-post-id / 20
+	
+	
+		if topic.dataset.page < last-post-page
+			document.location = topic.dataset.url + "?page=#last-post-page"
+		else
+			scroll-to last-post-id
+	# console.timeEnd 'src/topic-posts/jump.ls'
+
+let #src/topic-posts/autolink.ls
+	# console.time 'src/topic-posts/autolink.ls'
+	return unless topic
+	
+	for post in QSA '.post-detail'
+		el-autolink post
+	# console.timeEnd 'src/topic-posts/autolink.ls'
 
 let #src/topic-posts/update-count.ls
 	# console.time 'src/topic-posts/update-count.ls'
@@ -943,36 +1010,6 @@ let #src/topic-posts/update-count.ls
 	w.localStorage.setItem "topic_#{topic.dataset.id}" post-count
 	w.localStorage.setItem "topic_lp_#{topic.dataset.id}" last-poster-name
 	# console.timeEnd 'src/topic-posts/update-count.ls'
-
-let #src/topic-posts/autolink.ls
-	# console.time 'src/topic-posts/autolink.ls'
-	return unless topic
-	
-	for post in QSA '.post-detail'
-		el-autolink post
-	# console.timeEnd 'src/topic-posts/autolink.ls'
-
-let #src/topic-posts/jump.ls
-	# console.time 'src/topic-posts/jump.ls'
-	return unless topic
-	
-	key-code = 74 #'j' key
-	
-	document.addEventListener 'keydown' ->
-		return unless it.keyCode is key-code
-		return unless it.target is QS 'html' #not typing
-		it.preventDefault!
-	
-		last-post-id = localStorage.getItem "topic_#{topic.dataset.id}"
-		last-post-page = Math.ceil last-post-id / 20
-	
-	
-		url = if topic.dataset.page < last-post-page
-			url = topic.dataset.url + "?page=#last-post-page"
-		else document.location
-	
-		document.location = url + "##last-post-id"
-	# console.timeEnd 'src/topic-posts/jump.ls'
 
 let #src/reply/remember-reply.ls
 	# console.time 'src/reply/remember-reply.ls'
@@ -1013,9 +1050,10 @@ let #src/reply/clear-textarea.ls
 let #src/reply/quick-quote.ls
 	# console.time 'src/reply/quick-quote.ls'
 	return unless topic
+	return unless textarea = QS '#post-edit textarea'
 	
 	key-code = 82 #'r' key
-	return unless textarea = QS '#post-edit textarea'
+	cheatsheet.r = lang.cheatsheet.quick-quote
 	
 	document.addEventListener 'keydown' ->
 		return unless it.keyCode is key-code
@@ -1041,6 +1079,7 @@ let #src/reply/memebox.ls
 		youdontsay: 'http://bearsharkaxe.com/wp-content/uploads/2012/06/you-dont-say.jpg'
 		fullretard: 'http://www.osborneink.com/wp-content/uploads/2012/11/never_go_full_retard1.jpg'
 		susalenemi: 'http://img11.hostingpics.net/pics/311549libertlolxqt.png'
+		fulloffuck: 'http://www.mememaker.net/static/images/templates/14288.jpg'
 		seriously: 'http://i3.kym-cdn.com/entries/icons/original/000/005/545/OpoQQ.jpg'
 		trollface: 'http://fc09.deviantart.net/fs70/f/2012/342/5/a/troll_face_by_bmsproductionz-d5ng9k6.png'
 		fuckyeah: 'http://cdn.ebaumsworld.com/mediaFiles/picture/2168064/82942867.jpg'
@@ -1051,7 +1090,6 @@ let #src/reply/memebox.ls
 		ohcrap: 'http://i1.kym-cdn.com/entries/icons/original/000/004/077/Raisins_Face.jpg'
 		trauma: 'http://global3.memecdn.com/trauma_c_629591.jpg'
 		yuno: 'http://i1.kym-cdn.com/entries/icons/original/000/004/006/y-u-no-guy.jpg'
-		fulloffuck: 'http://www.mememaker.net/static/images/templates/14288.jpg'
 		okay: 'http://cache.ohinternet.com/images/e/e6/Okay_guy.jpg'
 		no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
 	
@@ -1078,8 +1116,26 @@ let #src/reply/memebox.ls
 				..innerHTML = name
 				..onclick = add-meme url
 	
+	/*
+	if localStorage.getItem "hide_memebox"
+		post-wrapper.appendChild <|
+			node 'div' id: 'memebox'
+				<|
+				node 'span' className: 'unhider' innerHTML: 'Memebox ✓'
+					..onclick = ->
+						localStorage.removeItem "hide_memebox"
+						@innerHTML = 'OK!'
+	
+		return
+	
+	hider = memebox.querySelector '.hider'
+	hider.onclick = ->
+		memebox.style.display = 'none'
+		localStorage.setItem "hide_memebox" "1"
+	*/
 	
 	memebox = template 'memebox'
+	
 	ul = memebox.querySelector '#memes'
 	memebox.querySelector '#meme-search' .onkeyup = !->
 		value = @value.replace /[\s_-]+/ ''
@@ -1091,13 +1147,17 @@ let #src/reply/memebox.ls
 		for name, url of memes # {...extra-memes, ...memes}
 			switch name.indexOf value
 			| -1 =>
-			| 0  => append-meme name, url
-			| _  => approximates.push [name, url]
+			| 0  =>
+				append-meme name, url
 	
-			break if ++i > 10
+				break if ++i > 10
+			| _  =>
+				approximates.push [name, url]
 	
 		for [name, url] in approximates
 			append-meme name, url
+	
+			break if ++i > 10
 	
 	post-wrapper.appendChild memebox
 	
@@ -1122,3 +1182,8 @@ let #src/reply/preview.ls
 		# and imitate old behavior
 		old content, target, callback
 	# console.timeEnd 'src/reply/preview.ls'
+
+let #src/common/cheatsheet.ls
+	# console.time 'src/common/cheatsheet.ls'
+	return unless Object.keys cheatsheet .length
+	# console.timeEnd 'src/common/cheatsheet.ls'

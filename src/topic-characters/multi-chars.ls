@@ -1,5 +1,16 @@
 return unless topic
 
+# old version
+if localStorage.getItem 'account-characters'
+	console.log 'going to new format'
+	new-array = {[acc, [clean val.link for val in vals when val.link]] \
+		for acc, vals of JSON.parse that}
+
+	localStorage.setItem "accountCharacters" JSON.stringify new-array
+	localStorage.removeItem 'account-characters'
+
+
+# ok, back to our business ...
 account-characters = if localStorage.getItem 'accountCharacters'
 	JSON.parse that
 else {}
@@ -36,24 +47,27 @@ for post-character in QSA '.post:not(.hidden) .post-character'
 	height = post-detail.offset-height
 
 	# no toggler for one char (2 is because the current is ignored)
-	# base 130 (h1 = 15) + approx 15 for each char
-	toggle = if characters.length > 2
-		(height - 130) / (characters.length * 15)
-	else 1
+	# base 130 (h1 = 15) + approx 15 for each char (-1 for the current)
+	toggle = characters.length > 2 and height < 130 + (characters.length - 1) * 15
 
 	post-character.appendChild do
 		template 'multi-chars' {toggle, current, characters}
 
 
-	if toggle
+	if toggle 
 		ul = post-character.querySelector 'ul'
-		ul.style.display = 'none'
-		
+
+		if (limit = Math.ceil (height - 130) / 15) > 1
+			i = 0 # try to display properly as much as we can
+			while i < limit, i++
+				ul.children[i]style.display = ''
+
 		toggle = post-character.querySelector '.toggle'
 
 		let ul, toggle
 			toggle.onclick = ->
-				ul.style.display = ''
+				for li in ul.children
+					li.style.display = ''
 				postCharacter.querySelector '.toggler' .style.display = 'none'
 
 				toggle.onclick = ->

@@ -1,12 +1,25 @@
 #memebox
 	position: relative
 	float: right
-	width: 100px
-	left: -50px
+	width: 150px
 	top: 5px
 
 	h1
-		font-size: 2em
+		font-size: 1.8em
+		display: inline
+
+	// let's build hider/unhider
+	types = hider unhider
+	colors = red green
+
+	for type, i in types
+		.{type}
+			color: colors[i]
+			display: none
+
+		&:hover
+			.{type}
+				display: inline
 
 	ul#memes
 		margin-top: 10px

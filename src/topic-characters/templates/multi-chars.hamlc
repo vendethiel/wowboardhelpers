@@ -8,4 +8,4 @@
 
 	%ul
 		- for character in @characters when character isnt @current
-			%li= character
+			%li(style=["display: none" if @toggle])= character

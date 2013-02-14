@@ -27,6 +27,10 @@ langs =
 			'.poster': 'Dernier'
 
 		other-characters: 'Autres personnages'
+
+		cheatsheet:
+			jump-to-last-read: 'Aller au dernier message lu'
+			quick-quote: 'Citer le bout de message sélectionné'
 	en:
 		time-index: 0
 		time-outdex: -1
@@ -40,6 +44,11 @@ langs =
 		no-new: 'No new message.'
 
 		other-characters: 'Other characters'
+
+		cheatsheet:
+			jump-to-last-read: 'Jump to last read message'
+			quick-quote: 'Quote the selected part'
+
 
 export class lang # acts like a proxy to avoid unneeded keys
 	import langs[l] ? langs.en

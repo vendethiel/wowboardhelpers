@@ -1,0 +1,1 @@
+return unless Object.keys cheatsheet .length

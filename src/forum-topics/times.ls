@@ -2,7 +2,7 @@ units =
 	second: 1000ms
 	minute: 60_000ms
 	hour  : 3_600_000ms
-	day   : 8_640_000ms
+	day   : 86_400_000ms
 
 timestamp = new Date!getTime!
 post-titles = QSA '.post-title[data-simplified-time]'

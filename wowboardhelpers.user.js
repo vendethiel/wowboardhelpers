@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.7.1
+// @version 1.8.0
 // ==/UserScript==
  * changelog
+ * 1.8
+ *  Added the CheatSheet
  * 1.7.1
  *  Now the "other characters" list is hidden if bigger than post
  * 1.7
@@ -176,7 +178,7 @@ templates.memebox = templates['reply/memebox'] = function(context) {
     var $c, $o;
     $c = c$;
     $o = [];
-    $o.push("<div id='memebox'>\n<h1>MemeBOX</h1>\n<input id='meme-search' placeholder='meme' autocomplete='off' size='" + ($c(15)) + "' />\n<ul id='memes'></ul>\n</div>");
+    $o.push("<div id='memebox'>\n<h1>	MemeBox</h1>\n<br />\n<input id='meme-search' placeholder='meme' autocomplete='off' size='" + ($c(15)) + "' />\n<ul id='memes'></ul>\n</div>");
     return $o.join("");
   }).call(context);
 };
@@ -195,14 +197,14 @@ templates.multiChars = templates['topic-characters/multi-chars'] = function(cont
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       character = _ref[_i];
       if (character !== this.current) {
-        $o.push("<li>" + ($c(character)) + "</li>");
+        $o.push("<li style='" + ($c([this.toggle ? "display: none" : void 0])) + "'>" + ($c(character)) + "</li>");
       }
     }
     $o.push("</ul>\n</div>");
     return $o.join("");
   }).call(context);
 };
-var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.replace, split$ = ''.split, join$ = [].join, slice$ = [].slice;
+var out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, replace$ = ''.replace, join$ = [].join, slice$ = [].slice;
 (function(){
   function node(tag, props){
     props == null && (props = {});
@@ -258,7 +260,13 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   out$.fetchSiblings = fetchSiblings;
 }.call(this));
 (function(){
-  var forumOptions, topic, x$, topicUrl, ref$, forum, tbodyRegular;
+  var scrollTo;
+  out$.scrollTo = scrollTo = function(it){
+    return document.location = (split$.call(document.location, '#'))[0] + ("#" + it);
+  };
+}.call(this));
+(function(){
+  var forumOptions, topic, x$, topicUrl, ref$, forum, tbodyRegular, cheatsheet;
   forumOptions = QS('.forum-options');
   if (topic = document.getElementById('thread')) {
     x$ = topic.dataset;
@@ -273,12 +281,13 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   out$.topic = topic;
   out$.forum = forum;
   out$.forumOptions = forumOptions;
+  out$.cheatsheet = cheatsheet = {};
 }.call(this));
 (function(){
   var style;
   style = node('style', {
     type: 'text/css',
-    innerHTML: '	/*slake:build#compile-ls embeds css*/\n	#forum-actions-top h1 {\n  text-align: center;\n  margin-left: 200px;\n}\n.forum .forum-actions {\n  padding: 0px;\n}\n.forum .actions-panel {\n  margin-right: 15px;\n}\n.forum .forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.last-read {\n  opacity: 0;\n}\ntr:hover .last-read {\n  opacity: 1;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.advanced .post-author {\n  width: 15px;\n}\n#posts.advanced .post-views {\n  width: 15px;\n}\n#posts.advanced .post-lastPost {\n  width: 90px;\n  text-align: center;\n}\n#posts.advanced .post-lastPost .more-arrow {\n  display: none;\n}\n#posts.advanced .post-th .replies {\n  padding-right: 2px;\n  text-align: center;\n}\n#posts.advanced .post-th .poster {\n  text-align: right;\n  font-weight: normal;\n  padding-right: 5px;\n}\n#posts.advanced .post-th .last-post-th {\n  text-align: left;\n}\n#posts.advanced .post-last-updated {\n  width: 70px;\n}\n#posts.advanced .post-replies {\n  width: 10px;\n  text-align: right;\n  padding-right: 10px;\n}\n#posts.simple .tt-last-updated {\n  display: inline;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\n#memebox {\n  position: relative;\n  float: right;\n  width: 100px;\n  left: -50px;\n  top: 5px;\n}\n#memebox h1 {\n  font-size: 2em;\n}\n#memebox ul#memes {\n  margin-top: 10px;\n  margin-left: 30px;\n  list-style-type: circle;\n}\n#memebox li {\n  font-weight: bold;\n  color: link;\n  text-decoration: underline;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n#account-characters {\n  margin-left: 30px;\n}\n#account-characters h1 {\n  display: inline;\n}\n#account-characters ul {\n  list-style: circle;\n  margin-left: 20px;\n}\n#account-characters a {\n  font-weight: bold;\n}\nimg.autolink {\n  border: 5px solid #000;\n  max-width: 540px;\n  max-height: 500px;\n}\n'
+    innerHTML: '	/*slake:build#compile-ls embeds css*/\n	#forum-actions-top h1 {\n  text-align: center;\n  margin-left: 200px;\n}\n.forum .forum-actions {\n  padding: 0px;\n}\n.forum .actions-panel {\n  margin-right: 15px;\n}\n.forum .forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.last-read {\n  opacity: 0;\n}\ntr:hover .last-read {\n  opacity: 1;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.advanced .post-author {\n  width: 15px;\n}\n#posts.advanced .post-views {\n  width: 15px;\n}\n#posts.advanced .post-lastPost {\n  width: 90px;\n  text-align: center;\n}\n#posts.advanced .post-lastPost .more-arrow {\n  display: none;\n}\n#posts.advanced .post-th .replies {\n  padding-right: 2px;\n  text-align: center;\n}\n#posts.advanced .post-th .poster {\n  text-align: right;\n  font-weight: normal;\n  padding-right: 5px;\n}\n#posts.advanced .post-th .last-post-th {\n  text-align: left;\n}\n#posts.advanced .post-last-updated {\n  width: 70px;\n}\n#posts.advanced .post-replies {\n  width: 10px;\n  text-align: right;\n  padding-right: 10px;\n}\n#posts.simple .tt-last-updated {\n  display: inline;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\n#memebox {\n  position: relative;\n  float: right;\n  width: 150px;\n  top: 5px;\n}\n#memebox h1 {\n  font-size: 1.8em;\n  display: inline;\n}\n#memebox .hider {\n  color: #f00;\n  display: none;\n}\n#memebox:hover .hider {\n  display: inline;\n}\n#memebox .unhider {\n  color: #008000;\n  display: none;\n}\n#memebox:hover .unhider {\n  display: inline;\n}\n#memebox ul#memes {\n  margin-top: 10px;\n  margin-left: 30px;\n  list-style-type: circle;\n}\n#memebox li {\n  font-weight: bold;\n  color: link;\n  text-decoration: underline;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n#account-characters {\n  margin-left: 30px;\n}\n#account-characters h1 {\n  display: inline;\n}\n#account-characters ul {\n  list-style: circle;\n  margin-left: 20px;\n}\n#account-characters a {\n  font-weight: bold;\n}\nimg.autolink {\n  border: 5px solid #000;\n  max-width: 540px;\n  max-height: 500px;\n}\n'
   });
   document.head.appendChild(style);
 }.call(this));
@@ -307,7 +316,11 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
         '.replies': 'REPS',
         '.poster': 'Dernier'
       },
-      otherCharacters: 'Autres personnages'
+      otherCharacters: 'Autres personnages',
+      cheatsheet: {
+        jumpToLastRead: 'Aller au dernier message lu',
+        quickQuote: 'Citer le bout de message sélectionné'
+      }
     },
     en: {
       timeIndex: 0,
@@ -319,7 +332,11 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       newMessages: 'There are new message(s)',
       checkingNew: 'Checking new messages ...',
       noNew: 'No new message.',
-      otherCharacters: 'Other characters'
+      otherCharacters: 'Other characters',
+      cheatsheet: {
+        jumpToLastRead: 'Jump to last read message',
+        quickQuote: 'Quote the selected part'
+      }
     }
   };
   out$.lang = lang = (function(){
@@ -416,7 +433,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
 (function(){
   var extensions, rules;
   extensions = '(?:com|net|org|eu|fr|jp|us|co.uk|me)';
-  rules = [[/(?:https?:\/\/)?(?:(?:www|m)\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g, '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0"></iframe>'], [/\((https?:\/\/)([^<\s\)]+)\)/g, '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" data-autolink="paren-specialcase" target="_blank">$2</a>)'], [RegExp('(^|>|;|\\s)([\\w\\.\\-]+\\.' + extensions + '(/[^<\\s]*)?(?=[\\s<]|$))', 'g'), '$1<a class="external" rel="noreferrer" href="http://$2" data-autolink="protocol-specialcase" title="$2" target="_blank">$2</a>'], [/([^"']|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g, '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" data-autolink="quote-specialcase" target="_blank">$3</a>'], [RegExp('(^|>|;|\\s)((?!(?:www\\.)?dropbox)[\\w\\.\\-]+\\.' + extensions + '(/[^.<\\s]*)\\.(jpg|png|gif|jpeg)(?=[\\s<]|$)|puu\\.sh/[a-zA-Z0-9]+)', 'g'), '$1<img src="http://$2" alt="$2" class="autolink" />']];
+  rules = [[/(?:https?:\/\/)?(?:(?:www|m)\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g, '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0"></iframe>'], [/\((https?:\/\/)([^<\s\)]+)\)/g, '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" data-autolink="paren-specialcase" target="_blank">$2</a>)'], [RegExp('(^|>|;|\\s)((?:https?:\\/\\/)?[\\w\\.\\-]+\\.' + extensions + '(/[^<\\s]*)?(?=[\\s<]|$))', 'g'), '$1<a class="external" rel="noreferrer" href="http://$2" data-autolink="protocol-specialcase" title="$2" target="_blank">$2</a>'], [/([^"']|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g, '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" data-autolink="quote-specialcase" target="_blank">$3</a>'], [RegExp('(^|>|;|\\s)((?!(?:www\\.)?dropbox)[\\w\\.\\-]+\\.' + extensions + '(/[^.<\\s]*)\\.(jpg|png|gif|jpeg)(?=[\\s<]|$)|puu\\.sh/[a-zA-Z0-9]+)', 'g'), '$1<img src="http://$2" alt="$2" class="autolink" />']];
   out$.autolink = autolink;
   function autolink(it){
     var i$, ref$, len$, ref1$, pattern, replacement;
@@ -797,7 +814,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     second: 1000,
     minute: 60000,
     hour: 3600000,
-    day: 8640000
+    day: 86400000
   };
   timestamp = new Date().getTime();
   postTitles = QSA('.post-title[data-simplified-time]');
@@ -849,7 +866,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   }
 }.call(this));
 (function(){
-  var that, newArray, res$, acc, ref$, vals, res1$, i$, len$, val, accountCharacters, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul;
+  var that, newArray, res$, acc, ref$, vals, res1$, i$, len$, val, accountCharacters, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul, limit, i;
   if (!topic) {
     return;
   }
@@ -861,7 +878,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       res1$ = [];
       for (i$ = 0, len$ = vals.length; i$ < len$; ++i$) {
         val = vals[i$];
-        if (val.link !== String.prototype.link) {
+        if (val.link) {
           res1$.push(clean(val.link));
         }
       }
@@ -907,7 +924,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     }
     postDetail = postCharacter.parentNode.querySelector('.post-detail');
     height = postDetail.offsetHeight;
-    toggle = characters.length > 2 ? (height - 130) / (characters.length * 15) : 1;
+    toggle = characters.length > 2 && height < 130 + (characters.length - 1) * 15;
     postCharacter.appendChild(template('multi-chars', {
       toggle: toggle,
       current: current,
@@ -915,17 +932,63 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     }));
     if (toggle) {
       ul = postCharacter.querySelector('ul');
-      ul.style.display = 'none';
+      if ((limit = Math.ceil((height - 130) / 15)) > 1) {
+        i = 0;
+        for (; i < limit; i++) {
+          ul.children[i].style.display = '';
+        }
+      }
       toggle = postCharacter.querySelector('.toggle');
       (fn$.call(this, ul, toggle, postCharacter));
     }
   }
   function fn$(ul, toggle, postCharacter){
     toggle.onclick = function(){
-      ul.style.display = '';
+      var i$, ref$, len$, li;
+      for (i$ = 0, len$ = (ref$ = ul.children).length; i$ < len$; ++i$) {
+        li = ref$[i$];
+        li.style.display = '';
+      }
       postCharacter.querySelector('.toggler').style.display = 'none';
       return toggle.onclick = function(){};
     };
+  }
+}.call(this));
+(function(){
+  var lastPostId, keyCode;
+  if (!topic) {
+    return;
+  }
+  if (!(lastPostId = localStorage.getItem("topic_" + topic.dataset.id))) {
+    return;
+  }
+  keyCode = 74;
+  cheatsheet.j = lang.cheatsheet.jumpToLastRead;
+  document.addEventListener('keydown', function(it){
+    var lastPostPage;
+    if (it.keyCode !== keyCode) {
+      return;
+    }
+    if (it.target !== QS('html')) {
+      return;
+    }
+    it.preventDefault();
+    lastPostPage = Math.ceil(lastPostId / 20);
+    if (topic.dataset.page < lastPostPage) {
+      return document.location = topic.dataset.url + ("?page=" + lastPostPage);
+    } else {
+      return scrollTo(lastPostId);
+    }
+  });
+}.call(this));
+(function(){
+  var i$, ref$, len$, post;
+  if (!topic) {
+    return;
+  }
+  for (i$ = 0, len$ = (ref$ = QSA('.post-detail')).length; i$ < len$; ++i$) {
+    post = ref$[i$];
+    elAutolink(post);
   }
 }.call(this));
 (function(){
@@ -941,39 +1004,6 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   lastPosterName = (ref$ = topic.getElementsByClassName('char-name-code'))[ref$.length - 1].innerHTML.trim();
   w.localStorage.setItem("topic_" + topic.dataset.id, postCount);
   w.localStorage.setItem("topic_lp_" + topic.dataset.id, lastPosterName);
-}.call(this));
-(function(){
-  var i$, ref$, len$, post;
-  if (!topic) {
-    return;
-  }
-  for (i$ = 0, len$ = (ref$ = QSA('.post-detail')).length; i$ < len$; ++i$) {
-    post = ref$[i$];
-    elAutolink(post);
-  }
-}.call(this));
-(function(){
-  var keyCode;
-  if (!topic) {
-    return;
-  }
-  keyCode = 74;
-  document.addEventListener('keydown', function(it){
-    var lastPostId, lastPostPage, url;
-    if (it.keyCode !== keyCode) {
-      return;
-    }
-    if (it.target !== QS('html')) {
-      return;
-    }
-    it.preventDefault();
-    lastPostId = localStorage.getItem("topic_" + topic.dataset.id);
-    lastPostPage = Math.ceil(lastPostId / 20);
-    url = topic.dataset.page < lastPostPage
-      ? url = topic.dataset.url + ("?page=" + lastPostPage)
-      : document.location;
-    return document.location = url + ("#" + lastPostId);
-  });
 }.call(this));
 (function(){
   var textarea, submit;
@@ -1012,14 +1042,15 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   };
 }.call(this));
 (function(){
-  var keyCode, textarea;
+  var textarea, keyCode;
   if (!topic) {
     return;
   }
-  keyCode = 82;
   if (!(textarea = QS('#post-edit textarea'))) {
     return;
   }
+  keyCode = 82;
+  cheatsheet.r = lang.cheatsheet.quickQuote;
   document.addEventListener('keydown', function(it){
     var that;
     if (it.keyCode !== keyCode) {
@@ -1050,6 +1081,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     youdontsay: 'http://bearsharkaxe.com/wp-content/uploads/2012/06/you-dont-say.jpg',
     fullretard: 'http://www.osborneink.com/wp-content/uploads/2012/11/never_go_full_retard1.jpg',
     susalenemi: 'http://img11.hostingpics.net/pics/311549libertlolxqt.png',
+    fulloffuck: 'http://www.mememaker.net/static/images/templates/14288.jpg',
     seriously: 'http://i3.kym-cdn.com/entries/icons/original/000/005/545/OpoQQ.jpg',
     trollface: 'http://fc09.deviantart.net/fs70/f/2012/342/5/a/troll_face_by_bmsproductionz-d5ng9k6.png',
     fuckyeah: 'http://cdn.ebaumsworld.com/mediaFiles/picture/2168064/82942867.jpg',
@@ -1060,7 +1092,6 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     ohcrap: 'http://i1.kym-cdn.com/entries/icons/original/000/004/077/Raisins_Face.jpg',
     trauma: 'http://global3.memecdn.com/trauma_c_629591.jpg',
     yuno: 'http://i1.kym-cdn.com/entries/icons/original/000/004/006/y-u-no-guy.jpg',
-    fulloffuck: 'http://www.mememaker.net/static/images/templates/14288.jpg',
     okay: 'http://cache.ohinternet.com/images/e/e6/Okay_guy.jpg',
     no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
   };
@@ -1087,6 +1118,23 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     var x$;
     return ul.appendChild((x$ = document.createElement('li'), x$.innerHTML = name, x$.onclick = addMeme(url), x$));
   };
+  /*
+  if localStorage.getItem "hide_memebox"
+  	post-wrapper.appendChild <|
+  		node 'div' id: 'memebox'
+  			<|
+  			node 'span' className: 'unhider' innerHTML: 'Memebox ✓'
+  				..onclick = ->
+  					localStorage.removeItem "hide_memebox"
+  					@innerHTML = 'OK!'
+  
+  	return
+  
+  hider = memebox.querySelector '.hider'
+  hider.onclick = ->
+  	memebox.style.display = 'none'
+  	localStorage.setItem "hide_memebox" "1"
+  */
   memebox = template('memebox');
   ul = memebox.querySelector('#memes');
   memebox.querySelector('#meme-search').onkeyup = function(){
@@ -1105,17 +1153,20 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
         break;
       case 0:
         appendMeme(name, url);
+        if (++i > 10) {
+          break;
+        }
         break;
       default:
         approximates.push([name, url]);
-      }
-      if (++i > 10) {
-        break;
       }
     }
     for (i$ = 0, len$ = approximates.length; i$ < len$; ++i$) {
       ref$ = approximates[i$], name = ref$[0], url = ref$[1];
       appendMeme(name, url);
+      if (++i > 10) {
+        break;
+      }
     }
   };
   postWrapper.appendChild(memebox);
@@ -1137,6 +1188,11 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     };
     return old(content, target, callback);
   };
+}.call(this));
+(function(){
+  if (!Object.keys(cheatsheet).length) {
+    return;
+  }
 }.call(this));
 function import$(obj, src){
   var own = {}.hasOwnProperty;

@@ -1,7 +1,8 @@
 return unless topic
+return unless textarea = QS '#post-edit textarea'
 
 key-code = 82 #'r' key
-return unless textarea = QS '#post-edit textarea'
+cheatsheet.r = lang.cheatsheet.quick-quote
 
 document.addEventListener 'keydown' ->
 	return unless it.keyCode is key-code

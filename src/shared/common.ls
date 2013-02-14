@@ -12,3 +12,5 @@ if forum = document.getElementById 'posts'
 	export tbody-regular = QS 'tbody.regular'
 
 export topic, forum, forum-options
+
+export cheatsheet = {}

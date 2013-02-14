@@ -25,7 +25,7 @@ metadata = read \metadata.js
 # reply contains reply-related (textarea) thingss
 
 sources = <[
-  shared/dom-helpers
+  shared/helpers/
   shared/common
   shared/css
   shared/lang
@@ -49,15 +49,17 @@ sources = <[
   topic-characters/improve-topic
   topic-characters/multi-chars
 
-  topic-posts/update-count
-  topic-posts/autolink
   topic-posts/jump
+  topic-posts/autolink
+  topic-posts/update-count
   
   reply/remember-reply
   reply/clear-textarea
   reply/quick-quote
   reply/memebox
   reply/preview
+
+  common/cheatsheet
 ]>
 ### REMOVED FEATURES
 # Please see removed/README.md

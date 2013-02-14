@@ -34,6 +34,8 @@ rules = # indent looks nasty because array star is just `void =` which adds 2 in
 			(^|>|;|\s) # to avoid linking parts of urls inside hrefs, must start
 										 # with one of these
 			(
+				(?:https?:\/\/)? # still allow these because there's no autolinking
+				# (?![a-z]{2}\.battle\.net) # those SHOULD be autolinked but sometimes are not :(
 				[\w\.\-]+\. # domain
 				#extensions # non-exhaustive
 				(/[^<\s]*)?(?=[\s<]|$) # rest of the url until space or <br> or end
@@ -81,8 +83,7 @@ export function el-autolink(el)
 	try
 		h = autolink el.innerHTML
 
-		### now let's move on more specific rules
-		# replace wow forum links
+		# replace wow links
 		r = //\>(http:\/\/[a-z]{2}\.battle\.net/[^<\s.]*)//g
 		while [, url]? = r.exec h
 			let url, el
