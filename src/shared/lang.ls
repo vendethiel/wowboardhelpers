@@ -29,6 +29,7 @@ langs =
 		other-characters: 'Autres personnages'
 
 		cheatsheet:
+			title: 'Raccourcis'
 			jump-to-last-read: 'Aller au dernier message lu'
 			quick-quote: 'Citer le bout de message sélectionné'
 	en:
@@ -46,6 +47,7 @@ langs =
 		other-characters: 'Other characters'
 
 		cheatsheet:
+			title: 'cheatsheet'
 			jump-to-last-read: 'Jump to last read message'
 			quick-quote: 'Quote the selected part'
 

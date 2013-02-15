@@ -119,6 +119,21 @@ var c$ = function (text){
     }
   }
 var templates = {};
+templates.cheatsheet = templates['common/cheatsheet'] = function(context) {
+  return (function() {
+    var $c, $o, key, val, _ref;
+    $c = c$;
+    $o = [];
+    $o.push("<div id='cheatsheet' align='center'>\n<!-- what's wrong with you blizz ? -->\n<a class='button1 toggler ui-button'>\n<span>\n<span>" + ($c(lang.cheatsheet.title)) + "</span>\n</span>\n</a>\n<ul>");
+    _ref = this.cheatsheet;
+    for (key in _ref) {
+      val = _ref[key];
+      $o.push("<li>\n<b>" + ($c(key.toUpperCase())) + "</b>\n: " + val + "\n</li>");
+    }
+    $o.push("</ul>\n</div>");
+    return $o.join("");
+  }).call(context);
+};
 templates.author = templates['forum-topics/author'] = function(context) {
   return (function() {
     var $c, $o;
@@ -314,6 +329,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       },
       otherCharacters: 'Autres personnages',
       cheatsheet: {
+        title: 'Raccourcis',
         jumpToLastRead: 'Aller au dernier message lu',
         quickQuote: 'Citer le bout de message sélectionné'
       }
@@ -330,6 +346,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       noNew: 'No new message.',
       otherCharacters: 'Other characters',
       cheatsheet: {
+        title: 'cheatsheet',
         jumpToLastRead: 'Jump to last read message',
         quickQuote: 'Quote the selected part'
       }
@@ -1186,8 +1203,22 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   };
 }.call(this));
 (function(){
+  var possibleDivs, i$, len$, sel, that, x$, ul;
   if (!Object.keys(cheatsheet).length) {
     return;
+  }
+  possibleDivs = ['.forum-info', '.talkback form'];
+  for (i$ = 0, len$ = possibleDivs.length; i$ < len$; ++i$) {
+    sel = possibleDivs[i$];
+    if (that = QS(sel)) {
+      that.appendChild((x$ = template('cheatsheet', {
+        cheatsheet: cheatsheet
+      }), ul = x$.querySelector('ul'), ul.style.display = 'none', x$.querySelector('.toggler').onclick = fn$, x$));
+      break;
+    }
+  }
+  function fn$(){
+    return ul.style.display = ul.style.display === 'none' ? '' : 'none';
   }
 }.call(this));
 function import$(obj, src){

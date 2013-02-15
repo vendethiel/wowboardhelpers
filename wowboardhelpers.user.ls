@@ -269,6 +269,7 @@ let #src/shared/lang.ls
 			other-characters: 'Autres personnages'
 	
 			cheatsheet:
+				title: 'Raccourcis'
 				jump-to-last-read: 'Aller au dernier message lu'
 				quick-quote: 'Citer le bout de message sélectionné'
 		en:
@@ -286,6 +287,7 @@ let #src/shared/lang.ls
 			other-characters: 'Other characters'
 	
 			cheatsheet:
+				title: 'cheatsheet'
 				jump-to-last-read: 'Jump to last read message'
 				quick-quote: 'Quote the selected part'
 	
@@ -958,7 +960,9 @@ let #src/topic-characters/multi-chars.ls
 						li.style.display = ''
 					postCharacter.querySelector '.toggler' .style.display = 'none'
 	
-					toggle.onclick = -> #no op it
+					# no-op onclick as the h1 itself is toggling
+					# and we're only removing the [+]
+					toggle.onclick = ->
 	# console.timeEnd 'src/topic-characters/multi-chars.ls'
 
 let #src/topic-posts/jump.ls
@@ -1186,4 +1190,20 @@ let #src/reply/preview.ls
 let #src/common/cheatsheet.ls
 	# console.time 'src/common/cheatsheet.ls'
 	return unless Object.keys cheatsheet .length
+	
+	possible-divs =
+		'.forum-info' # forum topics page
+		'.talkback form'
+	
+	for sel in possible-divs when QS sel
+		that.appendChild <| do
+			template 'cheatsheet' {cheatsheet}
+				ul = ..querySelector 'ul'
+				ul.style.display = 'none'
+	
+				..querySelector '.toggler' .onclick = ->
+					ul.style.display = if ul.style.display is 'none'
+						''
+					else 'none'
+		break
 	# console.timeEnd 'src/common/cheatsheet.ls'

@@ -72,4 +72,6 @@ for post-character in QSA '.post:not(.hidden) .post-character'
 					li.style.display = ''
 				postCharacter.querySelector '.toggler' .style.display = 'none'
 
-				toggle.onclick = -> #no op it
+				# no-op onclick as the h1 itself is toggling
+				# and we're only removing the [+]
+				toggle.onclick = ->
