@@ -57,7 +57,9 @@ for post-character in QSA '.post:not(.hidden) .post-character'
 	if toggle 
 		ul = post-character.querySelector 'ul'
 
-		if (limit = Math.ceil (height - 130) / 15) > 1
+		# floor it. if we have 8.2 we want it to resolve to 8 (displayed)
+		# so that we'll have one hidden
+		if (limit = Math.floor (height - 130) / 15) > 1
 			i = 0 # try to display properly as much as we can
 			while i < limit, i++
 				ul.children[i]style.display = ''
@@ -70,4 +72,4 @@ for post-character in QSA '.post:not(.hidden) .post-character'
 					li.style.display = ''
 				postCharacter.querySelector '.toggler' .style.display = 'none'
 
-				toggle.onclick = ->
+				toggle.onclick = -> #no op it

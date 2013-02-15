@@ -1,6 +1,5 @@
 return unless topic
-
-return unless textarea = QS '#post-edit textarea'
+return unless textarea
 
 submit = QS '.post [type=submit]'
 

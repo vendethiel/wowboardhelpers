@@ -52,6 +52,11 @@ rules = # indent looks nasty because array star is just `void =` which adds 2 in
 	# linkify links not preceded by a quote or double-quote (should avoid
 	# relinkifying href= urls)
 	# specialcase battle.net urls since they're autolinked by the forum
+
+	# I moved this pattern up to fix an edge-case in @qqueue's original code, but had to add
+	# / in the exclude pattern to avoid relinking some URLs
+	# running regexp to linkify stuff is probably something we *should* avoid but
+	# I hardly see myself foreaching the dom to split nodes etc
 	* * /([^"'\/]|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g
 			* '$1<a class="external" \
 					rel="noreferrer" \

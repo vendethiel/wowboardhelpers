@@ -6,10 +6,10 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.8.0
+// @version 1.7.1
 // ==/UserScript==
  * changelog
- * 1.8
+ * 1.8?
  *  Added the CheatSheet
  * 1.7.1
  *  Now the "other characters" list is hidden if bigger than post

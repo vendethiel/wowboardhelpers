@@ -50,6 +50,8 @@ let #src/shared/common.ls
 			..id = (..url / '/')[*-1]
 			..page = (document.location == /\?page=([0-9]+)/)?1 or 1
 	
+		export textarea = QS '#post-edit textarea'
+	
 	if forum = document.getElementById 'posts'
 		forum.dataset.id = ((document.location / '/')[*-2] / '?')0
 		
@@ -58,6 +60,8 @@ let #src/shared/common.ls
 	export topic, forum, forum-options
 	
 	export cheatsheet = {}
+	
+	console.log 'Ahhhh…greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !'
 	# console.timeEnd 'src/shared/common.ls'
 
 let #src/shared/css.ls
@@ -427,6 +431,11 @@ let #src/common/autolink.ls
 		# linkify links not preceded by a quote or double-quote (should avoid
 		# relinkifying href= urls)
 		# specialcase battle.net urls since they're autolinked by the forum
+	
+		# I moved this pattern up to fix an edge-case in @qqueue's original code, but had to add
+		# / in the exclude pattern to avoid relinking some URLs
+		# running regexp to linkify stuff is probably something we *should* avoid but
+		# I hardly see myself foreaching the dom to split nodes etc
 		* * /([^"'\/]|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g
 				* '$1<a class="external" \
 						rel="noreferrer" \
@@ -934,7 +943,9 @@ let #src/topic-characters/multi-chars.ls
 		if toggle 
 			ul = post-character.querySelector 'ul'
 	
-			if (limit = Math.ceil (height - 130) / 15) > 1
+			# floor it. if we have 8.2 we want it to resolve to 8 (displayed)
+			# so that we'll have one hidden
+			if (limit = Math.floor (height - 130) / 15) > 1
 				i = 0 # try to display properly as much as we can
 				while i < limit, i++
 					ul.children[i]style.display = ''
@@ -947,7 +958,7 @@ let #src/topic-characters/multi-chars.ls
 						li.style.display = ''
 					postCharacter.querySelector '.toggler' .style.display = 'none'
 	
-					toggle.onclick = ->
+					toggle.onclick = -> #no op it
 	# console.timeEnd 'src/topic-characters/multi-chars.ls'
 
 let #src/topic-posts/jump.ls
@@ -967,11 +978,10 @@ let #src/topic-posts/jump.ls
 	
 		last-post-page = Math.ceil last-post-id / 20
 	
-	
 		if topic.dataset.page < last-post-page
 			document.location = topic.dataset.url + "?page=#last-post-page"
-		else
-			scroll-to last-post-id
+		else # sadly, the post aren't marked themselves (like .post-1 or something)
+			QSA '.post-detail' .[(last-post-id % 20) - 1]?scrollIntoView!
 	# console.timeEnd 'src/topic-posts/jump.ls'
 
 let #src/topic-posts/autolink.ls
@@ -1008,8 +1018,7 @@ let #src/topic-posts/update-count.ls
 let #src/reply/remember-reply.ls
 	# console.time 'src/reply/remember-reply.ls'
 	return unless topic
-	
-	return unless textarea = QS '#post-edit textarea'
+	return unless textarea
 	
 	submit = QS '.post [type=submit]'
 	
@@ -1026,25 +1035,26 @@ let #src/reply/remember-reply.ls
 let #src/reply/clear-textarea.ls
 	# console.time 'src/reply/clear-textarea.ls'
 	return unless topic
+	return unless textarea
 	
 	clearer = template 'clear-textarea'
 	
 	QS '.editor1'
 		return unless ..
-		textarea = ..querySelector 'textarea'
 	
 		..insertBefore clearer, textarea
 	
 		clearer.onclick = ->
 			textarea.value = ''
-			#manually clearing localStorage is something I'd like to avoid
+			# manually clearing localStorage is something I'd like to avoid
+			# emit an event ?
 			w.localStorage.removeItem "post_#{topic.dataset.id}"
 	# console.timeEnd 'src/reply/clear-textarea.ls'
 
 let #src/reply/quick-quote.ls
 	# console.time 'src/reply/quick-quote.ls'
 	return unless topic
-	return unless textarea = QS '#post-edit textarea'
+	return unless textarea
 	
 	key-code = 82 #'r' key
 	cheatsheet.r = lang.cheatsheet.quick-quote
@@ -1064,6 +1074,7 @@ let #src/reply/quick-quote.ls
 let #src/reply/memebox.ls
 	# console.time 'src/reply/memebox.ls'
 	return unless topic
+	return unless textarea # shortcircuit here (if banned or something)
 	
 	memes =
 		challengeaccepted: 'http://sambacentral.files.wordpress.com/2012/11/challenge-accepted.jpg'
@@ -1094,11 +1105,9 @@ let #src/reply/memebox.ls
 		# extra work on these is done at the bottom, after memebox is appended to dom
 	*/
 	
+	
 	return unless post-wrapper = QS '.post.general'
 	post-wrapper.removeChild post-wrapper.children[*-1] #remove span.clear
-	
-	textarea = QS '#post-edit textarea'
-	return unless textarea
 	
 	add-meme = (url) ->
 		->
@@ -1161,20 +1170,17 @@ let #src/reply/memebox.ls
 let #src/reply/preview.ls
 	# console.time 'src/reply/preview.ls'
 	return unless topic
+	return unless textarea
 	
-	return unless post-preview = QS '#post-preview'
+	post-preview = QS '#post-preview'
 	
 	# let's replace BML preview to add
 	# our autolink feature
 	old = w.BML.preview.bind w.BML
-	w.BML.preview = (content, target, c) ->
-		# let's bind our autolink
-		callback = ->
-			c!
+	w.BML.preview = (content, target, callback) ->
+		old content, target, !->
+			callback! # old behavior
 			el-autolink post-preview
-	
-		# and imitate old behavior
-		old content, target, callback
 	# console.timeEnd 'src/reply/preview.ls'
 
 let #src/common/cheatsheet.ls

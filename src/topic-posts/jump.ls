@@ -13,8 +13,7 @@ document.addEventListener 'keydown' ->
 
 	last-post-page = Math.ceil last-post-id / 20
 
-
 	if topic.dataset.page < last-post-page
 		document.location = topic.dataset.url + "?page=#last-post-page"
-	else
-		scroll-to last-post-id
+	else # sadly, the post aren't marked themselves (like .post-1 or something)
+		QSA '.post-detail' .[(last-post-id % 20) - 1]?scrollIntoView!

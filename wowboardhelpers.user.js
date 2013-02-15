@@ -260,13 +260,14 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   out$.fetchSiblings = fetchSiblings;
 }.call(this));
 (function(){
-  var forumOptions, topic, x$, topicUrl, ref$, forum, tbodyRegular, cheatsheet;
+  var forumOptions, topic, x$, topicUrl, ref$, textarea, forum, tbodyRegular, cheatsheet;
   forumOptions = QS('.forum-options');
   if (topic = document.getElementById('thread')) {
     x$ = topic.dataset;
     x$.url = topicUrl = replace$.call((split$.call(document.location, '?'))[0], /#[0-9]+/, '');
     x$.id = (ref$ = split$.call(x$.url, '/'))[ref$.length - 1];
     x$.page = ((ref$ = /\?page=([0-9]+)/.exec(document.location)) != null ? ref$[1] : void 8) || 1;
+    out$.textarea = textarea = QS('#post-edit textarea');
   }
   if (forum = document.getElementById('posts')) {
     forum.dataset.id = (split$.call((ref$ = split$.call(document.location, '/'))[ref$.length - 2], '?'))[0];
@@ -276,6 +277,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   out$.forum = forum;
   out$.forumOptions = forumOptions;
   out$.cheatsheet = cheatsheet = {};
+  console.log('Ahhhh…greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !');
 }.call(this));
 (function(){
   var style;
@@ -926,7 +928,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     }));
     if (toggle) {
       ul = postCharacter.querySelector('ul');
-      if ((limit = Math.ceil((height - 130) / 15)) > 1) {
+      if ((limit = Math.floor((height - 130) / 15)) > 1) {
         i = 0;
         for (; i < limit; i++) {
           ul.children[i].style.display = '';
@@ -959,7 +961,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   keyCode = 74;
   cheatsheet.j = lang.cheatsheet.jumpToLastRead;
   document.addEventListener('keydown', function(it){
-    var lastPostPage;
+    var lastPostPage, ref$;
     if (it.keyCode !== keyCode) {
       return;
     }
@@ -971,7 +973,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     if (topic.dataset.page < lastPostPage) {
       return document.location = topic.dataset.url + ("?page=" + lastPostPage);
     } else {
-      return scrollTo(lastPostId);
+      return (ref$ = QSA('.post-detail')[lastPostId % 20 - 1]) != null ? ref$.scrollIntoView() : void 8;
     }
   });
 }.call(this));
@@ -1000,11 +1002,11 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   w.localStorage.setItem("topic_lp_" + topic.dataset.id, lastPosterName);
 }.call(this));
 (function(){
-  var textarea, submit;
+  var submit;
   if (!topic) {
     return;
   }
-  if (!(textarea = QS('#post-edit textarea'))) {
+  if (!textarea) {
     return;
   }
   submit = QS('.post [type=submit]');
@@ -1019,8 +1021,11 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   };
 }.call(this));
 (function(){
-  var clearer, x$, textarea;
+  var clearer, x$;
   if (!topic) {
+    return;
+  }
+  if (!textarea) {
     return;
   }
   clearer = template('clear-textarea');
@@ -1028,7 +1033,6 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   if (!x$) {
     return;
   }
-  textarea = x$.querySelector('textarea');
   x$.insertBefore(clearer, textarea);
   clearer.onclick = function(){
     textarea.value = '';
@@ -1036,11 +1040,11 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   };
 }.call(this));
 (function(){
-  var textarea, keyCode;
+  var keyCode;
   if (!topic) {
     return;
   }
-  if (!(textarea = QS('#post-edit textarea'))) {
+  if (!textarea) {
     return;
   }
   keyCode = 82;
@@ -1063,8 +1067,11 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   });
 }.call(this));
 (function(){
-  var memes, postWrapper, ref$, textarea, addMeme, appendMeme, memebox, ul;
+  var memes, postWrapper, ref$, addMeme, appendMeme, memebox, ul;
   if (!topic) {
+    return;
+  }
+  if (!textarea) {
     return;
   }
   memes = {
@@ -1099,10 +1106,6 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     return;
   }
   postWrapper.removeChild((ref$ = postWrapper.children)[ref$.length - 1]);
-  textarea = QS('#post-edit textarea');
-  if (!textarea) {
-    return;
-  }
   addMeme = function(url){
     return function(){
       return textarea.value += (textarea.value ? "\n" : "") + url;
@@ -1170,17 +1173,16 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   if (!topic) {
     return;
   }
-  if (!(postPreview = QS('#post-preview'))) {
+  if (!textarea) {
     return;
   }
+  postPreview = QS('#post-preview');
   old = w.BML.preview.bind(w.BML);
-  w.BML.preview = function(content, target, c){
-    var callback;
-    callback = function(){
-      c();
-      return elAutolink(postPreview);
-    };
-    return old(content, target, callback);
+  w.BML.preview = function(content, target, callback){
+    return old(content, target, function(){
+      callback();
+      elAutolink(postPreview);
+    });
   };
 }.call(this));
 (function(){

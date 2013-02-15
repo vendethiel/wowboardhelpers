@@ -1,4 +1,5 @@
 return unless topic
+return unless textarea # shortcircuit here (if banned or something)
 
 memes =
 	challengeaccepted: 'http://sambacentral.files.wordpress.com/2012/11/challenge-accepted.jpg'
@@ -29,11 +30,9 @@ if localStorage.getItem "memes"
 	# extra work on these is done at the bottom, after memebox is appended to dom
 */
 
+
 return unless post-wrapper = QS '.post.general'
 post-wrapper.removeChild post-wrapper.children[*-1] #remove span.clear
-
-textarea = QS '#post-edit textarea'
-return unless textarea
 
 add-meme = (url) ->
 	->
