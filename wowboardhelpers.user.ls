@@ -40,12 +40,6 @@ let #src/shared/helpers///dom.ls
 	export node, replace-with, template, QSA, QS, fetch-siblings
 	# console.timeEnd 'src/shared/helpers///dom.ls'
 
-let #src/shared/helpers///scroll.ls
-	# console.time 'src/shared/helpers///scroll.ls'
-	export scroll-to = ->
-		document.location = (document.location / '#')0 + "##it"
-	# console.timeEnd 'src/shared/helpers///scroll.ls'
-
 let #src/shared/common.ls
 	# console.time 'src/shared/common.ls'
 	forum-options = QS '.forum-options'
@@ -433,7 +427,7 @@ let #src/common/autolink.ls
 		# linkify links not preceded by a quote or double-quote (should avoid
 		# relinkifying href= urls)
 		# specialcase battle.net urls since they're autolinked by the forum
-		* * /([^"']|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g
+		* * /([^"'\/]|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g
 				* '$1<a class="external" \
 						rel="noreferrer" \
 						href="$2$3" \

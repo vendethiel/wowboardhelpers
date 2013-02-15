@@ -52,7 +52,7 @@ rules = # indent looks nasty because array star is just `void =` which adds 2 in
 	# linkify links not preceded by a quote or double-quote (should avoid
 	# relinkifying href= urls)
 	# specialcase battle.net urls since they're autolinked by the forum
-	* * /([^"']|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g
+	* * /([^"'\/]|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g
 			* '$1<a class="external" \
 					rel="noreferrer" \
 					href="$2$3" \
