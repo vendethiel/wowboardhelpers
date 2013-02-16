@@ -414,8 +414,8 @@ let #src/common/autolink.ls
 		* * //
 				(^|>|;|\s) # to avoid linking parts of urls inside hrefs, must start
 											 # with one of these
+				(?:https?:\/\/)? # still allow these because there's no autolinking
 				(
-					(?:https?:\/\/)? # still allow these because there's no autolinking
 					# (?![a-z]{2}\.battle\.net) # those SHOULD be autolinked but sometimes are not :(
 					[\w\.\-]+\. # domain
 					#extensions # non-exhaustive
