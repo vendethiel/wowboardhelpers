@@ -48,6 +48,7 @@ sources = <[
 
   topic-characters/improve-topic
   topic-characters/multi-chars
+  topic-characters/context-links
 
   topic-posts/jump
   topic-posts/autolink

@@ -1,9 +1,9 @@
 return unless forum
 
 #get account's character names
-characters = QSA '.user-plate .overview'
+characters = QSA '.char-wrapper .name'
 if characters.length
-	characters = [(name / ' ')[*-1] - '\n' for {innerHTML: name} in characters.0.children]
+	characters = [(name / ' ')[*-1] - '\n' for {innerHTML: name} in characters]
 
 
 #last message column in ADV mode

@@ -6,11 +6,14 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.8.1
+// @version 1.9.0
 // ==/UserScript==
  * changelog
- * 1.8.1
+ * 1.9
  *  Fixed a capturing bug with autolink
+ *  Fixed a bug, probably creating another one, when the user does not
+ *   have enough chars to get the "extended select menu"
+ *  Added "HF" link in context links
  * 1.8
  *  Added the CheatSheet
  * 1.7.1

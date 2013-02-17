@@ -206,6 +206,10 @@ tr:not(.stickied) a[data-tooltip] {
   color: link;
   text-decoration: underline;
 }
+.context-links .extra-link {
+  background-image: none !important;
+  padding-left: 15px !important;
+}
 .karma {
   white-space: normal !important;
 }
@@ -625,9 +629,9 @@ let #src/forum-topics/last-updated.ls
 	return unless forum
 	
 	#get account's character names
-	characters = QSA '.user-plate .overview'
+	characters = QSA '.char-wrapper .name'
 	if characters.length
-		characters = [(name / ' ')[*-1] - '\n' for {innerHTML: name} in characters.0.children]
+		characters = [(name / ' ')[*-1] - '\n' for {innerHTML: name} in characters]
 	
 	
 	#last message column in ADV mode
@@ -964,6 +968,18 @@ let #src/topic-characters/multi-chars.ls
 					# and we're only removing the [+]
 					toggle.onclick = ->
 	# console.timeEnd 'src/topic-characters/multi-chars.ls'
+
+let #src/topic-characters/context-links.ls
+	# console.time 'src/topic-characters/context-links.ls'
+	# adds context links
+	for context in topic.querySelectorAll '.context-links'
+		el = node 'a',
+			innerHTML: 'HF'
+			className: 'link-first extra-link'
+			href: context.children.0.href + 'achievement' #.context-links a:eq(0)
+	
+		context.insertBefore el, context.querySelector '.link-last'
+	# console.timeEnd 'src/topic-characters/context-links.ls'
 
 let #src/topic-posts/jump.ls
 	# console.time 'src/topic-posts/jump.ls'
