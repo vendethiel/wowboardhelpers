@@ -971,6 +971,8 @@ let #src/topic-characters/multi-chars.ls
 
 let #src/topic-characters/context-links.ls
 	# console.time 'src/topic-characters/context-links.ls'
+	return unless topic
+	
 	# adds context links
 	for context in topic.querySelectorAll '.context-links'
 		el = node 'a',

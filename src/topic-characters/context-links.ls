@@ -1,3 +1,5 @@
+return unless topic
+
 # adds context links
 for context in topic.querySelectorAll '.context-links'
 	el = node 'a',
