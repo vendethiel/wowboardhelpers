@@ -17,8 +17,10 @@ else {}
 
 function clean
 	it -= "context-link" # remove class
-	it -= "xmlns=\"http://www.w3.org/1999/xhtml\" " #xlmns
+	it -= "xmlns=\"http://www.w3.org/1999/xhtml\" "
 	it
+
+modified = false # avoid saving if useless
 
 for post-character in QSA '.post-character'
 	icon-ignore = post-character.querySelector '.icon-ignore'
@@ -31,10 +33,11 @@ for post-character in QSA '.post-character'
 	post-character.dataset <<< {account, link}
 
 	unless link in account-characters[][account]
+		modified = true
 		account-characters[account]push link
 
-# save it !
-localStorage.setItem "accountCharacters" JSON.stringify account-characters
+if modified # save it !
+	localStorage.setItem "accountCharacters" JSON.stringify account-characters
 
 for post-character in QSA '.post:not(.hidden) .post-character'
 	{account, link: current} = post-character.dataset

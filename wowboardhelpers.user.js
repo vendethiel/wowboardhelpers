@@ -129,14 +129,14 @@ templates.cheatsheet = templates['common/cheatsheet'] = function(context) {
     var $c, $o, key, val, _ref;
     $c = c$;
     $o = [];
-    $o.push("<div id='cheatsheet-container'>\n<!-- that's meh but ... -->\n<span class='clear'></span>\n<div id='cheatsheet' align='center'>\n<!-- what's wrong with you blizz ? -->\n<a class='button1 toggler ui-button'>\n<span>\n<span>" + ($c(lang.cheatsheet.title)) + "</span>\n</span>\n</a>\n<ul>");
+    $o.push("<div id='cheatsheet-container'>\n<!-- that's meh but ... -->\n<span class='clear'></span>\n<div id='cheatsheet'>\n<!-- what's wrong with you blizz ? -->\n<a class='button1 toggler ui-button'>\n<span>\n<span>" + ($c(lang.cheatsheet)) + "</span>\n</span>\n</a>\n<ul>");
     _ref = this.cheatsheet;
     for (key in _ref) {
       val = _ref[key];
       $o.push("<li>\n<b>" + ($c(key.toUpperCase())) + "</b>\n: " + val + "\n</li>");
     }
     $o.push("</ul>\n</div>\n</div>");
-    return $o.join("");
+    return $o.join("").replace(/\s(\w+)='true'/mg, " $1='$1'").replace(/\s(\w+)='false'/mg, '').replace(/\s(?:id|class)=(['"])(\1)/mg, "");
   }).call(context);
 };
 templates.author = templates['forum-topics/author'] = function(context) {
@@ -150,7 +150,7 @@ templates.author = templates['forum-topics/author'] = function(context) {
       $o.push("<img src='/wow/static/images/layout/cms/icon_blizzard.gif' alt='' />");
     }
     $o.push("</span>");
-    return $o.join("");
+    return $o.join("").replace(/\s(\w+)='true'/mg, " $1='$1'").replace(/\s(\w+)='false'/mg, '').replace(/\s(?:id|class)=(['"])(\1)/mg, "");
   }).call(context);
 };
 templates.defaultPagination = templates['forum-topics/default-pagination'] = function(context) {
@@ -159,7 +159,7 @@ templates.defaultPagination = templates['forum-topics/default-pagination'] = fun
     $c = c$;
     $o = [];
     $o.push("<ul class='ui-pagination'>\n<li>\n<a data-pagenum='" + ($c(1)) + "' rel='np' href='" + ($c(this.href)) + "'>1</a>\n</li>\n</ul>");
-    return $o.join("");
+    return $o.join("").replace(/\s(\w+)='true'/mg, " $1='$1'").replace(/\s(\w+)='false'/mg, '').replace(/\s(?:id|class)=(['"])(\1)/mg, "");
   }).call(context);
 };
 templates.hideTopic = templates['forum-topics/hide-topic'] = function(context) {
@@ -171,7 +171,7 @@ templates.hideTopic = templates['forum-topics/hide-topic'] = function(context) {
     } else {
       $o.push("<a class='hide-topic last-read'>X</a>");
     }
-    return $o.join("\n").replace(/\s(?:id|class)=(['"])(\1)/mg, "");
+    return $o.join("").replace(/\s(?:id|class)=(['"])(\1)/mg, "");
   }).call(context);
 };
 templates.ttLastUpdated = templates['forum-topics/tt-last-updated'] = function(context) {
@@ -182,7 +182,7 @@ templates.ttLastUpdated = templates['forum-topics/tt-last-updated'] = function(c
     $o.push("<div class='tt-last-updated'>\n<br />");
     $o.push("" + $c(this.text));
     $o.push("</div>");
-    return $o.join("");
+    return $o.join("").replace(/\s(\w+)='true'/mg, " $1='$1'").replace(/\s(\w+)='false'/mg, '').replace(/\s(?:id|class)=(['"])(\1)/mg, "");
   }).call(context);
 };
 templates.clearTextarea = templates['reply/clear-textarea'] = function(context) {
@@ -190,7 +190,7 @@ templates.clearTextarea = templates['reply/clear-textarea'] = function(context) 
     var $o;
     $o = [];
     $o.push("<div class='clear-textarea'>X</div>");
-    return $o.join("\n").replace(/\s(?:id|class)=(['"])(\1)/mg, "");
+    return $o.join("").replace(/\s(?:id|class)=(['"])(\1)/mg, "");
   }).call(context);
 };
 templates.memebox = templates['reply/memebox'] = function(context) {
@@ -199,7 +199,16 @@ templates.memebox = templates['reply/memebox'] = function(context) {
     $c = c$;
     $o = [];
     $o.push("<div id='memebox'>\n<h1>	MemeBox</h1>\n<br />\n<input id='meme-search' placeholder='meme' autocomplete='off' size='" + ($c(15)) + "' />\n<ul id='memes'></ul>\n</div>");
-    return $o.join("");
+    return $o.join("").replace(/\s(\w+)='true'/mg, " $1='$1'").replace(/\s(\w+)='false'/mg, '').replace(/\s(?:id|class)=(['"])(\1)/mg, "");
+  }).call(context);
+};
+templates.contextLinks = templates['topic-characters/context-links'] = function(context) {
+  return (function() {
+    var $c, $o;
+    $c = c$;
+    $o = [];
+    $o.push("<span class='extra-links'>\n<a class='extra-link link-first' href='" + ($c(this.link + 'achievement')) + "'>HF</a>\n<a class='extra-link link-first' href='" + ($c(this.link + 'statistic#21:152')) + "'>PvP</a>\n</span>");
+    return $o.join("").replace(/\s(\w+)='true'/mg, " $1='$1'").replace(/\s(\w+)='false'/mg, '').replace(/\s(?:id|class)=(['"])(\1)/mg, "");
   }).call(context);
 };
 templates.multiChars = templates['topic-characters/multi-chars'] = function(context) {
@@ -221,10 +230,28 @@ templates.multiChars = templates['topic-characters/multi-chars'] = function(cont
       }
     }
     $o.push("</ul>\n</div>");
-    return $o.join("");
+    return $o.join("").replace(/\s(\w+)='true'/mg, " $1='$1'").replace(/\s(\w+)='false'/mg, '').replace(/\s(?:id|class)=(['"])(\1)/mg, "");
   }).call(context);
 };
 var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.replace, split$ = ''.split, join$ = [].join, slice$ = [].slice;
+(function(){
+  var cheatsheet, bindKey;
+  out$.cheatsheet = cheatsheet = {};
+  out$.bindKey = bindKey = function(bind, langKey, cb){
+    cheatsheet[bind] = lang(langKey);
+    bind = bind.toUpperCase().charCodeAt();
+    document.addEventListener('keydown', function(it){
+      if (bind !== it.keyCode) {
+        return;
+      }
+      if (it.target !== QS('html')) {
+        return;
+      }
+      it.preventDefault();
+      cb();
+    });
+  };
+}.call(this));
 (function(){
   function node(tag, props){
     props == null && (props = {});
@@ -280,7 +307,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   out$.fetchSiblings = fetchSiblings;
 }.call(this));
 (function(){
-  var forumOptions, topic, x$, topicUrl, ref$, textarea, forum, tbodyRegular, cheatsheet;
+  var forumOptions, topic, x$, topicUrl, ref$, textarea, forum, tbodyRegular;
   forumOptions = QS('.forum-options');
   if (topic = document.getElementById('thread')) {
     x$ = topic.dataset;
@@ -296,14 +323,13 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   out$.topic = topic;
   out$.forum = forum;
   out$.forumOptions = forumOptions;
-  out$.cheatsheet = cheatsheet = {};
   console.log('Ahhhh…greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !');
 }.call(this));
 (function(){
   var style;
   style = node('style', {
     type: 'text/css',
-    innerHTML: '	/*slake:build#compile-ls embeds css*/\n	#forum-actions-top h1 {\n  text-align: center;\n  margin-left: 200px;\n}\n.forum .forum-actions {\n  padding: 0px;\n}\n.forum .actions-panel {\n  margin-right: 15px;\n}\n.forum .forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.last-read {\n  opacity: 0;\n}\ntr:hover .last-read {\n  opacity: 1;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.advanced .post-author {\n  width: 15px;\n}\n#posts.advanced .post-views {\n  width: 15px;\n}\n#posts.advanced .post-lastPost {\n  width: 90px;\n  text-align: center;\n}\n#posts.advanced .post-lastPost .more-arrow {\n  display: none;\n}\n#posts.advanced .post-th .replies {\n  padding-right: 2px;\n  text-align: center;\n}\n#posts.advanced .post-th .poster {\n  text-align: right;\n  font-weight: normal;\n  padding-right: 5px;\n}\n#posts.advanced .post-th .last-post-th {\n  text-align: left;\n}\n#posts.advanced .post-last-updated {\n  width: 70px;\n}\n#posts.advanced .post-replies {\n  width: 10px;\n  text-align: right;\n  padding-right: 10px;\n}\n#posts.simple .tt-last-updated {\n  display: inline;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\n#memebox {\n  position: relative;\n  float: right;\n  width: 150px;\n  top: 5px;\n}\n#memebox h1 {\n  font-size: 1.8em;\n  display: inline;\n}\n#memebox .hider {\n  color: #f00;\n  display: none;\n}\n#memebox:hover .hider {\n  display: inline;\n}\n#memebox .unhider {\n  color: #008000;\n  display: none;\n}\n#memebox:hover .unhider {\n  display: inline;\n}\n#memebox ul#memes {\n  margin-top: 10px;\n  margin-left: 30px;\n  list-style-type: circle;\n}\n#memebox li {\n  font-weight: bold;\n  color: link;\n  text-decoration: underline;\n}\n.context-links .extra-link {\n  background-image: none !important;\n  padding-left: 15px !important;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n#account-characters {\n  margin-left: 30px;\n}\n#account-characters h1 {\n  display: inline;\n}\n#account-characters ul {\n  list-style: circle;\n  margin-left: 20px;\n}\n#account-characters a {\n  font-weight: bold;\n}\nimg.autolink {\n  border: 5px solid #000;\n  max-width: 540px;\n  max-height: 500px;\n}\n'
+    innerHTML: '	/*slake:build#compile-ls embeds css*/\n	#forum-actions-top h1 {\n  text-align: center;\n  margin-left: 200px;\n}\n.forum .forum-actions {\n  padding: 0px;\n}\n.forum .actions-panel {\n  margin-right: 15px;\n}\n.forum .forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.last-read {\n  opacity: 0;\n}\ntr:hover .last-read {\n  opacity: 1;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.advanced .post-author {\n  width: 15px;\n}\n#posts.advanced .post-views {\n  width: 15px;\n}\n#posts.advanced .post-lastPost {\n  width: 90px;\n  text-align: center;\n}\n#posts.advanced .post-lastPost .more-arrow {\n  display: none;\n}\n#posts.advanced .post-th .replies {\n  padding-right: 2px;\n  text-align: center;\n}\n#posts.advanced .post-th .poster {\n  text-align: right;\n  font-weight: normal;\n  padding-right: 5px;\n}\n#posts.advanced .post-th .last-post-th {\n  text-align: left;\n}\n#posts.advanced .post-last-updated {\n  width: 70px;\n}\n#posts.advanced .post-replies {\n  width: 10px;\n  text-align: right;\n  padding-right: 10px;\n}\n#posts.simple .tt-last-updated {\n  display: inline;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\n#memebox {\n  position: relative;\n  float: right;\n  width: 150px;\n  top: 5px;\n}\n#memebox h1 {\n  font-size: 1.8em;\n  display: inline;\n}\n#memebox .hider {\n  color: #f00;\n  display: none;\n}\n#memebox:hover .hider {\n  display: inline;\n}\n#memebox .unhider {\n  color: #008000;\n  display: none;\n}\n#memebox:hover .unhider {\n  display: inline;\n}\n#memebox ul#memes {\n  margin-top: 10px;\n  margin-left: 30px;\n  list-style-type: circle;\n}\n#memebox li {\n  font-weight: bold;\n  color: link;\n  text-decoration: underline;\n}\n.context-links .extra-link {\n  background-image: none !important;\n  padding-left: 8px !important;\n  border-top-left-radius: 0px !important;\n  border-bottom-left-radius: 0px !important;\n}\n.ui-context {\n  width: 230px !important;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n#account-characters {\n  margin-left: 30px;\n}\n#account-characters h1 {\n  display: inline;\n}\n#account-characters ul {\n  list-style: circle;\n  margin-left: 20px;\n}\n#account-characters a {\n  font-weight: bold;\n}\nimg.autolink {\n  border: 5px solid #000;\n  max-width: 540px;\n  max-height: 500px;\n}\n'
   });
   document.head.appendChild(style);
 }.call(this));
@@ -333,11 +359,9 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
         '.poster': 'Dernier'
       },
       otherCharacters: 'Autres personnages',
-      cheatsheet: {
-        title: 'Raccourcis',
-        jumpToLastRead: 'Aller au dernier message lu',
-        quickQuote: 'Citer le bout de message sélectionné'
-      }
+      cheatsheet: 'Raccourcis',
+      jumpToLastRead: 'Aller au dernier message lu',
+      quickQuote: 'Citer le bout de message sélectionné'
     },
     en: {
       timeIndex: 0,
@@ -350,11 +374,9 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       checkingNew: 'Checking new messages ...',
       noNew: 'No new message.',
       otherCharacters: 'Other characters',
-      cheatsheet: {
-        title: 'cheatsheet',
-        jumpToLastRead: 'Jump to last read message',
-        quickQuote: 'Quote the selected part'
-      }
+      cheatsheet: 'Cheatsheet',
+      jumpToLastRead: 'Jump to last read message',
+      quickQuote: 'Quote the selected part'
     }
   };
   out$.lang = lang = (function(){
@@ -365,7 +387,9 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       : langs.en);
     function lang(it){
       var ref$;
-      return (ref$ = lang[it]) != null ? ref$ : it;
+      return (ref$ = lang[it]) != null
+        ? ref$
+        : (ref$ = lang[it.toCamelCase()]) != null ? ref$ : it;
     }
     lang.pluralize == null && (lang.pluralize = function(count, key){
       return Math.round(count) + " " + lang(key) + [count > 1.5 ? 's' : void 8];
@@ -447,6 +471,11 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     }
     return this + repeatString$(str + "", len - this.length);
   };
+  String.prototype.toCamelCase = function(){
+    return this.replace(/[_-]([a-z])/g, function(it){
+      return it[1].toUpperCase();
+    });
+  };
 }.call(this));
 (function(){
   var extensions, rules;
@@ -466,7 +495,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     var h, r, ref$, url, e;
     try {
       h = autolink(el.innerHTML);
-      r = /\>(http:\/\/[a-z]{2}\.battle\.net\/[^<\s.]*)/g;
+      r = /\>((?:http:\/\/)?[a-z]{2}\.battle\.net\/[^<\s.]*)/g;
       while ((ref$ = r.exec(h)) != null && (url = ref$[1], ref$)) {
         (fn$.call(this, url, el));
       }
@@ -476,9 +505,14 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       return console.log("Unable to generate valid HTML : " + h + " (" + e + ")");
     }
     function fn$(url, el){
-      ajax.get(url, function(){
+      var fullUrl;
+      fullUrl = ~url.indexOf('http://')
+        ? url
+        : "http://" + url;
+      ajax.get(fullUrl, function(){
         var that;
         if (that = /<title>(.+)<\/title>/.exec(this.response)) {
+          console.log(that[1]);
           el.innerHTML = el.innerHTML.replace(">" + url, ">" + (replace$.call(that[1], " - World of Warcraft", '')));
         }
       });
@@ -884,7 +918,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   }
 }.call(this));
 (function(){
-  var that, newArray, res$, acc, ref$, vals, res1$, i$, len$, val, accountCharacters, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul, limit, i;
+  var that, newArray, res$, acc, ref$, vals, res1$, i$, len$, val, accountCharacters, modified, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul, limit, i;
   if (!topic) {
     return;
   }
@@ -914,6 +948,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     it = replace$.call(it, "xmlns=\"http://www.w3.org/1999/xhtml\" ", '');
     return it;
   }
+  modified = false;
   for (i$ = 0, len$ = (ref$ = QSA('.post-character')).length; i$ < len$; ++i$) {
     postCharacter = ref$[i$];
     iconIgnore = postCharacter.querySelector('.icon-ignore');
@@ -926,10 +961,13 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
     ref1$.account = account;
     ref1$.link = link;
     if (!in$(link, accountCharacters[account] || (accountCharacters[account] = []))) {
+      modified = true;
       accountCharacters[account].push(link);
     }
   }
-  localStorage.setItem("accountCharacters", JSON.stringify(accountCharacters));
+  if (modified) {
+    localStorage.setItem("accountCharacters", JSON.stringify(accountCharacters));
+  }
   for (i$ = 0, len$ = (ref$ = QSA('.post:not(.hidden) .post-character')).length; i$ < len$; ++i$) {
     postCharacter = ref$[i$];
     ref1$ = postCharacter.dataset, account = ref1$.account, current = ref1$.link;
@@ -979,38 +1017,29 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   }
   for (i$ = 0, len$ = (ref$ = topic.querySelectorAll('.context-links')).length; i$ < len$; ++i$) {
     context = ref$[i$];
-    el = node('a', {
-      innerHTML: 'HF',
-      className: 'link-first extra-link',
-      href: context.children[0].href + 'achievement'
+    el = template('context-links', {
+      link: context.children[0].href
     });
     context.insertBefore(el, context.querySelector('.link-last'));
   }
 }.call(this));
 (function(){
-  var lastPostId, keyCode;
+  var lastPostId;
   if (!topic) {
     return;
   }
   if (!(lastPostId = localStorage.getItem("topic_" + topic.dataset.id))) {
     return;
   }
-  keyCode = 74;
-  cheatsheet.j = lang.cheatsheet.jumpToLastRead;
-  document.addEventListener('keydown', function(it){
+  bindKey('j', 'jump-to-last-read', function(){
     var lastPostPage, ref$;
-    if (it.keyCode !== keyCode) {
-      return;
-    }
-    if (it.target !== QS('html')) {
-      return;
-    }
-    it.preventDefault();
     lastPostPage = Math.ceil(lastPostId / 20);
     if (topic.dataset.page < lastPostPage) {
-      return document.location = topic.dataset.url + ("?page=" + lastPostPage);
+      document.location = topic.dataset.url + ("?page=" + lastPostPage);
     } else {
-      return (ref$ = QSA('.post-detail')[lastPostId % 20 - 1]) != null ? ref$.scrollIntoView() : void 8;
+      if ((ref$ = QSA('.post-detail')[lastPostId % 20 - 1]) != null) {
+        ref$.scrollIntoView();
+      }
     }
   });
 }.call(this));
@@ -1077,29 +1106,19 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   };
 }.call(this));
 (function(){
-  var keyCode;
   if (!topic) {
     return;
   }
   if (!textarea) {
     return;
   }
-  keyCode = 82;
-  cheatsheet.r = lang.cheatsheet.quickQuote;
-  document.addEventListener('keydown', function(it){
+  bindKey('r', 'quick-quote', function(){
     var that;
-    if (it.keyCode !== keyCode) {
-      return;
-    }
-    if (it.target !== QS('html')) {
-      return;
-    }
-    it.preventDefault();
     if (that = w.getSelection().toString()) {
       textarea.value += (textarea.value ? "\n" : "") + ("[quote]" + that + "[/quote]");
       textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
       textarea.focus();
-      return document.location += '#forum-actions-bottom';
+      document.location += '#forum-actions-bottom';
     }
   });
 }.call(this));

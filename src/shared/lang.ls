@@ -28,10 +28,9 @@ langs =
 
 		other-characters: 'Autres personnages'
 
-		cheatsheet:
-			title: 'Raccourcis'
-			jump-to-last-read: 'Aller au dernier message lu'
-			quick-quote: 'Citer le bout de message sélectionné'
+		cheatsheet: 'Raccourcis'
+		jump-to-last-read: 'Aller au dernier message lu'
+		quick-quote: 'Citer le bout de message sélectionné'
 	en:
 		time-index: 0
 		time-outdex: -1
@@ -46,15 +45,14 @@ langs =
 
 		other-characters: 'Other characters'
 
-		cheatsheet:
-			title: 'cheatsheet'
-			jump-to-last-read: 'Jump to last read message'
-			quick-quote: 'Quote the selected part'
+		cheatsheet: 'Cheatsheet'
+		jump-to-last-read: 'Jump to last read message'
+		quick-quote: 'Quote the selected part'
 
 
 export class lang # acts like a proxy to avoid unneeded keys
 	import langs[l] ? langs.en
-	-> return lang[it] ? it
+	-> return lang[it] ? lang[it.toCamelCase!] ? it
 
 	@pluralize ?= (count, key) ~>
 		"#{Math.round count} #{@ key}#{['s' if count > 1.5]}"

@@ -15,6 +15,4 @@ if forum = document.getElementById 'posts'
 
 export topic, forum, forum-options
 
-export cheatsheet = {}
-
 console.log 'Ahhhh…greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !'

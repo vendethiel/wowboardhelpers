@@ -1,4 +1,21 @@
 
+let #src/shared/helpers///bind-key.ls
+	# console.time 'src/shared/helpers///bind-key.ls'
+	export cheatsheet = {}
+	
+	export bind-key = !(bind, lang-key, cb) ->
+		cheatsheet[bind] = lang lang-key
+	
+		bind .= toUpperCase!charCodeAt!
+	
+		document.addEventListener 'keydown' !->
+			return unless bind is it.keyCode
+			return unless it.target is QS 'html' #not typing
+			it.preventDefault!
+	
+			cb!
+	# console.timeEnd 'src/shared/helpers///bind-key.ls'
+
 let #src/shared/helpers///dom.ls
 	# console.time 'src/shared/helpers///dom.ls'
 	#@todo add `...childs` ? slow downs a lot =(
@@ -58,8 +75,6 @@ let #src/shared/common.ls
 		export tbody-regular = QS 'tbody.regular'
 	
 	export topic, forum, forum-options
-	
-	export cheatsheet = {}
 	
 	console.log 'Ahhhh…greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !'
 	# console.timeEnd 'src/shared/common.ls'
@@ -208,7 +223,12 @@ tr:not(.stickied) a[data-tooltip] {
 }
 .context-links .extra-link {
   background-image: none !important;
-  padding-left: 15px !important;
+  padding-left: 8px !important;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+}
+.ui-context {
+  width: 230px !important;
 }
 .karma {
   white-space: normal !important;
@@ -272,10 +292,9 @@ let #src/shared/lang.ls
 	
 			other-characters: 'Autres personnages'
 	
-			cheatsheet:
-				title: 'Raccourcis'
-				jump-to-last-read: 'Aller au dernier message lu'
-				quick-quote: 'Citer le bout de message sélectionné'
+			cheatsheet: 'Raccourcis'
+			jump-to-last-read: 'Aller au dernier message lu'
+			quick-quote: 'Citer le bout de message sélectionné'
 		en:
 			time-index: 0
 			time-outdex: -1
@@ -290,15 +309,14 @@ let #src/shared/lang.ls
 	
 			other-characters: 'Other characters'
 	
-			cheatsheet:
-				title: 'cheatsheet'
-				jump-to-last-read: 'Jump to last read message'
-				quick-quote: 'Quote the selected part'
+			cheatsheet: 'Cheatsheet'
+			jump-to-last-read: 'Jump to last read message'
+			quick-quote: 'Quote the selected part'
 	
 	
 	export class lang # acts like a proxy to avoid unneeded keys
 		import langs[l] ? langs.en
-		-> return lang[it] ? it
+		-> return lang[it] ? lang[it.toCamelCase!] ? it
 	
 		@pluralize ?= (count, key) ~>
 			"#{Math.round count} #{@ key}#{['s' if count > 1.5]}"
@@ -379,6 +397,9 @@ let #src/shared/utils///string.ls
 		return if @length >= len
 	
 		@ + "#str" * (len - @length)
+	
+	String::toCamelCase = ->
+		@replace /[_-]([a-z])/g -> it.1.toUpperCase!
 	# console.timeEnd 'src/shared/utils///string.ls'
 
 let #src/common/autolink.ls
@@ -474,11 +495,16 @@ let #src/common/autolink.ls
 			h = autolink el.innerHTML
 	
 			# replace wow links
-			r = //\>(http:\/\/[a-z]{2}\.battle\.net/[^<\s.]*)//g
+			r = //\>((?:http:\/\/)?[a-z]{2}\.battle\.net/[^<\s.]*)//g
 			while [, url]? = r.exec h
 				let url, el
-					<-! ajax.get url
+					full-url = if ~url.indexOf 'http://'
+						url # we already have the leading http:// part
+					else "http://#url"
+	
+					<-! ajax.get full-url
 					if /<title>(.+)<\/title>/ == @response
+						console.log that.1
 						el.innerHTML .= replace ">#url" ">#{that.1 - " - World of Warcraft"}"
 	
 	
@@ -909,8 +935,10 @@ let #src/topic-characters/multi-chars.ls
 	
 	function clean
 		it -= "context-link" # remove class
-		it -= "xmlns=\"http://www.w3.org/1999/xhtml\" " #xlmns
+		it -= "xmlns=\"http://www.w3.org/1999/xhtml\" "
 		it
+	
+	modified = false # avoid saving if useless
 	
 	for post-character in QSA '.post-character'
 		icon-ignore = post-character.querySelector '.icon-ignore'
@@ -923,10 +951,11 @@ let #src/topic-characters/multi-chars.ls
 		post-character.dataset <<< {account, link}
 	
 		unless link in account-characters[][account]
+			modified = true
 			account-characters[account]push link
 	
-	# save it !
-	localStorage.setItem "accountCharacters" JSON.stringify account-characters
+	if modified # save it !
+		localStorage.setItem "accountCharacters" JSON.stringify account-characters
 	
 	for post-character in QSA '.post:not(.hidden) .post-character'
 		{account, link: current} = post-character.dataset
@@ -975,10 +1004,7 @@ let #src/topic-characters/context-links.ls
 	
 	# adds context links
 	for context in topic.querySelectorAll '.context-links'
-		el = node 'a',
-			innerHTML: 'HF'
-			className: 'link-first extra-link'
-			href: context.children.0.href + 'achievement' #.context-links a:eq(0)
+		el = template 'context-links' link: context.children.0.href
 	
 		context.insertBefore el, context.querySelector '.link-last'
 	# console.timeEnd 'src/topic-characters/context-links.ls'
@@ -990,14 +1016,7 @@ let #src/topic-posts/jump.ls
 	# cache it cause the script will modify it
 	return unless last-post-id = localStorage.getItem "topic_#{topic.dataset.id}"
 	
-	key-code = 74 #'j' key
-	cheatsheet.j = lang.cheatsheet.jump-to-last-read
-	
-	document.addEventListener 'keydown' ->
-		return unless it.keyCode is key-code
-		return unless it.target is QS 'html' #not typing
-		it.preventDefault!
-	
+	bind-key 'j' 'jump-to-last-read' !->
 		last-post-page = Math.ceil last-post-id / 20
 	
 		if topic.dataset.page < last-post-page
@@ -1078,14 +1097,7 @@ let #src/reply/quick-quote.ls
 	return unless topic
 	return unless textarea
 	
-	key-code = 82 #'r' key
-	cheatsheet.r = lang.cheatsheet.quick-quote
-	
-	document.addEventListener 'keydown' ->
-		return unless it.keyCode is key-code
-		return unless it.target is QS 'html' #not typing
-		it.preventDefault!
-	
+	bind-key 'r' 'quick-quote' !->
 		if w.getSelection!toString!
 			textarea.value += (if textarea.value then "\n" else "") + "[quote]#that[/quote]"
 			textarea.selectionStart = textarea.selectionEnd = textarea.value.length

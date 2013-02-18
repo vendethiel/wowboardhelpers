@@ -129,11 +129,8 @@ compile-templates.hamlc = ->
       'function(context) {'
     .replace /\n  /g '\n' #cut an indent level
     .replace do #we don't need this!
-      '''
-$o.join("\\n").replace(/\\s(\\w+)='true'/mg, " $1='$1'").replace(/\\s(\\w+)='false'/mg, '').replace(/\\s(?:id|class)=(['"])(\\1)/mg, "");
-      '''
-      '$o.join("");
-      '
+      '$o.join("\\n")'
+      '$o.join("")'
     .trim!
 
 compile = (it, options) ->

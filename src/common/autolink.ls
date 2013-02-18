@@ -89,11 +89,16 @@ export function el-autolink(el)
 		h = autolink el.innerHTML
 
 		# replace wow links
-		r = //\>(http:\/\/[a-z]{2}\.battle\.net/[^<\s.]*)//g
+		r = //\>((?:http:\/\/)?[a-z]{2}\.battle\.net/[^<\s.]*)//g
 		while [, url]? = r.exec h
 			let url, el
-				<-! ajax.get url
+				full-url = if ~url.indexOf 'http://'
+					url # we already have the leading http:// part
+				else "http://#url"
+
+				<-! ajax.get full-url
 				if /<title>(.+)<\/title>/ == @response
+					console.log that.1
 					el.innerHTML .= replace ">#url" ">#{that.1 - " - World of Warcraft"}"
 
 
