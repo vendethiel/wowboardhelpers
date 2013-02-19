@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.9.0
+// @version 1.9.1
 // ==/UserScript==
  * changelog
+ * 1.9.1
+ *  Perf improvements
  * 1.9
  *  Fixed a capturing bug with autolink
  *  Fixed a bug, probably creating another one, when the user does not
@@ -512,7 +514,6 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       ajax.get(fullUrl, function(){
         var that;
         if (that = /<title>(.+)<\/title>/.exec(this.response)) {
-          console.log(that[1]);
           el.innerHTML = el.innerHTML.replace(">" + url, ">" + (replace$.call(that[1], " - World of Warcraft", '')));
         }
       });

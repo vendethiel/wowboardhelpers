@@ -98,7 +98,6 @@ export function el-autolink(el)
 
 				<-! ajax.get full-url
 				if /<title>(.+)<\/title>/ == @response
-					console.log that.1
 					el.innerHTML .= replace ">#url" ">#{that.1 - " - World of Warcraft"}"
 
 

@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.9.0
+// @version 1.9.1
 // ==/UserScript==
  * changelog
+ * 1.9.1
+ *  Perf improvements
  * 1.9
  *  Fixed a capturing bug with autolink
  *  Fixed a bug, probably creating another one, when the user does not
