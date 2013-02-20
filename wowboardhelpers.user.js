@@ -1119,7 +1119,7 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       textarea.value += (textarea.value ? "\n" : "") + ("[quote]" + that + "[/quote]");
       textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
       textarea.focus();
-      document.location += '#forum-actions-bottom';
+      QS('#forum-actions-bottom').scrollIntoView();
     }
   });
 }.call(this));

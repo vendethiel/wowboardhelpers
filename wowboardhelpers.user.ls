@@ -1101,7 +1101,7 @@ let #src/reply/quick-quote.ls
 			textarea.value += (if textarea.value then "\n" else "") + "[quote]#that[/quote]"
 			textarea.selectionStart = textarea.selectionEnd = textarea.value.length
 			textarea.focus!
-			document.location += '#forum-actions-bottom'
+			QS '#forum-actions-bottom' .scrollIntoView!
 	# console.timeEnd 'src/reply/quick-quote.ls'
 
 let #src/reply/memebox.ls
