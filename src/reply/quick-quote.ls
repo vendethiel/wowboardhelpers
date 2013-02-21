@@ -6,4 +6,6 @@ bind-key 'r' 'quick-quote' !->
 		textarea.value += (if textarea.value then "\n" else "") + "[quote]#that[/quote]"
 		textarea.selectionStart = textarea.selectionEnd = textarea.value.length
 		textarea.focus!
-		QS '#forum-actions-bottom' .scrollIntoView!
+
+	# jump to reply even if have no selection
+	QS '#forum-actions-bottom' .scrollIntoView!
