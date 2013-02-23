@@ -126,21 +126,6 @@ var c$ = function (text){
     }
   }
 var templates = {};
-templates.cheatsheet = templates['common/cheatsheet'] = function(context) {
-  return (function() {
-    var $c, $o, key, val, _ref;
-    $c = c$;
-    $o = [];
-    $o.push("<div id='cheatsheet-container'>\n<!-- that's meh but ... -->\n<span class='clear'></span>\n<div id='cheatsheet'>\n<!-- what's wrong with you blizz ? -->\n<a class='button1 toggler ui-button'>\n<span>\n<span>" + ($c(lang.cheatsheet)) + "</span>\n</span>\n</a>\n<ul>");
-    _ref = this.cheatsheet;
-    for (key in _ref) {
-      val = _ref[key];
-      $o.push("<li>\n<b>" + ($c(key.toUpperCase())) + "</b>\n: " + val + "\n</li>");
-    }
-    $o.push("</ul>\n</div>\n</div>");
-    return $o.join("").replace(/\s(\w+)='true'/mg, " $1='$1'").replace(/\s(\w+)='false'/mg, '').replace(/\s(?:id|class)=(['"])(\1)/mg, "");
-  }).call(context);
-};
 templates.author = templates['forum-topics/author'] = function(context) {
   return (function() {
     var $c, $o;
@@ -184,6 +169,21 @@ templates.ttLastUpdated = templates['forum-topics/tt-last-updated'] = function(c
     $o.push("<div class='tt-last-updated'>\n<br />");
     $o.push("" + $c(this.text));
     $o.push("</div>");
+    return $o.join("").replace(/\s(\w+)='true'/mg, " $1='$1'").replace(/\s(\w+)='false'/mg, '').replace(/\s(?:id|class)=(['"])(\1)/mg, "");
+  }).call(context);
+};
+templates.cheatsheet = templates['modules/cheatsheet'] = function(context) {
+  return (function() {
+    var $c, $o, key, val, _ref;
+    $c = c$;
+    $o = [];
+    $o.push("<div id='cheatsheet-container'>\n<!-- that's meh but ... -->\n<span class='clear'></span>\n<div id='cheatsheet'>\n<!-- what's wrong with you blizz ? -->\n<a class='button1 toggler ui-button'>\n<span>\n<span>" + ($c(lang.cheatsheet)) + "</span>\n</span>\n</a>\n<ul>");
+    _ref = this.cheatsheet;
+    for (key in _ref) {
+      val = _ref[key];
+      $o.push("<li>\n<b>" + ($c(key.toUpperCase())) + "</b>\n: " + val + "\n</li>");
+    }
+    $o.push("</ul>\n</div>\n</div>");
     return $o.join("").replace(/\s(\w+)='true'/mg, " $1='$1'").replace(/\s(\w+)='false'/mg, '').replace(/\s(?:id|class)=(['"])(\1)/mg, "");
   }).call(context);
 };
@@ -363,7 +363,9 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       otherCharacters: 'Autres personnages',
       cheatsheet: 'Raccourcis',
       jumpToLastRead: 'Aller au dernier message lu',
-      quickQuote: 'Citer le bout de message sélectionné'
+      quickQuote: 'Citer le bout de message sélectionné',
+      pageTop: 'Haut de page',
+      pageBottom: 'Bas de page'
     },
     en: {
       timeIndex: 0,
@@ -378,7 +380,9 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       otherCharacters: 'Other characters',
       cheatsheet: 'Cheatsheet',
       jumpToLastRead: 'Jump to last read message',
-      quickQuote: 'Quote the selected part'
+      quickQuote: 'Quote the selected part',
+      pageTop: 'Go to top',
+      pageBottom: 'Go to bottom'
     }
   };
   out$.lang = lang = (function(){
@@ -478,6 +482,14 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       return it[1].toUpperCase();
     });
   };
+}.call(this));
+(function(){
+  if (!topic) {
+    return;
+  }
+  bindKey('t', 'page-top', function(){
+    QS('#logo').scrollIntoView();
+  });
 }.call(this));
 (function(){
   var extensions, rules;

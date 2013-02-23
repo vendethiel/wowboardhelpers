@@ -32,7 +32,8 @@ sources = <[
   shared/content-class
   shared/utils/
 
-  common/autolink
+  modules/jumps/
+  modules/autolink
 
   fix/
   
@@ -60,7 +61,7 @@ sources = <[
   reply/memebox
   reply/preview
 
-  common/cheatsheet
+  modules/cheatsheet
 ]>
 ### REMOVED FEATURES
 # Please see removed/README.md

@@ -31,6 +31,9 @@ langs =
 		cheatsheet: 'Raccourcis'
 		jump-to-last-read: 'Aller au dernier message lu'
 		quick-quote: 'Citer le bout de message sélectionné'
+
+		page-top: 'Haut de page'
+		page-bottom: 'Bas de page'
 	en:
 		time-index: 0
 		time-outdex: -1
@@ -48,6 +51,9 @@ langs =
 		cheatsheet: 'Cheatsheet'
 		jump-to-last-read: 'Jump to last read message'
 		quick-quote: 'Quote the selected part'
+
+		page-top: 'Go to top'
+		page-bottom: 'Go to bottom'
 
 
 export class lang # acts like a proxy to avoid unneeded keys

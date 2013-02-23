@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.9.1
+// @version 1.9.2
 // ==/UserScript==
  * changelog
+ * 1.9.2
+ *  Added "top" jump
  * 1.9.1
  *  Perf improvements
  * 1.9

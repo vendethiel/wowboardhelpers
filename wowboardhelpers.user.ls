@@ -295,6 +295,9 @@ let #src/shared/lang.ls
 			cheatsheet: 'Raccourcis'
 			jump-to-last-read: 'Aller au dernier message lu'
 			quick-quote: 'Citer le bout de message sélectionné'
+	
+			page-top: 'Haut de page'
+			page-bottom: 'Bas de page'
 		en:
 			time-index: 0
 			time-outdex: -1
@@ -312,6 +315,9 @@ let #src/shared/lang.ls
 			cheatsheet: 'Cheatsheet'
 			jump-to-last-read: 'Jump to last read message'
 			quick-quote: 'Quote the selected part'
+	
+			page-top: 'Go to top'
+			page-bottom: 'Go to bottom'
 	
 	
 	export class lang # acts like a proxy to avoid unneeded keys
@@ -402,8 +408,18 @@ let #src/shared/utils///string.ls
 		@replace /[_-]([a-z])/g -> it.1.toUpperCase!
 	# console.timeEnd 'src/shared/utils///string.ls'
 
-let #src/common/autolink.ls
-	# console.time 'src/common/autolink.ls'
+let #src/shared/jumps///top.ls
+	# console.time 'src/shared/jumps///top.ls'
+	return unless topic
+	
+	#XXX jumps/ ?
+	
+	bind-key 't' 'page-top' !->
+		QS '#logo' .scrollIntoView!
+	# console.timeEnd 'src/shared/jumps///top.ls'
+
+let #src/modules/autolink.ls
+	# console.time 'src/modules/autolink.ls'
 	extensions = '(?:com|net|org|eu|fr|jp|us|co\.uk|me)'
 	
 	rules = # indent looks nasty because array star is just `void =` which adds 2 indents
@@ -510,7 +526,7 @@ let #src/common/autolink.ls
 			el.innerHTML = h
 		catch
 			console.log "Unable to generate valid HTML : #h (#e)"
-	# console.timeEnd 'src/common/autolink.ls'
+	# console.timeEnd 'src/modules/autolink.ls'
 
 let #src/fix///html-overrides.ls
 	# console.time 'src/fix///html-overrides.ls'
@@ -1218,8 +1234,8 @@ let #src/reply/preview.ls
 			el-autolink post-preview
 	# console.timeEnd 'src/reply/preview.ls'
 
-let #src/common/cheatsheet.ls
-	# console.time 'src/common/cheatsheet.ls'
+let #src/modules/cheatsheet.ls
+	# console.time 'src/modules/cheatsheet.ls'
 	return unless Object.keys cheatsheet .length
 	
 	possible-divs =
@@ -1237,4 +1253,4 @@ let #src/common/cheatsheet.ls
 						''
 					else 'none'
 		break
-	# console.timeEnd 'src/common/cheatsheet.ls'
+	# console.timeEnd 'src/modules/cheatsheet.ls'
