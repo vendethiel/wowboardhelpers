@@ -298,6 +298,7 @@ let #src/shared/lang.ls
 	
 			page-top: 'Haut de page'
 			page-bottom: 'Bas de page'
+			login: 'Connexion'
 		en:
 			time-index: 0
 			time-outdex: -1
@@ -318,6 +319,7 @@ let #src/shared/lang.ls
 	
 			page-top: 'Go to top'
 			page-bottom: 'Go to bottom'
+			login: 'Login'
 	
 	
 	export class lang # acts like a proxy to avoid unneeded keys
@@ -408,15 +410,23 @@ let #src/shared/utils///string.ls
 		@replace /[_-]([a-z])/g -> it.1.toUpperCase!
 	# console.timeEnd 'src/shared/utils///string.ls'
 
-let #src/shared/jumps///top.ls
-	# console.time 'src/shared/jumps///top.ls'
+let #src/modules/jumps///login.ls
+	# console.time 'src/modules/jumps///login.ls'
+	return if QS '.player-name'
+	
+	bind-key 'l' 'login' !->
+		w.Login.open 'https://eu.battle.net/login/login.frag'
+	# console.timeEnd 'src/modules/jumps///login.ls'
+
+let #src/modules/jumps///top.ls
+	# console.time 'src/modules/jumps///top.ls'
 	return unless topic
 	
 	#XXX jumps/ ?
 	
 	bind-key 't' 'page-top' !->
 		QS '#logo' .scrollIntoView!
-	# console.timeEnd 'src/shared/jumps///top.ls'
+	# console.timeEnd 'src/modules/jumps///top.ls'
 
 let #src/modules/autolink.ls
 	# console.time 'src/modules/autolink.ls'

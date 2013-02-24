@@ -34,6 +34,7 @@ langs =
 
 		page-top: 'Haut de page'
 		page-bottom: 'Bas de page'
+		login: 'Connexion'
 	en:
 		time-index: 0
 		time-outdex: -1
@@ -54,6 +55,7 @@ langs =
 
 		page-top: 'Go to top'
 		page-bottom: 'Go to bottom'
+		login: 'Login'
 
 
 export class lang # acts like a proxy to avoid unneeded keys

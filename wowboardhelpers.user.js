@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.9.1
+// @version 1.9.2
 // ==/UserScript==
  * changelog
+ * 1.9.2
+ *  Added "top" jump
  * 1.9.1
  *  Perf improvements
  * 1.9
@@ -365,7 +367,8 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       jumpToLastRead: 'Aller au dernier message lu',
       quickQuote: 'Citer le bout de message sélectionné',
       pageTop: 'Haut de page',
-      pageBottom: 'Bas de page'
+      pageBottom: 'Bas de page',
+      login: 'Connexion'
     },
     en: {
       timeIndex: 0,
@@ -382,7 +385,8 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       jumpToLastRead: 'Jump to last read message',
       quickQuote: 'Quote the selected part',
       pageTop: 'Go to top',
-      pageBottom: 'Go to bottom'
+      pageBottom: 'Go to bottom',
+      login: 'Login'
     }
   };
   out$.lang = lang = (function(){
@@ -482,6 +486,14 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
       return it[1].toUpperCase();
     });
   };
+}.call(this));
+(function(){
+  if (QS('.player-name')) {
+    return;
+  }
+  bindKey('l', 'login', function(){
+    w.Login.open('https://eu.battle.net/login/login.frag');
+  });
 }.call(this));
 (function(){
   if (!topic) {
