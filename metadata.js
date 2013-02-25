@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.9.2
+// @version 1.9.3
 // ==/UserScript==
  * changelog
+ * 1.9.3
+ *  Do not autolink CM posts
  * 1.9.2
  *  Added "top" jump
  *  Added "login" jump

@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.9.2
+// @version 1.9.3
 // ==/UserScript==
  * changelog
+ * 1.9.3
+ *  Do not autolink CM posts
  * 1.9.2
  *  Added "top" jump
  *  Added "login" jump
@@ -1040,6 +1042,9 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   }
   for (i$ = 0, len$ = (ref$ = topic.querySelectorAll('.context-links')).length; i$ < len$; ++i$) {
     context = ref$[i$];
+    if (context.children.length === 1) {
+      continue;
+    }
     el = template('context-links', {
       link: context.children[0].href
     });
@@ -1073,6 +1078,9 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   }
   for (i$ = 0, len$ = (ref$ = QSA('.post-detail')).length; i$ < len$; ++i$) {
     post = ref$[i$];
+    if (post.parentNode.parentNode.parentNode.parentNode.parentNode.classList.contains('blizzard')) {
+      continue;
+    }
     elAutolink(post);
   }
 }.call(this));
