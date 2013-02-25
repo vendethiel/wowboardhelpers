@@ -11,6 +11,7 @@
  * changelog
  * 1.9.2
  *  Added "top" jump
+ *  Added "login" jump
  * 1.9.1
  *  Perf improvements
  * 1.9
@@ -496,9 +497,6 @@ var out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.repla
   });
 }.call(this));
 (function(){
-  if (!topic) {
-    return;
-  }
   bindKey('t', 'page-top', function(){
     QS('#logo').scrollIntoView();
   });

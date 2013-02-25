@@ -420,10 +420,6 @@ let #src/modules/jumps///login.ls
 
 let #src/modules/jumps///top.ls
 	# console.time 'src/modules/jumps///top.ls'
-	return unless topic
-	
-	#XXX jumps/ ?
-	
 	bind-key 't' 'page-top' !->
 		QS '#logo' .scrollIntoView!
 	# console.timeEnd 'src/modules/jumps///top.ls'
