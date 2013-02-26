@@ -1,10 +1,12 @@
+require! <[dom/$ dom/node lang tbody-regular ajax]>
+
 #we DON'T delay execution because server reponse won't be ordered
 first-topic-id = tbody-regular.children.0.id.slice 'postRow'length
 tr-html = """<tr id="postRow#first-topic-id"""
 a-end-html = 'data-tooltip-options=\'{"location": "mouse"}\'>'
 tbody-html = '<tbody class="regular">'
 
-QS '#forum-actions-top'
+$ '#forum-actions-top'
 	..insertBefore do
 		h1 = node 'h1'
 		..children[*-1]
@@ -37,4 +39,4 @@ refresh = ->
 timeout = 15s * 1000ms #15s
 
 #timeout clearing is in hide-topic
-export check-updates = setTimeout refresh, timeout
+module.exports = check-updates = setTimeout refresh, timeout

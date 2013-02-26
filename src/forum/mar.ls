@@ -1,6 +1,8 @@
+require! <[lang dom/node forum-options tbody-regular w]>
+
 all-read = false
 
-export button-mar = node 'a' innerHTML: 'MAR' title: lang.mar, onclick: !->
+module.exports = button-mar = node 'a' innerHTML: 'MAR' title: lang.mar, onclick: !->
 	return if all-read
 	!:=all-read
 
@@ -19,4 +21,4 @@ export button-mar = node 'a' innerHTML: 'MAR' title: lang.mar, onclick: !->
 
 button-mar.style.cursor = 'pointer'
 
-forum-options.appendChild button-mar
+tbody-regular.appendChild button-mar

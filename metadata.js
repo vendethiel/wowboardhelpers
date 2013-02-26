@@ -97,7 +97,4 @@
  * 0.4
  *  Now works with advanced mode
  *  Fix a bug when logged off
- *
- * REMOVED
- *  Inline character links (1.7.0)
 */

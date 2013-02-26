@@ -1,22 +1,8 @@
-c$ = '' + (text) ->
-	return text * " " if Array.isArray text
-
-	switch text
-	| null void  => ''
-	| true false => '\u0093' + text
-	| otherwise  => text
-
-
-w = unsafeWindow ? window
-'use strict'
-
-w.Cms or # let's detect this, 'tis something comin' from Blizzard Forums
-	unsafeWindow = w = w.unsafeWindow = let
-		el = document.createElement 'p'
-		el.setAttribute 'onclick' 'return window;'
-		el.onclick!
-
+console.log 'Ahhhh…greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !'
 console.time 'wowboardhelpers'
+
+require 'board/content-class'
+require 'board/css'
 
 require 'modules/jumps/all'
 require 'fix/all'

@@ -1,4 +1,6 @@
-QS '.forum-options'
+require! 'dom/$'
+
+$ '.forum-options'
 	..parentNode.removeChild ..
 
-	QS '.content-trail' .appendChild ..
+	$ '.content-trail' .appendChild ..

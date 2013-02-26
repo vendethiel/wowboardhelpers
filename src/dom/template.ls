@@ -1,12 +1,10 @@
-if 0 then require abc
+require! 'dom/node'
 
 /**
  * processes a template
  * and returns 
  */
-function template(name, locals)
-	name .= replace /-([a-z])/g -> it.1.toUpperCase!
-
-	innerHTML = templates[name] locals
+module.exports = function template(t, locals)
+	innerHTML = t locals
 	
 	node('div' {innerHTML})firstElementChild

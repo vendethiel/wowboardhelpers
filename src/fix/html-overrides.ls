@@ -1,3 +1,5 @@
+require! <[dom/$ lang]>
+
 if lang.html-overrides
 	for k, v of that
-		QS k ?.innerHTML = v
+		$ k ?.innerHTML = v

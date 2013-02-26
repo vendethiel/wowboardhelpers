@@ -1,1 +1,3 @@
-module.exports = QS 'tbody.regular'
+require! 'dom/$'
+
+module.exports = $ 'tbody.regular'

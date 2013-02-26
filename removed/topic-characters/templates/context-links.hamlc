@@ -1,3 +1,0 @@
-.ui-context.outer-ui-context
-	.context
-		.context-links= @html

@@ -20,7 +20,8 @@ memes =
 	okay: 'http://cache.ohinternet.com/images/e/e6/Okay_guy.jpg'
 	no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
 
-if QS '.post.general'
+require! 'dom/$'
+if $ '.post.general'
 	that.removeChild that.children[*-1] #remove span.clear
 
 	add-meme = (url) ->

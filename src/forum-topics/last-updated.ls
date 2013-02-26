@@ -1,5 +1,10 @@
+require! <[dom/$ dom/$$ dom/node dom/fetch-siblings lang lang/simplify-time]>
+template-default-pagination = require './templates/default-pagination'
+template-author = require './templates/author'
+template-tt-last-updated = require './templates/tt-last-updated'
+
 #get account's character names
-characters = QSA '.char-wrapper .name'
+characters = $$ '.char-wrapper .name'
 if characters.length
 	characters = [(name / ' ')[*-1] - '\n' for {innerHTML: name} in characters]
 
@@ -7,7 +12,7 @@ if characters.length
 #last message column in ADV mode
 export last-post-th = node 'td' className: 'last-post-th' innerHTML: lang.last-message
 
-QS '.post-th' .appendChild last-post-th #append it to columns (ADV style)
+$ '.post-th' .appendChild last-post-th #append it to columns (ADV style)
 
 #topic states
 const TSTATE_UNK = 0, #no information, either new or never read
@@ -36,7 +41,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 	post-count = (last-post-link.href / '#')1
 
 	unless pages.querySelector 'ul' #no pages
-		pages.innerHTML = templates.default-pagination {a.href}
+		pages.innerHTML = template-default-pagination {a.href} .outerHTML
 
 
 	post-only = false
@@ -53,7 +58,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 		is-cm = true
 
 	text .= replace //(#{author-name = last-post-link.innerHTML.trim!})// ->
-		templates.author name: it, own: it in characters, cm: is-cm
+		template-author(name: it, own: it in characters, cm: is-cm)innerHTML
 
 	
 	inline-text = text
@@ -68,7 +73,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 		simplify-time simplified-time
 
 	#manipulated to en<span simplified time (if necessary)
-	post.appendChild template 'tt-last-updated' {text}
+	post.appendChild template-tt-last-updated {text}
 
 	#last-updated <td for ADV mode
 	td.appendChild node 'td' className: 'post-last-updated' innerHTML: simplified-time

@@ -4,7 +4,8 @@ possible-divs =
 	'.forum-info' # forum topics page
 	'.talkback form'
 
-for sel in possible-divs when QS sel
+require! 'dom/$'
+for sel in possible-divs when $ sel
 	that.appendChild <| do
 		template 'cheatsheet' {cheatsheet}
 			ul = ..querySelector 'ul'

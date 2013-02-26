@@ -14,55 +14,6 @@ read = -> fs.readFileSync it, \utf8
 outfile = \wowboardhelpers.user.js
 metadata = read \metadata.js
 
-# shared/ contains various utils
-# shared/utils contains wow-unrelated things & native class overrides
-# fix/ fixes some of the BROKEN wow behaviors
-#  (might be used for behavior overrides? fix/{reply,...}?)
-# forum contains forum-related things such as look etc (but not the table.#posts)
-# forum-topics contains topiclist-related things
-# topic contains viewtopic-related things
-# reply contains reply-related (textarea) thingss
-
-sources = <[
-  shared/helpers/
-  shared/common
-  shared/css
-  shared/lang
-  shared/content-class
-  shared/utils/
-  
-  forum/mar
-  forum/stickies
-  forum/move-actions
-  forum/check-updates
-
-  forum-topics/last-updated
-  forum-topics/move-redirects
-  forum-topics/hide-topic
-  forum-topics/times
-
-  topic-characters/improve-topic
-  topic-characters/multi-chars
-  topic-characters/context-links
-
-  topic-posts/jump
-  topic-posts/autolink
-  topic-posts/update-count
-  
-  reply/remember-reply
-  reply/clear-textarea
-  reply/quick-quote
-  reply/memebox
-  reply/preview
-
-  modules/cheatsheet
-]>
-### REMOVED FEATURES
-# Please see removed/README.md
-# - topic-characters/context-links
-
-
-
 
 compile-styles = (cb) ->
   # XXX kind of relying on lexicographic ordering here
@@ -109,15 +60,25 @@ task \build 'build userscript' ->
   try
     throw err if err
 
-    ast = cjsify 'src/wowboardhelpers.ls', __dirname + '/src',
+    root = __dirname + '\\src'
+    ast = cjsify 'src/wowboardhelpers.ls', root,
       export: 'wowboardhelpers'
-      root: __dirname + '\\src'
       handlers:
         '.hamlc': (it, filename) ->
           src = compile-hamlc it.toString!, filename
+          src = """
+          var fn=#src
+
+          module.exports = function (locals) {
+            var node = div = document.createElement('div');
+            div.innerHTML = fn(locals);
+            return div.firstElementChild;
+          }
+          """
           compile-js src, filename
         '.ls': (it, filename) ->
-          src = LiveScript.compile it.toString!, {+bare, filename}
+          it .= toString!replace '%css%' css
+          src = LiveScript.compile it, {+bare, filename}
           compile-js src, filename
             
 
@@ -130,6 +91,13 @@ task \build 'build userscript' ->
       outfile
       join do
         metadata
+        'var c$ = ' + ((text) ->
+          return text.join " " if Array.isArray text
+
+          switch text
+          | null void  => ''
+          | true false => '\u0093' + text
+          | otherwise  => text) + ';'
         gen.code
     console.log "compiled script to #outfile"
   catch

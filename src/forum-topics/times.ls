@@ -1,3 +1,5 @@
+require! <[dom/$$ lang date/relative-time]>
+
 units =
 	second: 1000ms
 	minute: 60_000ms
@@ -5,7 +7,7 @@ units =
 	day   : 86_400_000ms
 
 timestamp = new Date!getTime!
-post-titles = QSA '.post-title[data-simplified-time]'
+post-titles = $$ '.post-title[data-simplified-time]'
 
 for post-title in post-titles
 	total = 0
@@ -31,7 +33,7 @@ refresh = ->
 		d = new Date Number post-title.dataset.timestamp
 
 		post-title.querySelector '.simplified-time'
-			.innerHTML = d.relative-time!
+			.innerHTML = relative-time d
 
 	setTimeout refresh, timeout
 refresh!

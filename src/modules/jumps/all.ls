@@ -1,3 +1,4 @@
-require './top'
-unless QS '.player-name'
+require! <[./top dom/$]>
+
+unless $ '.player-name'
 	require './login'

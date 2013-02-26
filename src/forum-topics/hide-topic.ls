@@ -1,3 +1,5 @@
+require! <[tbody-regular w dom/$$ dom/$]>
+
 hidden-topics = (w.localStorage.getItem "hidden_topics" or "") / ";"
 
 # propagates hidden list to localStorage
@@ -14,8 +16,7 @@ hidden-topics = (w.localStorage.getItem "hidden_topics" or "") / ";"
 		that.parentNode.removeChild that
 
 
-
-for post-pages in QSA 'tbody.regular .post-pages'
+for post-pages in $ 'tbody.regular .post-pages'
 	if post-pages.querySelector '.last-read'
 		#we're gonna use .last-read as a placeholder, and we have to remove the old anyway
 		post-pages.removeChild that
@@ -42,5 +43,5 @@ for post-pages in QSA 'tbody.regular .post-pages'
 			post-pages.insertBefore .., post-pages.children.0
 
 #ensure we don't check updates if we already have updates
-if QS 'tbody.regular tr:not(.hidden):not(.read)'
-	clearTimeout check-updates
+if $ 'tbody.regular tr:not(.hidden):not(.read)'
+	clearTimeout require 'forum/check-updates'

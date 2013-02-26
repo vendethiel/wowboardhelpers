@@ -1,4 +1,5 @@
-post-preview = QS '#post-preview'
+require! 'dom/$'
+post-preview = $ '#post-preview'
 
 # let's replace BML preview to add
 # our autolink feature

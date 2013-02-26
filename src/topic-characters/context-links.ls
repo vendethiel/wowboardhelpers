@@ -1,3 +1,7 @@
+require! topic
+
+console.log topic
+
 # adds context links
 for context in topic.querySelectorAll '.context-links'
 	continue if context.children.length is 1 # blizz

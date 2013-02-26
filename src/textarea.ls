@@ -1,2 +1,5 @@
-if require 'topic'
-	module.exports = textarea = QS '#post-edit textarea'
+require! <[topic dom/$]>
+
+module.exports = if topic
+	$ '#post-edit textarea'
+else null
