@@ -1,12 +1,5 @@
-# old version
-if localStorage.getItem 'account-characters'
-	console.log 'going to new format'
-	new-array = {[acc, [clean val.link for val in vals when val.link]] \
-		for acc, vals of JSON.parse that}
-
-	localStorage.setItem "accountCharacters" JSON.stringify new-array
-	localStorage.removeItem 'account-characters'
-
+require! 'dom/$$'
+template-multi-chars = require './templates/multi-chars'
 
 # ok, back to our business ...
 account-characters = if localStorage.getItem 'accountCharacters'
@@ -20,7 +13,7 @@ function clean
 
 modified = false # avoid saving if useless
 
-for post-character in QSA '.post-character'
+for post-character in $$ '.post-character'
 	icon-ignore = post-character.querySelector '.icon-ignore'
 	continue unless icon-ignore # self account
 	# yes <| binds tighter than <|, fuck LS
@@ -37,7 +30,7 @@ for post-character in QSA '.post-character'
 if modified # save it !
 	localStorage.setItem "accountCharacters" JSON.stringify account-characters
 
-for post-character in QSA '.post:not(.hidden) .post-character'
+for post-character in $$ '.post:not(.hidden) .post-character'
 	{account, link: current} = post-character.dataset
 	continue unless account
 
@@ -52,7 +45,7 @@ for post-character in QSA '.post:not(.hidden) .post-character'
 	toggle = characters.length > 2 and height < 130 + (characters.length - 1) * 15
 
 	post-character.appendChild do
-		template 'multi-chars' {toggle, current, characters}
+		template-multi-chars {toggle, current, characters}
 
 
 	if toggle 

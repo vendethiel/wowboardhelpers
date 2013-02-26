@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.9.3
+// @version 2.0.0
 // ==/UserScript==
  * changelog
+ * 2.0.0
+ *  Rewrite with CommonJS
  * 1.9.3
  *  Do not autolink CM posts
  * 1.9.2
@@ -645,10 +647,11 @@ var c$ = function (text){
                 name: it,
                 own: in$(it, characters),
                 cm: isCm
-            }).innerHTML;
+            }).outerHTML;
         }
     });
     require.define('/forum-topics\\templates\\tt-last-updated.hamlc', function (module, exports, __dirname, __filename, process) {
+        var lang = require('/lang\\index.ls');
         var fn = function (context) {
             return function () {
                 var $c, $o;
@@ -667,6 +670,7 @@ var c$ = function (text){
         };
     });
     require.define('/forum-topics\\templates\\author.hamlc', function (module, exports, __dirname, __filename, process) {
+        var lang = require('/lang\\index.ls');
         var fn = function (context) {
             return function () {
                 var $c, $o;
@@ -692,6 +696,7 @@ var c$ = function (text){
         };
     });
     require.define('/forum-topics\\templates\\default-pagination.hamlc', function (module, exports, __dirname, __filename, process) {
+        var lang = require('/lang\\index.ls');
         var fn = function (context) {
             return function () {
                 var $c, $o;
@@ -870,9 +875,8 @@ var c$ = function (text){
         ref$ = (ref$ = document.getElementsByClassName('ui-breadcrumb')[0].children)[ref$.length - 1].children[0], currentForumHref = ref$.href, currentForumName = ref$.innerHTML;
     });
     require.define('/forum.ls', function (module, exports, __dirname, __filename, process) {
-        var x$, ref$, split$ = ''.split;
-        x$ = module.exports = document.getElementById('posts');
-        x$.dataset.id = split$.call((ref$ = split$.call(document.location, '/'))[ref$.length - 2], '?')[0];
+        var that, ref$, split$ = ''.split;
+        module.exports = (that = document.getElementById('posts')) ? (that.dataset.id = split$.call((ref$ = split$.call(document.location, '/'))[ref$.length - 2], '?')[0], that) : null;
     });
     require.define('/reply\\all.ls', function (module, exports, __dirname, __filename, process) {
         var clearTextarea, memebox, preview, quickQuote, rememberReply;
@@ -920,7 +924,7 @@ var c$ = function (text){
         };
     });
     require.define('/reply\\memebox.ls', function (module, exports, __dirname, __filename, process) {
-        var memes, $, that, ref$, addMeme, appendMeme, memebox, ul;
+        var memes, $, templateMemebox, that, ref$, addMeme, appendMeme, memebox, ul;
         memes = {
             challengeaccepted: 'http://sambacentral.files.wordpress.com/2012/11/challenge-accepted.jpg',
             foreveralone: 'http://i1.kym-cdn.com/entries/icons/original/000/003/619/Untitled-1.jpg',
@@ -944,6 +948,7 @@ var c$ = function (text){
             no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
         };
         $ = require('/dom\\$.ls');
+        templateMemebox = require('/reply\\templates\\memebox.hamlc');
         if (that = $('.post.general')) {
             that.removeChild((ref$ = that.children)[ref$.length - 1]);
             addMeme = function (url) {
@@ -955,7 +960,7 @@ var c$ = function (text){
                 var x$;
                 return ul.appendChild((x$ = document.createElement('li'), x$.innerHTML = name, x$.onclick = addMeme(url), x$));
             };
-            memebox = template('memebox');
+            memebox = templateMemebox();
             ul = memebox.querySelector('#memes');
             memebox.querySelector('#meme-search').onkeyup = function () {
                 var value, approximates, i, name, ref$, url, i$, len$;
@@ -995,10 +1000,28 @@ var c$ = function (text){
             that.appendChild(memebox);
         }
     });
+    require.define('/reply\\templates\\memebox.hamlc', function (module, exports, __dirname, __filename, process) {
+        var lang = require('/lang\\index.ls');
+        var fn = function (context) {
+            return function () {
+                var $c, $o;
+                $c = c$;
+                $o = [];
+                $o.push('<div id=\'memebox\'>\n<h1>\tMemeBox</h1>\n<br />\n<input id=\'meme-search\' placeholder=\'meme\' autocomplete=\'off\' size=\'' + $c(15) + '\' />\n<ul id=\'memes\'></ul>\n</div>');
+                return $o.join('').replace(/\s(\w+)='true'/gm, ' $1=\'$1\'').replace(/\s(\w+)='false'/gm, '').replace(/\s(?:id|class)=(['"])(\1)/gm, '');
+            }.call(context);
+        };
+        module.exports = function (locals) {
+            var node = div = document.createElement('div');
+            div.innerHTML = fn(locals);
+            return div.firstElementChild;
+        };
+    });
     require.define('/reply\\clear-textarea.ls', function (module, exports, __dirname, __filename, process) {
-        var $, clearer, that;
+        var $, templateClearTextarea, clearer, that;
         $ = require('/dom\\$.ls');
-        clearer = template('clear-textarea');
+        templateClearTextarea = './templates/clear-textarea';
+        clearer = templateClearTextarea();
         if (that = $('.editor1')) {
             that.insertBefore(clearer, textarea);
             clearer.onclick = function () {
@@ -1024,13 +1047,15 @@ var c$ = function (text){
         updateCount = require('/topic-posts\\update-count.ls');
     });
     require.define('/topic-posts\\update-count.ls', function (module, exports, __dirname, __filename, process) {
-        var pages, postCount, ref$, lastPosterName;
-        pages = QSA('#forum-actions-top .ui-pagination li:not(.cap-item)');
+        var topic, $$, pages, postCount, ref$, lastPosterName;
+        topic = require('/topic.ls');
+        $$ = require('/dom\\$$.ls');
+        pages = $$('#forum-actions-top .ui-pagination li:not(.cap-item)');
         if (pages && (pages.length || 'current' === pages[pages.length - 1].className)) {
             postCount = (ref$ = topic.getElementsByClassName('post-info'))[ref$.length - 1].getElementsByTagName('a')[0].getAttribute('href').slice(1);
             lastPosterName = (ref$ = topic.getElementsByClassName('char-name-code'))[ref$.length - 1].innerHTML.trim();
-            w.localStorage.setItem('topic_' + topic.dataset.id, postCount);
-            w.localStorage.setItem('topic_lp_' + topic.dataset.id, lastPosterName);
+            localStorage.setItem('topic_' + topic.dataset.id, postCount);
+            localStorage.setItem('topic_lp_' + topic.dataset.id, lastPosterName);
         }
     });
     require.define('/topic-posts\\jump.ls', function (module, exports, __dirname, __filename, process) {
@@ -1072,9 +1097,10 @@ var c$ = function (text){
         };
     });
     require.define('/topic-posts\\autolink.ls', function (module, exports, __dirname, __filename, process) {
-        var autolink, i$, ref$, len$, post;
+        var $$, autolink, i$, ref$, len$, post;
+        $$ = require('/dom\\$$.ls');
         autolink = require('/modules\\autolink.ls');
-        for (i$ = 0, len$ = (ref$ = QSA('.post-detail')).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = $$('.post-detail')).length; i$ < len$; ++i$) {
             post = ref$[i$];
             if (post.parentNode.parentNode.parentNode.parentNode.parentNode.classList.contains('blizzard')) {
                 continue;
@@ -1083,7 +1109,7 @@ var c$ = function (text){
         }
     });
     require.define('/modules\\autolink.ls', function (module, exports, __dirname, __filename, process) {
-        var extensions, rules, out$ = typeof exports != 'undefined' && exports || this, replace$ = ''.replace;
+        var extensions, rules, replace$ = ''.replace;
         extensions = '(?:com|net|org|eu|fr|jp|us|co.uk|me)';
         rules = [
             [
@@ -1107,16 +1133,7 @@ var c$ = function (text){
                 '$1<img src="http://$2" alt="$2" class="autolink" />'
             ]
         ];
-        out$.autolink = autolink;
-        function autolink(it) {
-            var i$, ref$, len$, ref1$, pattern, replacement;
-            for (i$ = 0, len$ = (ref$ = rules).length; i$ < len$; ++i$) {
-                ref1$ = ref$[i$], pattern = ref1$[0], replacement = ref1$[1];
-                it = it.replace(pattern, replacement);
-            }
-            return it;
-        }
-        out$.elAutolink = elAutolink;
+        module.exports = elAutolink;
         function elAutolink(el) {
             var h, r, ref$, url, e;
             try {
@@ -1141,6 +1158,14 @@ var c$ = function (text){
                 });
             }
         }
+        function autolink(it) {
+            var i$, ref$, len$, ref1$, pattern, replacement;
+            for (i$ = 0, len$ = (ref$ = rules).length; i$ < len$; ++i$) {
+                ref1$ = ref$[i$], pattern = ref1$[0], replacement = ref1$[1];
+                it = it.replace(pattern, replacement);
+            }
+            return it;
+        }
     });
     require.define('/topic-characters\\all.ls', function (module, exports, __dirname, __filename, process) {
         var contextLinks, improveTopic, multiChars;
@@ -1149,25 +1174,9 @@ var c$ = function (text){
         multiChars = require('/topic-characters\\multi-chars.ls');
     });
     require.define('/topic-characters\\multi-chars.ls', function (module, exports, __dirname, __filename, process) {
-        var that, newArray, res$, acc, ref$, vals, res1$, i$, len$, val, accountCharacters, modified, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul, limit, i, replace$ = ''.replace;
-        if (that = localStorage.getItem('account-characters')) {
-            console.log('going to new format');
-            res$ = {};
-            for (acc in ref$ = JSON.parse(that)) {
-                vals = ref$[acc];
-                res1$ = [];
-                for (i$ = 0, len$ = vals.length; i$ < len$; ++i$) {
-                    val = vals[i$];
-                    if (val.link) {
-                        res1$.push(clean(val.link));
-                    }
-                }
-                res$[acc] = res1$;
-            }
-            newArray = res$;
-            localStorage.setItem('accountCharacters', JSON.stringify(newArray));
-            localStorage.removeItem('account-characters');
-        }
+        var $$, templateMultiChars, accountCharacters, that, modified, i$, ref$, len$, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul, limit, i, replace$ = ''.replace;
+        $$ = require('/dom\\$$.ls');
+        templateMultiChars = require('/topic-characters\\templates\\multi-chars.hamlc');
         accountCharacters = (that = localStorage.getItem('accountCharacters')) ? JSON.parse(that) : {};
         function clean(it) {
             it = replace$.call(it, 'context-link', '');
@@ -1175,7 +1184,7 @@ var c$ = function (text){
             return it;
         }
         modified = false;
-        for (i$ = 0, len$ = (ref$ = QSA('.post-character')).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = $$('.post-character')).length; i$ < len$; ++i$) {
             postCharacter = ref$[i$];
             iconIgnore = postCharacter.querySelector('.icon-ignore');
             if (!iconIgnore) {
@@ -1194,7 +1203,7 @@ var c$ = function (text){
         if (modified) {
             localStorage.setItem('accountCharacters', JSON.stringify(accountCharacters));
         }
-        for (i$ = 0, len$ = (ref$ = QSA('.post:not(.hidden) .post-character')).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = $$('.post:not(.hidden) .post-character')).length; i$ < len$; ++i$) {
             postCharacter = ref$[i$];
             ref1$ = postCharacter.dataset, account = ref1$.account, current = ref1$.link;
             if (!account) {
@@ -1207,7 +1216,7 @@ var c$ = function (text){
             postDetail = postCharacter.parentNode.querySelector('.post-detail');
             height = postDetail.offsetHeight;
             toggle = characters.length > 2 && height < 130 + (characters.length - 1) * 15;
-            postCharacter.appendChild(template('multi-chars', {
+            postCharacter.appendChild(templateMultiChars({
                 toggle: toggle,
                 current: current,
                 characters: characters
@@ -1244,6 +1253,36 @@ var c$ = function (text){
             };
         }
     });
+    require.define('/topic-characters\\templates\\multi-chars.hamlc', function (module, exports, __dirname, __filename, process) {
+        var lang = require('/lang\\index.ls');
+        var fn = function (context) {
+            return function () {
+                var $c, $o, character, _i, _len, _ref;
+                $c = c$;
+                $o = [];
+                $o.push('<div id=\'account-characters\'>\n<h1 class=\'toggle\'>');
+                $o.push('' + $c(lang('otherCharacters')));
+                if (this.toggle) {
+                    $o.push('<span class=\'toggler\'>' + $c(' [+]') + '</span>');
+                }
+                $o.push('</h1>\n<br />\n<ul>');
+                _ref = this.characters;
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                    character = _ref[_i];
+                    if (character !== this.current) {
+                        $o.push('<li style=\'' + $c([this.toggle ? 'display: none' : void 0]) + '\'>' + $c(character) + '</li>');
+                    }
+                }
+                $o.push('</ul>\n</div>');
+                return $o.join('').replace(/\s(\w+)='true'/gm, ' $1=\'$1\'').replace(/\s(\w+)='false'/gm, '').replace(/\s(?:id|class)=(['"])(\1)/gm, '');
+            }.call(context);
+        };
+        module.exports = function (locals) {
+            var node = div = document.createElement('div');
+            div.innerHTML = fn(locals);
+            return div.firstElementChild;
+        };
+    });
     require.define('/topic-characters\\improve-topic.ls', function (module, exports, __dirname, __filename, process) {
         var i$, ref$, len$, infos, realm, ref1$;
         for (i$ = 0, len$ = (ref$ = document.getElementsByClassName('character-info')).length; i$ < len$; ++i$) {
@@ -1259,17 +1298,34 @@ var c$ = function (text){
         }
     });
     require.define('/topic-characters\\context-links.ls', function (module, exports, __dirname, __filename, process) {
-        var topic, i$, ref$, len$, context, el;
+        var topic, templateContextLinks, i$, ref$, len$, context, el;
         topic = require('/topic.ls');
-        console.log(topic);
+        templateContextLinks = require('/topic-characters\\templates\\context-links.hamlc');
         for (i$ = 0, len$ = (ref$ = topic.querySelectorAll('.context-links')).length; i$ < len$; ++i$) {
             context = ref$[i$];
             if (context.children.length === 1) {
                 continue;
             }
-            el = template('context-links', { link: context.children[0].href });
+            el = templateContextLinks({ link: context.children[0].href });
             context.insertBefore(el, context.querySelector('.link-last'));
         }
+    });
+    require.define('/topic-characters\\templates\\context-links.hamlc', function (module, exports, __dirname, __filename, process) {
+        var lang = require('/lang\\index.ls');
+        var fn = function (context) {
+            return function () {
+                var $c, $o;
+                $c = c$;
+                $o = [];
+                $o.push('<span class=\'extra-links\'>\n<a class=\'extra-link link-first\' href=\'' + $c(this.link + 'achievement') + '\'>HF</a>\n<a class=\'extra-link link-first\' href=\'' + $c(this.link + 'statistic#21:152') + '\'>PvP</a>\n</span>');
+                return $o.join('').replace(/\s(\w+)='true'/gm, ' $1=\'$1\'').replace(/\s(\w+)='false'/gm, '').replace(/\s(?:id|class)=(['"])(\1)/gm, '');
+            }.call(context);
+        };
+        module.exports = function (locals) {
+            var node = div = document.createElement('div');
+            div.innerHTML = fn(locals);
+            return div.firstElementChild;
+        };
     });
     require.define('/fix\\all.ls', function (module, exports, __dirname, __filename, process) {
         var htmlOverrides, menu, setView;

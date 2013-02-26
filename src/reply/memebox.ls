@@ -21,6 +21,8 @@ memes =
 	no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
 
 require! 'dom/$'
+template-memebox = require './templates/memebox'
+
 if $ '.post.general'
 	that.removeChild that.children[*-1] #remove span.clear
 
@@ -34,7 +36,7 @@ if $ '.post.general'
 				..innerHTML = name
 				..onclick = add-meme url
 
-	memebox = template 'memebox'
+	memebox = template-memebox!
 
 	ul = memebox.querySelector '#memes'
 	memebox.querySelector '#meme-search' .onkeyup = !->

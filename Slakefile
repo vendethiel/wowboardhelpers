@@ -67,6 +67,7 @@ task \build 'build userscript' ->
         '.hamlc': (it, filename) ->
           src = compile-hamlc it.toString!, filename
           src = """
+          var lang = require('lang');
           var fn=#src
 
           module.exports = function (locals) {

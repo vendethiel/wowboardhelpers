@@ -1,5 +1,7 @@
+require! <[topic dom/$$]>
+
 #pagination
-pages = QSA '#forum-actions-top .ui-pagination li:not(.cap-item)'
+pages = $$ '#forum-actions-top .ui-pagination li:not(.cap-item)'
 
 #we have some pages and we're not on the last page
 if pages and (pages.length or 'current' is pages[*-1]className)
@@ -11,5 +13,5 @@ if pages and (pages.length or 'current' is pages[*-1]className)
 		last-poster-name = topic.getElementsByClassName 'char-name-code' .[*-1]innerHTML.trim!
 
 		#mark as read
-		w.localStorage.setItem "topic_#{topic.dataset.id}" post-count
-		w.localStorage.setItem "topic_lp_#{topic.dataset.id}" last-poster-name
+		localStorage.setItem "topic_#{topic.dataset.id}" post-count
+		localStorage.setItem "topic_lp_#{topic.dataset.id}" last-poster-name

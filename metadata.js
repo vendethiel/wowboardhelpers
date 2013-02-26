@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 1.9.3
+// @version 2.0.0
 // ==/UserScript==
  * changelog
+ * 2.0.0
+ *  Rewrite with CommonJS
  * 1.9.3
  *  Do not autolink CM posts
  * 1.9.2

@@ -79,12 +79,10 @@ rules = # indent looks nasty because array star is just `void =` which adds 2 in
 		//g
 			* '$1<img src="http://$2" alt="$2" class="autolink" />'
 
-export function autolink
-	for [pattern, replacement] in rules
-		it .= replace pattern, replacement
-	it
 
-export function el-autolink(el)
+module.exports = el-autolink
+
+function el-autolink(el)
 	try
 		h = autolink el.innerHTML
 
@@ -104,3 +102,8 @@ export function el-autolink(el)
 		el.innerHTML = h
 	catch
 		console.log "Unable to generate valid HTML : #h (#e)"
+
+function autolink
+	for [pattern, replacement] in rules
+		it .= replace pattern, replacement
+	it

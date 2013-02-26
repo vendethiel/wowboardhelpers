@@ -1,6 +1,7 @@
 require! 'dom/$'
+template-clear-textarea = './templates/clear-textarea'
 
-clearer = template 'clear-textarea'
+clearer = template-clear-textarea!
 
 if $ '.editor1'
 	that.insertBefore clearer, textarea

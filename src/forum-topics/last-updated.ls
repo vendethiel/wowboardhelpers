@@ -58,7 +58,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 		is-cm = true
 
 	text .= replace //(#{author-name = last-post-link.innerHTML.trim!})// ->
-		template-author(name: it, own: it in characters, cm: is-cm)innerHTML
+		template-author(name: it, own: it in characters, cm: is-cm)outerHTML
 
 	
 	inline-text = text
