@@ -1,0 +1,1 @@
+require! <[./last-updated ./move-redirects ./hide-topic ./times]>

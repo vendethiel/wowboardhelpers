@@ -1,0 +1,1 @@
+module.exports = QS '.forum-options'

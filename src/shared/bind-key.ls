@@ -1,7 +1,7 @@
-export cheatsheet = {}
+exports.cheatsheet = cheatsheet = {}
 
-export bind-key = !(bind, lang-key, cb) ->
-	cheatsheet[bind] = lang lang-key
+module.exports = bind-key = !(bind, lang-key, cb) ->
+	cheatsheet[bind] = require('./lang') lang-key
 
 	bind .= toUpperCase!charCodeAt!
 

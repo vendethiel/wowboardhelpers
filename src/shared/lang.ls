@@ -57,10 +57,11 @@ langs =
 		page-bottom: 'Go to bottom'
 		login: 'Login'
 
+require! 'utils/toCamelCase'
 
-export class lang # acts like a proxy to avoid unneeded keys
+module.exports = class lang # acts like a proxy to avoid unneeded keys
 	import langs[l] ? langs.en
-	-> return lang[it] ? lang[it.toCamelCase!] ? it
+	-> return lang[it] ? lang[toCamelCase it] ? it
 
 	@pluralize ?= (count, key) ~>
 		"#{Math.round count} #{@ key}#{['s' if count > 1.5]}"
@@ -70,30 +71,3 @@ export class lang # acts like a proxy to avoid unneeded keys
 			it.slice 0 -1
 		else
 			it
-
-time-table =
-	* 'heures'  'h'
-	* 'heure'   'h'
-	* 'houres'  'h'
-	* 'hour'    'h'
-
-	* 'minutes' 'm'
-	* 'minute'  'm'
-
-	* 'jours'   'j'
-	* 'jour'    'j'
-	* 'days'    'd'
-	* 'day'     'd'
-
-	* 'secondes' 's'
-	* 'seconds'  's'
-	* 'second'   's'
-
-/**
- * simplifies time based on table replacement
- */
-export function simplify-time
-	for [convert-from, convert-to] in time-table
-		it .= replace convert-from, convert-to
-
-	it

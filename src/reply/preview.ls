@@ -1,6 +1,3 @@
-return unless topic
-return unless textarea
-
 post-preview = QS '#post-preview'
 
 # let's replace BML preview to add

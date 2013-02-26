@@ -1,6 +1,3 @@
-return unless topic
-return unless textarea
-
 submit = QS '.post [type=submit]'
 
 unless textarea.value #i.e. you have to wait for the timeout

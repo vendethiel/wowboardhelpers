@@ -15,17 +15,6 @@ function replace-with(from-node, new-node)
 		parent.appendChild new-node
 
 /**
- * processes a template
- * and returns 
- */
-function template(name, locals)
-	name .= replace /-([a-z])/g -> it.1.toUpperCase!
-
-	innerHTML = templates[name] locals
-	
-	node('div' {innerHTML})firstElementChild
-
-/**
  * fetches nextElementSibling
  */
 function fetch-siblings(elem, {slice = 0, index-by = 'className'})

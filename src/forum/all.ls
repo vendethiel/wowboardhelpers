@@ -1,0 +1,1 @@
+require! <[./check-updates ./current-forum ./mar ./move-actions ./stickies]>

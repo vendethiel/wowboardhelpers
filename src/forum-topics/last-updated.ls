@@ -1,5 +1,3 @@
-return unless forum
-
 #get account's character names
 characters = QSA '.char-wrapper .name'
 if characters.length

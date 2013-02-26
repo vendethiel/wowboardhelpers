@@ -1,12 +1,11 @@
-return unless topic
+require! '../topic'
 
 # cache it cause the script will modify it
-return unless last-post-id = localStorage.getItem "topic_#{topic.dataset.id}"
+if last-post-id = localStorage.getItem "topic_#{topic.dataset.id}"
+	require('../shared/bind-key') 'j' 'jump-to-last-read' !->
+		last-post-page = Math.ceil last-post-id / 20
 
-bind-key 'j' 'jump-to-last-read' !->
-	last-post-page = Math.ceil last-post-id / 20
-
-	if topic.dataset.page < last-post-page
-		document.location = topic.dataset.url + "?page=#last-post-page"
-	else # sadly, the post aren't marked themselves (like .post-1 or something)
-		QSA '.post-detail' .[(last-post-id % 20) - 1]?scrollIntoView!
+		if topic.dataset.page < last-post-page
+			document.location = topic.dataset.url + "?page=#last-post-page"
+		else
+			QSA '.post-detail' .[(last-post-id % 20) - 1]?scrollIntoView!

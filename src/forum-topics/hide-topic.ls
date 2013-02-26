@@ -1,5 +1,3 @@
-return unless forum
-
 hidden-topics = (w.localStorage.getItem "hidden_topics" or "") / ";"
 
 # propagates hidden list to localStorage

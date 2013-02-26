@@ -1,12 +1,7 @@
-return unless topic
-return unless textarea
-
 clearer = template 'clear-textarea'
 
-QS '.editor1'
-	return unless ..
-
-	..insertBefore clearer, textarea
+if QS '.editor1'
+	that.insertBefore clearer, textarea
 
 	clearer.onclick = ->
 		textarea.value = ''

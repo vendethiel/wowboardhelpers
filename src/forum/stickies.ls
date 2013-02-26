@@ -1,5 +1,3 @@
-return unless forum
-
 #remove sticky part (tbody.sticky)
 unless 'show' is w.localStorage.getItem 'show-stickies'
 	QS '.sticky' .style.display = 'none'

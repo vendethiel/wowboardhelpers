@@ -1,4 +1,4 @@
-return unless topic
+require! <[../modules/autolink]>
 
 for post in QSA '.post-detail'
 	# should probably lookahead in autolink module, uh?
@@ -6,4 +6,4 @@ for post in QSA '.post-detail'
 	continue if post.parentNode.parentNode.parentNode.parentNode.parentNode
 		.classList.contains 'blizzard'
 
-	el-autolink post
+	autolink post

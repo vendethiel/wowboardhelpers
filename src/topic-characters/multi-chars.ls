@@ -1,5 +1,3 @@
-return unless topic
-
 # old version
 if localStorage.getItem 'account-characters'
 	console.log 'going to new format'
