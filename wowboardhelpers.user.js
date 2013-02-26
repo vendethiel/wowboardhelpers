@@ -1059,9 +1059,10 @@ var c$ = function (text){
         }
     });
     require.define('/topic-posts\\jump.ls', function (module, exports, __dirname, __filename, process) {
-        var topic, bindKey, lastPostId;
+        var topic, bindKey, $$, lastPostId;
         topic = require('/topic.ls');
         bindKey = require('/bind-key\\index.ls');
+        $$ = require('/dom\\$$.ls');
         if (lastPostId = localStorage.getItem('topic_' + topic.dataset.id)) {
             bindKey('j', 'jump-to-last-read', function () {
                 var lastPostPage, ref$;
@@ -1069,7 +1070,7 @@ var c$ = function (text){
                 if (topic.dataset.page < lastPostPage) {
                     document.location = topic.dataset.url + ('?page=' + lastPostPage);
                 } else {
-                    if ((ref$ = QSA('.post-detail')[lastPostId % 20 - 1]) != null) {
+                    if ((ref$ = $$('.post-detail')[lastPostId % 20 - 1]) != null) {
                         ref$.scrollIntoView();
                     }
                 }
