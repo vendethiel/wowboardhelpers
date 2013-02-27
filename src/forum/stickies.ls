@@ -1,4 +1,4 @@
-require! <[lang dom/$ dom/node forum-options tbody-regular w]>
+require! <[lang dom/$ dom/node forum-options w]>
 
 #remove sticky part (tbody.sticky)
 unless 'show' is w.localStorage.getItem 'show-stickies'

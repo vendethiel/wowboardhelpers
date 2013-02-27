@@ -109,7 +109,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 	mark-state post, state
 
 unless has-unread
-	forum-options.removeChild button-mar
+	require 'forum-options' .removeChild require 'forum/mar'
 
 /**
  * prepends state to a topic

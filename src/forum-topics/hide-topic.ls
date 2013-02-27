@@ -1,4 +1,5 @@
 require! <[tbody-regular w dom/$$ dom/$]>
+template-hide-topic = require './templates/hide-topic'
 
 hidden-topics = (w.localStorage.getItem "hidden_topics" or "") / ";"
 
@@ -15,8 +16,7 @@ hidden-topics = (w.localStorage.getItem "hidden_topics" or "") / ";"
 	if it.querySelector '.last-read'
 		that.parentNode.removeChild that
 
-
-for post-pages in $ 'tbody.regular .post-pages'
+for post-pages in $$ 'tbody.regular .post-pages'
 	if post-pages.querySelector '.last-read'
 		#we're gonna use .last-read as a placeholder, and we have to remove the old anyway
 		post-pages.removeChild that
@@ -28,7 +28,7 @@ for post-pages in $ 'tbody.regular .post-pages'
 		hide tr
 
 	let tr, topic-id
-		template 'hide-topic' hidden: topic-id in hidden-topics
+		template-hide-topic hidden: topic-id in hidden-topics
 			..onclick = ->
 				if topic-id in hidden-topics
 					post-pages.removeChild ..

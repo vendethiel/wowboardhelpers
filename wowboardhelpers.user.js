@@ -347,11 +347,12 @@ var c$ = function (text){
         };
     });
     require.define('/forum-topics\\hide-topic.ls', function (module, exports, __dirname, __filename, process) {
-        var tbodyRegular, w, $$, $, hiddenTopics, i$, ref$, len$, postPages, that, tr, topicId, split$ = ''.split, join$ = [].join;
+        var tbodyRegular, w, $$, $, templateHideTopic, hiddenTopics, i$, ref$, len$, postPages, that, tr, topicId, split$ = ''.split, join$ = [].join;
         tbodyRegular = require('/tbody-regular.ls');
         w = require('/w.ls');
         $$ = require('/dom\\$$.ls');
         $ = require('/dom\\$.ls');
+        templateHideTopic = require('/forum-topics\\templates\\hide-topic.hamlc');
         hiddenTopics = split$.call(w.localStorage.getItem('hidden_topics') || '', ';');
         function saveHiddens() {
             w.localStorage.setItem('hidden_topics', join$.call(hiddenTopics, ';'));
@@ -365,7 +366,7 @@ var c$ = function (text){
                 that.parentNode.removeChild(that);
             }
         }
-        for (i$ = 0, len$ = (ref$ = $('tbody.regular .post-pages')).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = $$('tbody.regular .post-pages')).length; i$ < len$; ++i$) {
             postPages = ref$[i$];
             if (that = postPages.querySelector('.last-read')) {
                 postPages.removeChild(that);
@@ -389,7 +390,7 @@ var c$ = function (text){
         }
         function fn$(tr, topicId, postPages) {
             var x$;
-            x$ = template('hide-topic', { hidden: in$(topicId, hiddenTopics) });
+            x$ = templateHideTopic({ hidden: in$(topicId, hiddenTopics) });
             x$.onclick = function () {
                 if (in$(topicId, hiddenTopics)) {
                     postPages.removeChild(x$);
@@ -442,22 +443,16 @@ var c$ = function (text){
         module.exports = checkUpdates = setTimeout(refresh, timeout);
     });
     require.define('/ajax\\index.ls', function (module, exports, __dirname, __filename, process) {
-        var ajax, out$ = typeof exports != 'undefined' && exports || this;
-        out$.ajax = ajax = function () {
-            ajax.displayName = 'ajax';
-            var prototype = ajax.prototype, constructor = ajax;
-            ajax.get = function (url, success) {
+        module.exports = {
+            get: function (url, success) {
                 var x$;
                 x$ = new XMLHttpRequest();
                 x$.open('GET', url);
                 x$.onload = success;
                 x$.send();
                 return x$;
-            };
-            function ajax() {
             }
-            return ajax;
-        }();
+        };
     });
     require.define('/tbody-regular.ls', function (module, exports, __dirname, __filename, process) {
         var $;
@@ -484,6 +479,26 @@ var c$ = function (text){
                     obj[key] = src[key];
             return obj;
         }
+    });
+    require.define('/forum-topics\\templates\\hide-topic.hamlc', function (module, exports, __dirname, __filename, process) {
+        var lang = require('/lang\\index.ls');
+        var fn = function (context) {
+            return function () {
+                var $o;
+                $o = [];
+                if (this.hidden) {
+                    $o.push('<a class=\'last-read show-topic\'>\u2713</a>');
+                } else {
+                    $o.push('<a class=\'hide-topic last-read\'>X</a>');
+                }
+                return $o.join('').replace(/\s(?:id|class)=(['"])(\1)/gm, '');
+            }.call(context);
+        };
+        module.exports = function (locals) {
+            var node = div = document.createElement('div');
+            div.innerHTML = fn(locals);
+            return div.firstElementChild;
+        };
     });
     require.define('/w.ls', function (module, exports, __dirname, __filename, process) {
         var w, unsafeWindow;
@@ -598,7 +613,7 @@ var c$ = function (text){
             markState(post, state);
         }
         if (!hasUnread) {
-            forumOptions.removeChild(buttonMar);
+            require('/forum-options.ls').removeChild(require('/forum\\mar.ls'));
         }
         function markState(node, state) {
             var innerHTML, states;
@@ -649,6 +664,59 @@ var c$ = function (text){
                 cm: isCm
             }).outerHTML;
         }
+    });
+    require.define('/forum\\mar.ls', function (module, exports, __dirname, __filename, process) {
+        var lang, node, fetchSiblings, forumOptions, tbodyRegular, w, allRead, buttonMar, split$ = ''.split;
+        lang = require('/lang\\index.ls');
+        node = require('/dom\\node.ls');
+        fetchSiblings = require('/dom\\fetch-siblings.ls');
+        forumOptions = require('/forum-options.ls');
+        tbodyRegular = require('/tbody-regular.ls');
+        w = require('/w.ls');
+        allRead = false;
+        module.exports = buttonMar = node('a', {
+            innerHTML: 'MAR',
+            title: lang.mar,
+            onclick: function () {
+                var i$, ref$, len$, row, topicId, siblings;
+                if (allRead) {
+                    return;
+                }
+                allRead = !allRead;
+                for (i$ = 0, len$ = (ref$ = tbodyRegular.children).length; i$ < len$; ++i$) {
+                    row = ref$[i$];
+                    if (row.className.trim() === 'read') {
+                        continue;
+                    }
+                    topicId = row.id.slice('postRow'.length);
+                    siblings = fetchSiblings(row.children[0], { slice: 5 });
+                    w.localStorage.setItem('topic_' + topicId, split$.call(siblings.lastPost.children[0].href, '#')[1]);
+                    w.localStorage.setItem('topic_lp_' + topicId, siblings.author.innerHTML.trim());
+                    row.className += ' read';
+                }
+                forumOptions.removeChild(buttonMar);
+            }
+        });
+        buttonMar.style.cursor = 'pointer';
+        forumOptions.appendChild(buttonMar);
+    });
+    require.define('/forum-options.ls', function (module, exports, __dirname, __filename, process) {
+        var $;
+        $ = require('/dom\\$.ls');
+        module.exports = $('.forum-options');
+    });
+    require.define('/dom\\fetch-siblings.ls', function (module, exports, __dirname, __filename, process) {
+        module.exports = function () {
+            function fetchSiblings(elem, arg$) {
+                var slice, ref$, indexBy, results$ = {};
+                slice = (ref$ = arg$.slice) != null ? ref$ : 0, indexBy = (ref$ = arg$.indexBy) != null ? ref$ : 'className';
+                while (elem != null && (elem = elem.nextElementSibling)) {
+                    results$[elem[indexBy].slice(slice)] = elem;
+                }
+                return results$;
+            }
+            return fetchSiblings;
+        }();
     });
     require.define('/forum-topics\\templates\\tt-last-updated.hamlc', function (module, exports, __dirname, __filename, process) {
         var lang = require('/lang\\index.ls');
@@ -780,19 +848,6 @@ var c$ = function (text){
             return simplifyTime;
         }();
     });
-    require.define('/dom\\fetch-siblings.ls', function (module, exports, __dirname, __filename, process) {
-        module.exports = function () {
-            function fetchSiblings(elem, arg$) {
-                var slice, ref$, indexBy, results$ = {};
-                slice = (ref$ = arg$.slice) != null ? ref$ : 0, indexBy = (ref$ = arg$.indexBy) != null ? ref$ : 'className';
-                while (elem != null && (elem = elem.nextElementSibling)) {
-                    results$[elem[indexBy].slice(slice)] = elem;
-                }
-                return results$;
-            }
-            return fetchSiblings;
-        }();
-    });
     require.define('/forum\\all.ls', function (module, exports, __dirname, __filename, process) {
         var checkUpdates, currentForum, mar, moveActions, stickies;
         checkUpdates = require('/forum\\check-updates.ls');
@@ -802,12 +857,11 @@ var c$ = function (text){
         stickies = require('/forum\\stickies.ls');
     });
     require.define('/forum\\stickies.ls', function (module, exports, __dirname, __filename, process) {
-        var lang, $, node, forumOptions, tbodyRegular, w, buttonSticky;
+        var lang, $, node, forumOptions, w, buttonSticky;
         lang = require('/lang\\index.ls');
         $ = require('/dom\\$.ls');
         node = require('/dom\\node.ls');
         forumOptions = require('/forum-options.ls');
-        tbodyRegular = require('/tbody-regular.ls');
         w = require('/w.ls');
         if ('show' !== w.localStorage.getItem('show-stickies')) {
             $('.sticky').style.display = 'none';
@@ -824,51 +878,12 @@ var c$ = function (text){
         module.exports.style.cursor = 'pointer';
         forumOptions.appendChild(buttonSticky);
     });
-    require.define('/forum-options.ls', function (module, exports, __dirname, __filename, process) {
-        var $;
-        $ = require('/dom\\$.ls');
-        module.exports = $('.forum-options');
-    });
     require.define('/forum\\move-actions.ls', function (module, exports, __dirname, __filename, process) {
         var $, x$;
         $ = require('/dom\\$.ls');
         x$ = $('.forum-options');
         x$.parentNode.removeChild(x$);
         $('.content-trail').appendChild(x$);
-    });
-    require.define('/forum\\mar.ls', function (module, exports, __dirname, __filename, process) {
-        var lang, node, forumOptions, tbodyRegular, w, allRead, buttonMar, split$ = ''.split;
-        lang = require('/lang\\index.ls');
-        node = require('/dom\\node.ls');
-        forumOptions = require('/forum-options.ls');
-        tbodyRegular = require('/tbody-regular.ls');
-        w = require('/w.ls');
-        allRead = false;
-        module.exports = buttonMar = node('a', {
-            innerHTML: 'MAR',
-            title: lang.mar,
-            onclick: function () {
-                var i$, ref$, len$, row, topicId, siblings;
-                if (allRead) {
-                    return;
-                }
-                allRead = !allRead;
-                for (i$ = 0, len$ = (ref$ = tbodyRegular.children).length; i$ < len$; ++i$) {
-                    row = ref$[i$];
-                    if (row.className.trim() === 'read') {
-                        continue;
-                    }
-                    topicId = row.id.slice('postRow'.length);
-                    siblings = fetchSiblings(row.children[0], { slice: 5 });
-                    w.localStorage.setItem('topic_' + topicId, split$.call(siblings.lastPost.children[0].href, '#')[1]);
-                    w.localStorage.setItem('topic_lp_' + topicId, siblings.author.innerHTML.trim());
-                    row.className += ' read';
-                }
-                forumOptions.removeChild(buttonMar);
-            }
-        });
-        buttonMar.style.cursor = 'pointer';
-        tbodyRegular.appendChild(buttonMar);
     });
     require.define('/forum\\current-forum.ls', function (module, exports, __dirname, __filename, process) {
         var ref$, currentForumHref, currentForumName;
@@ -1051,11 +1066,13 @@ var c$ = function (text){
         topic = require('/topic.ls');
         $$ = require('/dom\\$$.ls');
         pages = $$('#forum-actions-top .ui-pagination li:not(.cap-item)');
-        if (pages && (pages.length || 'current' === pages[pages.length - 1].className)) {
-            postCount = (ref$ = topic.getElementsByClassName('post-info'))[ref$.length - 1].getElementsByTagName('a')[0].getAttribute('href').slice(1);
-            lastPosterName = (ref$ = topic.getElementsByClassName('char-name-code'))[ref$.length - 1].innerHTML.trim();
-            localStorage.setItem('topic_' + topic.dataset.id, postCount);
-            localStorage.setItem('topic_lp_' + topic.dataset.id, lastPosterName);
+        if (pages) {
+            if (!pages.length || pages.length && 'current' === pages[pages.length - 1].className || !localStorage.getItem('topic_' + topic.dataset.id)) {
+                postCount = (ref$ = topic.getElementsByClassName('post-info'))[ref$.length - 1].getElementsByTagName('a')[0].getAttribute('href').slice(1);
+                lastPosterName = (ref$ = topic.getElementsByClassName('char-name-code'))[ref$.length - 1].innerHTML.trim();
+                localStorage.setItem('topic_' + topic.dataset.id, postCount);
+                localStorage.setItem('topic_lp_' + topic.dataset.id, lastPosterName);
+            }
         }
     });
     require.define('/topic-posts\\jump.ls', function (module, exports, __dirname, __filename, process) {
@@ -1115,7 +1132,7 @@ var c$ = function (text){
         rules = [
             [
                 /(?:https?:\/\/)?(?:(?:www|m)\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g,
-                '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0"></iframe>'
+                '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5#$3$4$6" frameborder="0"></iframe>'
             ],
             [
                 /\((https?:\/\/)([^<\s\)]+)\)/g,
@@ -1139,6 +1156,7 @@ var c$ = function (text){
             var h, r, ref$, url, e;
             try {
                 h = autolink(el.innerHTML);
+                h.replace('YT_OPTIONS?', '#');
                 r = /\>((?:http:\/\/)?[a-z]{2}\.battle\.net\/[^<\s.]*)/g;
                 while ((ref$ = r.exec(h)) != null && (url = ref$[1], ref$)) {
                     fn$.call(this, url, el);

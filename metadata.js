@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 2.0.0
+// @version 2.0.1
 // ==/UserScript==
  * changelog
+ * 2.0.1
+ *  Fix youtube options
  * 2.0.0
  *  Rewrite with CommonJS
  * 1.9.3

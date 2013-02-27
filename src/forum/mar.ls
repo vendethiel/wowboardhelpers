@@ -1,4 +1,4 @@
-require! <[lang dom/node forum-options tbody-regular w]>
+require! <[lang dom/node dom/fetch-siblings forum-options tbody-regular w]>
 
 all-read = false
 
@@ -21,4 +21,4 @@ module.exports = button-mar = node 'a' innerHTML: 'MAR' title: lang.mar, onclick
 
 button-mar.style.cursor = 'pointer'
 
-tbody-regular.appendChild button-mar
+forum-options.appendChild button-mar

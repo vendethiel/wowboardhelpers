@@ -16,7 +16,7 @@ rules = # indent looks nasty because array star is just `void =` which adds 2 in
 					([&=\w\-\._;\?\#\%]*) # post vieo id options
 			)
 //g
-			* '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5" frameborder="0">
+			* '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5#$3$4$6" frameborder="0">
 </iframe>'
 
 	# specialcase linkify urls without internal parenthesis surrounded by
@@ -85,6 +85,8 @@ module.exports = el-autolink
 function el-autolink(el)
 	try
 		h = autolink el.innerHTML
+
+		h.replace 'YT_OPTIONS?' '#'
 
 		# replace wow links
 		r = //\>((?:http:\/\/)?[a-z]{2}\.battle\.net/[^<\s.]*)//g

@@ -1,5 +1,5 @@
-export class ajax
-	@get = (url, success) ->
+module.exports =
+	get: (url, success) ->
 		new XMLHttpRequest
 			..open 'GET' url
 			..onload = success
