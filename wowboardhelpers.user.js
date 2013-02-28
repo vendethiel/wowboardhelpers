@@ -505,15 +505,16 @@ var c$ = function (text){
         };
     });
     require.define('/w.ls', function (module, exports, __dirname, __filename, process) {
-        var w, unsafeWindow;
+        var w;
         w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
-        'use strict';
-        w.Cms || (unsafeWindow = w = w.unsafeWindow = function () {
-            var el;
-            el = document.createElement('p');
-            el.setAttribute('onclick', 'return window;');
-            return el.onclick();
-        }.call(this));
+        if (!w.Cms) {
+            w = w.window = function () {
+                var el;
+                el = document.createElement('p');
+                el.setAttribute('onclick', 'return window;');
+                return el.onclick();
+            }.call(this);
+        }
         module.exports = w;
     });
     require.define('/forum-topics\\move-redirects.ls', function (module, exports, __dirname, __filename, process) {

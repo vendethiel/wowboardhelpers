@@ -92,6 +92,7 @@ task \build 'build userscript' ->
       outfile
       join do
         metadata
+        '"use strict";'
         'var c$ = ' + ((text) ->
           return text.join " " if Array.isArray text
 

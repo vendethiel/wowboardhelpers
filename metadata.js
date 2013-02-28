@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 2.0.2
+// @version 2.0.3
 // ==/UserScript==
  * changelog
+ * 2.0.3
+ *  Fix for Firefox
  * 2.0.2
  *  Increase context-links margin
  * 2.0.1
