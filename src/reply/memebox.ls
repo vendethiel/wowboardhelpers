@@ -9,6 +9,7 @@ memes =
 	fulloffuck: 'http://www.mememaker.net/static/images/templates/14288.jpg'
 	seriously: 'http://i3.kym-cdn.com/entries/icons/original/000/005/545/OpoQQ.jpg'
 	trollface: 'http://fc09.deviantart.net/fs70/f/2012/342/5/a/troll_face_by_bmsproductionz-d5ng9k6.png'
+	escalated: 'http://cdn.memegenerator.net/instances/250x250/30199807.jpg'
 	fuckyeah: 'http://cdn.ebaumsworld.com/mediaFiles/picture/2168064/82942867.jpg'
 	pedobear: 'http://aserres.free.fr/pedobear/pedobear.png'
 	slowpoke: 'https://0-media-cdn.foolz.us/ffuuka/board/a/image/1351/43/1351437155488.png'

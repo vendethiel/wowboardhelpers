@@ -82,16 +82,15 @@ rules = # indent looks nasty because array star is just `void =` which adds 2 in
 
 module.exports = el-autolink
 
+require! ajax
 function el-autolink(el)
 	try
 		h = autolink el.innerHTML
 
-		h.replace 'YT_OPTIONS?' '#'
-
 		# replace wow links
 		r = //\>((?:http:\/\/)?[a-z]{2}\.battle\.net/[^<\s.]*)//g
 		while [, url]? = r.exec h
-			let url, el
+			let url
 				full-url = if ~url.indexOf 'http://'
 					url # we already have the leading http:// part
 				else "http://#url"

@@ -15,7 +15,7 @@ outfile = \wowboardhelpers.user.js
 metadata = read \metadata.js
 
 
-compile-styles = (cb) ->
+compile-styles = ->
   # XXX kind of relying on lexicographic ordering here
   source = []
   for dir in ls \src
@@ -23,7 +23,7 @@ compile-styles = (cb) ->
       for file in ls "#dir/styles/"
         source.push read file
 
-  nib source * '\n' .render cb
+  nib source * '\n' .render!
 
 compile-hamlc = (it, name) ->
   opts =
@@ -56,51 +56,78 @@ compile-js = (it, filename) ->
 nib = -> stylus it .use require(\nib)!
 
 task \build 'build userscript' ->
-  err, css <- compile-styles
   try
-    throw err if err
+    css = compile-styles!
+    
+    console.time "Total  "
+
+    cjs-time-base = Date.now!
+    ls-time = 0
+    hamlc-time = 0
+    esprima-time = 0
 
     root = __dirname + '\\src'
     ast = cjsify 'src/wowboardhelpers.ls', root,
-      export: 'wowboardhelpers'
+      export: null
       handlers:
         '.hamlc': (it, filename) ->
+          c = Date.now!
           src = compile-hamlc it.toString!, filename
+          hamlc-time += Date.now! - c
           src = """
           var lang = require('lang');
           var fn=#src
 
           module.exports = function (locals) {
-            var node = div = document.createElement('div');
+            var div = document.createElement('div');
             div.innerHTML = fn(locals);
             return div.firstElementChild;
           }
           """
-          compile-js src, filename
+
+          c = Date.now!
+          ast = compile-js src, filename
+          esprima-time += Date.now! - c
+          ast
         '.ls': (it, filename) ->
           it .= toString!replace '%css%' css
-          src = LiveScript.compile it, {+bare, filename}
-          compile-js src, filename
-            
 
-    gen = require 'escodegen' .generate ast,
+          c = Date.now!
+          src = LiveScript.compile it, {+bare, filename}
+          ls-time += Date.now! - c
+
+          c = Date.now!
+          ast = compile-js src, filename
+          esprima-time += Date.now! - c
+
+          ast
+
+    console.log "cjsify : #{Date.now! - cjs-time-base - ls-time - hamlc-time - esprima-time}ms"
+    console.log "ls     : #{ls-time}ms"
+    console.log "hamlc  : #{hamlc-time}ms"
+    console.log "esprima: #{esprima-time}ms"
+
+    console.time "AST->JS"
+    gen = require "escodegen" .generate ast,
       sourceMapRoot: __dirname + '/src'
-      sourceMapWithCode: true
-      sourceMap: true
+#      sourceMapWithCode: true
+#      sourceMap: true
+    console.timeEnd "AST->JS"
 
     fs.writeFileSync do
       outfile
       join do
         metadata
         '"use strict";'
-        'var c$ = ' + ((text) ->
+        "var c$ = " + (text) ->
           return text.join " " if Array.isArray text
 
           switch text
-          | null void  => ''
-          | true false => '\u0093' + text
-          | otherwise  => text) + ';'
+          | null void  => ""
+          | true false => "\u0093" + text
+          | otherwise  => text
         gen.code
+    console.timeEnd "Total  "
     console.log "compiled script to #outfile"
   catch
     console.error e.message
