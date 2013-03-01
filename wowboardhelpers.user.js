@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 2.0.4
+// @version 2.0.5
 // ==/UserScript==
  * changelog
+ * 2.0.5
+ *  Fix build script - removed source maps
  * 2.0.4
  *  Fix blizzard titlification
  * 2.0.3
@@ -124,6 +126,7 @@ var c$ = function (text){
         return text;
       }
     }
+;
 (function (global) {
     function require(file) {
         if ({}.hasOwnProperty.call(require.cache, file))

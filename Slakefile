@@ -55,7 +55,7 @@ compile-js = (it, filename) ->
 
 nib = -> stylus it .use require(\nib)!
 
-task \build 'build userscript' ->
+task \build "build userscript" ->
   try
     css = compile-styles!
     
@@ -66,8 +66,9 @@ task \build 'build userscript' ->
     hamlc-time = 0
     esprima-time = 0
 
-    root = __dirname + '\\src'
-    ast = cjsify 'src/wowboardhelpers.ls', root,
+    root = __dirname + "/src"
+    
+    ast = cjsify "src/wowboardhelpers.ls", root,
       export: null
       handlers:
         '.hamlc': (it, filename) ->
@@ -103,6 +104,8 @@ task \build 'build userscript' ->
 
           ast
 
+    console.profileEnd!
+
     console.log "cjsify : #{Date.now! - cjs-time-base - ls-time - hamlc-time - esprima-time}ms"
     console.log "ls     : #{ls-time}ms"
     console.log "hamlc  : #{hamlc-time}ms"
@@ -118,13 +121,14 @@ task \build 'build userscript' ->
       join do
         metadata
         '"use strict";'
-        'var c$ = ' + (text) ->
+        "var c$ = " + (text) ->
           return text.join " " if Array.isArray text
 
           switch text
           | null void  => ""
           | true false => "\u0093" + text
           | otherwise  => text
+        ";"
         gen
     console.timeEnd "Total  "
     console.log "compiled script to #outfile"
