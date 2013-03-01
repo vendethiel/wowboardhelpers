@@ -88,6 +88,7 @@ task \build 'build userscript' ->
           c = Date.now!
           ast = compile-js src, filename
           esprima-time += Date.now! - c
+
           ast
         '.ls': (it, filename) ->
           it .= toString!replace '%css%' css
@@ -110,8 +111,6 @@ task \build 'build userscript' ->
     console.time "AST->JS"
     gen = require "escodegen" .generate ast,
       sourceMapRoot: __dirname + '/src'
-#      sourceMapWithCode: true
-#      sourceMap: true
     console.timeEnd "AST->JS"
 
     fs.writeFileSync do
@@ -119,14 +118,14 @@ task \build 'build userscript' ->
       join do
         metadata
         '"use strict";'
-        "var c$ = " + (text) ->
+        'var c$ = ' + (text) ->
           return text.join " " if Array.isArray text
 
           switch text
           | null void  => ""
           | true false => "\u0093" + text
           | otherwise  => text
-        gen.code
+        gen
     console.timeEnd "Total  "
     console.log "compiled script to #outfile"
   catch
