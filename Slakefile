@@ -67,24 +67,27 @@ task \build "build userscript" ->
     esprima-time = 0
 
     root = __dirname + "/src"
-    
+
     ast = cjsify "src/wowboardhelpers.ls", root,
       export: null
       handlers:
         '.hamlc': (it, filename) ->
           c = Date.now!
-          src = compile-hamlc it.toString!, filename
+          
+          try
+            src = compile-hamlc it.toString!, filename
+          catch {message}
+            console.log "Error compiling #filename : #message"
+
           hamlc-time += Date.now! - c
           src = """
           var lang = require('lang');
           var fn=#src
 
-          module.exports = function (locals) {
-            var div = document.createElement('div');
-            div.innerHTML = fn(locals);
-            return div.firstElementChild;
-          }
-          """
+          module.exports = """ + (locals) ->
+            document.createElement 'div'
+              ..innerHTML = fn locals
+              return ..firstElementChild
 
           c = Date.now!
           ast = compile-js src, filename
@@ -103,8 +106,6 @@ task \build "build userscript" ->
           esprima-time += Date.now! - c
 
           ast
-
-    console.profileEnd!
 
     console.log "cjsify : #{Date.now! - cjs-time-base - ls-time - hamlc-time - esprima-time}ms"
     console.log "ls     : #{ls-time}ms"

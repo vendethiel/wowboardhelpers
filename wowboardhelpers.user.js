@@ -6,11 +6,9 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 2.0.5
+// @version 2.0.4
 // ==/UserScript==
  * changelog
- * 2.0.5
- *  Fix build script - removed source maps
  * 2.0.4
  *  Fix blizzard titlification
  * 2.0.3
@@ -175,22 +173,22 @@ var c$ = function (text){
         console.time('wowboardhelpers');
         require('/board\\content-class.ls');
         require('/board\\css.ls');
-        require('/modules\\jumps\\all.ls');
-        require('/fix\\all.ls');
+        require('/jumps\\index.ls');
+        require('/fix\\index.ls');
         if (require('/topic.ls')) {
-            require('/topic-characters\\all.ls');
-            require('/topic-posts\\all.ls');
+            require('/topic-characters\\index.ls');
+            require('/topic-posts\\index.ls');
             if (require('/textarea.ls')) {
-                require('/reply\\all.ls');
+                require('/reply\\index.ls');
             }
         }
         if (require('/forum.ls')) {
-            require('/forum\\all.ls');
-            require('/forum-topics\\all.ls');
+            require('/forum-layout\\index.ls');
+            require('/forum-topics\\index.ls');
         }
         console.timeEnd('wowboardhelpers');
     });
-    require.define('/forum-topics\\all.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/forum-topics\\index.ls', function (module, exports, __dirname, __filename, process) {
         var lastUpdated, moveRedirects, hideTopic, times;
         lastUpdated = require('/forum-topics\\last-updated.ls');
         moveRedirects = require('/forum-topics\\move-redirects.ls');
@@ -391,7 +389,7 @@ var c$ = function (text){
             fn$.call(this, tr, topicId, postPages);
         }
         if ($('tbody.regular tr:not(.hidden):not(.read)')) {
-            clearTimeout(require('/forum\\check-updates.ls'));
+            clearTimeout(require('/forum-layout\\check-updates.ls'));
         }
         function in$(x, arr) {
             var i = -1, l = arr.length >>> 0;
@@ -416,7 +414,7 @@ var c$ = function (text){
             postPages.insertBefore(x$, postPages.children[0]);
         }
     });
-    require.define('/forum\\check-updates.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/forum-layout\\check-updates.ls', function (module, exports, __dirname, __filename, process) {
         var $, node, lang, tbodyRegular, ajax, firstTopicId, trHtml, aEndHtml, tbodyHtml, x$, h1, ref$, refresh, timeout, checkUpdates;
         $ = require('/dom\\$.ls');
         node = require('/dom\\node.ls');
@@ -507,9 +505,11 @@ var c$ = function (text){
             }.call(context);
         };
         module.exports = function (locals) {
-            var div = document.createElement('div');
-            div.innerHTML = fn(locals);
-            return div.firstElementChild;
+            var x$;
+            x$ = document.createElement('div');
+            x$.innerHTML = fn(locals);
+            return x$.firstElementChild;
+            return x$;
         };
     });
     require.define('/w.ls', function (module, exports, __dirname, __filename, process) {
@@ -626,7 +626,7 @@ var c$ = function (text){
             markState(post, state);
         }
         if (!hasUnread) {
-            require('/forum-options.ls').removeChild(require('/forum\\mar.ls'));
+            require('/forum-options.ls').removeChild(require('/forum-layout\\mar.ls'));
         }
         function markState(node, state) {
             var innerHTML, states;
@@ -678,7 +678,7 @@ var c$ = function (text){
             }).outerHTML;
         }
     });
-    require.define('/forum\\mar.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/forum-layout\\mar.ls', function (module, exports, __dirname, __filename, process) {
         var lang, node, fetchSiblings, forumOptions, tbodyRegular, w, allRead, buttonMar, split$ = ''.split;
         lang = require('/lang\\index.ls');
         node = require('/dom\\node.ls');
@@ -745,9 +745,11 @@ var c$ = function (text){
             }.call(context);
         };
         module.exports = function (locals) {
-            var div = document.createElement('div');
-            div.innerHTML = fn(locals);
-            return div.firstElementChild;
+            var x$;
+            x$ = document.createElement('div');
+            x$.innerHTML = fn(locals);
+            return x$.firstElementChild;
+            return x$;
         };
     });
     require.define('/forum-topics\\templates\\author.hamlc', function (module, exports, __dirname, __filename, process) {
@@ -771,9 +773,11 @@ var c$ = function (text){
             }.call(context);
         };
         module.exports = function (locals) {
-            var div = document.createElement('div');
-            div.innerHTML = fn(locals);
-            return div.firstElementChild;
+            var x$;
+            x$ = document.createElement('div');
+            x$.innerHTML = fn(locals);
+            return x$.firstElementChild;
+            return x$;
         };
     });
     require.define('/forum-topics\\templates\\default-pagination.hamlc', function (module, exports, __dirname, __filename, process) {
@@ -788,9 +792,11 @@ var c$ = function (text){
             }.call(context);
         };
         module.exports = function (locals) {
-            var div = document.createElement('div');
-            div.innerHTML = fn(locals);
-            return div.firstElementChild;
+            var x$;
+            x$ = document.createElement('div');
+            x$.innerHTML = fn(locals);
+            return x$.firstElementChild;
+            return x$;
         };
     });
     require.define('/lang\\simplify-time.ls', function (module, exports, __dirname, __filename, process) {
@@ -861,15 +867,15 @@ var c$ = function (text){
             return simplifyTime;
         }();
     });
-    require.define('/forum\\all.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/forum-layout\\index.ls', function (module, exports, __dirname, __filename, process) {
         var checkUpdates, currentForum, mar, moveActions, stickies;
-        checkUpdates = require('/forum\\check-updates.ls');
-        currentForum = require('/forum\\current-forum.ls');
-        mar = require('/forum\\mar.ls');
-        moveActions = require('/forum\\move-actions.ls');
-        stickies = require('/forum\\stickies.ls');
+        checkUpdates = require('/forum-layout\\check-updates.ls');
+        currentForum = require('/forum-layout\\current-forum.ls');
+        mar = require('/forum-layout\\mar.ls');
+        moveActions = require('/forum-layout\\move-actions.ls');
+        stickies = require('/forum-layout\\stickies.ls');
     });
-    require.define('/forum\\stickies.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/forum-layout\\stickies.ls', function (module, exports, __dirname, __filename, process) {
         var lang, $, node, forumOptions, w, buttonSticky;
         lang = require('/lang\\index.ls');
         $ = require('/dom\\$.ls');
@@ -891,14 +897,14 @@ var c$ = function (text){
         module.exports.style.cursor = 'pointer';
         forumOptions.appendChild(buttonSticky);
     });
-    require.define('/forum\\move-actions.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/forum-layout\\move-actions.ls', function (module, exports, __dirname, __filename, process) {
         var $, x$;
         $ = require('/dom\\$.ls');
         x$ = $('.forum-options');
         x$.parentNode.removeChild(x$);
         $('.content-trail').appendChild(x$);
     });
-    require.define('/forum\\current-forum.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/forum-layout\\current-forum.ls', function (module, exports, __dirname, __filename, process) {
         var ref$, currentForumHref, currentForumName;
         ref$ = (ref$ = document.getElementsByClassName('ui-breadcrumb')[0].children)[ref$.length - 1].children[0], currentForumHref = ref$.href, currentForumName = ref$.innerHTML;
     });
@@ -906,7 +912,7 @@ var c$ = function (text){
         var that, ref$, split$ = ''.split;
         module.exports = (that = document.getElementById('posts')) ? (that.dataset.id = split$.call((ref$ = split$.call(document.location, '/'))[ref$.length - 2], '?')[0], that) : null;
     });
-    require.define('/reply\\all.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/reply\\index.ls', function (module, exports, __dirname, __filename, process) {
         var clearTextarea, memebox, preview, quickQuote, rememberReply;
         clearTextarea = require('/reply\\clear-textarea.ls');
         memebox = require('/reply\\memebox.ls');
@@ -1041,9 +1047,11 @@ var c$ = function (text){
             }.call(context);
         };
         module.exports = function (locals) {
-            var div = document.createElement('div');
-            div.innerHTML = fn(locals);
-            return div.firstElementChild;
+            var x$;
+            x$ = document.createElement('div');
+            x$.innerHTML = fn(locals);
+            return x$.firstElementChild;
+            return x$;
         };
     });
     require.define('/reply\\clear-textarea.ls', function (module, exports, __dirname, __filename, process) {
@@ -1069,7 +1077,7 @@ var c$ = function (text){
         var that, x$, ref$, replace$ = ''.replace, split$ = ''.split;
         module.exports = (that = document.getElementById('thread')) ? (x$ = that.dataset, x$.url = replace$.call(split$.call(document.location, '?')[0], /#[0-9]+/, ''), x$.id = (ref$ = split$.call(x$.url, '/'))[ref$.length - 1], x$.page = ((ref$ = /\?page=([0-9]+)/.exec(document.location)) != null ? ref$[1] : void 8) || 1, that) : null;
     });
-    require.define('/topic-posts\\all.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/topic-posts\\index.ls', function (module, exports, __dirname, __filename, process) {
         var autolink, jump, updateCount;
         autolink = require('/topic-posts\\autolink.ls');
         jump = require('/topic-posts\\jump.ls');
@@ -1200,7 +1208,7 @@ var c$ = function (text){
             return it;
         }
     });
-    require.define('/topic-characters\\all.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/topic-characters\\index.ls', function (module, exports, __dirname, __filename, process) {
         var contextLinks, improveTopic, multiChars;
         contextLinks = require('/topic-characters\\context-links.ls');
         improveTopic = require('/topic-characters\\improve-topic.ls');
@@ -1311,9 +1319,11 @@ var c$ = function (text){
             }.call(context);
         };
         module.exports = function (locals) {
-            var div = document.createElement('div');
-            div.innerHTML = fn(locals);
-            return div.firstElementChild;
+            var x$;
+            x$ = document.createElement('div');
+            x$.innerHTML = fn(locals);
+            return x$.firstElementChild;
+            return x$;
         };
     });
     require.define('/topic-characters\\improve-topic.ls', function (module, exports, __dirname, __filename, process) {
@@ -1355,12 +1365,14 @@ var c$ = function (text){
             }.call(context);
         };
         module.exports = function (locals) {
-            var div = document.createElement('div');
-            div.innerHTML = fn(locals);
-            return div.firstElementChild;
+            var x$;
+            x$ = document.createElement('div');
+            x$.innerHTML = fn(locals);
+            return x$.firstElementChild;
+            return x$;
         };
     });
-    require.define('/fix\\all.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/fix\\index.ls', function (module, exports, __dirname, __filename, process) {
         var htmlOverrides, menu, setView;
         htmlOverrides = require('/fix\\html-overrides.ls');
         menu = require('/fix\\menu.ls');
@@ -1402,15 +1414,15 @@ var c$ = function (text){
             }
         }
     });
-    require.define('/modules\\jumps\\all.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/jumps\\index.ls', function (module, exports, __dirname, __filename, process) {
         var top, $;
-        top = require('/modules\\jumps\\top.ls');
+        top = require('/jumps\\top.ls');
         $ = require('/dom\\$.ls');
         if (!$('.player-name')) {
-            require('/modules\\jumps\\login.ls');
+            require('/jumps\\login.ls');
         }
     });
-    require.define('/modules\\jumps\\login.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/jumps\\login.ls', function (module, exports, __dirname, __filename, process) {
         var bindKey, w;
         bindKey = require('/bind-key\\index.ls');
         w = require('/w.ls');
@@ -1418,7 +1430,7 @@ var c$ = function (text){
             w.Login.open('https://eu.battle.net/login/login.frag');
         });
     });
-    require.define('/modules\\jumps\\top.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/jumps\\top.ls', function (module, exports, __dirname, __filename, process) {
         var bindKey, $;
         bindKey = require('/bind-key\\index.ls');
         $ = require('/dom\\$.ls');

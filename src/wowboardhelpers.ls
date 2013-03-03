@@ -4,19 +4,19 @@ console.time 'wowboardhelpers'
 require 'board/content-class'
 require 'board/css'
 
-require 'modules/jumps/all'
-require 'fix/all'
+require 'jumps'
+require 'fix'
 
 if require 'topic'
-	require 'topic-characters/all'
-	require 'topic-posts/all'
+	require 'topic-characters'
+	require 'topic-posts'
 
 	if require 'textarea'
-		require 'reply/all'
+		require 'reply'
 
 
 if require 'forum'
-	require 'forum/all'
-	require 'forum-topics/all'
+	require 'forum-layout'
+	require 'forum-topics'
 
 console.timeEnd 'wowboardhelpers'
