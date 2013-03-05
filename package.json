@@ -7,7 +7,7 @@
 		"stylus": "0.32.x",
 		"nib": "0.9.x",
 		"haml-coffee": "1.9.x",
-		"commonjs-everywhere": "0.3.0",
+		"commonjs-everywhere": "0.3.4",
 		"esprima": "1.0.2",
 		"escodegen": "0.0.17",
 		"glob": "*"

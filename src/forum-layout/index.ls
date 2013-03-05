@@ -1,1 +1,1 @@
-require! <[./check-updates ./current-forum ./mar ./move-actions ./stickies]>
+require! <[./check-updates ./mar ./move-actions ./stickies]>

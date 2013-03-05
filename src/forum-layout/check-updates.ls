@@ -12,9 +12,7 @@ $ '#forum-actions-top'
 		..children[*-1]
 
 
-# XXX should not notice for update if post is hidden.
-# BUT it should notice if 2 posts have been updated, first is hidden
-# and second is not
+# XXX should parse somehow to know what the actual fuck is going on
 refresh = ->
 	ajax.get document.location, !->
 		return unless @status is 200
@@ -23,11 +21,11 @@ refresh = ->
 		after-regular = @response.slice(tbody-html.length + @response.indexOf tbody-html)trim!
 
 		if tr-html is after-regular.substr 0 tr-html.length
-			setTimeout refresh, timeout # here we go again
 			h1.innerHTML += " <u>#{lang.no-new}</u>"
 			setTimeout -> #clear message
 				h1.innerHTML = ""
 			, 1500ms #1s
+			setTimeout refresh, timeout # here we go again
 		else
 			#get new post title
 			start-pos = a-end-html.length + after-regular.indexOf a-end-html
@@ -39,4 +37,4 @@ refresh = ->
 timeout = 15s * 1000ms #15s
 
 #timeout clearing is in hide-topic
-module.exports = check-updates = setTimeout refresh, timeout
+module.exports = setTimeout refresh, timeout

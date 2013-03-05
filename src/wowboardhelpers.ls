@@ -18,5 +18,6 @@ if require 'topic'
 if require 'forum'
 	require 'forum-layout'
 	require 'forum-topics'
+	require 'forum-layout/hide-mar'
 
 console.timeEnd 'wowboardhelpers'

@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 2.0.4
+// @version 2.0.5
 // ==/UserScript==
  * changelog
+ * 2.0.5
+ *  Improve MAR handling
  * 2.0.4
  *  Fix blizzard titlification
  * 2.0.3
@@ -156,6 +158,7 @@ var c$ = function (text){
                 children: []
             };
         var dirname = file.slice(0, file.lastIndexOf('/') + 1);
+        require.cache[file] = module$.exports;
         resolved.call(module$.exports, module$, module$.exports, dirname, file, process);
         module$.loaded = true;
         return require.cache[file] = module$.exports;
@@ -185,76 +188,108 @@ var c$ = function (text){
         if (require('/forum.ls')) {
             require('/forum-layout\\index.ls');
             require('/forum-topics\\index.ls');
+            require('/forum-layout\\hide-mar.ls');
         }
         console.timeEnd('wowboardhelpers');
     });
-    require.define('/forum-topics\\index.ls', function (module, exports, __dirname, __filename, process) {
-        var lastUpdated, moveRedirects, hideTopic, times;
-        lastUpdated = require('/forum-topics\\last-updated.ls');
-        moveRedirects = require('/forum-topics\\move-redirects.ls');
-        hideTopic = require('/forum-topics\\hide-topic.ls');
-        times = require('/forum-topics\\times.ls');
-    });
-    require.define('/forum-topics\\times.ls', function (module, exports, __dirname, __filename, process) {
-        var $$, lang, relativeTime, units, timestamp, postTitles, i$, len$, postTitle, total, j$, ref$, len1$, timespan, ref1$, count, unit, date, timeout, refresh, split$ = ''.split;
-        $$ = require('/dom\\$$.ls');
-        lang = require('/lang\\index.ls');
-        relativeTime = require('/date\\relative-time.ls');
-        units = {
-            second: 1000,
-            minute: 60000,
-            hour: 3600000,
-            day: 86400000
-        };
-        timestamp = new Date().getTime();
-        postTitles = $$('.post-title[data-simplified-time]');
-        for (i$ = 0, len$ = postTitles.length; i$ < len$; ++i$) {
-            postTitle = postTitles[i$];
-            total = 0;
-            for (j$ = 0, len1$ = (ref$ = split$.call(postTitle.dataset.simplifiedTime, ', ')).length; j$ < len1$; ++j$) {
-                timespan = ref$[j$];
-                ref1$ = split$.call(timespan, ' '), count = ref1$[0], unit = ref1$[1];
-                if (count === lang('few')) {
-                    count = 5;
-                    unit = lang('second');
-                }
-                total += count * units[lang(lang.singularize(unit))];
-                if (total !== total) {
-                    console.log(count, lang.singularize(unit));
-                }
-            }
-            date = new Date(timestamp - total);
-            postTitle.dataset.timestamp = date.getTime();
+    require.define('/forum-layout\\hide-mar.ls', function (module, exports, __dirname, __filename, process) {
+        var $;
+        $ = require('/dom\\$.ls');
+        if (!$('.regular > .unread:not(.hidden)')) {
+            require('/forum-options.ls').removeChild(require('/forum-layout\\mar.ls'));
         }
-        timeout = 10 * units.second;
-        refresh = function () {
-            var i$, ref$, len$, postTitle, d;
-            for (i$ = 0, len$ = (ref$ = postTitles).length; i$ < len$; ++i$) {
-                postTitle = ref$[i$];
-                d = new Date(Number(postTitle.dataset.timestamp));
-                postTitle.querySelector('.simplified-time').innerHTML = relativeTime(d);
-            }
-            return setTimeout(refresh, timeout);
-        };
-        refresh();
     });
-    require.define('/date\\relative-time.ls', function (module, exports, __dirname, __filename, process) {
-        var lang, relativeTime;
+    require.define('/forum-layout\\mar.ls', function (module, exports, __dirname, __filename, process) {
+        var lang, node, fetchSiblings, forumOptions, tbodyRegular, w, allRead, buttonMar, split$ = ''.split;
         lang = require('/lang\\index.ls');
-        module.exports = relativeTime = function (it) {
-            var days, diff, hours, minutes, seconds;
-            if ((days = (diff = Date.now() - it.getTime()) / 86400000) > 1) {
-                return lang.pluralize(days, 'day');
-            } else if ((hours = days * 24) > 1) {
-                return lang.pluralize(hours, 'hour');
-            } else if ((minutes = hours * 60) > 1) {
-                return lang.pluralize(minutes, 'minute');
-            } else if ((seconds = minutes * 60) >= 1) {
-                return lang.pluralize(seconds, 'second');
-            } else {
-                return lang.fewSecondsAgo;
+        node = require('/dom\\node.ls');
+        fetchSiblings = require('/dom\\fetch-siblings.ls');
+        forumOptions = require('/forum-options.ls');
+        tbodyRegular = require('/tbody-regular.ls');
+        w = require('/w.ls');
+        allRead = false;
+        module.exports = buttonMar = node('a', {
+            innerHTML: 'MAR',
+            title: lang.mar,
+            onclick: function () {
+                var i$, ref$, len$, row, topicId, siblings;
+                if (allRead) {
+                    return;
+                }
+                allRead = !allRead;
+                for (i$ = 0, len$ = (ref$ = tbodyRegular.children).length; i$ < len$; ++i$) {
+                    row = ref$[i$];
+                    if (row.className.trim() === 'read') {
+                        continue;
+                    }
+                    topicId = row.id.slice('postRow'.length);
+                    siblings = fetchSiblings(row.children[0], { slice: 5 });
+                    w.localStorage.setItem('topic_' + topicId, split$.call(siblings.lastPost.children[0].href, '#')[1]);
+                    w.localStorage.setItem('topic_lp_' + topicId, siblings.author.innerHTML.trim());
+                    row.className += ' read';
+                }
+                forumOptions.removeChild(buttonMar);
             }
+        });
+        buttonMar.style.cursor = 'pointer';
+        forumOptions.appendChild(buttonMar);
+    });
+    require.define('/w.ls', function (module, exports, __dirname, __filename, process) {
+        var w;
+        w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
+        if (!w.Cms) {
+            w = w.window = function () {
+                var el;
+                el = document.createElement('p');
+                el.setAttribute('onclick', 'return window;');
+                return el.onclick();
+            }.call(this);
+        }
+        module.exports = w;
+    });
+    require.define('/tbody-regular.ls', function (module, exports, __dirname, __filename, process) {
+        var $;
+        $ = require('/dom\\$.ls');
+        module.exports = $('tbody.regular');
+    });
+    require.define('/dom\\$.ls', function (module, exports, __dirname, __filename, process) {
+        module.exports = function (it) {
+            return document.querySelector(it);
         };
+    });
+    require.define('/forum-options.ls', function (module, exports, __dirname, __filename, process) {
+        var $;
+        $ = require('/dom\\$.ls');
+        module.exports = $('.forum-options');
+    });
+    require.define('/dom\\fetch-siblings.ls', function (module, exports, __dirname, __filename, process) {
+        module.exports = function () {
+            function fetchSiblings(elem, arg$) {
+                var slice, ref$, indexBy, results$ = {};
+                slice = (ref$ = arg$.slice) != null ? ref$ : 0, indexBy = (ref$ = arg$.indexBy) != null ? ref$ : 'className';
+                while (elem != null && (elem = elem.nextElementSibling)) {
+                    results$[elem[indexBy].slice(slice)] = elem;
+                }
+                return results$;
+            }
+            return fetchSiblings;
+        }();
+    });
+    require.define('/dom\\node.ls', function (module, exports, __dirname, __filename, process) {
+        module.exports = function () {
+            function node(tag, props) {
+                props == null && (props = {});
+                return import$(document.createElement(tag), props);
+            }
+            return node;
+        }();
+        function import$(obj, src) {
+            var own = {}.hasOwnProperty;
+            for (var key in src)
+                if (own.call(src, key))
+                    obj[key] = src[key];
+            return obj;
+        }
     });
     require.define('/lang\\index.ls', function (module, exports, __dirname, __filename, process) {
         var l, langs, toCamelCase, lang, split$ = ''.split;
@@ -351,6 +386,74 @@ var c$ = function (text){
             login: 'Connexion'
         };
     });
+    require.define('/forum-topics\\index.ls', function (module, exports, __dirname, __filename, process) {
+        var lastUpdated, moveRedirects, hideTopic, times;
+        lastUpdated = require('/forum-topics\\last-updated.ls');
+        moveRedirects = require('/forum-topics\\move-redirects.ls');
+        hideTopic = require('/forum-topics\\hide-topic.ls');
+        times = require('/forum-topics\\times.ls');
+    });
+    require.define('/forum-topics\\times.ls', function (module, exports, __dirname, __filename, process) {
+        var $$, lang, relativeTime, units, timestamp, postTitles, i$, len$, postTitle, total, j$, ref$, len1$, timespan, ref1$, count, unit, date, timeout, refresh, split$ = ''.split;
+        $$ = require('/dom\\$$.ls');
+        lang = require('/lang\\index.ls');
+        relativeTime = require('/date\\relative-time.ls');
+        units = {
+            second: 1000,
+            minute: 60000,
+            hour: 3600000,
+            day: 86400000
+        };
+        timestamp = new Date().getTime();
+        postTitles = $$('.post-title[data-simplified-time]');
+        for (i$ = 0, len$ = postTitles.length; i$ < len$; ++i$) {
+            postTitle = postTitles[i$];
+            total = 0;
+            for (j$ = 0, len1$ = (ref$ = split$.call(postTitle.dataset.simplifiedTime, ', ')).length; j$ < len1$; ++j$) {
+                timespan = ref$[j$];
+                ref1$ = split$.call(timespan, ' '), count = ref1$[0], unit = ref1$[1];
+                if (count === lang('few')) {
+                    count = 5;
+                    unit = lang('second');
+                }
+                total += count * units[lang(lang.singularize(unit))];
+                if (total !== total) {
+                    console.log(count, lang.singularize(unit));
+                }
+            }
+            date = new Date(timestamp - total);
+            postTitle.dataset.timestamp = date.getTime();
+        }
+        timeout = 10 * units.second;
+        refresh = function () {
+            var i$, ref$, len$, postTitle, d;
+            for (i$ = 0, len$ = (ref$ = postTitles).length; i$ < len$; ++i$) {
+                postTitle = ref$[i$];
+                d = new Date(Number(postTitle.dataset.timestamp));
+                postTitle.querySelector('.simplified-time').innerHTML = relativeTime(d);
+            }
+            return setTimeout(refresh, timeout);
+        };
+        refresh();
+    });
+    require.define('/date\\relative-time.ls', function (module, exports, __dirname, __filename, process) {
+        var lang, relativeTime;
+        lang = require('/lang\\index.ls');
+        module.exports = relativeTime = function (it) {
+            var days, diff, hours, minutes, seconds;
+            if ((days = (diff = Date.now() - it.getTime()) / 86400000) > 1) {
+                return lang.pluralize(days, 'day');
+            } else if ((hours = days * 24) > 1) {
+                return lang.pluralize(hours, 'hour');
+            } else if ((minutes = hours * 60) > 1) {
+                return lang.pluralize(minutes, 'minute');
+            } else if ((seconds = minutes * 60) >= 1) {
+                return lang.pluralize(seconds, 'second');
+            } else {
+                return lang.fewSecondsAgo;
+            }
+        };
+    });
     require.define('/dom\\$$.ls', function (module, exports, __dirname, __filename, process) {
         module.exports = function (it) {
             return document.querySelectorAll(it);
@@ -415,7 +518,7 @@ var c$ = function (text){
         }
     });
     require.define('/forum-layout\\check-updates.ls', function (module, exports, __dirname, __filename, process) {
-        var $, node, lang, tbodyRegular, ajax, firstTopicId, trHtml, aEndHtml, tbodyHtml, x$, h1, ref$, refresh, timeout, checkUpdates;
+        var $, node, lang, tbodyRegular, ajax, firstTopicId, trHtml, aEndHtml, tbodyHtml, x$, h1, ref$, refresh, timeout;
         $ = require('/dom\\$.ls');
         node = require('/dom\\node.ls');
         lang = require('/lang\\index.ls');
@@ -436,11 +539,11 @@ var c$ = function (text){
                 h1.innerHTML = lang.checkingNew;
                 afterRegular = this.response.slice(tbodyHtml.length + this.response.indexOf(tbodyHtml)).trim();
                 if (trHtml === afterRegular.substr(0, trHtml.length)) {
-                    setTimeout(refresh, timeout);
                     h1.innerHTML += ' <u>' + lang.noNew + '</u>';
                     setTimeout(function () {
                         return h1.innerHTML = '';
                     }, 1500);
+                    setTimeout(refresh, timeout);
                 } else {
                     startPos = aEndHtml.length + afterRegular.indexOf(aEndHtml);
                     afterRegular = afterRegular.slice(startPos);
@@ -450,7 +553,7 @@ var c$ = function (text){
             });
         };
         timeout = 15 * 1000;
-        module.exports = checkUpdates = setTimeout(refresh, timeout);
+        module.exports = setTimeout(refresh, timeout);
     });
     require.define('/ajax\\index.ls', function (module, exports, __dirname, __filename, process) {
         module.exports = {
@@ -463,32 +566,6 @@ var c$ = function (text){
                 return x$;
             }
         };
-    });
-    require.define('/tbody-regular.ls', function (module, exports, __dirname, __filename, process) {
-        var $;
-        $ = require('/dom\\$.ls');
-        module.exports = $('tbody.regular');
-    });
-    require.define('/dom\\$.ls', function (module, exports, __dirname, __filename, process) {
-        module.exports = function (it) {
-            return document.querySelector(it);
-        };
-    });
-    require.define('/dom\\node.ls', function (module, exports, __dirname, __filename, process) {
-        module.exports = function () {
-            function node(tag, props) {
-                props == null && (props = {});
-                return import$(document.createElement(tag), props);
-            }
-            return node;
-        }();
-        function import$(obj, src) {
-            var own = {}.hasOwnProperty;
-            for (var key in src)
-                if (own.call(src, key))
-                    obj[key] = src[key];
-            return obj;
-        }
     });
     require.define('/forum-topics\\templates\\hide-topic.hamlc', function (module, exports, __dirname, __filename, process) {
         var lang = require('/lang\\index.ls');
@@ -511,19 +588,6 @@ var c$ = function (text){
             return x$.firstElementChild;
             return x$;
         };
-    });
-    require.define('/w.ls', function (module, exports, __dirname, __filename, process) {
-        var w;
-        w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
-        if (!w.Cms) {
-            w = w.window = function () {
-                var el;
-                el = document.createElement('p');
-                el.setAttribute('onclick', 'return window;');
-                return el.onclick();
-            }.call(this);
-        }
-        module.exports = w;
     });
     require.define('/forum-topics\\move-redirects.ls', function (module, exports, __dirname, __filename, process) {
         var tbodyRegular, i$, ref$, len$, status, tr;
@@ -618,15 +682,12 @@ var c$ = function (text){
                 }
             } else {
                 hasUnread = true;
-                td.className = '';
+                td.className = 'unread';
             }
             if (state !== TSTATE_UNK) {
                 a.href = (ref1$ = pages.getElementsByTagName('a'))[ref1$.length - 1].href;
             }
             markState(post, state);
-        }
-        if (!hasUnread) {
-            require('/forum-options.ls').removeChild(require('/forum-layout\\mar.ls'));
         }
         function markState(node, state) {
             var innerHTML, states;
@@ -677,59 +738,6 @@ var c$ = function (text){
                 cm: isCm
             }).outerHTML;
         }
-    });
-    require.define('/forum-layout\\mar.ls', function (module, exports, __dirname, __filename, process) {
-        var lang, node, fetchSiblings, forumOptions, tbodyRegular, w, allRead, buttonMar, split$ = ''.split;
-        lang = require('/lang\\index.ls');
-        node = require('/dom\\node.ls');
-        fetchSiblings = require('/dom\\fetch-siblings.ls');
-        forumOptions = require('/forum-options.ls');
-        tbodyRegular = require('/tbody-regular.ls');
-        w = require('/w.ls');
-        allRead = false;
-        module.exports = buttonMar = node('a', {
-            innerHTML: 'MAR',
-            title: lang.mar,
-            onclick: function () {
-                var i$, ref$, len$, row, topicId, siblings;
-                if (allRead) {
-                    return;
-                }
-                allRead = !allRead;
-                for (i$ = 0, len$ = (ref$ = tbodyRegular.children).length; i$ < len$; ++i$) {
-                    row = ref$[i$];
-                    if (row.className.trim() === 'read') {
-                        continue;
-                    }
-                    topicId = row.id.slice('postRow'.length);
-                    siblings = fetchSiblings(row.children[0], { slice: 5 });
-                    w.localStorage.setItem('topic_' + topicId, split$.call(siblings.lastPost.children[0].href, '#')[1]);
-                    w.localStorage.setItem('topic_lp_' + topicId, siblings.author.innerHTML.trim());
-                    row.className += ' read';
-                }
-                forumOptions.removeChild(buttonMar);
-            }
-        });
-        buttonMar.style.cursor = 'pointer';
-        forumOptions.appendChild(buttonMar);
-    });
-    require.define('/forum-options.ls', function (module, exports, __dirname, __filename, process) {
-        var $;
-        $ = require('/dom\\$.ls');
-        module.exports = $('.forum-options');
-    });
-    require.define('/dom\\fetch-siblings.ls', function (module, exports, __dirname, __filename, process) {
-        module.exports = function () {
-            function fetchSiblings(elem, arg$) {
-                var slice, ref$, indexBy, results$ = {};
-                slice = (ref$ = arg$.slice) != null ? ref$ : 0, indexBy = (ref$ = arg$.indexBy) != null ? ref$ : 'className';
-                while (elem != null && (elem = elem.nextElementSibling)) {
-                    results$[elem[indexBy].slice(slice)] = elem;
-                }
-                return results$;
-            }
-            return fetchSiblings;
-        }();
     });
     require.define('/forum-topics\\templates\\tt-last-updated.hamlc', function (module, exports, __dirname, __filename, process) {
         var lang = require('/lang\\index.ls');
@@ -868,9 +876,8 @@ var c$ = function (text){
         }();
     });
     require.define('/forum-layout\\index.ls', function (module, exports, __dirname, __filename, process) {
-        var checkUpdates, currentForum, mar, moveActions, stickies;
+        var checkUpdates, mar, moveActions, stickies;
         checkUpdates = require('/forum-layout\\check-updates.ls');
-        currentForum = require('/forum-layout\\current-forum.ls');
         mar = require('/forum-layout\\mar.ls');
         moveActions = require('/forum-layout\\move-actions.ls');
         stickies = require('/forum-layout\\stickies.ls');
@@ -903,10 +910,6 @@ var c$ = function (text){
         x$ = $('.forum-options');
         x$.parentNode.removeChild(x$);
         $('.content-trail').appendChild(x$);
-    });
-    require.define('/forum-layout\\current-forum.ls', function (module, exports, __dirname, __filename, process) {
-        var ref$, currentForumHref, currentForumName;
-        ref$ = (ref$ = document.getElementsByClassName('ui-breadcrumb')[0].children)[ref$.length - 1].children[0], currentForumHref = ref$.href, currentForumName = ref$.innerHTML;
     });
     require.define('/forum.ls', function (module, exports, __dirname, __filename, process) {
         var that, ref$, split$ = ''.split;
@@ -1465,4 +1468,4 @@ var c$ = function (text){
         }();
     });
     require('/wowboardhelpers.ls');
-}(this));
+}.call(this, this));

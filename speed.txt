@@ -1,7 +1,7 @@
-cjsify : 1051ms
-ls     : 220ms
-hamlc  : 67ms
-esprima: 37ms
-AST->JS: 44ms
-Total  : 1420ms
+cjsify : 1110ms
+ls     : 219ms
+hamlc  : 52ms
+esprima: 41ms
+AST->JS: 45ms
+Total  : 1469ms
 compiled script to wowboardhelpers.user.js

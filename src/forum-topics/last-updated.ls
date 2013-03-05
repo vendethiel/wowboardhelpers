@@ -99,7 +99,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 			pages.removeChild that
 	else
 		has-unread = true
-		td.className = '' #fix blizzcrap
+		td.className = 'unread' #fix blizzcrap
 
 	#if we already went to the topic
 	unless state is TSTATE_UNK
@@ -107,9 +107,6 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 		a.href = pages.getElementsByTagName 'a' .[*-1]href
 
 	mark-state post, state
-
-unless has-unread
-	require 'forum-options' .removeChild require 'forum-layout/mar'
 
 /**
  * prepends state to a topic
