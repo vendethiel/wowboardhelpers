@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 2.0.5
+// @version 2.0.6
 // ==/UserScript==
  * changelog
+ * 2.0.6
+ *  Do not remove class when MAR-ing
  * 2.0.5
  *  Improve MAR handling
  * 2.0.4

@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 2.0.5
+// @version 2.0.6
 // ==/UserScript==
  * changelog
+ * 2.0.6
+ *  Do not remove class when MAR-ing
  * 2.0.5
  *  Improve MAR handling
  * 2.0.4
@@ -219,14 +221,14 @@ var c$ = function (text){
                 allRead = !allRead;
                 for (i$ = 0, len$ = (ref$ = tbodyRegular.children).length; i$ < len$; ++i$) {
                     row = ref$[i$];
-                    if (row.className.trim() === 'read') {
+                    if (row.classList.contains('read')) {
                         continue;
                     }
                     topicId = row.id.slice('postRow'.length);
                     siblings = fetchSiblings(row.children[0], { slice: 5 });
                     w.localStorage.setItem('topic_' + topicId, split$.call(siblings.lastPost.children[0].href, '#')[1]);
                     w.localStorage.setItem('topic_lp_' + topicId, siblings.author.innerHTML.trim());
-                    row.className += ' read';
+                    row.classList.add(' read');
                 }
                 forumOptions.removeChild(buttonMar);
             }

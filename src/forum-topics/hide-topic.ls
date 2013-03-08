@@ -18,7 +18,7 @@ hidden-topics = (w.localStorage.getItem "hidden_topics" or "") / ";"
 
 for post-pages in $$ 'tbody.regular .post-pages'
 	if post-pages.querySelector '.last-read'
-		#we're gonna use .last-read as a placeholder, and we have to remove the old anyway
+		# we're gonna use .last-read as a placeholder, and we have to remove the old anyway
 		post-pages.removeChild that
 
 	tr = post-pages.parentNode
@@ -39,9 +39,9 @@ for post-pages in $$ 'tbody.regular .post-pages'
 
 				save-hiddens!
 
-			#add it as the first element in .post-pages
+			# add it as the first element in .post-pages
 			post-pages.insertBefore .., post-pages.children.0
 
-#ensure we don't check updates if we already have updates
+# ensure we don't check updates if we already have updates
 if $ 'tbody.regular tr:not(.hidden):not(.read)'
 	clearTimeout require 'forum-layout/check-updates'
