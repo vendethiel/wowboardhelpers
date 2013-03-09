@@ -76,9 +76,8 @@ task \build "build userscript" ->
           
           try
             src = compile-hamlc it.toString!, filename
-          catch {message}
-            console.log "Error compiling #filename : #message"
-
+          catch         
+             console.log "Error compiling #filename : #e"
           hamlc-time += Date.now! - c
           src = """
           var lang = require('lang');

@@ -228,7 +228,7 @@ var c$ = function (text){
                     siblings = fetchSiblings(row.children[0], { slice: 5 });
                     w.localStorage.setItem('topic_' + topicId, split$.call(siblings.lastPost.children[0].href, '#')[1]);
                     w.localStorage.setItem('topic_lp_' + topicId, siblings.author.innerHTML.trim());
-                    row.classList.add(' read');
+                    row.classList.add('read');
                 }
                 forumOptions.removeChild(buttonMar);
             }

@@ -15,7 +15,7 @@ module.exports = button-mar = node 'a' innerHTML: 'MAR' title: lang.mar, onclick
 		w.localStorage.setItem "topic_#topic-id" (siblings.last-post.children.0.href / '#')1
 		w.localStorage.setItem "topic_lp_#topic-id" siblings.author.innerHTML.trim!
 
-		row.classList.add ' read'
+		row.classList.add 'read'
 
 	forum-options.removeChild button-mar
 
