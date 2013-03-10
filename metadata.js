@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 2.0.6
+// @version 2.1.0
 // ==/UserScript==
  * changelog
+ * 2.1.0
+ *  Switch to "JadeLS"
  * 2.0.6
  *  Do not remove class when MAR-ing
  * 2.0.5

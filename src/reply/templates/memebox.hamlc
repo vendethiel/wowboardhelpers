@@ -1,8 +1,0 @@
-#memebox
-	%h1	MemeBox
-
-	%br
-
-	%input(placeholder="meme" id="meme-search" autocomplete="off" size=15)
-
-	%ul#memes

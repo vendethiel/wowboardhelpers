@@ -1,3 +1,0 @@
-%span.extra-links
-	%a.link-first.extra-link(href=@link + 'achievement') HF
-	%a.link-first.extra-link(href=@link + 'statistic#21:152') PvP

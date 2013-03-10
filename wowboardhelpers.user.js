@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 2.0.6
+// @version 2.1.0
 // ==/UserScript==
  * changelog
+ * 2.1.0
+ *  Switch to "JadeLS"
  * 2.0.6
  *  Do not remove class when MAR-ing
  * 2.0.5
@@ -467,7 +469,7 @@ var c$ = function (text){
         w = require('/w.ls');
         $$ = require('/dom\\$$.ls');
         $ = require('/dom\\$.ls');
-        templateHideTopic = require('/forum-topics\\templates\\hide-topic.hamlc');
+        templateHideTopic = require('/forum-topics\\templates\\hide-topic.jadels');
         hiddenTopics = split$.call(w.localStorage.getItem('hidden_topics') || '', ';');
         function saveHiddens() {
             w.localStorage.setItem('hidden_topics', join$.call(hiddenTopics, ';'));
@@ -569,24 +571,16 @@ var c$ = function (text){
             }
         };
     });
-    require.define('/forum-topics\\templates\\hide-topic.hamlc', function (module, exports, __dirname, __filename, process) {
-        var lang = require('/lang\\index.ls');
-        var fn = function (context) {
-            return function () {
-                var $o;
-                $o = [];
-                if (this.hidden) {
-                    $o.push('<a class=\'last-read show-topic\'>\u2713</a>');
-                } else {
-                    $o.push('<a class=\'hide-topic last-read\'>X</a>');
-                }
-                return $o.join('').replace(/\s(?:id|class)=(['"])(\1)/gm, '');
-            }.call(context);
+    require.define('/forum-topics\\templates\\hide-topic.jadels', function (module, exports, __dirname, __filename, process) {
+        var lang, join;
+        lang = require('/lang\\index.ls');
+        join = function (it) {
+            return it.join('');
         };
         module.exports = function (locals) {
             var x$;
             x$ = document.createElement('div');
-            x$.innerHTML = fn(locals);
+            x$.innerHTML = '      ' + ((locals.hidden ? '<a class="last-read show-topic">\u2713</a>' : '<a class="last-read hide-topic">X</a>') || '');
             return x$.firstElementChild;
             return x$;
         };
@@ -610,9 +604,9 @@ var c$ = function (text){
         fetchSiblings = require('/dom\\fetch-siblings.ls');
         lang = require('/lang\\index.ls');
         simplifyTime = require('/lang\\simplify-time.ls');
-        templateDefaultPagination = require('/forum-topics\\templates\\default-pagination.hamlc');
-        templateAuthor = require('/forum-topics\\templates\\author.hamlc');
-        templateTtLastUpdated = require('/forum-topics\\templates\\tt-last-updated.hamlc');
+        templateDefaultPagination = require('/forum-topics\\templates\\default-pagination.jadels');
+        templateAuthor = require('/forum-topics\\templates\\author.jadels');
+        templateTtLastUpdated = require('/forum-topics\\templates\\tt-last-updated.jadels');
         characters = $$('.char-wrapper .name');
         if (characters.length) {
             res$ = [];
@@ -741,70 +735,48 @@ var c$ = function (text){
             }).outerHTML;
         }
     });
-    require.define('/forum-topics\\templates\\tt-last-updated.hamlc', function (module, exports, __dirname, __filename, process) {
-        var lang = require('/lang\\index.ls');
-        var fn = function (context) {
-            return function () {
-                var $c, $o;
-                $c = c$;
-                $o = [];
-                $o.push('<div class=\'tt-last-updated\'>\n<br />');
-                $o.push('' + $c(this.text));
-                $o.push('</div>');
-                return $o.join('').replace(/\s(\w+)='true'/gm, ' $1=\'$1\'').replace(/\s(\w+)='false'/gm, '').replace(/\s(?:id|class)=(['"])(\1)/gm, '');
-            }.call(context);
+    require.define('/forum-topics\\templates\\tt-last-updated.jadels', function (module, exports, __dirname, __filename, process) {
+        var lang, join;
+        lang = require('/lang\\index.ls');
+        join = function (it) {
+            return it.join('');
         };
         module.exports = function (locals) {
             var x$;
             x$ = document.createElement('div');
-            x$.innerHTML = fn(locals);
+            x$.innerHTML = '      \n<div class="tt-last-updated"><br/>' + locals.text + '</div>';
             return x$.firstElementChild;
             return x$;
         };
     });
-    require.define('/forum-topics\\templates\\author.hamlc', function (module, exports, __dirname, __filename, process) {
-        var lang = require('/lang\\index.ls');
-        var fn = function (context) {
-            return function () {
-                var $c, $o;
-                $c = c$;
-                $o = [];
-                $o.push('<span class=\'' + $c([
-                    'poster',
-                    this.own ? 'own-poster' : void 0,
-                    this.cm ? 'type-blizzard' : void 0
-                ]) + '\'>');
-                $o.push('' + $c(this.name));
-                if (this.cm) {
-                    $o.push('<img src=\'/wow/static/images/layout/cms/icon_blizzard.gif\' alt=\'\' />');
-                }
-                $o.push('</span>');
-                return $o.join('').replace(/\s(\w+)='true'/gm, ' $1=\'$1\'').replace(/\s(\w+)='false'/gm, '').replace(/\s(?:id|class)=(['"])(\1)/gm, '');
-            }.call(context);
+    require.define('/forum-topics\\templates\\author.jadels', function (module, exports, __dirname, __filename, process) {
+        var lang, join;
+        lang = require('/lang\\index.ls');
+        join = function (it) {
+            return it.join('');
         };
         module.exports = function (locals) {
             var x$;
             x$ = document.createElement('div');
-            x$.innerHTML = fn(locals);
+            x$.innerHTML = '    <span class="' + [
+                'poster',
+                locals.own ? 'own-poster' : void 8,
+                locals.cm ? 'type-blizzard' : void 8
+            ].join(' ') + '">\n' + locals.name + '\n' + ((locals.cm ? '<img src="/wow/static/images/layout/cms/icon_blizzard.gif" alt=""/>' : void 8) || '') + '</span>';
             return x$.firstElementChild;
             return x$;
         };
     });
-    require.define('/forum-topics\\templates\\default-pagination.hamlc', function (module, exports, __dirname, __filename, process) {
-        var lang = require('/lang\\index.ls');
-        var fn = function (context) {
-            return function () {
-                var $c, $o;
-                $c = c$;
-                $o = [];
-                $o.push('<ul class=\'ui-pagination\'>\n<li>\n<a data-pagenum=\'' + $c(1) + '\' rel=\'np\' href=\'' + $c(this.href) + '\'>1</a>\n</li>\n</ul>');
-                return $o.join('').replace(/\s(\w+)='true'/gm, ' $1=\'$1\'').replace(/\s(\w+)='false'/gm, '').replace(/\s(?:id|class)=(['"])(\1)/gm, '');
-            }.call(context);
+    require.define('/forum-topics\\templates\\default-pagination.jadels', function (module, exports, __dirname, __filename, process) {
+        var lang, join;
+        lang = require('/lang\\index.ls');
+        join = function (it) {
+            return it.join('');
         };
         module.exports = function (locals) {
             var x$;
             x$ = document.createElement('div');
-            x$.innerHTML = fn(locals);
+            x$.innerHTML = '      \n<ul class="ui-pagination">\n  <li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li>\n</ul>';
             return x$.firstElementChild;
             return x$;
         };
@@ -988,7 +960,7 @@ var c$ = function (text){
             no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
         };
         $ = require('/dom\\$.ls');
-        templateMemebox = require('/reply\\templates\\memebox.hamlc');
+        templateMemebox = require('/reply\\templates\\memebox.jadels');
         if (that = $('.post.general')) {
             that.removeChild((ref$ = that.children)[ref$.length - 1]);
             addMeme = function (url) {
@@ -1040,21 +1012,16 @@ var c$ = function (text){
             that.appendChild(memebox);
         }
     });
-    require.define('/reply\\templates\\memebox.hamlc', function (module, exports, __dirname, __filename, process) {
-        var lang = require('/lang\\index.ls');
-        var fn = function (context) {
-            return function () {
-                var $c, $o;
-                $c = c$;
-                $o = [];
-                $o.push('<div id=\'memebox\'>\n<h1>\tMemeBox</h1>\n<br />\n<input id=\'meme-search\' placeholder=\'meme\' autocomplete=\'off\' size=\'' + $c(15) + '\' />\n<ul id=\'memes\'></ul>\n</div>');
-                return $o.join('').replace(/\s(\w+)='true'/gm, ' $1=\'$1\'').replace(/\s(\w+)='false'/gm, '').replace(/\s(?:id|class)=(['"])(\1)/gm, '');
-            }.call(context);
+    require.define('/reply\\templates\\memebox.jadels', function (module, exports, __dirname, __filename, process) {
+        var lang, join;
+        lang = require('/lang\\index.ls');
+        join = function (it) {
+            return it.join('');
         };
         module.exports = function (locals) {
             var x$;
             x$ = document.createElement('div');
-            x$.innerHTML = fn(locals);
+            x$.innerHTML = '      \n<div id="memebox">\n  <h1>\tMemeBox</h1><br/>\n  <input id="meme-search" placeholder="meme" autocomplete="off" size="15"/>\n  <ul id="memes"></ul>\n</div>';
             return x$.firstElementChild;
             return x$;
         };
@@ -1222,7 +1189,7 @@ var c$ = function (text){
     require.define('/topic-characters\\multi-chars.ls', function (module, exports, __dirname, __filename, process) {
         var $$, templateMultiChars, accountCharacters, that, modified, i$, ref$, len$, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul, limit, i, replace$ = ''.replace;
         $$ = require('/dom\\$$.ls');
-        templateMultiChars = require('/topic-characters\\templates\\multi-chars.hamlc');
+        templateMultiChars = require('/topic-characters\\templates\\multi-chars.jadels');
         accountCharacters = (that = localStorage.getItem('accountCharacters')) ? JSON.parse(that) : {};
         function clean(it) {
             it = replace$.call(it, 'context-link', '');
@@ -1299,34 +1266,25 @@ var c$ = function (text){
             };
         }
     });
-    require.define('/topic-characters\\templates\\multi-chars.hamlc', function (module, exports, __dirname, __filename, process) {
-        var lang = require('/lang\\index.ls');
-        var fn = function (context) {
-            return function () {
-                var $c, $o, character, _i, _len, _ref;
-                $c = c$;
-                $o = [];
-                $o.push('<div id=\'account-characters\'>\n<h1 class=\'toggle\'>');
-                $o.push('' + $c(lang('otherCharacters')));
-                if (this.toggle) {
-                    $o.push('<span class=\'toggler\'>' + $c(' [+]') + '</span>');
-                }
-                $o.push('</h1>\n<br />\n<ul>');
-                _ref = this.characters;
-                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                    character = _ref[_i];
-                    if (character !== this.current) {
-                        $o.push('<li style=\'' + $c([this.toggle ? 'display: none' : void 0]) + '\'>' + $c(character) + '</li>');
-                    }
-                }
-                $o.push('</ul>\n</div>');
-                return $o.join('').replace(/\s(\w+)='true'/gm, ' $1=\'$1\'').replace(/\s(\w+)='false'/gm, '').replace(/\s(?:id|class)=(['"])(\1)/gm, '');
-            }.call(context);
+    require.define('/topic-characters\\templates\\multi-chars.jadels', function (module, exports, __dirname, __filename, process) {
+        var lang, join;
+        lang = require('/lang\\index.ls');
+        join = function (it) {
+            return it.join('');
         };
         module.exports = function (locals) {
-            var x$;
+            var x$, character;
             x$ = document.createElement('div');
-            x$.innerHTML = fn(locals);
+            x$.innerHTML = '      \n<div id="account-characters">\n  <h1 class="toggle">\n    ' + lang('otherCharacters') + '\n    ' + ((locals.toggle ? '<span class="toggler">' + ' [+]' + '</span>' : void 8) || '') + '\n  </h1><br/>\n  <ul>' + (join(function () {
+                var i$, ref$, len$, results$ = [];
+                for (i$ = 0, len$ = (ref$ = locals.characters).length; i$ < len$; ++i$) {
+                    character = ref$[i$];
+                    if (character !== locals.current) {
+                        results$.push('<li style="' + [locals.toggle ? 'display: none' : void 8] + '">' + character + '</li>');
+                    }
+                }
+                return results$;
+            }()) || '') + '\n  </ul>\n</div>';
             return x$.firstElementChild;
             return x$;
         };
@@ -1348,7 +1306,7 @@ var c$ = function (text){
     require.define('/topic-characters\\context-links.ls', function (module, exports, __dirname, __filename, process) {
         var topic, templateContextLinks, i$, ref$, len$, context, el;
         topic = require('/topic.ls');
-        templateContextLinks = require('/topic-characters\\templates\\context-links.hamlc');
+        templateContextLinks = require('/topic-characters\\templates\\context-links.jadels');
         for (i$ = 0, len$ = (ref$ = topic.querySelectorAll('.context-links')).length; i$ < len$; ++i$) {
             context = ref$[i$];
             if (context.children.length === 1) {
@@ -1358,21 +1316,16 @@ var c$ = function (text){
             context.insertBefore(el, context.querySelector('.link-last'));
         }
     });
-    require.define('/topic-characters\\templates\\context-links.hamlc', function (module, exports, __dirname, __filename, process) {
-        var lang = require('/lang\\index.ls');
-        var fn = function (context) {
-            return function () {
-                var $c, $o;
-                $c = c$;
-                $o = [];
-                $o.push('<span class=\'extra-links\'>\n<a class=\'extra-link link-first\' href=\'' + $c(this.link + 'achievement') + '\'>HF</a>\n<a class=\'extra-link link-first\' href=\'' + $c(this.link + 'statistic#21:152') + '\'>PvP</a>\n</span>');
-                return $o.join('').replace(/\s(\w+)='true'/gm, ' $1=\'$1\'').replace(/\s(\w+)='false'/gm, '').replace(/\s(?:id|class)=(['"])(\1)/gm, '');
-            }.call(context);
+    require.define('/topic-characters\\templates\\context-links.jadels', function (module, exports, __dirname, __filename, process) {
+        var lang, join;
+        lang = require('/lang\\index.ls');
+        join = function (it) {
+            return it.join('');
         };
         module.exports = function (locals) {
             var x$;
             x$ = document.createElement('div');
-            x$.innerHTML = fn(locals);
+            x$.innerHTML = '<span class="extra-links"><a href="' + locals.link + 'achievement" class="link-first extra-link">HF</a><a href="' + locals.link + 'statistic#21:152" class="link-first extra-link">PvP</a></span>';
             return x$.firstElementChild;
             return x$;
         };
