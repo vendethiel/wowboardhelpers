@@ -73,31 +73,13 @@ task \build "build userscript" ->
       handlers:
         '.jadels': (it, filename) ->
           it .= toString!
-          it .= replace /@/g 'locals.'
-
-          src = jadels-to-jade it
-          src .= replace /#{/g '{{'
-
-          try
-            fn = jade.compile src, {+pretty}
-          catch
-            say src
-            say "Jade Error compiling #filename : #e"
-          
-          fn = fn!
-          # clean a bit. Sadly no way to disable escaping
-          fn .= replace /&quot;/g '"'
-
-          src = jadels-to-jade.wrap fn.replace /\{\{/g '#{'
+          src = jadels-to-jade.compile(it, filename)
           src = ls-parse src, filename
-
           esprima-parse src, filename
 
         '.ls': (it, filename) ->
           it .= toString!replace '%css%' css
-
           src = ls-parse it, filename
-
           esprima-parse src, filename
 
     say "cjsify : #{Date.now! - cjs-time-base - ls-time - hamlc-time - esprima-time}ms"
@@ -113,14 +95,6 @@ task \build "build userscript" ->
       join do
         metadata
         '"use strict";'
-        "var c$ = " + (text) ->
-          return text.join " " if Array.isArray text
-
-          switch text
-          | null void  => ""
-          | true false => "\u0093" + text
-          | otherwise  => text
-        ";"
         gen
     console.timeEnd "Total  "
     say "compiled script to #outfile"

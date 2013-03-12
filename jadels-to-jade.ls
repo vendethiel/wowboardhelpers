@@ -1,8 +1,25 @@
 entab = -> "\t" * it
+require! jade
 
-module.exports = jadels-to-jade
+export compile = (src, filename) ->
+  src .= replace /@/g 'locals.'
 
-function jadels-to-jade
+  src = convert src
+  src .= replace /#{/g '{{'
+
+  try
+    fn = jade.compile src, {+pretty}
+  catch
+    say src
+    say "Jade Error compiling #filename : #e"
+  
+  fn = fn!
+  # clean a bit. Sadly no way to disable escaping
+  fn .= replace /&quot;/g '"'
+
+  wrap fn.replace /\{\{/g '#{'
+
+export convert = ->
   it -= /\r/g # fuck
   src = []
 
@@ -27,7 +44,7 @@ function jadels-to-jade
       that.0.length
     else 0
 
-    tag = line.trim!split(' ')0
+    [tag] = line.trim!split ' '
 
     # auto-close
     if indent-levels[*-1]?
@@ -78,7 +95,7 @@ function jadels-to-jade
 
   src
 
-jadels-to-jade.wrap = ->
+export wrap = ->
   """
     require! lang
     join = -> it.join ''

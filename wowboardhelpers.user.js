@@ -115,22 +115,6 @@
  *  Fix a bug when logged off
 */
 "use strict";
-var c$ = function (text){
-      if (Array.isArray(text)) {
-        return text.join(" ");
-      }
-      switch (text) {
-      case null:
-      case void 8:
-        return "";
-      case true:
-      case false:
-        return "\u0093" + text;
-      default:
-        return text;
-      }
-    }
-;
 (function (global) {
     function require(file) {
         if ({}.hasOwnProperty.call(require.cache, file))
