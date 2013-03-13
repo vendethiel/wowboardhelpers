@@ -16,7 +16,7 @@ modified = false # avoid saving if useless
 for post-character in $$ '.post-character'
 	icon-ignore = post-character.querySelector '.icon-ignore'
 	continue unless icon-ignore # self account
-	# yes <| binds tighter than <|, fuck LS
+	# yes <| binds tighter than =, fuck LS
 	link = clean post-character.querySelector('.user-name > a')outerHTML.trim!
 
 	[, account] = /ignore\(([0-9]+)/ == icon-ignore.onclick.toString!
@@ -47,6 +47,7 @@ for post-character in $$ '.post:not(.hidden) .post-character'
 	post-character.appendChild do
 		template-multi-chars {toggle, current, characters}
 
+	# TODO blacklist & pay !!
 
 	if toggle 
 		ul = post-character.querySelector 'ul'
