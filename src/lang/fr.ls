@@ -32,3 +32,4 @@ module.exports =
 	page-top: 'Haut de page'
 	page-bottom: 'Bas de page'
 	login: 'Connexion'
+	new-topic: 'Nouveau sujet'

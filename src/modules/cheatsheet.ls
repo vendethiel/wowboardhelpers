@@ -1,18 +1,20 @@
-return unless Object.keys cheatsheet .length
+{cheatsheet} = require 'bind-key'
+if Object.keys cheatsheet .length
+	possible-divs =
+		'.forum-info' # forum topics page
+		'.talkback form'
 
-possible-divs =
-	'.forum-info' # forum topics page
-	'.talkback form'
+	require! 'dom/$'
+	template-cheatsheet = require './templates/cheatsheet'
 
-require! 'dom/$ ./templates/cheatsheet'
-for sel in possible-divs when $ sel
-	that.appendChild <| do
-		cheatsheet {cheatsheet}
-			ul = ..querySelector 'ul'
-			ul.style.display = 'none'
+	for sel in possible-divs when $ sel
+		that.appendChild <| do
+			template-cheatsheet {cheatsheet}
+				ul = ..querySelector 'ul'
+				ul.style.display = 'none'
 
-			..querySelector '.toggler' .onclick = ->
-				ul.style.display = if ul.style.display is 'none'
-					''
-				else 'none'
-	break
+				..querySelector '.toggler' .onclick = ->
+					ul.style.display = if ul.style.display is 'none'
+						''
+					else 'none'
+		break

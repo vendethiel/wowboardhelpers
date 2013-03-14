@@ -6,11 +6,13 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 2.1.0
+// @version 3.0
 // ==/UserScript==
  * changelog
- * 2.1.0
+ * 3.0
  *  Switch to "JadeLS"
+ *  End CommonJS-everywhere conversion
+ *  Add a jump for new-topic unless banned
  * 2.0.6
  *  Do not remove class when MAR-ing
  * 2.0.5

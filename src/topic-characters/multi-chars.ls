@@ -47,7 +47,7 @@ for post-character in $$ '.post:not(.hidden) .post-character'
 	post-character.appendChild do
 		template-multi-chars {toggle, current, characters}
 
-	# TODO blacklist & pay !!
+	# TODO blacklist & pay !!	
 
 	if toggle 
 		ul = post-character.querySelector 'ul'

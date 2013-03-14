@@ -11,4 +11,4 @@
 			for key, val of @cheatsheet
 				li
 					b= key.toUpperCase!
-					: #{val}
+					| : #{val}

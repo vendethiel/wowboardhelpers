@@ -19,3 +19,4 @@ module.exports =
 	page-top: 'Go to top'
 	page-bottom: 'Go to bottom'
 	login: 'Login'
+	new-topic: 'New topic'

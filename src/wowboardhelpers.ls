@@ -20,4 +20,6 @@ if require 'forum'
 	require 'forum-topics'
 	require 'forum-layout/hide-mar'
 
+require 'modules/cheatsheet'
+
 console.timeEnd 'wowboardhelpers'

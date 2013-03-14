@@ -1,4 +1,3 @@
-exports.cheatsheet = cheatsheet = {}
 require! <[lang dom/$]>
 
 module.exports = bind-key = !(bind, lang-key, cb) ->
@@ -12,3 +11,5 @@ module.exports = bind-key = !(bind, lang-key, cb) ->
 		it.preventDefault!
 
 		cb!
+
+bind-key.cheatsheet = cheatsheet = {}
