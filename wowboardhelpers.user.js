@@ -218,10 +218,10 @@
                 var ref$, results$ = [];
                 for (key in ref$ = locals.cheatsheet) {
                     val = ref$[key];
-                    results$.push('<li><b>' + key.toUpperCase() + '</b>: ' + val);
+                    results$.push('<li><b>' + (key.toUpperCase() + ' : ' + val) + '</b></li>');
                 }
                 return results$;
-            }()) || '') + '\n      </li>\n    </ul>\n  </div>\n</div>';
+            }()) || '') + '\n    </ul>\n  </div>\n</div>';
             return x$.firstElementChild;
             return x$;
         };

@@ -1,4 +1,5 @@
 entab = -> "\t" * it
+blame = -> console.log it; process.exit!
 require! jade
 
 export compile = (src, filename) ->
@@ -49,9 +50,8 @@ export convert = ->
     # auto-close
     if indent-levels[*-1]?
       while indent < indent-levels[*-1]
-        indent-levels.pop!
         #        INDENT            close the """ and nullcheck
-        src.push entab(prev-indent) + '| """) or ""}'
+        src.push entab(indent-levels.pop! - 1) + '| """) or ""}'
         --extra-level # decrease debt
 
     if tag in tags
