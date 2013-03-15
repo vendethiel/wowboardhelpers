@@ -10,4 +10,5 @@
 		ul
 			for key, val of @cheatsheet
 				li
-					b= key.toUpperCase! + ' : ' + val
+					b= key.toUpperCase!
+					| : #{val}

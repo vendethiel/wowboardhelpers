@@ -8,6 +8,14 @@ export compile = (src, filename) ->
   src = convert src
   src .= replace /#{/g '{{'
 
+  # sometimes we need jade interp
+  # let's use %{} for that (only for the parser)
+  src .= replace /%{/g '#{'
+
+  # a(b=!{x}!)
+  src .= replace /!{/g '"{{'
+  src .= replace /}!/g '}"'
+
   try
     fn = jade.compile src, {+pretty}
   catch
@@ -15,6 +23,12 @@ export compile = (src, filename) ->
     say "Jade Error compiling #filename : #e"
   
   fn = fn!
+  
+  # used for tag interpolation (`#{tag} text`)
+  # WARNING : can not use ''
+  fn .= replace /__/g '#{'
+  fn .= replace /--/g '}'
+
   # clean a bit. Sadly no way to disable escaping
   fn .= replace /&quot;/g '"'
 
@@ -37,6 +51,10 @@ export convert = ->
   # so that we can 
   indent-levels = []
 
+  # keep tracks of real indent to insert
+  # (same as indent-levels minus extra-level)
+  real-indents = []
+
   var prev-indent
   for line in (it + "\n") / '\n'
     extra-level = indent-levels.length
@@ -48,11 +66,12 @@ export convert = ->
     [tag] = line.trim!split ' '
 
     # auto-close
-    if indent-levels[*-1]?
-      while indent < indent-levels[*-1]
-        #        INDENT            close the """ and nullcheck
-        src.push entab(indent-levels.pop! - 1) + '| """) or ""}'
-        --extra-level # decrease debt
+    pop = null
+    while indent < indent-levels[*-1]
+      indent-levels.pop!
+      #        INDENT            close the """ and nullcheck
+      src.push entab(real-indents.pop!) + '| """) or ""}'
+      --extra-level # decrease debt
 
     if tag in tags
       # insert the tag
@@ -66,6 +85,7 @@ export convert = ->
 
       # we're expecting an outdent
       indent-levels.push indent+1
+      real-indents.push indent - extra-level
     else if tag in chained-tags
       # answer to another tag
 
@@ -77,11 +97,17 @@ export convert = ->
 
       # we're expecting an outdent
       indent-levels.push indent+1
+      real-indents.push indent - extra-level
     else
       line .= slice extra-level
+      trimmed = line.trim!
 
-      if line.trim!charAt(0) is '='
+      if trimmed.charAt(0) is '='
         line = line.replace('=' '| #{') + '}'
+      else if trimmed.slice(0 2) is '#{'
+        # tag interpolation => #{tag} becomes should be #{"tag"}
+        line .= replace '#{' '%{"__'
+        line .= replace '}' '--"}'
       else if ~line.indexOf '= '
         # BAAH this is bad, it's gonna do bad things such as
         # a(foo= "bar")

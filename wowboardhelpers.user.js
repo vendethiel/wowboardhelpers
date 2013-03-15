@@ -214,11 +214,11 @@
         module.exports = function (locals) {
             var x$, key, val;
             x$ = document.createElement('div');
-            x$.innerHTML = '      \n<div id="cheatsheet-container">\n  <!-- that\'s meh but ...--><span class="clear"></span>\n  <div id="cheatsheet">\n    <!-- what\'s wrong with you blizz ?--><a class="toggler ui-button button1"><span><span>' + lang.cheatsheet + '</span></span></a>\n    <ul>' + (join(function () {
+            x$.innerHTML = '      \n<div id="cheatsheet-container">\n  <!} that\'s meh but ...}><span class="clear"></span>\n  <div id="cheatsheet">\n    <!} what\'s wrong with you blizz ?}><a class="toggler ui-button button1"><span><span>' + lang.cheatsheet + '</span></span></a>\n    <ul>' + (join(function () {
                 var ref$, results$ = [];
                 for (key in ref$ = locals.cheatsheet) {
                     val = ref$[key];
-                    results$.push('<li><b>' + (key.toUpperCase() + ' : ' + val) + '</b></li>');
+                    results$.push('<li><b>' + key.toUpperCase() + '</b>: ' + val + '</li>');
                 }
                 return results$;
             }()) || '') + '\n    </ul>\n  </div>\n</div>';
