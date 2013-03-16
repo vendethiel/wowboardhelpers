@@ -21,15 +21,15 @@ memes =
 	okay: 'http://cache.ohinternet.com/images/e/e6/Okay_guy.jpg'
 	no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
 
-require! 'dom/$'
+require! <[textarea dom/$]>
 template-memebox = require './templates/memebox'
+console.log template-memebox!
 
 if $ '.post.general'
 	that.removeChild that.children[*-1] #remove span.clear
 
 	add-meme = (url) ->
-		->
-			textarea.value += (if textarea.value then "\n" else "") + url
+		-> textarea.value += ["\n" if textarea.value] + url
 
 	append-meme = (name, url) ->
 		ul.appendChild <| do

@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 3.0
+// @version 3.1
 // ==/UserScript==
  * changelog
+ * 3.1
+ *  Perf improvements
  * 3.0
  *  Switch to "JadeLS"
  *  End CommonJS-everywhere conversion

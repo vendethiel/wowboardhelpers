@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 3.0
+// @version 3.1
 // ==/UserScript==
  * changelog
+ * 3.1
+ *  Perf improvements
  * 3.0
  *  Switch to "JadeLS"
  *  End CommonJS-everywhere conversion
@@ -211,10 +213,10 @@
         join = function (it) {
             return it.join('');
         };
-        module.exports = function (locals) {
-            var x$, key, val;
-            x$ = document.createElement('div');
-            x$.innerHTML = '      \n<div id="cheatsheet-container">\n  <!-- that\'s meh but ...--><span class="clear"></span>\n  <div id="cheatsheet">\n    <!-- what\'s wrong with you blizz ?--><a class="toggler ui-button button1"><span><span>' + lang.cheatsheet + '</span></span></a>\n    <ul>' + (join(function () {
+        module.exports = function (locals, wrap) {
+            var html, key, val, x$;
+            wrap == null && (wrap = true);
+            html = '   \n<div id="cheatsheet-container">\n  <!-- that\'s meh but ...--><span class="clear"></span>\n  <div id="cheatsheet">\n    <!-- what\'s wrong with you blizz ?--><a class="toggler ui-button button1"><span><span>' + lang.cheatsheet + '</span></span></a>\n    <ul>' + (join(function () {
                 var ref$, results$ = [];
                 for (key in ref$ = locals.cheatsheet) {
                     val = ref$[key];
@@ -222,6 +224,11 @@
                 }
                 return results$;
             }()) || '') + '\n    </ul>\n  </div>\n</div>';
+            if (!wrap) {
+                return html;
+            }
+            x$ = document.createElement('div');
+            x$.innerHTML = html;
             return x$.firstElementChild;
             return x$;
         };
@@ -629,10 +636,15 @@
         join = function (it) {
             return it.join('');
         };
-        module.exports = function (locals) {
-            var x$;
+        module.exports = function (locals, wrap) {
+            var html, x$;
+            wrap == null && (wrap = true);
+            html = '   ' + ((locals.hidden ? '<a class="last-read show-topic">\u2713</a>' : '<a class="last-read hide-topic">X</a>') || '');
+            if (!wrap) {
+                return html;
+            }
             x$ = document.createElement('div');
-            x$.innerHTML = '      ' + ((locals.hidden ? '<a class="last-read show-topic">\u2713</a>' : '<a class="last-read hide-topic">X</a>') || '');
+            x$.innerHTML = html;
             return x$.firstElementChild;
             return x$;
         };
@@ -649,16 +661,16 @@
         }
     });
     require.define('/forum-topics\\last-updated.ls', function (module, exports, __dirname, __filename, process) {
-        var $, $$, node, fetchSiblings, lang, simplifyTime, templateDefaultPagination, templateAuthor, templateTtLastUpdated, characters, res$, i$, len$, name, ref$, lastPostTh, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, hasUnread, post, children, div, a, td, lastPostTd, topicId, ref1$, pages, lastPost, lastPostLink, replies, author, postCount, postOnly, text, isCm, that, authorName, inlineText, simplifiedTime, state, replace$ = ''.replace, split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, join$ = [].join, slice$ = [].slice;
+        var $, $$, node, fetchSiblings, lang, simplifyTime, templateAuthor, templateTtLastUpdated, templateDefaultPagination, characters, res$, i$, len$, name, ref$, lastPostTh, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, hasUnread, post, children, div, a, td, lastPostTd, topicId, ref1$, pages, lastPost, lastPostLink, replies, author, postCount, postOnly, text, isCm, that, authorName, inlineText, simplifiedTime, state, replace$ = ''.replace, split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, join$ = [].join, slice$ = [].slice;
         $ = require('/dom\\$.ls');
         $$ = require('/dom\\$$.ls');
         node = require('/dom\\node.ls');
         fetchSiblings = require('/dom\\fetch-siblings.ls');
         lang = require('/lang\\index.ls');
         simplifyTime = require('/lang\\simplify-time.ls');
-        templateDefaultPagination = require('/forum-topics\\templates\\default-pagination.jadels');
         templateAuthor = require('/forum-topics\\templates\\author.jadels');
         templateTtLastUpdated = require('/forum-topics\\templates\\tt-last-updated.jadels');
+        templateDefaultPagination = require('/forum-topics\\templates\\default-pagination.jadels');
         characters = $$('.char-wrapper .name');
         if (characters.length) {
             res$ = [];
@@ -691,7 +703,7 @@
             ref1$ = fetchSiblings(post, { slice: 5 }), pages = ref1$.pages, lastPost = ref1$.lastPost, lastPostLink = lastPost.children[0], replies = ref1$.replies, author = ref1$.author;
             postCount = split$.call(lastPostLink.href, '#')[1];
             if (!pages.querySelector('ul')) {
-                pages.innerHTML = templateDefaultPagination({ href: a.href }).outerHTML;
+                pages.innerHTML = templateDefaultPagination({ href: a.href }, false);
             }
             postOnly = false;
             text = split$.call(div.querySelector('.tt_info').innerHTML, '\n');
@@ -784,8 +796,27 @@
                 name: it,
                 own: in$(it, characters),
                 cm: isCm
-            }).outerHTML;
+            }, false);
         }
+    });
+    require.define('/forum-topics\\templates\\default-pagination.jadels', function (module, exports, __dirname, __filename, process) {
+        var lang, join;
+        lang = require('/lang\\index.ls');
+        join = function (it) {
+            return it.join('');
+        };
+        module.exports = function (locals, wrap) {
+            var html, x$;
+            wrap == null && (wrap = true);
+            html = '   \n<ul class="ui-pagination">\n  <li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li>\n</ul>';
+            if (!wrap) {
+                return html;
+            }
+            x$ = document.createElement('div');
+            x$.innerHTML = html;
+            return x$.firstElementChild;
+            return x$;
+        };
     });
     require.define('/forum-topics\\templates\\tt-last-updated.jadels', function (module, exports, __dirname, __filename, process) {
         var lang, join;
@@ -793,10 +824,15 @@
         join = function (it) {
             return it.join('');
         };
-        module.exports = function (locals) {
-            var x$;
+        module.exports = function (locals, wrap) {
+            var html, x$;
+            wrap == null && (wrap = true);
+            html = '   \n<div class="tt-last-updated"><br/>' + locals.text + '</div>';
+            if (!wrap) {
+                return html;
+            }
             x$ = document.createElement('div');
-            x$.innerHTML = '      \n<div class="tt-last-updated"><br/>' + locals.text + '</div>';
+            x$.innerHTML = html;
             return x$.firstElementChild;
             return x$;
         };
@@ -807,28 +843,19 @@
         join = function (it) {
             return it.join('');
         };
-        module.exports = function (locals) {
-            var x$;
-            x$ = document.createElement('div');
-            x$.innerHTML = '    <span class="' + [
+        module.exports = function (locals, wrap) {
+            var html, x$;
+            wrap == null && (wrap = true);
+            html = ' <span class="' + [
                 'poster',
                 locals.own ? 'own-poster' : void 8,
                 locals.cm ? 'type-blizzard' : void 8
             ].join(' ') + '">\n' + locals.name + '\n' + ((locals.cm ? '<img src="/wow/static/images/layout/cms/icon_blizzard.gif" alt=""/>' : void 8) || '') + '</span>';
-            return x$.firstElementChild;
-            return x$;
-        };
-    });
-    require.define('/forum-topics\\templates\\default-pagination.jadels', function (module, exports, __dirname, __filename, process) {
-        var lang, join;
-        lang = require('/lang\\index.ls');
-        join = function (it) {
-            return it.join('');
-        };
-        module.exports = function (locals) {
-            var x$;
+            if (!wrap) {
+                return html;
+            }
             x$ = document.createElement('div');
-            x$.innerHTML = '      \n<ul class="ui-pagination">\n  <li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li>\n</ul>';
+            x$.innerHTML = html;
             return x$.firstElementChild;
             return x$;
         };
@@ -991,7 +1018,8 @@
         });
     });
     require.define('/reply\\preview.ls', function (module, exports, __dirname, __filename, process) {
-        var $, postPreview, old;
+        var w, $, postPreview, old;
+        w = require('/w.ls');
         $ = require('/dom\\$.ls');
         postPreview = $('#post-preview');
         old = w.BML.preview.bind(w.BML);
@@ -1003,7 +1031,7 @@
         };
     });
     require.define('/reply\\memebox.ls', function (module, exports, __dirname, __filename, process) {
-        var memes, $, templateMemebox, that, ref$, addMeme, appendMeme, memebox, ul;
+        var memes, textarea, $, templateMemebox, that, ref$, addMeme, appendMeme, memebox, ul;
         memes = {
             challengeaccepted: 'http://sambacentral.files.wordpress.com/2012/11/challenge-accepted.jpg',
             foreveralone: 'http://i1.kym-cdn.com/entries/icons/original/000/003/619/Untitled-1.jpg',
@@ -1027,13 +1055,15 @@
             okay: 'http://cache.ohinternet.com/images/e/e6/Okay_guy.jpg',
             no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
         };
+        textarea = require('/textarea.ls');
         $ = require('/dom\\$.ls');
         templateMemebox = require('/reply\\templates\\memebox.jadels');
+        console.log(templateMemebox());
         if (that = $('.post.general')) {
             that.removeChild((ref$ = that.children)[ref$.length - 1]);
             addMeme = function (url) {
                 return function () {
-                    return textarea.value += (textarea.value ? '\n' : '') + url;
+                    return textarea.value += [textarea.value ? '\n' : void 8] + url;
                 };
             };
             appendMeme = function (name, url) {
@@ -1086,26 +1116,18 @@
         join = function (it) {
             return it.join('');
         };
-        module.exports = function (locals) {
-            var x$;
+        module.exports = function (locals, wrap) {
+            var html, x$;
+            wrap == null && (wrap = true);
+            html = '   \n<div id="memebox">\n  <h1>\tMemeBox</h1><br/>\n  <input id="meme-search" placeholder="meme" autocomplete="off" size="15"/>\n  <ul id="memes"></ul>\n</div>';
+            if (!wrap) {
+                return html;
+            }
             x$ = document.createElement('div');
-            x$.innerHTML = '      \n<div id="memebox">\n  <h1>\tMemeBox</h1><br/>\n  <input id="meme-search" placeholder="meme" autocomplete="off" size="15"/>\n  <ul id="memes"></ul>\n</div>';
+            x$.innerHTML = html;
             return x$.firstElementChild;
             return x$;
         };
-    });
-    require.define('/reply\\clear-textarea.ls', function (module, exports, __dirname, __filename, process) {
-        var $, templateClearTextarea, clearer, that;
-        $ = require('/dom\\$.ls');
-        templateClearTextarea = './templates/clear-textarea';
-        clearer = templateClearTextarea();
-        if (that = $('.editor1')) {
-            that.insertBefore(clearer, textarea);
-            clearer.onclick = function () {
-                textarea.value = '';
-                return localStorage.removeItem('post_' + topic.dataset.id);
-            };
-        }
     });
     require.define('/textarea.ls', function (module, exports, __dirname, __filename, process) {
         var topic, $;
@@ -1116,6 +1138,39 @@
     require.define('/topic.ls', function (module, exports, __dirname, __filename, process) {
         var that, x$, ref$, replace$ = ''.replace, split$ = ''.split;
         module.exports = (that = document.getElementById('thread')) ? (x$ = that.dataset, x$.url = replace$.call(split$.call(document.location, '?')[0], /#[0-9]+/, ''), x$.id = (ref$ = split$.call(x$.url, '/'))[ref$.length - 1], x$.page = ((ref$ = /\?page=([0-9]+)/.exec(document.location)) != null ? ref$[1] : void 8) || 1, that) : null;
+    });
+    require.define('/reply\\clear-textarea.ls', function (module, exports, __dirname, __filename, process) {
+        var $, textarea, templateClearTextarea, clearer, that;
+        $ = require('/dom\\$.ls');
+        textarea = require('/textarea.ls');
+        templateClearTextarea = require('/reply\\templates\\clear-textarea.jadels');
+        clearer = templateClearTextarea();
+        if (that = $('.editor1')) {
+            that.insertBefore(clearer, textarea);
+            clearer.onclick = function () {
+                textarea.value = '';
+                return localStorage.removeItem('post_' + topic.dataset.id);
+            };
+        }
+    });
+    require.define('/reply\\templates\\clear-textarea.jadels', function (module, exports, __dirname, __filename, process) {
+        var lang, join;
+        lang = require('/lang\\index.ls');
+        join = function (it) {
+            return it.join('');
+        };
+        module.exports = function (locals, wrap) {
+            var html, x$;
+            wrap == null && (wrap = true);
+            html = '   \n<div class="clear-textarea">X</div>';
+            if (!wrap) {
+                return html;
+            }
+            x$ = document.createElement('div');
+            x$.innerHTML = html;
+            return x$.firstElementChild;
+            return x$;
+        };
     });
     require.define('/topic-posts\\index.ls', function (module, exports, __dirname, __filename, process) {
         var jumps, autolink, updateCount;
@@ -1324,10 +1379,10 @@
         join = function (it) {
             return it.join('');
         };
-        module.exports = function (locals) {
-            var x$, character;
-            x$ = document.createElement('div');
-            x$.innerHTML = '      \n<div id="account-characters">\n  <h1 class="toggle">\n    ' + lang('otherCharacters') + '\n    ' + ((locals.toggle ? '<span class="toggler">' + ' [+]' + '</span>' : void 8) || '') + '\n  </h1><br/>\n  <ul>' + (join(function () {
+        module.exports = function (locals, wrap) {
+            var html, character, x$;
+            wrap == null && (wrap = true);
+            html = '   \n<div id="account-characters">\n  <h1 class="toggle">\n    ' + lang('otherCharacters') + '\n    ' + ((locals.toggle ? '<span class="toggler">' + ' [+]' + '</span>' : void 8) || '') + '\n  </h1><br/>\n  <ul>' + (join(function () {
                 var i$, ref$, len$, results$ = [];
                 for (i$ = 0, len$ = (ref$ = locals.characters).length; i$ < len$; ++i$) {
                     character = ref$[i$];
@@ -1337,6 +1392,11 @@
                 }
                 return results$;
             }()) || '') + '\n  </ul>\n</div>';
+            if (!wrap) {
+                return html;
+            }
+            x$ = document.createElement('div');
+            x$.innerHTML = html;
             return x$.firstElementChild;
             return x$;
         };
@@ -1374,10 +1434,15 @@
         join = function (it) {
             return it.join('');
         };
-        module.exports = function (locals) {
-            var x$;
+        module.exports = function (locals, wrap) {
+            var html, x$;
+            wrap == null && (wrap = true);
+            html = '<span class="extra-links"><a href="' + locals.link + 'achievement" class="link-first extra-link">HF</a><a href="' + locals.link + 'statistic#21:152" class="link-first extra-link">PvP</a></span>';
+            if (!wrap) {
+                return html;
+            }
             x$ = document.createElement('div');
-            x$.innerHTML = '<span class="extra-links"><a href="' + locals.link + 'achievement" class="link-first extra-link">HF</a><a href="' + locals.link + 'statistic#21:152" class="link-first extra-link">PvP</a></span>';
+            x$.innerHTML = html;
             return x$.firstElementChild;
             return x$;
         };

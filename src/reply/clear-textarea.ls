@@ -1,5 +1,5 @@
-require! 'dom/$'
-template-clear-textarea = './templates/clear-textarea'
+require! <[dom/$ textarea]>
+template-clear-textarea = require './templates/clear-textarea'
 
 clearer = template-clear-textarea!
 

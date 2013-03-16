@@ -1,7 +1,7 @@
 require! <[dom/$ dom/$$ dom/node dom/fetch-siblings lang lang/simplify-time]>
-template-default-pagination = require './templates/default-pagination'
 template-author = require './templates/author'
 template-tt-last-updated = require './templates/tt-last-updated'
+template-default-pagination = require './templates/default-pagination'
 
 #get account's character names
 characters = $$ '.char-wrapper .name'
@@ -41,7 +41,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 	post-count = (last-post-link.href / '#')1
 
 	unless pages.querySelector 'ul' #no pages
-		pages.innerHTML = template-default-pagination {a.href} .outerHTML
+		pages.innerHTML = template-default-pagination {a.href} false
 
 
 	post-only = false
@@ -58,7 +58,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 		is-cm = true
 
 	text .= replace //(#{author-name = last-post-link.innerHTML.trim!})// ->
-		template-author(name: it, own: it in characters, cm: is-cm)outerHTML
+		template-author {name: it, own: it in characters, cm: is-cm} false
 
 	
 	inline-text = text

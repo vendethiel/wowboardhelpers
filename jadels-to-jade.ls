@@ -121,11 +121,14 @@ export wrap = ->
   """
     require! lang
     join = -> it.join ''
-    module.exports = (locals) ->
+    module.exports = (locals, wrap = true) ->
+      html = \"""
+       #it
+      \"""
+      return html unless wrap
+
       document.createElement 'div'
-        ..innerHTML = \"""
-          #it
-        \"""
+        ..innerHTML = html
 
         return ..firstElementChild
   """

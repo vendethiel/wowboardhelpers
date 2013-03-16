@@ -1,4 +1,4 @@
-require! 'dom/$'
+require! <[w dom/$]>
 post-preview = $ '#post-preview'
 
 # let's replace BML preview to add
