@@ -12,10 +12,6 @@ export compile = (src, filename) ->
   # let's use %{} for that (only for the parser)
   src .= replace /%{/g '#{'
 
-  # a(b=!{x}!)
-  src .= replace /!{/g '"{{'
-  src .= replace /}!/g '}"'
-
   try
     fn = jade.compile src, {+pretty}
   catch
@@ -26,8 +22,8 @@ export compile = (src, filename) ->
   
   # used for tag interpolation (`#{tag} text`)
   # WARNING : can not use ''
-  fn .= replace /__/g '#{'
-  fn .= replace /--/g '}'
+  fn .= replace /__INTER__/g '#{'
+  fn .= replace /__OUTER__/g '}'
 
   # clean a bit. Sadly no way to disable escaping
   fn .= replace /&quot;/g '"'
@@ -106,8 +102,8 @@ export convert = ->
         line = line.replace('=' '| #{') + '}'
       else if trimmed.slice(0 2) is '#{'
         # tag interpolation => #{tag} becomes should be #{"tag"}
-        line .= replace '#{' '%{"__'
-        line .= replace '}' '--"}'
+        line .= replace '#{' '%{"__INTER__'
+        line .= replace '}' '__OUTER__"}'
       else if ~line.indexOf '= '
         # BAAH this is bad, it's gonna do bad things such as
         # a(foo= "bar")

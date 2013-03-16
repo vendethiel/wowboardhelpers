@@ -37,7 +37,6 @@ task \build "build userscript" ->
 
     cjs-time-base = Date.now!
     ls-time = 0
-    hamlc-time = 0
     jade-time = 0
     esprima-time = 0
 
@@ -73,7 +72,11 @@ task \build "build userscript" ->
       handlers:
         '.jadels': (it, filename) ->
           it .= toString!
+
+          c = Date.now!
           src = jadels-to-jade.compile(it, filename)
+          jade-time += Date.now! - c
+
           src = ls-parse src, filename
           esprima-parse src, filename
 
@@ -82,8 +85,9 @@ task \build "build userscript" ->
           src = ls-parse it, filename
           esprima-parse src, filename
 
-    say "cjsify : #{Date.now! - cjs-time-base - ls-time - hamlc-time - esprima-time}ms"
+    say "cjsify : #{Date.now! - cjs-time-base - ls-time - esprima-time}ms"
     say "ls     : #{ls-time}ms"
+    say "jadeLS : #{jade-time}ms"
     say "esprima: #{esprima-time}ms"
 
     console.time "AST->JS"
