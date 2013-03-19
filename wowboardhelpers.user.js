@@ -211,16 +211,20 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            return it.join('');
+            if (it) {
+                return it.join('');
+            } else {
+                return '';
+            }
         };
         module.exports = function (locals, wrap) {
             var html, key, val, x$;
             wrap == null && (wrap = true);
-            html = '   \n<div id="cheatsheet-container">\n  <!-- that\'s meh but ...--><span class="clear"></span>\n  <div id="cheatsheet">\n    <!-- what\'s wrong with you blizz ?--><a class="toggler ui-button button1"><span><span>' + lang.cheatsheet + '</span></span></a>\n    <ul>' + (join(function () {
+            html = '   \n<div id="cheatsheet-container">\n  <!-- that\'s meh but ...--><span class="clear"></span>\n  <div id="cheatsheet">\n    <!-- what\'s wrong with you blizz ?--><a class="toggler ui-button button1"><span><span>' + (lang.cheatsheet || '') + '</span></span></a>\n    <ul>' + (join(function () {
                 var ref$, results$ = [];
                 for (key in ref$ = locals.cheatsheet) {
                     val = ref$[key];
-                    results$.push('<li><b>' + key.toUpperCase() + '</b>: ' + val + '</li>');
+                    results$.push('<li><b>' + (key.toUpperCase() || '') + '</b>: ' + val + '</li>');
                 }
                 return results$;
             }()) || '') + '\n    </ul>\n  </div>\n</div>';
@@ -634,12 +638,16 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            return it.join('');
+            if (it) {
+                return it.join('');
+            } else {
+                return '';
+            }
         };
         module.exports = function (locals, wrap) {
             var html, x$;
             wrap == null && (wrap = true);
-            html = '   ' + ((locals.hidden ? '<a class="last-read show-topic">\u2713</a>' : '<a class="last-read hide-topic">X</a>') || '');
+            html = '' + ((locals.hidden ? '<a class="last-read show-topic">\u2713</a>' : '<a class="last-read hide-topic">X</a>') || '');
             if (!wrap) {
                 return html;
             }
@@ -803,7 +811,11 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            return it.join('');
+            if (it) {
+                return it.join('');
+            } else {
+                return '';
+            }
         };
         module.exports = function (locals, wrap) {
             var html, x$;
@@ -822,12 +834,16 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            return it.join('');
+            if (it) {
+                return it.join('');
+            } else {
+                return '';
+            }
         };
         module.exports = function (locals, wrap) {
             var html, x$;
             wrap == null && (wrap = true);
-            html = '   \n<div class="tt-last-updated"><br/>' + locals.text + '</div>';
+            html = '   \n<div class="tt-last-updated"><br/>' + (locals.text || '') + '</div>';
             if (!wrap) {
                 return html;
             }
@@ -841,7 +857,11 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            return it.join('');
+            if (it) {
+                return it.join('');
+            } else {
+                return '';
+            }
         };
         module.exports = function (locals, wrap) {
             var html, x$;
@@ -850,7 +870,7 @@
                 'poster',
                 locals.own ? 'own-poster' : void 8,
                 locals.cm ? 'type-blizzard' : void 8
-            ].join(' ') + '">\n' + locals.name + '\n' + ((locals.cm ? '<img src="/wow/static/images/layout/cms/icon_blizzard.gif" alt=""/>' : void 8) || '') + '</span>';
+            ].join(' ') + '">\n' + (locals.name || '') + '\n' + ((locals.cm ? '<img src="/wow/static/images/layout/cms/icon_blizzard.gif" alt=""/>' : void 8) || '') + '</span>';
             if (!wrap) {
                 return html;
             }
@@ -1114,7 +1134,11 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            return it.join('');
+            if (it) {
+                return it.join('');
+            } else {
+                return '';
+            }
         };
         module.exports = function (locals, wrap) {
             var html, x$;
@@ -1157,7 +1181,11 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            return it.join('');
+            if (it) {
+                return it.join('');
+            } else {
+                return '';
+            }
         };
         module.exports = function (locals, wrap) {
             var html, x$;
@@ -1377,17 +1405,21 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            return it.join('');
+            if (it) {
+                return it.join('');
+            } else {
+                return '';
+            }
         };
         module.exports = function (locals, wrap) {
             var html, character, x$;
             wrap == null && (wrap = true);
-            html = '   \n<div id="account-characters">\n  <h1 class="toggle">\n    ' + lang('otherCharacters') + '\n    ' + ((locals.toggle ? '<span class="toggler">' + ' [+]' + '</span>' : void 8) || '') + '\n  </h1><br/>\n  <ul>' + (join(function () {
+            html = '   \n<div id="account-characters">\n  <h1 class="toggle">\n    ' + (lang('otherCharacters') || '') + '\n    ' + ((locals.toggle ? '<span class="toggler">' + (' [+]' || '') + '</span>' : void 8) || '') + '\n  </h1><br/>\n  <ul>' + (join(function () {
                 var i$, ref$, len$, results$ = [];
                 for (i$ = 0, len$ = (ref$ = locals.characters).length; i$ < len$; ++i$) {
                     character = ref$[i$];
                     if (character !== locals.current) {
-                        results$.push('<li style="' + [locals.toggle ? 'display: none' : void 8] + '">' + character + '</li>');
+                        results$.push('<li style="' + [locals.toggle ? 'display: none' : void 8] + '">' + (character || '') + '</li>');
                     }
                 }
                 return results$;
@@ -1432,7 +1464,11 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            return it.join('');
+            if (it) {
+                return it.join('');
+            } else {
+                return '';
+            }
         };
         module.exports = function (locals, wrap) {
             var html, x$;

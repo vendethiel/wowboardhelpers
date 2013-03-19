@@ -59,7 +59,7 @@ task \build "build userscript" ->
         src = LiveScript.compile it, {+bare, filename}
       catch {message}
         say it
-        say "LS error on #filename : #message"
+        blame "LS error on #filename : #message"
 
       ls-time += Date.now! - c
 

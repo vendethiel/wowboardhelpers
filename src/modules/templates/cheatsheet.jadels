@@ -4,8 +4,7 @@
 	#cheatsheet
 		// what's wrong with you blizz ?
 		a.toggler.ui-button.button1
-			span
-				span= lang.cheatsheet
+			span: span= lang.cheatsheet
 
 		ul
 			for key, val of @cheatsheet
