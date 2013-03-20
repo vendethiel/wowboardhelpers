@@ -1,6 +1,6 @@
 entab = -> \\t * it
 blame = -> console.log it; process.exit!
-jade = require \jade
+require! jade
 
 export compile = (src, filename) ->
   src .= replace /@/g \locals.
@@ -141,7 +141,7 @@ export convert = ->
 export wrap = ->
   """
     require! lang
-    join = -> if it then it.join '' else ''
+    join = -> it?join '' or ''
     module.exports = (locals, wrap = true) ->
       html = \"""
        #it

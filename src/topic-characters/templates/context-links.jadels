@@ -1,3 +1,4 @@
 span.extra-links
-	a.link-first.extra-link(href="#{@link}achievement") HF
-	a.link-first.extra-link(href="#{@link}statistic#21:152") PvP
+	- links = {HF: 'achievement', PvP: 'statistic#21:152'}
+	- for link, name in links
+		a.link-first.extra-link(href="#{@link}" + link)== name

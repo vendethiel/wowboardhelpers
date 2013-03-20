@@ -211,11 +211,7 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            if (it) {
-                return it.join('');
-            } else {
-                return '';
-            }
+            return (it != null ? it.join('') : void 8) || '';
         };
         module.exports = function (locals, wrap) {
             var html, key, val, x$;
@@ -638,11 +634,7 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            if (it) {
-                return it.join('');
-            } else {
-                return '';
-            }
+            return (it != null ? it.join('') : void 8) || '';
         };
         module.exports = function (locals, wrap) {
             var html, x$;
@@ -811,11 +803,7 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            if (it) {
-                return it.join('');
-            } else {
-                return '';
-            }
+            return (it != null ? it.join('') : void 8) || '';
         };
         module.exports = function (locals, wrap) {
             var html, x$;
@@ -834,11 +822,7 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            if (it) {
-                return it.join('');
-            } else {
-                return '';
-            }
+            return (it != null ? it.join('') : void 8) || '';
         };
         module.exports = function (locals, wrap) {
             var html, x$;
@@ -857,11 +841,7 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            if (it) {
-                return it.join('');
-            } else {
-                return '';
-            }
+            return (it != null ? it.join('') : void 8) || '';
         };
         module.exports = function (locals, wrap) {
             var html, x$;
@@ -1134,16 +1114,12 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            if (it) {
-                return it.join('');
-            } else {
-                return '';
-            }
+            return (it != null ? it.join('') : void 8) || '';
         };
         module.exports = function (locals, wrap) {
             var html, x$;
             wrap == null && (wrap = true);
-            html = '   \n<div id="memebox">\n  <h1>\tMemeBox</h1><br/>\n  <input id="meme-search" placeholder="meme" autocomplete="off" size="15"/>\n  <ul id="memes"></ul>\n</div>';
+            html = '   \n<div id="memebox">\n  <h1>MemeBox</h1><br/>\n  <input id="meme-search" placeholder="meme" autocomplete="off" size="15"/>\n  <ul id="memes"></ul>\n</div>';
             if (!wrap) {
                 return html;
             }
@@ -1181,11 +1157,7 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            if (it) {
-                return it.join('');
-            } else {
-                return '';
-            }
+            return (it != null ? it.join('') : void 8) || '';
         };
         module.exports = function (locals, wrap) {
             var html, x$;
@@ -1405,11 +1377,7 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            if (it) {
-                return it.join('');
-            } else {
-                return '';
-            }
+            return (it != null ? it.join('') : void 8) || '';
         };
         module.exports = function (locals, wrap) {
             var html, character, x$;
@@ -1464,11 +1432,7 @@
         var lang, join;
         lang = require('/lang\\index.ls');
         join = function (it) {
-            if (it) {
-                return it.join('');
-            } else {
-                return '';
-            }
+            return (it != null ? it.join('') : void 8) || '';
         };
         module.exports = function (locals, wrap) {
             var html, x$;
