@@ -97,7 +97,7 @@ export convert = ->
     [tag] = line.trim!split ' '
 
     # auto-close
-    while indent < indent-levels[*-1]
+    while indent <= indent-levels[*-1]
       indent-levels.pop!
       #        INDENT            close the """ and nullcheck
       src.push entab(real-indents.pop!) + '| """) or ""}'
@@ -118,7 +118,7 @@ export convert = ->
       line = tabs + '| #{' + filter + '(' + code + ' then """'
 
       # we're expecting an outdent
-      indent-levels.push indent + 1
+      indent-levels.push indent
       real-indents.push indent - extra-level
     else if tag in chained-tags
       # answer to another tag
@@ -126,7 +126,7 @@ export convert = ->
       line = tabs + '| """ ' + line.trim! + ' then """'
 
       # we're expecting an outdent
-      indent-levels.push indent + 1
+      indent-levels.push indent
       real-indents.push indent - extra-level
     else
       line = interp line, extra-level
