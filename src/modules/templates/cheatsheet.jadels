@@ -1,3 +1,5 @@
+~ require! lang
+
 #cheatsheet-container
 	// that's meh but ...
 	span.clear

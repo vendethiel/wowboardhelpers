@@ -1,4 +1,4 @@
-require! <[fs LiveScript stylus esprima glob]>
+require! <[fs LiveScript nephrite stylus esprima glob]>
 
 {cjsify} = require 'commonjs-everywhere'
 
@@ -24,8 +24,6 @@ compile-styles = ->
         source.push slurp file
 
   nib source * '\n' .render!
-
-nephrite = require \nephrite
 
 nib = -> stylus it .use require(\nib)!
 

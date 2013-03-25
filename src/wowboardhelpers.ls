@@ -1,6 +1,8 @@
 console.log 'Ahhhh…greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !'
 console.time 'wowboardhelpers'
 
+require 'topic-characters/templates/multi-chars'
+
 require 'board/content-class'
 require 'board/css'
 

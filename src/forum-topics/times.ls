@@ -23,8 +23,6 @@ for post-title in post-titles
 		console.log count, lang.singularize unit if total isnt total
 
 	date = new Date timestamp - total
-	#post-title.innerHTML .= replace '>)' ">, #{date.getHours!}:#{date.getMinutes!})"
-	#post-title.querySelector '.simplified-time' .datetime = date.toString!
 	post-title.dataset.timestamp = date.getTime!
 
 timeout = 10 * units.second #1 minute

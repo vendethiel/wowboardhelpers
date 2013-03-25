@@ -168,6 +168,7 @@
     require.define('/wowboardhelpers.ls', function (module, exports, __dirname, __filename, process) {
         console.log('Ahhhh\u2026greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !');
         console.time('wowboardhelpers');
+        require('/topic-characters\\templates\\multi-chars.jadels');
         require('/board\\content-class.ls');
         require('/board\\css.ls');
         require('/jumps\\index.ls');
@@ -188,7 +189,7 @@
         console.timeEnd('wowboardhelpers');
     });
     require.define('/modules\\cheatsheet.ls', function (module, exports, __dirname, __filename, process) {
-        var cheatsheet, possibleDivs, $, templateCheatsheet, i$, len$, sel, that, x$, ul;
+        var cheatsheet, possibleDivs, $, el, templateCheatsheet, i$, len$, sel, that, x$, ul;
         cheatsheet = require('/bind-key\\index.ls').cheatsheet;
         if (Object.keys(cheatsheet).length) {
             possibleDivs = [
@@ -196,11 +197,12 @@
                 '.talkback form'
             ];
             $ = require('/dom\\$.ls');
+            el = require('/dom\\el.ls');
             templateCheatsheet = require('/modules\\templates\\cheatsheet.jadels');
             for (i$ = 0, len$ = possibleDivs.length; i$ < len$; ++i$) {
                 sel = possibleDivs[i$];
                 if (that = $(sel)) {
-                    that.appendChild((x$ = templateCheatsheet({ cheatsheet: cheatsheet }), ul = x$.querySelector('ul'), ul.style.display = 'none', x$.querySelector('.toggler').onclick = fn$, x$));
+                    that.appendChild((x$ = el(templateCheatsheet({ cheatsheet: cheatsheet })), ul = x$.querySelector('ul'), ul.style.display = 'none', x$.querySelector('.toggler').onclick = fn$, x$));
                     break;
                 }
             }
@@ -210,7 +212,8 @@
         }
     });
     require.define('/modules\\templates\\cheatsheet.jadels', function (module, exports, __dirname, __filename, process) {
-        var join;
+        var lang, join;
+        lang = require('/lang\\index.ls');
         join = function (it) {
             if (it) {
                 return it.join('');
@@ -220,40 +223,15 @@
         };
         module.exports = function (locals, extra) {
             var key, val;
-            return '    \n<div id="cheatsheet-container">\n  <!-- that\'s meh but ...--><span class="clear"></span>\n  <div id="cheatsheet">\n    <!-- what\'s wrong with you blizz ?--><a class="toggler ui-button button1"><span><span>' + (lang.cheatsheet || '') + '</span></span></a>\n    <ul></ul>\n  </div>\n</div>\n<0>' + (join(function () {
+            return '    \n<div id="cheatsheet-container">\n  <!-- that\'s meh but ...--><span class="clear"></span>\n  <div id="cheatsheet">\n    <!-- what\'s wrong with you blizz ?--><a class="toggler ui-button button1"><span><span>' + (lang.cheatsheet || '') + '</span></span></a>\n    <ul>' + (join(function () {
                 var ref$, results$ = [];
                 for (key in ref$ = locals.cheatsheet) {
                     val = ref$[key];
-                    results$.push('  <li><b>' + (key.toUpperCase() || '') + '</b>: ' + val + '</li>\n</0>\n<0>');
+                    results$.push('<li><b>' + (key.toUpperCase() || '') + '</b>: ' + val + '</li>');
                 }
                 return results$;
-            }()) || '') + '</0>';
+            }()) || '') + '\n    </ul>\n  </div>\n</div>';
         };
-    });
-    require.define('/dom\\$.ls', function (module, exports, __dirname, __filename, process) {
-        module.exports = function (it) {
-            return document.querySelector(it);
-        };
-    });
-    require.define('/bind-key\\index.ls', function (module, exports, __dirname, __filename, process) {
-        var lang, $, bindKey, cheatsheet;
-        lang = require('/lang\\index.ls');
-        $ = require('/dom\\$.ls');
-        module.exports = bindKey = function (bind, langKey, cb) {
-            cheatsheet[bind] = lang(langKey);
-            bind = bind.toUpperCase().charCodeAt();
-            document.addEventListener('keydown', function (it) {
-                if (bind !== it.keyCode) {
-                    return;
-                }
-                if (it.target !== $('html')) {
-                    return;
-                }
-                it.preventDefault();
-                cb();
-            });
-        };
-        bindKey.cheatsheet = cheatsheet = {};
     });
     require.define('/lang\\index.ls', function (module, exports, __dirname, __filename, process) {
         var l, langs, toCamelCase, lang, split$ = ''.split;
@@ -351,6 +329,40 @@
             login: 'Connexion',
             newTopic: 'Nouveau sujet'
         };
+    });
+    require.define('/dom\\el.ls', function (module, exports, __dirname, __filename, process) {
+        module.exports = function (it) {
+            var x$;
+            x$ = document.createElement('div');
+            x$.innerHTML = it;
+            return x$.firstElementChild;
+            return x$;
+        };
+    });
+    require.define('/dom\\$.ls', function (module, exports, __dirname, __filename, process) {
+        module.exports = function (it) {
+            return document.querySelector(it);
+        };
+    });
+    require.define('/bind-key\\index.ls', function (module, exports, __dirname, __filename, process) {
+        var lang, $, bindKey, cheatsheet;
+        lang = require('/lang\\index.ls');
+        $ = require('/dom\\$.ls');
+        module.exports = bindKey = function (bind, langKey, cb) {
+            cheatsheet[bind] = lang(langKey);
+            bind = bind.toUpperCase().charCodeAt();
+            document.addEventListener('keydown', function (it) {
+                if (bind !== it.keyCode) {
+                    return;
+                }
+                if (it.target !== $('html')) {
+                    return;
+                }
+                it.preventDefault();
+                cb();
+            });
+        };
+        bindKey.cheatsheet = cheatsheet = {};
     });
     require.define('/forum-layout\\hide-mar.ls', function (module, exports, __dirname, __filename, process) {
         var $;
@@ -638,16 +650,7 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '    \n<0>' + ((locals.hidden ? '</0><a class="last-read show-topic">\u2713</a>\n<0>' : '</0><a class="last-read hide-topic">X</a>\n<0>') || '') + '</0>';
-        };
-    });
-    require.define('/dom\\el.ls', function (module, exports, __dirname, __filename, process) {
-        module.exports = function (it) {
-            var x$;
-            x$ = document.createElement('div');
-            x$.innerHTML = it;
-            return x$.firstElementChild;
-            return x$;
+            return '' + ((locals.hidden ? '<a class="last-read show-topic">\u2713</a>' : '<a class="last-read hide-topic">X</a>') || '');
         };
     });
     require.define('/forum-topics\\move-redirects.ls', function (module, exports, __dirname, __filename, process) {
@@ -794,11 +797,11 @@
             return false;
         }
         function fn$(it) {
-            return el(templateAuthor({
+            return templateAuthor({
                 name: it,
                 own: in$(it, characters),
                 cm: isCm
-            }, false));
+            });
         }
     });
     require.define('/forum-topics\\templates\\default-pagination.jadels', function (module, exports, __dirname, __filename, process) {
@@ -837,11 +840,11 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '    <span class="' + [
+            return '  <span class="' + [
                 'poster',
                 locals.own ? 'own-poster' : void 8,
                 locals.cm ? 'type-blizzard' : void 8
-            ].join(' ') + '">' + (locals.name || '') + '</span>\n<0>' + ((locals.cm ? '<img src="/wow/static/images/layout/cms/icon_blizzard.gif" alt=""/></0>\n<0>' : void 8) || '') + '</0>';
+            ].join(' ') + '">\n' + (locals.name || '') + '\n' + ((locals.cm ? '<img src="/wow/static/images/layout/cms/icon_blizzard.gif" alt=""/>' : void 8) || '') + '</span>';
         };
     });
     require.define('/lang\\simplify-time.ls', function (module, exports, __dirname, __filename, process) {
@@ -1358,16 +1361,16 @@
         };
         module.exports = function (locals, extra) {
             var character;
-            return '    \n<div id="account-characters">\n  <h1 class="toggle">' + (lang('otherCharacters') || '') + '</h1>\n</div>\n<0>' + ((locals.toggle ? '<span class="toggler">' + (' [+]' || '') + '</span></0>\n<0>' : void 8) || '') + '<br/>\n  <ul></ul>\n</0>\n<0>' + (join(function () {
+            return '    \n<div id="account-characters">\n  <h1 class="toggle">\n    ' + (lang('otherCharacters') || '') + '\n    ' + ((locals.toggle ? '<span class="toggler">' + (' [+]' || '') + '</span>' : void 8) || '') + '\n  </h1><br/>\n  <ul>' + (join(function () {
                 var i$, ref$, len$, results$ = [];
                 for (i$ = 0, len$ = (ref$ = locals.characters).length; i$ < len$; ++i$) {
                     character = ref$[i$];
                     if (character !== locals.current) {
-                        results$.push('  <li style="' + [locals.toggle ? 'display: none' : void 8] + '">' + (character || '') + '</li>\n</0>\n<0>');
+                        results$.push('<li style="' + [locals.toggle ? 'display: none' : void 8] + '">' + (character || '') + '</li>');
                     }
                 }
                 return results$;
-            }()) || '') + '</0>';
+            }()) || '') + '\n  </ul>\n</div>';
         };
     });
     require.define('/topic-characters\\improve-topic.ls', function (module, exports, __dirname, __filename, process) {

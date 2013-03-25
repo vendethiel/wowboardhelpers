@@ -4,12 +4,12 @@ if Object.keys cheatsheet .length
 		'.forum-info' # forum topics page
 		'.talkback form'
 
-	require! 'dom/$'
+	require! <[dom/$ dom/el]>
 	template-cheatsheet = require './templates/cheatsheet'
 
 	for sel in possible-divs when $ sel
 		that.appendChild <| do
-			template-cheatsheet {cheatsheet}
+			el template-cheatsheet {cheatsheet}
 				ul = ..querySelector 'ul'
 				ul.style.display = 'none'
 
