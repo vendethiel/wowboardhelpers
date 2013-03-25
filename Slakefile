@@ -1,4 +1,4 @@
-require! <[fs LiveScript stylus jade esprima glob]>
+require! <[fs LiveScript stylus esprima glob]>
 
 {cjsify} = require 'commonjs-everywhere'
 
@@ -25,7 +25,7 @@ compile-styles = ->
 
   nib source * '\n' .render!
 
-jadels-to-jade = require './jadels-to-jade'
+nephrite = require \nephrite
 
 nib = -> stylus it .use require(\nib)!
 
@@ -74,7 +74,7 @@ task \build "build userscript" ->
           it .= toString!
 
           c = Date.now!
-          src = jadels-to-jade.compile(it, filename)
+          src = nephrite.compile it, filename
           jade-time += Date.now! - c
 
           src = ls-parse src, filename

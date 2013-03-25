@@ -1,7 +1,6 @@
-require! 'dom/$$'
+require! <[dom/$$ dom/el]>
 template-multi-chars = require './templates/multi-chars'
 
-# ok, back to our business ...
 account-characters = if localStorage.getItem 'accountCharacters'
 	JSON.parse that
 else {}
@@ -45,14 +44,14 @@ for post-character in $$ '.post:not(.hidden) .post-character'
 	toggle = characters.length > 2 and height < 130 + (characters.length - 1) * 15
 
 	post-character.appendChild do
-		template-multi-chars {toggle, current, characters}
+		el template-multi-chars {toggle, current, characters}
 
 	# TODO blacklist & pay !!	
 
 	if toggle 
 		ul = post-character.querySelector 'ul'
 
-		# floor it. if we have 8.2 we want it to resolve to 8 (displayed)
+		# floor it. if we have 8.2 we want it to be 8 (displayed)
 		# so that we'll have one hidden
 		if (limit = Math.floor (height - 130) / 15) > 1
 			i = 0 # try to display properly as much as we can

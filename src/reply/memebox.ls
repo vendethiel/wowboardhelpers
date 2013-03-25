@@ -21,9 +21,8 @@ memes =
 	okay: 'http://cache.ohinternet.com/images/e/e6/Okay_guy.jpg'
 	no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
 
-require! <[textarea dom/$]>
+require! <[textarea dom/$ dom/el]>
 template-memebox = require './templates/memebox'
-console.log template-memebox!
 
 if $ '.post.general'
 	that.removeChild that.children[*-1] #remove span.clear
@@ -37,7 +36,7 @@ if $ '.post.general'
 				..innerHTML = name
 				..onclick = add-meme url
 
-	memebox = template-memebox!
+	memebox = el template-memebox!
 
 	ul = memebox.querySelector '#memes'
 	memebox.querySelector '#meme-search' .onkeyup = !->

@@ -1,4 +1,4 @@
-require! <[dom/$ dom/$$ dom/node dom/fetch-siblings lang lang/simplify-time]>
+require! <[dom/$ dom/$$ dom/node dom/fetch-siblings dom/el lang lang/simplify-time]>
 template-author = require './templates/author'
 template-tt-last-updated = require './templates/tt-last-updated'
 template-default-pagination = require './templates/default-pagination'
@@ -41,7 +41,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 	post-count = (last-post-link.href / '#')1
 
 	unless pages.querySelector 'ul' #no pages
-		pages.innerHTML = template-default-pagination {a.href} false
+		pages.innerHTML = template-default-pagination {a.href}
 
 
 	post-only = false
@@ -58,7 +58,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 		is-cm = true
 
 	text .= replace //(#{author-name = last-post-link.innerHTML.trim!})// ->
-		template-author {name: it, own: it in characters, cm: is-cm} false
+		el template-author {name: it, own: it in characters, cm: is-cm} false
 
 	
 	inline-text = text
@@ -73,7 +73,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 		simplify-time simplified-time
 
 	#manipulated to en<span simplified time (if necessary)
-	post.appendChild template-tt-last-updated {text}
+	post.appendChild el template-tt-last-updated {text}
 
 	#last-updated <td for ADV mode
 	td.appendChild node 'td' className: 'post-last-updated' innerHTML: simplified-time

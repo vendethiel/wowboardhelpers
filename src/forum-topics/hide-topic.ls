@@ -1,4 +1,4 @@
-require! <[tbody-regular w dom/$$ dom/$]>
+require! <[tbody-regular w dom/$$ dom/$ dom/el]>
 template-hide-topic = require './templates/hide-topic'
 
 hidden-topics = (w.localStorage.getItem "hidden_topics" or "") / ";"
@@ -28,7 +28,7 @@ for post-pages in $$ 'tbody.regular .post-pages'
 		hide tr
 
 	let tr, topic-id
-		template-hide-topic hidden: topic-id in hidden-topics
+		el template-hide-topic hidden: topic-id in hidden-topics
 			..onclick = ->
 				if topic-id in hidden-topics
 					post-pages.removeChild ..
