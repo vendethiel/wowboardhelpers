@@ -168,7 +168,6 @@
     require.define('/wowboardhelpers.ls', function (module, exports, __dirname, __filename, process) {
         console.log('Ahhhh\u2026greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !');
         console.time('wowboardhelpers');
-        require('/topic-characters\\templates\\multi-chars.jadels');
         require('/board\\content-class.ls');
         require('/board\\css.ls');
         require('/jumps\\index.ls');
@@ -1351,7 +1350,8 @@
         }
     });
     require.define('/topic-characters\\templates\\multi-chars.jadels', function (module, exports, __dirname, __filename, process) {
-        var join;
+        var lang, join;
+        lang = require('/lang\\index.ls');
         join = function (it) {
             if (it) {
                 return it.join('');

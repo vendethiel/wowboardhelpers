@@ -1,3 +1,5 @@
+~ require! lang
+
 #account-characters
 	h1.toggle
 		= lang 'otherCharacters'
