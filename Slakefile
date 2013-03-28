@@ -72,7 +72,7 @@ task \build "build userscript" ->
           it .= toString!
 
           c = Date.now!
-          src = nephrite.compile it, filename
+          src = nephrite it, filename
           jade-time += Date.now! - c
 
           src = ls-parse src, filename

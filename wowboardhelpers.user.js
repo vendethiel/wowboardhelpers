@@ -1351,6 +1351,7 @@
     });
     require.define('/topic-characters\\templates\\multi-chars.jadels', function (module, exports, __dirname, __filename, process) {
         var lang, join;
+        it === prelude;
         lang = require('/lang\\index.ls');
         join = function (it) {
             if (it) {
