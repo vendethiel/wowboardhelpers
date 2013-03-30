@@ -222,14 +222,14 @@
         };
         module.exports = function (locals, extra) {
             var key, val;
-            return '    \n<div id="cheatsheet-container">\n  <!-- that\'s meh but ...--><span class="clear"></span>\n  <div id="cheatsheet">\n    <!-- what\'s wrong with you blizz ?--><a class="toggler ui-button button1"><span><span>' + (lang.cheatsheet || '') + '</span></span></a>\n    <ul>' + (join(function () {
+            return '<div id="cheatsheet-container"><!-- that\'s meh but ...--><span class="clear"></span><div id="cheatsheet"><!-- what\'s wrong with you blizz ?--><a class="toggler ui-button button1"><span><span>' + (lang.cheatsheet || '') + '</span></span></a><ul>' + (join(function () {
                 var ref$, results$ = [];
                 for (key in ref$ = locals.cheatsheet) {
                     val = ref$[key];
                     results$.push('<li><b>' + (key.toUpperCase() || '') + '</b>: ' + val + '</li>');
                 }
                 return results$;
-            }()) || '') + '\n    </ul>\n  </div>\n</div>';
+            }()) || '') + '</ul></div></div>';
         };
     });
     require.define('/lang\\index.ls', function (module, exports, __dirname, __filename, process) {
@@ -813,7 +813,7 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '    \n<ul class="ui-pagination">\n  <li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li>\n</ul>';
+            return '<ul class="ui-pagination"><li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li></ul>';
         };
     });
     require.define('/forum-topics\\templates\\tt-last-updated.jadels', function (module, exports, __dirname, __filename, process) {
@@ -826,7 +826,7 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '    \n<div class="tt-last-updated"><br/>' + (locals.text || '') + '</div>';
+            return '<div class="tt-last-updated"><br/>' + (locals.text || '') + '</div>';
         };
     });
     require.define('/forum-topics\\templates\\author.jadels', function (module, exports, __dirname, __filename, process) {
@@ -839,11 +839,11 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '  <span class="' + [
+            return '    <span class="' + [
                 'poster',
                 locals.own ? 'own-poster' : void 8,
                 locals.cm ? 'type-blizzard' : void 8
-            ].join(' ') + '">\n' + (locals.name || '') + '\n' + ((locals.cm ? '<img src="/wow/static/images/layout/cms/icon_blizzard.gif" alt=""/>' : void 8) || '') + '</span>';
+            ].join(' ') + '">' + ((locals.cm ? '<img src="/wow/static/images/layout/cms/icon_blizzard.gif" alt=""/>' : void 8) || '') + '\n' + (locals.name || '') + '</span>';
         };
     });
     require.define('/lang\\simplify-time.ls', function (module, exports, __dirname, __filename, process) {
@@ -1106,7 +1106,7 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '    \n<div id="memebox">\n  <h1>MemeBox</h1><br/>\n  <input id="meme-search" placeholder="meme" autocomplete="off" size="15"/>\n  <ul id="memes"></ul>\n</div>';
+            return '<div id="memebox"><h1>MemeBox</h1><br/><input id="meme-search" placeholder="meme" autocomplete="off" size="15"/><ul id="memes"></ul></div>';
         };
     });
     require.define('/textarea.ls', function (module, exports, __dirname, __filename, process) {
@@ -1144,7 +1144,7 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '    \n<div class="clear-textarea">X</div>';
+            return '<div class="clear-textarea">X</div>';
         };
     });
     require.define('/topic-posts\\index.ls', function (module, exports, __dirname, __filename, process) {
@@ -1351,7 +1351,6 @@
     });
     require.define('/topic-characters\\templates\\multi-chars.jadels', function (module, exports, __dirname, __filename, process) {
         var lang, join;
-        it === prelude;
         lang = require('/lang\\index.ls');
         join = function (it) {
             if (it) {
@@ -1362,7 +1361,7 @@
         };
         module.exports = function (locals, extra) {
             var character;
-            return '    \n<div id="account-characters">\n  <h1 class="toggle">\n    ' + (lang('otherCharacters') || '') + '\n    ' + ((locals.toggle ? '<span class="toggler">' + (' [+]' || '') + '</span>' : void 8) || '') + '\n  </h1><br/>\n  <ul>' + (join(function () {
+            return '    <div id="account-characters"><h1 class="toggle">' + (lang('otherCharacters') || '') + '\n' + ((locals.toggle ? '<span class="toggler">' + (' [+]' || '') + '</span>' : void 8) || '') + '</h1><br/><ul>' + (join(function () {
                 var i$, ref$, len$, results$ = [];
                 for (i$ = 0, len$ = (ref$ = locals.characters).length; i$ < len$; ++i$) {
                     character = ref$[i$];
@@ -1371,7 +1370,7 @@
                     }
                 }
                 return results$;
-            }()) || '') + '\n  </ul>\n</div>';
+            }()) || '') + '</ul></div>';
         };
     });
     require.define('/topic-characters\\improve-topic.ls', function (module, exports, __dirname, __filename, process) {
