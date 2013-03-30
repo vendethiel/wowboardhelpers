@@ -1,3 +1,5 @@
+require! <[bind-key dom/$ textarea w]>
+
 bind-key 'r' 'quick-quote' !->
 	if w.getSelection!toString!
 		textarea.value += (if textarea.value then "\n" else "") + "[quote]#that[/quote]"
@@ -5,4 +7,4 @@ bind-key 'r' 'quick-quote' !->
 		textarea.focus!
 
 	# jump to reply even if have no selection
-	QS '#forum-actions-bottom' .scrollIntoView!
+	$ '#forum-actions-bottom' .scrollIntoView!

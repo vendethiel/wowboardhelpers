@@ -9,6 +9,8 @@
 // @version 3.1
 // ==/UserScript==
  * changelog
+ * 3.2
+ *  Fix ALL the reply bugs
  * 3.1.1
  *  Even more perf improvements
  * 3.1

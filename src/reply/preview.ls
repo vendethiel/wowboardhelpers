@@ -1,4 +1,4 @@
-require! <[w dom/$]>
+require! <[w dom/$ modules/autolink]>
 post-preview = $ '#post-preview'
 
 # let's replace BML preview to add
@@ -7,4 +7,4 @@ old = w.BML.preview.bind w.BML
 w.BML.preview = (content, target, callback) ->
 	old content, target, !->
 		callback! # old behavior
-		el-autolink post-preview
+		autolink post-preview

@@ -1,4 +1,4 @@
-require! <[dom/$ dom/el textarea]>
+require! <[dom/$ dom/el textarea topic]>
 template-clear-textarea = require './templates/clear-textarea'
 
 clearer = el template-clear-textarea!
@@ -6,7 +6,7 @@ clearer = el template-clear-textarea!
 if $ '.editor1'
 	that.insertBefore clearer, textarea
 
-	clearer.onclick = ->
+	clearer.onclick = !->
 		textarea.value = ''
 		# manually clearing localStorage is something I'd like to avoid
 		# emit an event ?

@@ -9,6 +9,8 @@
 // @version 3.1
 // ==/UserScript==
  * changelog
+ * 3.2
+ *  Fix ALL the reply bugs
  * 3.1.1
  *  Even more perf improvements
  * 3.1
@@ -843,7 +845,7 @@
                 'poster',
                 locals.own ? 'own-poster' : void 8,
                 locals.cm ? 'type-blizzard' : void 8
-            ].join(' ') + '">' + ((locals.cm ? '<img src="/wow/static/images/layout/cms/icon_blizzard.gif" alt=""/>' : void 8) || '') + '\n' + (locals.name || '') + '</span>';
+            ].join(' ') + '">' + ((locals.cm ? '<img src="/wow/static/images/layout/cms/icon_blizzard.gif" alt="CM"/>' : void 8) || '') + '\n' + (locals.name || '') + '</span>';
         };
     });
     require.define('/lang\\simplify-time.ls', function (module, exports, __dirname, __filename, process) {
@@ -979,20 +981,37 @@
         rememberReply = require('/reply\\remember-reply.ls');
     });
     require.define('/reply\\remember-reply.ls', function (module, exports, __dirname, __filename, process) {
-        var $, submit;
+        var $, textarea, topic, submit;
         $ = require('/dom\\$.ls');
+        textarea = require('/textarea.ls');
+        topic = require('/topic.ls');
         submit = $('.post [type=submit]');
         if (!textarea.value) {
             textarea.value = localStorage.getItem('post_' + topic.dataset.id) || '';
         }
         textarea.onkeyup = function () {
-            return w.localStorage.setItem('post_' + topic.dataset.id, this.value);
+            return localStorage.setItem('post_' + topic.dataset.id, this.value);
         };
         submit.onclick = function () {
-            return w.localStorage.setItem('post_' + topic.dataset.id, '');
+            return localStorage.setItem('post_' + topic.dataset.id, '');
         };
     });
+    require.define('/topic.ls', function (module, exports, __dirname, __filename, process) {
+        var that, x$, ref$, i$, replace$ = ''.replace, split$ = ''.split;
+        module.exports = (that = document.getElementById('thread')) ? (x$ = that.dataset, x$.url = replace$.call(split$.call(document.location, '?')[0], /#[0-9]+/, ''), x$.page = ((ref$ = /\?page=([0-9]+)/.exec(document.location)) != null ? ref$[1] : void 8) || 1, ref$ = split$.call(x$.url, '/'), i$ = ref$.length - 2, x$.topicId = ref$[i$], x$.id = ref$[i$ + 1], ref$, that) : null;
+    });
+    require.define('/textarea.ls', function (module, exports, __dirname, __filename, process) {
+        var topic, $;
+        topic = require('/topic.ls');
+        $ = require('/dom\\$.ls');
+        module.exports = topic ? $('#post-edit textarea') : null;
+    });
     require.define('/reply\\quick-quote.ls', function (module, exports, __dirname, __filename, process) {
+        var bindKey, $, textarea, w;
+        bindKey = require('/bind-key\\index.ls');
+        $ = require('/dom\\$.ls');
+        textarea = require('/textarea.ls');
+        w = require('/w.ls');
         bindKey('r', 'quick-quote', function () {
             var that;
             if (that = w.getSelection().toString()) {
@@ -1000,21 +1019,82 @@
                 textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
                 textarea.focus();
             }
-            QS('#forum-actions-bottom').scrollIntoView();
+            $('#forum-actions-bottom').scrollIntoView();
         });
     });
     require.define('/reply\\preview.ls', function (module, exports, __dirname, __filename, process) {
-        var w, $, postPreview, old;
+        var w, $, autolink, postPreview, old;
         w = require('/w.ls');
         $ = require('/dom\\$.ls');
+        autolink = require('/modules\\autolink.ls');
         postPreview = $('#post-preview');
         old = w.BML.preview.bind(w.BML);
         w.BML.preview = function (content, target, callback) {
             return old(content, target, function () {
                 callback();
-                elAutolink(postPreview);
+                autolink(postPreview);
             });
         };
+    });
+    require.define('/modules\\autolink.ls', function (module, exports, __dirname, __filename, process) {
+        var extensions, rules, ajax, replace$ = ''.replace;
+        extensions = '(?:com|net|org|eu|fr|jp|us|co.uk|me)';
+        rules = [
+            [
+                /(?:https?:\/\/)?(?:(?:www|m)\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g,
+                '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5#$3$4$6" frameborder="0"></iframe>'
+            ],
+            [
+                /\((https?:\/\/)([^<\s\)]+)\)/g,
+                '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" data-autolink="paren-specialcase" target="_blank">$2</a>)'
+            ],
+            [
+                RegExp('(^|>|;|\\s)(?:https?:\\/\\/)?([\\w\\.\\-]+\\.' + extensions + '(/[^<\\s]*)?(?=[\\s<]|$))', 'g'),
+                '$1<a class="external" rel="noreferrer" href="http://$2" data-autolink="protocol-specialcase" title="$2" target="_blank">$2</a>'
+            ],
+            [
+                /([^"'\/]|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g,
+                '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" data-autolink="quote-specialcase" target="_blank">$3</a>'
+            ],
+            [
+                RegExp('(^|>|;|\\s)((?!(?:www\\.)?dropbox)[\\w\\.\\-]+\\.' + extensions + '(/[^.<\\s]*)\\.(jpg|png|gif|jpeg)(?=[\\s<]|$)|puu\\.sh/[a-zA-Z0-9]+)', 'g'),
+                '$1<img src="http://$2" alt="$2" class="autolink" />'
+            ]
+        ];
+        module.exports = elAutolink;
+        ajax = require('/ajax\\index.ls');
+        function elAutolink(el) {
+            var h, r, ref$, url, e;
+            try {
+                h = autolink(el.innerHTML);
+                r = /\>((?:http:\/\/)?[a-z]{2}\.battle\.net\/[^<\s.]*)/g;
+                while ((ref$ = r.exec(h)) != null && (url = ref$[1], ref$)) {
+                    fn$.call(this, url);
+                }
+                return el.innerHTML = h;
+            } catch (e$) {
+                e = e$;
+                return console.log('Unable to generate valid HTML : ' + h + ' (' + e + ')');
+            }
+            function fn$(url) {
+                var fullUrl;
+                fullUrl = ~url.indexOf('http://') ? url : 'http://' + url;
+                ajax.get(fullUrl, function () {
+                    var that;
+                    if (that = /<title>(.+)<\/title>/.exec(this.response)) {
+                        el.innerHTML = el.innerHTML.replace('>' + url, '>' + replace$.call(that[1], ' - World of Warcraft', ''));
+                    }
+                });
+            }
+        }
+        function autolink(it) {
+            var i$, ref$, len$, ref1$, pattern, replacement;
+            for (i$ = 0, len$ = (ref$ = rules).length; i$ < len$; ++i$) {
+                ref1$ = ref$[i$], pattern = ref1$[0], replacement = ref1$[1];
+                it = it.replace(pattern, replacement);
+            }
+            return it;
+        }
     });
     require.define('/reply\\memebox.ls', function (module, exports, __dirname, __filename, process) {
         var memes, textarea, $, el, templateMemebox, that, ref$, addMeme, appendMeme, memebox, ul;
@@ -1109,28 +1189,19 @@
             return '<div id="memebox"><h1>MemeBox</h1><br/><input id="meme-search" placeholder="meme" autocomplete="off" size="15"/><ul id="memes"></ul></div>';
         };
     });
-    require.define('/textarea.ls', function (module, exports, __dirname, __filename, process) {
-        var topic, $;
-        topic = require('/topic.ls');
-        $ = require('/dom\\$.ls');
-        module.exports = topic ? $('#post-edit textarea') : null;
-    });
-    require.define('/topic.ls', function (module, exports, __dirname, __filename, process) {
-        var that, x$, ref$, i$, replace$ = ''.replace, split$ = ''.split;
-        module.exports = (that = document.getElementById('thread')) ? (x$ = that.dataset, x$.url = replace$.call(split$.call(document.location, '?')[0], /#[0-9]+/, ''), x$.page = ((ref$ = /\?page=([0-9]+)/.exec(document.location)) != null ? ref$[1] : void 8) || 1, ref$ = split$.call(x$.url, '/'), i$ = ref$.length - 2, x$.topicId = ref$[i$], x$.id = ref$[i$ + 1], ref$, that) : null;
-    });
     require.define('/reply\\clear-textarea.ls', function (module, exports, __dirname, __filename, process) {
-        var $, el, textarea, templateClearTextarea, clearer, that;
+        var $, el, textarea, topic, templateClearTextarea, clearer, that;
         $ = require('/dom\\$.ls');
         el = require('/dom\\el.ls');
         textarea = require('/textarea.ls');
+        topic = require('/topic.ls');
         templateClearTextarea = require('/reply\\templates\\clear-textarea.jadels');
         clearer = el(templateClearTextarea());
         if (that = $('.editor1')) {
             that.insertBefore(clearer, textarea);
             clearer.onclick = function () {
                 textarea.value = '';
-                return localStorage.removeItem('post_' + topic.dataset.id);
+                localStorage.removeItem('post_' + topic.dataset.id);
             };
         }
     });
@@ -1177,66 +1248,6 @@
                 continue;
             }
             autolink(post);
-        }
-    });
-    require.define('/modules\\autolink.ls', function (module, exports, __dirname, __filename, process) {
-        var extensions, rules, ajax, replace$ = ''.replace;
-        extensions = '(?:com|net|org|eu|fr|jp|us|co.uk|me)';
-        rules = [
-            [
-                /(?:https?:\/\/)?(?:(?:www|m)\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g,
-                '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5#$3$4$6" frameborder="0"></iframe>'
-            ],
-            [
-                /\((https?:\/\/)([^<\s\)]+)\)/g,
-                '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" data-autolink="paren-specialcase" target="_blank">$2</a>)'
-            ],
-            [
-                RegExp('(^|>|;|\\s)(?:https?:\\/\\/)?([\\w\\.\\-]+\\.' + extensions + '(/[^<\\s]*)?(?=[\\s<]|$))', 'g'),
-                '$1<a class="external" rel="noreferrer" href="http://$2" data-autolink="protocol-specialcase" title="$2" target="_blank">$2</a>'
-            ],
-            [
-                /([^"'\/]|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g,
-                '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" data-autolink="quote-specialcase" target="_blank">$3</a>'
-            ],
-            [
-                RegExp('(^|>|;|\\s)((?!(?:www\\.)?dropbox)[\\w\\.\\-]+\\.' + extensions + '(/[^.<\\s]*)\\.(jpg|png|gif|jpeg)(?=[\\s<]|$)|puu\\.sh/[a-zA-Z0-9]+)', 'g'),
-                '$1<img src="http://$2" alt="$2" class="autolink" />'
-            ]
-        ];
-        module.exports = elAutolink;
-        ajax = require('/ajax\\index.ls');
-        function elAutolink(el) {
-            var h, r, ref$, url, e;
-            try {
-                h = autolink(el.innerHTML);
-                r = /\>((?:http:\/\/)?[a-z]{2}\.battle\.net\/[^<\s.]*)/g;
-                while ((ref$ = r.exec(h)) != null && (url = ref$[1], ref$)) {
-                    fn$.call(this, url);
-                }
-                return el.innerHTML = h;
-            } catch (e$) {
-                e = e$;
-                return console.log('Unable to generate valid HTML : ' + h + ' (' + e + ')');
-            }
-            function fn$(url) {
-                var fullUrl;
-                fullUrl = ~url.indexOf('http://') ? url : 'http://' + url;
-                ajax.get(fullUrl, function () {
-                    var that;
-                    if (that = /<title>(.+)<\/title>/.exec(this.response)) {
-                        el.innerHTML = el.innerHTML.replace('>' + url, '>' + replace$.call(that[1], ' - World of Warcraft', ''));
-                    }
-                });
-            }
-        }
-        function autolink(it) {
-            var i$, ref$, len$, ref1$, pattern, replacement;
-            for (i$ = 0, len$ = (ref$ = rules).length; i$ < len$; ++i$) {
-                ref1$ = ref$[i$], pattern = ref1$[0], replacement = ref1$[1];
-                it = it.replace(pattern, replacement);
-            }
-            return it;
         }
     });
     require.define('/topic-posts\\jumps\\index.ls', function (module, exports, __dirname, __filename, process) {
