@@ -22,6 +22,4 @@ if require './forum'
 
 require './cheatsheet'
 
-that.parentNode.removeChild that if document.getElementById 'crabby-shell'
-
 console.timeEnd 'wowboardhelpers'

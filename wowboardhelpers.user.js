@@ -172,7 +172,6 @@
         require.modules[file] = fn;
     };
     require.define('/src\\wowboardhelpers.ls', function (module, exports, __dirname, __filename, process) {
-        var that;
         console.log('Ahhhh\u2026greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !');
         console.time('wowboardhelpers');
         require('/src\\board\\content-class.ls');
@@ -192,9 +191,6 @@
             require('/src\\forum-layout\\hide-mar.ls');
         }
         require('/src\\cheatsheet\\index.ls');
-        if (that = document.getElementById('crabby-shell')) {
-            that.parentNode.removeChild(that);
-        }
         console.timeEnd('wowboardhelpers');
     });
     require.define('/src\\cheatsheet\\index.ls', function (module, exports, __dirname, __filename, process) {
@@ -1470,10 +1466,24 @@
         };
     });
     require.define('/src\\fix\\index.ls', function (module, exports, __dirname, __filename, process) {
-        var htmlOverrides, menu, setView;
+        var htmlOverrides, menu, setView, crabby;
         htmlOverrides = require('/src\\fix\\html-overrides.ls');
         menu = require('/src\\fix\\menu.ls');
         setView = require('/src\\fix\\set-view.ls');
+        crabby = require('/src\\fix\\crabby.ls');
+    });
+    require.define('/src\\fix\\crabby.ls', function (module, exports, __dirname, __filename, process) {
+        var that;
+        if (that = document.getElementById('crabby-shell')) {
+            that.parentNode.removeChild(that);
+        } else {
+            setTimeout(function () {
+                var that;
+                if (that = document.getElementById('crabby-shell')) {
+                    return that.parentNode.removeChild(that);
+                }
+            }, 300);
+        }
     });
     require.define('/src\\fix\\set-view.ls', function (module, exports, __dirname, __filename, process) {
         var w, ref$;
