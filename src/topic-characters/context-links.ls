@@ -1,4 +1,6 @@
-require! <[dom/el topic]>
+require! '../topic'
+{el} = require 'dom'
+
 template-context-links = require './templates/context-links'
 
 # adds context links

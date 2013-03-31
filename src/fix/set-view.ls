@@ -1,4 +1,4 @@
-require! w
+require! '../w'
 
 # mere copypasta, removed last line (which redraws posts)
 # w.Cms is null on error pages

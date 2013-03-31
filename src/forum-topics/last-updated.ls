@@ -1,4 +1,6 @@
-require! <[dom/$ dom/$$ dom/node dom/fetch-siblings dom/el lang lang/simplify-time]>
+require! 'fetch-siblings'
+{simplify-time}:lang = require 'lang'
+{$, $$, el, node} = require 'dom'
 template-author = require './templates/author'
 template-tt-last-updated = require './templates/tt-last-updated'
 template-default-pagination = require './templates/default-pagination'

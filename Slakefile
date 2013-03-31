@@ -1,5 +1,5 @@
 require! <[fs LiveScript nephrite stylus esprima glob]>
-
+{exec} = require 'child_process'
 {cjsify} = require 'commonjs-everywhere'
 
 ls = -> ["#it/#file" for file in fs.readdirSync it]
@@ -7,6 +7,11 @@ flatten = -> []concat ...it # shallow flatten
 camelcase = -> it.replace /-(.)/g -> it.1.toUpperCase!
 join = -> flatten & .join \\n
 blame = -> say it if it?; process.exit!
+shell = (command) ->
+  err, sout, serr <- exec command
+  process.stdout.write sout if sout
+  process.stderr.write serr if serr
+  console.log err if err
 
 ##########
 # CONFIG #
@@ -26,6 +31,16 @@ compile-styles = ->
   nib source * '\n' .render!
 
 nib = -> stylus it .use require(\nib)!
+
+task \npm "does npm related crap" !->
+
+  libs = <[dom date string fetch-siblings autolink lang]>
+  cmds =
+    "npm link #{["lib/#lib" for lib in libs] * ' '}"
+    "cd lib/lang && npm link ../string && cd ../.."
+    "cd lib/lang && npm link ../string && cd ../.."
+    "npm install"
+  for cmd in cmds then shell cmd
 
 task \build "build userscript" ->
   try
@@ -63,9 +78,7 @@ task \build "build userscript" ->
 
       src
 
-    root = __dirname + "/src"
-
-    ast = cjsify "src/wowboardhelpers.ls", root,
+    ast = cjsify "src/wowboardhelpers.ls", __dirname,
       export: null
       handlers:
         '.jadels': (it, filename) ->

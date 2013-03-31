@@ -1,4 +1,4 @@
-require! 'dom/node'
+{node} = require 'dom'
 
 style = node 'style' type: 'text/css' innerHTML: '''
 /*slake:build#compile-ls embeds css*/

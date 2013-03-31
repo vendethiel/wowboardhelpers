@@ -1,4 +1,6 @@
-require! <[dom/$ textarea topic]>
+require! <[../textarea ../topic]>
+{$} = require 'dom'
+
 submit = $ '.post [type=submit]'
 
 unless textarea.value #i.e. you have to wait for the timeout

@@ -1,4 +1,5 @@
-require! <[bind-key dom/$ textarea w]>
+require! <[../cheatsheet/bind-key ../textarea ../w]>
+{$} = require 'dom'
 
 bind-key 'r' 'quick-quote' !->
 	if w.getSelection!toString!

@@ -1,4 +1,5 @@
-require! <[dom/$$ modules/autolink]>
+require! 'autolink'
+{$$} = require 'dom'
 
 for post in $$ '.post-detail'
 	# should probably lookahead in autolink module, uh?

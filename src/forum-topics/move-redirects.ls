@@ -1,4 +1,4 @@
-require! 'tbody-regular'
+require! '../tbody-regular'
 
 for status in tbody-regular.querySelectorAll '.post-status'
 	tr = status.parentNode.parentNode

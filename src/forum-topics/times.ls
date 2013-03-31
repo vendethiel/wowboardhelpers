@@ -1,4 +1,6 @@
-require! <[dom/$$ lang date/relative-time]>
+require! 'lang'
+{$$} = require 'dom'
+{relative-time} = require 'date'
 
 units =
 	second: 1000ms

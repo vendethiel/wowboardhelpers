@@ -1,4 +1,5 @@
-require! <[dom/$ dom/node lang tbody-regular ajax]>
+require! <[lang ../tbody-regular superagent]>
+{$, node} = require 'dom'
 
 #we DON'T delay execution because server reponse won't be ordered
 first-topic-id = tbody-regular.children.0.id.slice 'postRow'length
@@ -14,7 +15,7 @@ $ '#forum-actions-top'
 
 # XXX should parse somehow to know what the actual fuck is going on
 refresh = ->
-	ajax.get document.location, !->
+	superagent 'GET' document.location .end !->
 		return unless @status is 200
 
 		h1.innerHTML = lang.checking-new

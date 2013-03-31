@@ -1,4 +1,6 @@
-require! <[w dom/$ modules/autolink]>
+require! <[../w autolink]>
+{$} = require 'dom'
+
 post-preview = $ '#post-preview'
 
 # let's replace BML preview to add

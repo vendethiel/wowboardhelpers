@@ -21,7 +21,9 @@ memes =
 	okay: 'http://cache.ohinternet.com/images/e/e6/Okay_guy.jpg'
 	no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
 
-require! <[textarea dom/$ dom/el]>
+require! '../textarea'
+{$, el} = require 'dom'
+
 template-memebox = require './templates/memebox'
 
 if $ '.post.general'

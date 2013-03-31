@@ -1,4 +1,5 @@
-require! <[tbody-regular w dom/$$ dom/$ dom/el]>
+require! <[../tbody-regular ../w]>
+{$, $$, el} = require 'dom'
 template-hide-topic = require './templates/hide-topic'
 
 hidden-topics = (w.localStorage.getItem "hidden_topics" or "") / ";"
@@ -44,4 +45,4 @@ for post-pages in $$ 'tbody.regular .post-pages'
 
 # ensure we don't check updates if we already have updates
 if $ 'tbody.regular tr:not(.hidden):not(.read)'
-	clearTimeout require 'forum-layout/check-updates'
+	clearTimeout require '../forum-layout/check-updates'

@@ -1,4 +1,5 @@
-require! <[bind-key w dom/$]>
+require! <[../../cheatsheet/bind-key ../../w]>
+{$} = require 'dom'
 
 # account disabled
 unless $ 'a.button1.disabled'

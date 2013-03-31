@@ -1,4 +1,4 @@
-require! <[dom/$$ dom/el]>
+{$$, el} = require 'dom'
 template-multi-chars = require './templates/multi-chars'
 
 account-characters = if localStorage.getItem 'accountCharacters'

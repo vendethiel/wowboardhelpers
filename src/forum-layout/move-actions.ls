@@ -1,4 +1,4 @@
-require! 'dom/$'
+{$} = require 'dom'
 
 $ '.forum-options'
 	..parentNode.removeChild ..

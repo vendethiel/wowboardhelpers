@@ -1,4 +1,5 @@
-require! <[lang dom/$ dom/node forum-options w]>
+require! <[lang ../forum-options ../w]>
+{$, node} = require 'dom'
 
 #remove sticky part (tbody.sticky)
 unless 'show' is w.localStorage.getItem 'show-stickies'

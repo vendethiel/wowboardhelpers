@@ -1,4 +1,4 @@
-require! w
+require! '../w'
 
 # fixes Blizzard's menu
 # which seems to think js has autovivification

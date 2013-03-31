@@ -1,3 +1,3 @@
-require! 'dom/$'
+{$} = require 'dom'
 
 module.exports = $ '.forum-options'

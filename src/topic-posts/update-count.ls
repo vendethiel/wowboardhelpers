@@ -1,4 +1,5 @@
-require! <[topic dom/$$]>
+require! '../topic'
+{$$} = require 'dom'
 
 #pagination
 pages = $$ '#forum-actions-top .ui-pagination li:not(.cap-item)'

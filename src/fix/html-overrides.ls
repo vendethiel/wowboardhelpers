@@ -1,4 +1,5 @@
-require! <[dom/$ lang]>
+require! lang
+{$} = require 'dom'
 
 if lang.html-overrides
 	for k, v of that

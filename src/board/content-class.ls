@@ -1,4 +1,5 @@
-require! <[dom/$ topic forum]>
+require! <[../topic ../forum]>
+$ = require 'dom'
 
 content = $ '#content'
 
