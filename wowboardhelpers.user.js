@@ -193,7 +193,7 @@
         }
         require('/src\\cheatsheet\\index.ls');
         if (that = document.getElementById('crabby-shell')) {
-            that.parent.removeChild(that);
+            that.parentNode.removeChild(that);
         }
         console.timeEnd('wowboardhelpers');
     });
