@@ -1,4 +1,4 @@
-{cheatsheet} = require './'
+{cheatsheet} = require './bind-key'
 if Object.keys cheatsheet .length
 	possible-divs =
 		'.forum-info' # forum topics page

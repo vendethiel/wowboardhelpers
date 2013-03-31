@@ -1,6 +1,6 @@
 require! 'lang'
 {$$} = require 'dom'
-{relative-time} = require 'date'
+relative = require 'relative-date-component'
 
 units =
 	second: 1000ms
@@ -33,7 +33,7 @@ refresh = ->
 		d = new Date Number post-title.dataset.timestamp
 
 		post-title.querySelector '.simplified-time'
-			.innerHTML = relative-time d
+			.innerHTML = relative d
 
 	setTimeout refresh, timeout
 refresh!

@@ -33,12 +33,11 @@ compile-styles = ->
 nib = -> stylus it .use require(\nib)!
 
 task \npm "does npm related crap" !->
-
-  libs = <[dom date string fetch-siblings autolink lang]>
+  libs = <[ajax autolink dom fetch-siblings lang string]>
   cmds =
     "npm link #{["lib/#lib" for lib in libs] * ' '}"
-    "cd lib/lang && npm link ../string && cd ../.."
-    "cd lib/lang && npm link ../string && cd ../.."
+    "cd lib/autolink && npm link ../ajax   && cd ../.."
+    "cd lib/lang     && npm link ../string && cd ../.."
     "npm install"
   for cmd in cmds then shell cmd
 

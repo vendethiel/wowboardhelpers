@@ -6,9 +6,13 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 3.1
+// @version 3.3.1
 // ==/UserScript==
  * changelog
+ * 3.3.1
+ *  Fuck you crabby :)
+ * 3.3
+ *  MUH COMMONJS
  * 3.2
  *  Fix ALL the reply bugs
  * 3.1.1

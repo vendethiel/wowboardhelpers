@@ -1,5 +1,5 @@
 require! lang
-$ = require 'dom'
+{$} = require 'dom'
 
 module.exports = bind-key = !(bind, lang-key, cb) ->
 	cheatsheet[bind] = lang lang-key

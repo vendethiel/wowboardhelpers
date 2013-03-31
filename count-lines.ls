@@ -13,4 +13,10 @@ throw err if err?
 for file in files
 	lines += len file
 
+err, files <- glob "lib/**/*.*" {}
+throw err if err?
+
+for file in files when not file.indexOf "node_modules"
+	lines += len file
+
 console.log "There's currently #lines lines"
