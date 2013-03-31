@@ -1,0 +1,7 @@
+{
+  "name": "ajax",
+  "version": "0.1.0",
+  "dependencies": {
+    "superagent": "~0.13"
+  }
+}

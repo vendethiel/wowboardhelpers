@@ -1,0 +1,7 @@
+{
+  "name": "autolink",
+  "version": "0.1.0",
+  "dependencies": {
+    "ajax": "~0.1",
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "lang",
+  "version": "0.1.0",
+  "dependencies": {
+  	"string": "~0.1.0"
+  }
+}
