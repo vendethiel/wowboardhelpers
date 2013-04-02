@@ -4,7 +4,7 @@ langs =
 	fr: require './fr'
 	en: require './en'
 
-{to-camel-case} = require 'string'
+require! 'to-camel-case'
 
 module.exports = class lang # acts like a proxy to avoid unneeded keys
 	import langs[l] ? langs.en

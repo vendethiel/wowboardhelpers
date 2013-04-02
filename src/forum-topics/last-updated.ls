@@ -27,12 +27,9 @@ has-unread = false
 #THAT DESTRUCTURING.
 for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 'post-title'
 	if children.length > 2 #sticky, redirects, etc
-
 		# still add column to ADV mode
 		last-post-td = node 'td' className: 'post-last-updated' innerHTML: ' '
-
 		td.appendChild last-post-td
-
 		continue
 
 	#NO IT'S NOT A JOKE this class is named "thread". W T F
@@ -64,7 +61,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 
 	
 	inline-text = text
-	inline-text .= slice (text.index-of '(') + 1, -1 unless post-only
+	inline-text .= slice (text.indexOf '(') + 1, -1 unless post-only
 	simplified-time = if ~inline-text.indexOf '/'
 		inline-text #post is so old it's DD/MM/YYYY
 	else

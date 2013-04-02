@@ -1,6 +1,6 @@
 require! <[fs LiveScript nephrite stylus esprima glob]>
 {exec} = require 'child_process'
-{cjsify} = require 'commonjs-everywhere'
+{cjsify-sync: cjsify} = require 'commonjs-everywhere'
 
 ls = -> ["#it/#file" for file in fs.readdirSync it]
 flatten = -> []concat ...it # shallow flatten
@@ -33,7 +33,7 @@ compile-styles = ->
 nib = -> stylus it .use require(\nib)!
 
 task \npm "does npm related crap" !->
-  libs = <[ajax autolink dom fetch-siblings lang string]>
+  libs = <[ajax autolink dom fetch-siblings lang parse-time string]>
   cmds =
     "npm link #{["lib/#lib" for lib in libs] * ' '}"
     "cd lib/autolink && npm link ../ajax   && cd ../.."
@@ -100,16 +100,18 @@ task \build "build userscript" ->
     say "jadeLS : #{jade-time}ms"
     say "esprima: #{esprima-time}ms"
 
-    console.time "AST->JS"
-    gen = require "escodegen" .generate ast,
-      sourceMapRoot: __dirname + '/src'
-    console.timeEnd "AST->JS"
+    console.time "codegen"
+    code = require 'escodegen' .generate ast/*,
+      sourceMapRoot: "/"
+      sourceMapWithCode: true
+      sourceMap: true*/
+    console.timeEnd "codegen"
 
     spit outfile,
       join do
         metadata
         '"use strict";'
-        gen
+        code
     console.timeEnd "Total  "
     say "compiled script to #outfile"
   catch

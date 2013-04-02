@@ -50,12 +50,11 @@ if $ '.post.general'
 		approximates = []; i = 0
 		for name, url of memes # {...extra-memes, ...memes}
 			switch name.indexOf value
-			| -1 =>
-			| 0  =>
+			| -1 0
 				append-meme name, url
 
 				break if ++i > 10
-			| _  =>
+			| _
 				approximates.push [name, url]
 
 		for [name, url] in approximates

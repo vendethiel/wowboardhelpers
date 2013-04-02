@@ -1,7 +1,7 @@
 {
-  "name": "lang",
+  "name": "parse-time",
   "version": "0.1.0",
   "dependencies": {
-  	"to-camel-case": "~0.0.1"
+  	"lang": "~0.1.0"
   }
 }

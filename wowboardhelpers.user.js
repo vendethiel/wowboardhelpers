@@ -128,14 +128,11 @@
 */
 "use strict";
 (function (global) {
-    function require(file) {
-        if ({}.hasOwnProperty.call(require.cache, file))
-            return require.cache[file];
-        var resolved = require.resolve(file);
-        if (!resolved)
-            throw new Error('Failed to resolve module ' + file);
-        var process = {
+    var process = function () {
+            var cwd = '/';
+            return {
                 title: 'browser',
+                version: 'v0.10.2',
                 browser: true,
                 env: {},
                 argv: [],
@@ -143,23 +140,33 @@
                     setTimeout(fn, 0);
                 },
                 cwd: function () {
-                    return '/';
+                    return cwd;
                 },
-                chdir: function () {
+                chdir: function (dir) {
+                    cwd = dir;
                 }
             };
+        }();
+    function require(file, parentModule) {
+        if ({}.hasOwnProperty.call(require.cache, file))
+            return require.cache[file];
+        var resolved = require.resolve(file);
+        if (!resolved)
+            throw new Error('Failed to resolve module ' + file);
         var module$ = {
                 id: file,
                 require: require,
                 filename: file,
                 exports: {},
                 loaded: false,
-                parent: null,
+                parent: parentModule,
                 children: []
             };
+        if (parentModule)
+            parentModule.children.push(module$);
         var dirname = file.slice(0, file.lastIndexOf('/') + 1);
         require.cache[file] = module$.exports;
-        resolved.call(module$.exports, module$, module$.exports, dirname, file, process);
+        resolved.call(module$.exports, module$, module$.exports, dirname, file);
         module$.loaded = true;
         return require.cache[file] = module$.exports;
     }
@@ -171,38 +178,38 @@
     require.define = function (file, fn) {
         require.modules[file] = fn;
     };
-    require.define('/src\\wowboardhelpers.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\wowboardhelpers.ls', function (module, exports, __dirname, __filename) {
         console.log('Ahhhh\u2026greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !');
         console.time('wowboardhelpers');
-        require('/src\\board\\content-class.ls');
-        require('/src\\board\\css.ls');
-        require('/src\\jumps\\index.ls');
-        require('/src\\fix\\index.ls');
-        if (require('/src\\topic.ls')) {
-            require('/src\\topic-characters\\index.ls');
-            require('/src\\topic-posts\\index.ls');
-            if (require('/src\\textarea.ls')) {
-                require('/src\\reply\\index.ls');
+        require('/src\\board\\content-class.ls', module);
+        require('/src\\board\\css.ls', module);
+        require('/src\\jumps\\index.ls', module);
+        require('/src\\fix\\index.ls', module);
+        if (require('/src\\topic.ls', module)) {
+            require('/src\\topic-characters\\index.ls', module);
+            require('/src\\topic-posts\\index.ls', module);
+            if (require('/src\\textarea.ls', module)) {
+                require('/src\\reply\\index.ls', module);
             }
         }
-        if (require('/src\\forum.ls')) {
-            require('/src\\forum-layout\\index.ls');
-            require('/src\\forum-topics\\index.ls');
-            require('/src\\forum-layout\\hide-mar.ls');
+        if (require('/src\\forum.ls', module)) {
+            require('/src\\forum-layout\\index.ls', module);
+            require('/src\\forum-topics\\index.ls', module);
+            require('/src\\forum-layout\\hide-mar.ls', module);
         }
-        require('/src\\cheatsheet\\index.ls');
+        require('/src\\cheatsheet\\index.ls', module);
         console.timeEnd('wowboardhelpers');
     });
-    require.define('/src\\cheatsheet\\index.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\cheatsheet\\index.ls', function (module, exports, __dirname, __filename) {
         var cheatsheet, possibleDivs, ref$, $, el, templateCheatsheet, i$, len$, sel, that, x$, ul;
-        cheatsheet = require('/src\\cheatsheet\\bind-key.ls').cheatsheet;
+        cheatsheet = require('/src\\cheatsheet\\bind-key.ls', module).cheatsheet;
         if (Object.keys(cheatsheet).length) {
             possibleDivs = [
                 '.forum-info',
                 '.talkback form'
             ];
-            ref$ = require('/node_modules\\dom\\index.ls'), $ = ref$.$, el = ref$.el;
-            templateCheatsheet = require('/src\\cheatsheet\\templates\\cheatsheet.jadels');
+            ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, el = ref$.el;
+            templateCheatsheet = require('/src\\cheatsheet\\templates\\cheatsheet.jadels', module);
             for (i$ = 0, len$ = possibleDivs.length; i$ < len$; ++i$) {
                 sel = possibleDivs[i$];
                 if (that = $(sel)) {
@@ -215,9 +222,9 @@
             return ul.style.display = ul.style.display === 'none' ? '' : 'none';
         }
     });
-    require.define('/src\\cheatsheet\\templates\\cheatsheet.jadels', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\cheatsheet\\templates\\cheatsheet.jadels', function (module, exports, __dirname, __filename) {
         var lang, join;
-        lang = require('/node_modules\\lang\\index.ls');
+        lang = require('/node_modules\\lang\\index.ls', module);
         join = function (it) {
             if (it) {
                 return it.join('');
@@ -237,14 +244,14 @@
             }()) || '') + '</ul></div></div>';
         };
     });
-    require.define('/node_modules\\lang\\index.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/node_modules\\lang\\index.ls', function (module, exports, __dirname, __filename) {
         var l, langs, toCamelCase, lang, split$ = ''.split;
         l = split$.call(document.location, '/')[4];
         langs = {
-            fr: require('/lib\\lang\\fr.ls'),
-            en: require('/lib\\lang\\en.ls')
+            fr: require('/lib\\lang\\fr.ls', module),
+            en: require('/lib\\lang\\en.ls', module)
         };
-        toCamelCase = require('/lib\\lang\\node_modules\\string\\index.ls').toCamelCase;
+        toCamelCase = require('/lib\\lang\\node_modules\\to-camel-case\\index.js', module);
         module.exports = lang = function () {
             lang.displayName = 'lang';
             var ref$, prototype = lang.prototype, constructor = lang;
@@ -263,7 +270,7 @@
                     return it;
                 }
             });
-            lang.simplifyTime = require('/lib\\lang\\simplify-time.ls');
+            lang.simplifyTime = require('/lib\\lang\\simplify-time.ls', module);
             return lang;
         }();
         function import$(obj, src) {
@@ -274,7 +281,7 @@
             return obj;
         }
     });
-    require.define('/lib\\lang\\simplify-time.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/lib\\lang\\simplify-time.ls', function (module, exports, __dirname, __filename) {
         var timeTable;
         timeTable = [
             [
@@ -342,18 +349,14 @@
             return simplifyTime;
         }();
     });
-    require.define('/lib\\lang\\node_modules\\string\\index.ls', function (module, exports, __dirname, __filename, process) {
-        module.exports = { toCamelCase: require('/lib\\string\\to-camel-case.ls') };
-    });
-    require.define('/lib\\string\\to-camel-case.ls', function (module, exports, __dirname, __filename, process) {
-        var toCamelCase;
-        module.exports = toCamelCase = function (it) {
-            return it.replace(/[_-]([a-z])/g, function (it) {
-                return it[1].toUpperCase();
+    require.define('/lib\\lang\\node_modules\\to-camel-case\\index.js', function (module, exports, __dirname, __filename) {
+        module.exports = function (str) {
+            return str.replace(/[_-]([a-z])/g, function (l) {
+                return l[1].toUpperCase();
             });
         };
     });
-    require.define('/lib\\lang\\en.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/lib\\lang\\en.ls', function (module, exports, __dirname, __filename) {
         module.exports = {
             timeIndex: 0,
             timeOutdex: -1,
@@ -374,7 +377,7 @@
             newTopic: 'New topic'
         };
     });
-    require.define('/lib\\lang\\fr.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/lib\\lang\\fr.ls', function (module, exports, __dirname, __filename) {
         module.exports = {
             timeIndex: 3,
             timeOutdex: 0,
@@ -406,15 +409,15 @@
             newTopic: 'Nouveau sujet'
         };
     });
-    require.define('/node_modules\\dom\\index.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/node_modules\\dom\\index.ls', function (module, exports, __dirname, __filename) {
         module.exports = {
-            $: require('/lib\\dom\\$.ls'),
-            $$: require('/lib\\dom\\$$.ls'),
-            el: require('/lib\\dom\\el.ls'),
-            node: require('/lib\\dom\\node.ls')
+            $: require('/lib\\dom\\$.ls', module),
+            $$: require('/lib\\dom\\$$.ls', module),
+            el: require('/lib\\dom\\el.ls', module),
+            node: require('/lib\\dom\\node.ls', module)
         };
     });
-    require.define('/lib\\dom\\node.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/lib\\dom\\node.ls', function (module, exports, __dirname, __filename) {
         module.exports = function () {
             function node(tag, props) {
                 props == null && (props = {});
@@ -430,7 +433,7 @@
             return obj;
         }
     });
-    require.define('/lib\\dom\\el.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/lib\\dom\\el.ls', function (module, exports, __dirname, __filename) {
         module.exports = function (it) {
             var x$;
             x$ = document.createElement('div');
@@ -439,20 +442,21 @@
             return x$;
         };
     });
-    require.define('/lib\\dom\\$$.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/lib\\dom\\$$.ls', function (module, exports, __dirname, __filename) {
         module.exports = function (it) {
             return document.querySelectorAll(it);
         };
     });
-    require.define('/lib\\dom\\$.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/lib\\dom\\$.ls', function (module, exports, __dirname, __filename) {
         module.exports = function (it) {
             return document.querySelector(it);
         };
     });
-    require.define('/src\\cheatsheet\\bind-key.ls', function (module, exports, __dirname, __filename, process) {
-        var lang, $, bindKey, cheatsheet;
-        lang = require('/node_modules\\lang\\index.ls');
-        $ = require('/node_modules\\dom\\index.ls').$;
+    require.define('/src\\cheatsheet\\bind-key.ls', function (module, exports, __dirname, __filename) {
+        var lang, $, html, bindKey, cheatsheet;
+        lang = require('/node_modules\\lang\\index.ls', module);
+        $ = require('/node_modules\\dom\\index.ls', module).$;
+        html = $('html');
         module.exports = bindKey = function (bind, langKey, cb) {
             cheatsheet[bind] = lang(langKey);
             bind = bind.toUpperCase().charCodeAt();
@@ -460,7 +464,7 @@
                 if (bind !== it.keyCode) {
                     return;
                 }
-                if (it.target !== $('html')) {
+                if (it.target !== html) {
                     return;
                 }
                 it.preventDefault();
@@ -469,26 +473,26 @@
         };
         bindKey.cheatsheet = cheatsheet = {};
     });
-    require.define('/src\\forum-layout\\hide-mar.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\forum-layout\\hide-mar.ls', function (module, exports, __dirname, __filename) {
         var $;
-        $ = require('/node_modules\\dom\\index.ls').$;
+        $ = require('/node_modules\\dom\\index.ls', module).$;
         if (!$('.regular > .unread:not(.hidden)')) {
-            require('/src\\forum-options.ls').removeChild(require('/src\\forum-layout\\mar.ls'));
+            require('/src\\forum-options.ls', module).removeChild(require('/src\\forum-layout\\mar.ls', module));
         }
     });
-    require.define('/src\\forum-layout\\mar.ls', function (module, exports, __dirname, __filename, process) {
-        var lang, forumOptions, tbodyRegular, w, ref$, fetchSiblings, node, allRead, buttonMar, split$ = ''.split;
-        lang = require('/node_modules\\lang\\index.ls');
-        forumOptions = require('/src\\forum-options.ls');
-        tbodyRegular = require('/src\\tbody-regular.ls');
-        w = require('/src\\w.ls');
-        ref$ = require('/node_modules\\dom\\index.ls'), fetchSiblings = ref$.fetchSiblings, node = ref$.node;
+    require.define('/src\\forum-layout\\mar.ls', function (module, exports, __dirname, __filename) {
+        var lang, forumOptions, tbodyRegular, w, ref$, fetchSiblings, node, allRead, buttonMar, x$, split$ = ''.split;
+        lang = require('/node_modules\\lang\\index.ls', module);
+        forumOptions = require('/src\\forum-options.ls', module);
+        tbodyRegular = require('/src\\tbody-regular.ls', module);
+        w = require('/src\\w.ls', module);
+        ref$ = require('/node_modules\\dom\\index.ls', module), fetchSiblings = ref$.fetchSiblings, node = ref$.node;
         allRead = false;
         module.exports = buttonMar = node('a', {
             innerHTML: 'MAR',
             title: lang.mar,
             onclick: function () {
-                var i$, ref$, len$, row, topicId, siblings;
+                var i$, ref$, len$, row, topicId, siblings, x$;
                 if (allRead) {
                     return;
                 }
@@ -500,17 +504,24 @@
                     }
                     topicId = row.id.slice('postRow'.length);
                     siblings = fetchSiblings(row.children[0], { slice: 5 });
-                    w.localStorage.setItem('topic_' + topicId, split$.call(siblings.lastPost.children[0].href, '#')[1]);
-                    w.localStorage.setItem('topic_lp_' + topicId, siblings.author.innerHTML.trim());
+                    x$ = bind$(localStorage, 'setItem');
+                    x$('topic_' + topicId, split$.call(siblings.lastPost.children[0].href, '#')[1]);
+                    x$('topic_lp_' + topicId, siblings.author.innerHTML.trim());
                     row.classList.add('read');
                 }
                 forumOptions.removeChild(buttonMar);
             }
         });
-        buttonMar.style.cursor = 'pointer';
-        forumOptions.appendChild(buttonMar);
+        x$ = buttonMar;
+        x$.style.cursor = 'pointer';
+        forumOptions.appendChild(x$);
+        function bind$(obj, key, target) {
+            return function () {
+                return (target || obj)[key].apply(obj, arguments);
+            };
+        }
     });
-    require.define('/src\\w.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\w.ls', function (module, exports, __dirname, __filename) {
         var w;
         w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
         if (!w.Cms) {
@@ -523,55 +534,38 @@
         }
         module.exports = w;
     });
-    require.define('/src\\tbody-regular.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\tbody-regular.ls', function (module, exports, __dirname, __filename) {
         var $;
-        $ = require('/node_modules\\dom\\index.ls').$;
+        $ = require('/node_modules\\dom\\index.ls', module).$;
         module.exports = $('tbody.regular');
     });
-    require.define('/src\\forum-options.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\forum-options.ls', function (module, exports, __dirname, __filename) {
         var $;
-        $ = require('/node_modules\\dom\\index.ls').$;
+        $ = require('/node_modules\\dom\\index.ls', module).$;
         module.exports = $('.forum-options');
     });
-    require.define('/src\\forum-topics\\index.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\forum-topics\\index.ls', function (module, exports, __dirname, __filename) {
         var lastUpdated, moveRedirects, hideTopic, times;
-        lastUpdated = require('/src\\forum-topics\\last-updated.ls');
-        moveRedirects = require('/src\\forum-topics\\move-redirects.ls');
-        hideTopic = require('/src\\forum-topics\\hide-topic.ls');
-        times = require('/src\\forum-topics\\times.ls');
+        lastUpdated = require('/src\\forum-topics\\last-updated.ls', module);
+        moveRedirects = require('/src\\forum-topics\\move-redirects.ls', module);
+        hideTopic = require('/src\\forum-topics\\hide-topic.ls', module);
+        times = require('/src\\forum-topics\\times.ls', module);
     });
-    require.define('/src\\forum-topics\\times.ls', function (module, exports, __dirname, __filename, process) {
-        var lang, $$, relative, units, timestamp, postTitles, i$, len$, postTitle, total, j$, ref$, len1$, timespan, ref1$, count, unit, date, timeout, refresh, split$ = ''.split;
-        lang = require('/node_modules\\lang\\index.ls');
-        $$ = require('/node_modules\\dom\\index.ls').$$;
-        relative = require('/node_modules\\relative-date-component\\index.js');
-        units = {
-            second: 1000,
-            minute: 60000,
-            hour: 3600000,
-            day: 86400000
-        };
+    require.define('/src\\forum-topics\\times.ls', function (module, exports, __dirname, __filename) {
+        var lang, parseTime, $$, relative, timestamp, postTitles, i$, len$, postTitle, postTimestamp, date, timeout, refresh;
+        lang = require('/node_modules\\lang\\index.ls', module);
+        parseTime = require('/node_modules\\parse-time\\index.ls', module);
+        $$ = require('/node_modules\\dom\\index.ls', module).$$;
+        relative = require('/node_modules\\relative-date-component\\index.js', module);
         timestamp = new Date().getTime();
         postTitles = $$('.post-title[data-simplified-time]');
         for (i$ = 0, len$ = postTitles.length; i$ < len$; ++i$) {
             postTitle = postTitles[i$];
-            total = 0;
-            for (j$ = 0, len1$ = (ref$ = split$.call(postTitle.dataset.simplifiedTime, ', ')).length; j$ < len1$; ++j$) {
-                timespan = ref$[j$];
-                ref1$ = split$.call(timespan, ' '), count = ref1$[0], unit = ref1$[1];
-                if (count === lang('few')) {
-                    count = 5;
-                    unit = lang('second');
-                }
-                total += count * units[lang(lang.singularize(unit))];
-                if (total !== total) {
-                    console.log(count, lang.singularize(unit));
-                }
-            }
-            date = new Date(timestamp - total);
+            postTimestamp = parseTime(postTitle.dataset.simplifiedTime);
+            date = new Date(timestamp - postTimestamp);
             postTitle.dataset.timestamp = date.getTime();
         }
-        timeout = 10 * units.second;
+        timeout = 10000;
         refresh = function () {
             var i$, ref$, len$, postTitle, d;
             for (i$ = 0, len$ = (ref$ = postTitles).length; i$ < len$; ++i$) {
@@ -583,7 +577,7 @@
         };
         refresh();
     });
-    require.define('/node_modules\\relative-date-component\\index.js', function (module, exports, __dirname, __filename, process) {
+    require.define('/node_modules\\relative-date-component\\index.js', function (module, exports, __dirname, __filename) {
         module.exports = relative;
         var second = 1000;
         var minute = 60 * second;
@@ -626,12 +620,73 @@
             return Math.round(ms / year) + ' years';
         }
     });
-    require.define('/src\\forum-topics\\hide-topic.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/node_modules\\parse-time\\index.ls', function (module, exports, __dirname, __filename) {
+        var lang, units, split$ = ''.split;
+        lang = require('/lib\\parse-time\\node_modules\\lang\\index.ls', module);
+        units = {
+            second: 1000,
+            minute: 60000,
+            hour: 3600000,
+            day: 86400000
+        };
+        module.exports = function (it) {
+            var total, i$, ref$, len$, timespan, ref1$, count, unit;
+            total = 0;
+            for (i$ = 0, len$ = (ref$ = split$.call(it, ', ')).length; i$ < len$; ++i$) {
+                timespan = ref$[i$];
+                ref1$ = split$.call(timespan, ' '), count = ref1$[0], unit = ref1$[1];
+                if (count === lang('few')) {
+                    count = 5;
+                    unit = lang('second');
+                }
+                total += count * units[lang(lang.singularize(unit))];
+            }
+            return total;
+        };
+    });
+    require.define('/lib\\parse-time\\node_modules\\lang\\index.ls', function (module, exports, __dirname, __filename) {
+        var l, langs, toCamelCase, lang, split$ = ''.split;
+        l = split$.call(document.location, '/')[4];
+        langs = {
+            fr: require('/lib\\lang\\fr.ls', module),
+            en: require('/lib\\lang\\en.ls', module)
+        };
+        toCamelCase = require('/lib\\lang\\node_modules\\to-camel-case\\index.js', module);
+        module.exports = lang = function () {
+            lang.displayName = 'lang';
+            var ref$, prototype = lang.prototype, constructor = lang;
+            import$(lang, (ref$ = langs[l]) != null ? ref$ : langs.en);
+            function lang(it) {
+                var ref$;
+                return (ref$ = lang[it]) != null ? ref$ : (ref$ = lang[toCamelCase(it)]) != null ? ref$ : it;
+            }
+            lang.pluralize == null && (lang.pluralize = function (count, key) {
+                return Math.round(count) + ' ' + lang(key) + [count > 1.5 ? 's' : void 8];
+            });
+            lang.singularize == null && (lang.singularize = function (it) {
+                if (it[it.length - 1] === 's') {
+                    return it.slice(0, -1);
+                } else {
+                    return it;
+                }
+            });
+            lang.simplifyTime = require('/lib\\lang\\simplify-time.ls', module);
+            return lang;
+        }();
+        function import$(obj, src) {
+            var own = {}.hasOwnProperty;
+            for (var key in src)
+                if (own.call(src, key))
+                    obj[key] = src[key];
+            return obj;
+        }
+    });
+    require.define('/src\\forum-topics\\hide-topic.ls', function (module, exports, __dirname, __filename) {
         var tbodyRegular, w, ref$, $, $$, el, templateHideTopic, hiddenTopics, i$, len$, postPages, that, tr, topicId, split$ = ''.split, join$ = [].join;
-        tbodyRegular = require('/src\\tbody-regular.ls');
-        w = require('/src\\w.ls');
-        ref$ = require('/node_modules\\dom\\index.ls'), $ = ref$.$, $$ = ref$.$$, el = ref$.el;
-        templateHideTopic = require('/src\\forum-topics\\templates\\hide-topic.jadels');
+        tbodyRegular = require('/src\\tbody-regular.ls', module);
+        w = require('/src\\w.ls', module);
+        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, $$ = ref$.$$, el = ref$.el;
+        templateHideTopic = require('/src\\forum-topics\\templates\\hide-topic.jadels', module);
         hiddenTopics = split$.call(w.localStorage.getItem('hidden_topics') || '', ';');
         function saveHiddens() {
             w.localStorage.setItem('hidden_topics', join$.call(hiddenTopics, ';'));
@@ -658,7 +713,7 @@
             fn$.call(this, tr, topicId, postPages);
         }
         if ($('tbody.regular tr:not(.hidden):not(.read)')) {
-            clearTimeout(require('/src\\forum-layout\\check-updates.ls'));
+            clearTimeout(require('/src\\forum-layout\\check-updates.ls', module));
         }
         function in$(x, arr) {
             var i = -1, l = arr.length >>> 0;
@@ -683,12 +738,12 @@
             postPages.insertBefore(x$, postPages.children[0]);
         }
     });
-    require.define('/src\\forum-layout\\check-updates.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\forum-layout\\check-updates.ls', function (module, exports, __dirname, __filename) {
         var lang, tbodyRegular, ajax, ref$, $, node, firstTopicId, trHtml, aEndHtml, tbodyHtml, x$, h1, refresh, timeout;
-        lang = require('/node_modules\\lang\\index.ls');
-        tbodyRegular = require('/src\\tbody-regular.ls');
-        ajax = require('/node_modules\\ajax\\index.ls');
-        ref$ = require('/node_modules\\dom\\index.ls'), $ = ref$.$, node = ref$.node;
+        lang = require('/node_modules\\lang\\index.ls', module);
+        tbodyRegular = require('/src\\tbody-regular.ls', module);
+        ajax = require('/node_modules\\ajax\\index.ls', module);
+        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, node = ref$.node;
         firstTopicId = tbodyRegular.children[0].id.slice('postRow'.length);
         trHtml = '<tr id="postRow' + firstTopicId;
         aEndHtml = 'data-tooltip-options=\'{"location": "mouse"}\'>';
@@ -720,7 +775,7 @@
         timeout = 15 * 1000;
         module.exports = setTimeout(refresh, timeout);
     });
-    require.define('/node_modules\\ajax\\index.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/node_modules\\ajax\\index.ls', function (module, exports, __dirname, __filename) {
         module.exports = {
             get: function (url, success) {
                 var x$;
@@ -732,7 +787,7 @@
             }
         };
     });
-    require.define('/src\\forum-topics\\templates\\hide-topic.jadels', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\forum-topics\\templates\\hide-topic.jadels', function (module, exports, __dirname, __filename) {
         var join;
         join = function (it) {
             if (it) {
@@ -745,9 +800,9 @@
             return '' + ((locals.hidden ? '<a class="last-read show-topic">\u2713</a>' : '<a class="last-read hide-topic">X</a>') || '');
         };
     });
-    require.define('/src\\forum-topics\\move-redirects.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\forum-topics\\move-redirects.ls', function (module, exports, __dirname, __filename) {
         var tbodyRegular, i$, ref$, len$, status, tr;
-        tbodyRegular = require('/src\\tbody-regular.ls');
+        tbodyRegular = require('/src\\tbody-regular.ls', module);
         for (i$ = 0, len$ = (ref$ = tbodyRegular.querySelectorAll('.post-status')).length; i$ < len$; ++i$) {
             status = ref$[i$];
             tr = status.parentNode.parentNode;
@@ -756,14 +811,14 @@
             tbodyRegular.appendChild(tr);
         }
     });
-    require.define('/src\\forum-topics\\last-updated.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\forum-topics\\last-updated.ls', function (module, exports, __dirname, __filename) {
         var fetchSiblings, lang, simplifyTime, ref$, $, $$, el, node, templateAuthor, templateTtLastUpdated, templateDefaultPagination, characters, res$, i$, len$, name, lastPostTh, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, hasUnread, post, children, div, a, td, lastPostTd, topicId, ref1$, pages, lastPost, lastPostLink, replies, author, postCount, postOnly, text, isCm, that, authorName, inlineText, simplifiedTime, state, replace$ = ''.replace, split$ = ''.split, out$ = typeof exports != 'undefined' && exports || this, join$ = [].join, slice$ = [].slice;
-        fetchSiblings = require('/node_modules\\fetch-siblings\\index.ls');
-        lang = require('/node_modules\\lang\\index.ls'), simplifyTime = lang.simplifyTime;
-        ref$ = require('/node_modules\\dom\\index.ls'), $ = ref$.$, $$ = ref$.$$, el = ref$.el, node = ref$.node;
-        templateAuthor = require('/src\\forum-topics\\templates\\author.jadels');
-        templateTtLastUpdated = require('/src\\forum-topics\\templates\\tt-last-updated.jadels');
-        templateDefaultPagination = require('/src\\forum-topics\\templates\\default-pagination.jadels');
+        fetchSiblings = require('/node_modules\\fetch-siblings\\index.ls', module);
+        lang = require('/node_modules\\lang\\index.ls', module), simplifyTime = lang.simplifyTime;
+        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, $$ = ref$.$$, el = ref$.el, node = ref$.node;
+        templateAuthor = require('/src\\forum-topics\\templates\\author.jadels', module);
+        templateTtLastUpdated = require('/src\\forum-topics\\templates\\tt-last-updated.jadels', module);
+        templateDefaultPagination = require('/src\\forum-topics\\templates\\default-pagination.jadels', module);
         characters = $$('.char-wrapper .name');
         if (characters.length) {
             res$ = [];
@@ -892,7 +947,7 @@
             });
         }
     });
-    require.define('/src\\forum-topics\\templates\\default-pagination.jadels', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\forum-topics\\templates\\default-pagination.jadels', function (module, exports, __dirname, __filename) {
         var join;
         join = function (it) {
             if (it) {
@@ -905,7 +960,7 @@
             return '<ul class="ui-pagination"><li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li></ul>';
         };
     });
-    require.define('/src\\forum-topics\\templates\\tt-last-updated.jadels', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\forum-topics\\templates\\tt-last-updated.jadels', function (module, exports, __dirname, __filename) {
         var join;
         join = function (it) {
             if (it) {
@@ -918,7 +973,7 @@
             return '<div class="tt-last-updated"><br/>' + (locals.text || '') + '</div>';
         };
     });
-    require.define('/src\\forum-topics\\templates\\author.jadels', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\forum-topics\\templates\\author.jadels', function (module, exports, __dirname, __filename) {
         var join;
         join = function (it) {
             if (it) {
@@ -935,7 +990,7 @@
             ].join(' ') + '">' + ((locals.cm ? '<img src="/wow/static/images/layout/cms/icon_blizzard.gif" alt="CM"/>' : void 8) || '') + '\n' + (locals.name || '') + '</span>';
         };
     });
-    require.define('/node_modules\\fetch-siblings\\index.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/node_modules\\fetch-siblings\\index.ls', function (module, exports, __dirname, __filename) {
         module.exports = function () {
             function fetchSiblings(elem, arg$) {
                 var slice, ref$, indexBy, results$ = {};
@@ -948,74 +1003,75 @@
             return fetchSiblings;
         }();
     });
-    require.define('/src\\forum-layout\\index.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\forum-layout\\index.ls', function (module, exports, __dirname, __filename) {
         var jumps, checkUpdates, mar, moveActions, stickies;
-        jumps = require('/src\\forum-layout\\jumps\\index.ls');
-        checkUpdates = require('/src\\forum-layout\\check-updates.ls');
-        mar = require('/src\\forum-layout\\mar.ls');
-        moveActions = require('/src\\forum-layout\\move-actions.ls');
-        stickies = require('/src\\forum-layout\\stickies.ls');
+        jumps = require('/src\\forum-layout\\jumps\\index.ls', module);
+        checkUpdates = require('/src\\forum-layout\\check-updates.ls', module);
+        mar = require('/src\\forum-layout\\mar.ls', module);
+        moveActions = require('/src\\forum-layout\\move-actions.ls', module);
+        stickies = require('/src\\forum-layout\\stickies.ls', module);
     });
-    require.define('/src\\forum-layout\\stickies.ls', function (module, exports, __dirname, __filename, process) {
-        var lang, forumOptions, w, ref$, $, node, buttonSticky;
-        lang = require('/node_modules\\lang\\index.ls');
-        forumOptions = require('/src\\forum-options.ls');
-        w = require('/src\\w.ls');
-        ref$ = require('/node_modules\\dom\\index.ls'), $ = ref$.$, node = ref$.node;
+    require.define('/src\\forum-layout\\stickies.ls', function (module, exports, __dirname, __filename) {
+        var lang, forumOptions, w, ref$, $, node, sticky, buttonSticky, x$;
+        lang = require('/node_modules\\lang\\index.ls', module);
+        forumOptions = require('/src\\forum-options.ls', module);
+        w = require('/src\\w.ls', module);
+        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, node = ref$.node;
+        sticky = $('.sticky');
         if ('show' !== w.localStorage.getItem('show-stickies')) {
-            $('.sticky').style.display = 'none';
+            sticky.style.display = 'none';
         }
         module.exports = buttonSticky = node('a', {
             innerHTML: 'Post-its',
             title: lang.toggleSticky,
             onclick: function () {
-                var s;
-                (s = $('.sticky').style).display = s.display === 'none' ? '' : 'none';
+                sticky.style.display = sticky.style.display === 'none' ? '' : 'none';
                 w.localStorage.setItem('show-stickies', s.display || 'show');
             }
         });
-        module.exports.style.cursor = 'pointer';
-        forumOptions.appendChild(buttonSticky);
+        x$ = buttonSticky;
+        x$.style.cursor = 'pointer';
+        forumOptions.appendChild(x$);
     });
-    require.define('/src\\forum-layout\\move-actions.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\forum-layout\\move-actions.ls', function (module, exports, __dirname, __filename) {
         var $, x$;
-        $ = require('/node_modules\\dom\\index.ls').$;
+        $ = require('/node_modules\\dom\\index.ls', module).$;
         x$ = $('.forum-options');
         x$.parentNode.removeChild(x$);
         $('.content-trail').appendChild(x$);
     });
-    require.define('/src\\forum-layout\\jumps\\index.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\forum-layout\\jumps\\index.ls', function (module, exports, __dirname, __filename) {
         var newTopic;
-        newTopic = require('/src\\forum-layout\\jumps\\new-topic.ls');
+        newTopic = require('/src\\forum-layout\\jumps\\new-topic.ls', module);
     });
-    require.define('/src\\forum-layout\\jumps\\new-topic.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\forum-layout\\jumps\\new-topic.ls', function (module, exports, __dirname, __filename) {
         var bindKey, w, $;
-        bindKey = require('/src\\cheatsheet\\bind-key.ls');
-        w = require('/src\\w.ls');
-        $ = require('/node_modules\\dom\\index.ls').$;
+        bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
+        w = require('/src\\w.ls', module);
+        $ = require('/node_modules\\dom\\index.ls', module).$;
         if (!$('a.button1.disabled')) {
             bindKey('n', 'new-topic', function () {
                 document.location += 'topic';
             });
         }
     });
-    require.define('/src\\forum.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\forum.ls', function (module, exports, __dirname, __filename) {
         var that, ref$, split$ = ''.split;
         module.exports = (that = document.getElementById('posts')) ? (that.dataset.id = split$.call((ref$ = split$.call(document.location, '/'))[ref$.length - 2], '?')[0], that) : null;
     });
-    require.define('/src\\reply\\index.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\reply\\index.ls', function (module, exports, __dirname, __filename) {
         var clearTextarea, memebox, preview, quickQuote, rememberReply;
-        clearTextarea = require('/src\\reply\\clear-textarea.ls');
-        memebox = require('/src\\reply\\memebox.ls');
-        preview = require('/src\\reply\\preview.ls');
-        quickQuote = require('/src\\reply\\quick-quote.ls');
-        rememberReply = require('/src\\reply\\remember-reply.ls');
+        clearTextarea = require('/src\\reply\\clear-textarea.ls', module);
+        memebox = require('/src\\reply\\memebox.ls', module);
+        preview = require('/src\\reply\\preview.ls', module);
+        quickQuote = require('/src\\reply\\quick-quote.ls', module);
+        rememberReply = require('/src\\reply\\remember-reply.ls', module);
     });
-    require.define('/src\\reply\\remember-reply.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\reply\\remember-reply.ls', function (module, exports, __dirname, __filename) {
         var textarea, topic, $, submit;
-        textarea = require('/src\\textarea.ls');
-        topic = require('/src\\topic.ls');
-        $ = require('/node_modules\\dom\\index.ls').$;
+        textarea = require('/src\\textarea.ls', module);
+        topic = require('/src\\topic.ls', module);
+        $ = require('/node_modules\\dom\\index.ls', module).$;
         submit = $('.post [type=submit]');
         if (!textarea.value) {
             textarea.value = localStorage.getItem('post_' + topic.dataset.id) || '';
@@ -1027,47 +1083,53 @@
             return localStorage.setItem('post_' + topic.dataset.id, '');
         };
     });
-    require.define('/src\\topic.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\topic.ls', function (module, exports, __dirname, __filename) {
         var that, x$, ref$, i$, replace$ = ''.replace, split$ = ''.split;
         module.exports = (that = document.getElementById('thread')) ? (x$ = that.dataset, x$.url = replace$.call(split$.call(document.location, '?')[0], /#[0-9]+/, ''), x$.page = ((ref$ = /\?page=([0-9]+)/.exec(document.location)) != null ? ref$[1] : void 8) || 1, ref$ = split$.call(x$.url, '/'), i$ = ref$.length - 2, x$.topicId = ref$[i$], x$.id = ref$[i$ + 1], ref$, that) : null;
     });
-    require.define('/src\\textarea.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\textarea.ls', function (module, exports, __dirname, __filename) {
         var topic, $;
-        topic = require('/src\\topic.ls');
-        $ = require('/node_modules\\dom\\index.ls').$;
+        topic = require('/src\\topic.ls', module);
+        $ = require('/node_modules\\dom\\index.ls', module).$;
         module.exports = topic ? $('#post-edit textarea') : null;
     });
-    require.define('/src\\reply\\quick-quote.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\reply\\quick-quote.ls', function (module, exports, __dirname, __filename) {
         var bindKey, textarea, w, $;
-        bindKey = require('/src\\cheatsheet\\bind-key.ls');
-        textarea = require('/src\\textarea.ls');
-        w = require('/src\\w.ls');
-        $ = require('/node_modules\\dom\\index.ls').$;
+        bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
+        textarea = require('/src\\textarea.ls', module);
+        w = require('/src\\w.ls', module);
+        $ = require('/node_modules\\dom\\index.ls', module).$;
         bindKey('r', 'quick-quote', function () {
-            var that;
+            var that, x$;
             if (that = w.getSelection().toString()) {
-                textarea.value += (textarea.value ? '\n' : '') + ('[quote]' + that + '[/quote]');
-                textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
-                textarea.focus();
+                x$ = textarea;
+                x$.value += (x$.value ? '\n' : '') + ('[quote]' + that + '[/quote]');
+                x$.selectionStart = x$.selectionEnd = x$.value.length;
+                x$.focus();
             }
             $('#forum-actions-bottom').scrollIntoView();
         });
     });
-    require.define('/src\\reply\\preview.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\reply\\preview.ls', function (module, exports, __dirname, __filename) {
         var w, autolink, $, postPreview, old;
-        w = require('/src\\w.ls');
-        autolink = require('/node_modules\\autolink\\index.ls');
-        $ = require('/node_modules\\dom\\index.ls').$;
+        w = require('/src\\w.ls', module);
+        autolink = require('/node_modules\\autolink\\index.ls', module);
+        $ = require('/node_modules\\dom\\index.ls', module).$;
         postPreview = $('#post-preview');
-        old = w.BML.preview.bind(w.BML);
+        old = bind$(w.BML, 'preview');
         w.BML.preview = function (content, target, callback) {
-            return old(content, target, function () {
+            old(content, target, function () {
                 callback();
                 autolink(postPreview);
             });
         };
+        function bind$(obj, key, target) {
+            return function () {
+                return (target || obj)[key].apply(obj, arguments);
+            };
+        }
     });
-    require.define('/node_modules\\autolink\\index.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/node_modules\\autolink\\index.ls', function (module, exports, __dirname, __filename) {
         var extensions, rules, ajax, replace$ = ''.replace;
         extensions = '(?:com|net|org|eu|fr|jp|us|co.uk|me)';
         rules = [
@@ -1093,7 +1155,7 @@
             ]
         ];
         module.exports = elAutolink;
-        ajax = require('/lib\\autolink\\node_modules\\ajax\\index.ls');
+        ajax = require('/lib\\autolink\\node_modules\\ajax\\index.ls', module);
         function elAutolink(el) {
             var h, r, ref$, url, e;
             try {
@@ -1127,7 +1189,7 @@
             return it;
         }
     });
-    require.define('/lib\\autolink\\node_modules\\ajax\\index.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/lib\\autolink\\node_modules\\ajax\\index.ls', function (module, exports, __dirname, __filename) {
         module.exports = {
             get: function (url, success) {
                 var x$;
@@ -1139,7 +1201,7 @@
             }
         };
     });
-    require.define('/src\\reply\\memebox.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\reply\\memebox.ls', function (module, exports, __dirname, __filename) {
         var memes, textarea, ref$, $, el, templateMemebox, that, addMeme, appendMeme, memebox, ul;
         memes = {
             challengeaccepted: 'http://sambacentral.files.wordpress.com/2012/11/challenge-accepted.jpg',
@@ -1164,9 +1226,9 @@
             okay: 'http://cache.ohinternet.com/images/e/e6/Okay_guy.jpg',
             no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
         };
-        textarea = require('/src\\textarea.ls');
-        ref$ = require('/node_modules\\dom\\index.ls'), $ = ref$.$, el = ref$.el;
-        templateMemebox = require('/src\\reply\\templates\\memebox.jadels');
+        textarea = require('/src\\textarea.ls', module);
+        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, el = ref$.el;
+        templateMemebox = require('/src\\reply\\templates\\memebox.jadels', module);
         if (that = $('.post.general')) {
             that.removeChild((ref$ = that.children)[ref$.length - 1]);
             addMeme = function (url) {
@@ -1193,7 +1255,6 @@
                     url = ref$[name];
                     switch (name.indexOf(value)) {
                     case -1:
-                        break;
                     case 0:
                         appendMeme(name, url);
                         if (++i > 10) {
@@ -1218,7 +1279,7 @@
             that.appendChild(memebox);
         }
     });
-    require.define('/src\\reply\\templates\\memebox.jadels', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\reply\\templates\\memebox.jadels', function (module, exports, __dirname, __filename) {
         var join;
         join = function (it) {
             if (it) {
@@ -1231,12 +1292,12 @@
             return '<div id="memebox"><h1>MemeBox</h1><br/><input id="meme-search" placeholder="meme" autocomplete="off" size="15"/><ul id="memes"></ul></div>';
         };
     });
-    require.define('/src\\reply\\clear-textarea.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\reply\\clear-textarea.ls', function (module, exports, __dirname, __filename) {
         var textarea, topic, ref$, $, el, templateClearTextarea, clearer, that;
-        textarea = require('/src\\textarea.ls');
-        topic = require('/src\\topic.ls');
-        ref$ = require('/node_modules\\dom\\index.ls'), $ = ref$.$, el = ref$.el;
-        templateClearTextarea = require('/src\\reply\\templates\\clear-textarea.jadels');
+        textarea = require('/src\\textarea.ls', module);
+        topic = require('/src\\topic.ls', module);
+        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, el = ref$.el;
+        templateClearTextarea = require('/src\\reply\\templates\\clear-textarea.jadels', module);
         clearer = el(templateClearTextarea());
         if (that = $('.editor1')) {
             that.insertBefore(clearer, textarea);
@@ -1246,7 +1307,7 @@
             };
         }
     });
-    require.define('/src\\reply\\templates\\clear-textarea.jadels', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\reply\\templates\\clear-textarea.jadels', function (module, exports, __dirname, __filename) {
         var join;
         join = function (it) {
             if (it) {
@@ -1259,16 +1320,16 @@
             return '<div class="clear-textarea">X</div>';
         };
     });
-    require.define('/src\\topic-posts\\index.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\topic-posts\\index.ls', function (module, exports, __dirname, __filename) {
         var jumps, autolink, updateCount;
-        jumps = require('/src\\topic-posts\\jumps\\index.ls');
-        autolink = require('/src\\topic-posts\\autolink.ls');
-        updateCount = require('/src\\topic-posts\\update-count.ls');
+        jumps = require('/src\\topic-posts\\jumps\\index.ls', module);
+        autolink = require('/src\\topic-posts\\autolink.ls', module);
+        updateCount = require('/src\\topic-posts\\update-count.ls', module);
     });
-    require.define('/src\\topic-posts\\update-count.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\topic-posts\\update-count.ls', function (module, exports, __dirname, __filename) {
         var topic, $$, pages, postCount, ref$, lastPosterName;
-        topic = require('/src\\topic.ls');
-        $$ = require('/node_modules\\dom\\index.ls').$$;
+        topic = require('/src\\topic.ls', module);
+        $$ = require('/node_modules\\dom\\index.ls', module).$$;
         pages = $$('#forum-actions-top .ui-pagination li:not(.cap-item)');
         if (pages) {
             if (!pages.length || pages.length && 'current' === pages[pages.length - 1].className || !localStorage.getItem('topic_' + topic.dataset.id)) {
@@ -1279,10 +1340,10 @@
             }
         }
     });
-    require.define('/src\\topic-posts\\autolink.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\topic-posts\\autolink.ls', function (module, exports, __dirname, __filename) {
         var autolink, $$, i$, ref$, len$, post;
-        autolink = require('/node_modules\\autolink\\index.ls');
-        $$ = require('/node_modules\\dom\\index.ls').$$;
+        autolink = require('/node_modules\\autolink\\index.ls', module);
+        $$ = require('/node_modules\\dom\\index.ls', module).$$;
         for (i$ = 0, len$ = (ref$ = $$('.post-detail')).length; i$ < len$; ++i$) {
             post = ref$[i$];
             if (post.parentNode.parentNode.parentNode.parentNode.parentNode.classList.contains('blizzard')) {
@@ -1291,15 +1352,15 @@
             autolink(post);
         }
     });
-    require.define('/src\\topic-posts\\jumps\\index.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\topic-posts\\jumps\\index.ls', function (module, exports, __dirname, __filename) {
         var unread;
-        unread = require('/src\\topic-posts\\jumps\\unread.ls');
+        unread = require('/src\\topic-posts\\jumps\\unread.ls', module);
     });
-    require.define('/src\\topic-posts\\jumps\\unread.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\topic-posts\\jumps\\unread.ls', function (module, exports, __dirname, __filename) {
         var topic, bindKey, $$, lastPostId;
-        topic = require('/src\\topic.ls');
-        bindKey = require('/src\\cheatsheet\\bind-key.ls');
-        $$ = require('/node_modules\\dom\\index.ls').$$;
+        topic = require('/src\\topic.ls', module);
+        bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
+        $$ = require('/node_modules\\dom\\index.ls', module).$$;
         if (lastPostId = localStorage.getItem('topic_' + topic.dataset.id)) {
             bindKey('j', 'jump-to-last-read', function () {
                 var lastPostPage, ref$;
@@ -1314,16 +1375,16 @@
             });
         }
     });
-    require.define('/src\\topic-characters\\index.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\topic-characters\\index.ls', function (module, exports, __dirname, __filename) {
         var contextLinks, improveTopic, multiChars;
-        contextLinks = require('/src\\topic-characters\\context-links.ls');
-        improveTopic = require('/src\\topic-characters\\improve-topic.ls');
-        multiChars = require('/src\\topic-characters\\multi-chars.ls');
+        contextLinks = require('/src\\topic-characters\\context-links.ls', module);
+        improveTopic = require('/src\\topic-characters\\improve-topic.ls', module);
+        multiChars = require('/src\\topic-characters\\multi-chars.ls', module);
     });
-    require.define('/src\\topic-characters\\multi-chars.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\topic-characters\\multi-chars.ls', function (module, exports, __dirname, __filename) {
         var ref$, $$, el, templateMultiChars, accountCharacters, that, modified, i$, len$, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul, limit, i, replace$ = ''.replace;
-        ref$ = require('/node_modules\\dom\\index.ls'), $$ = ref$.$$, el = ref$.el;
-        templateMultiChars = require('/src\\topic-characters\\templates\\multi-chars.jadels');
+        ref$ = require('/node_modules\\dom\\index.ls', module), $$ = ref$.$$, el = ref$.el;
+        templateMultiChars = require('/src\\topic-characters\\templates\\multi-chars.jadels', module);
         accountCharacters = (that = localStorage.getItem('accountCharacters')) ? JSON.parse(that) : {};
         function clean(it) {
             it = replace$.call(it, 'context-link', '');
@@ -1400,9 +1461,9 @@
             };
         }
     });
-    require.define('/src\\topic-characters\\templates\\multi-chars.jadels', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\topic-characters\\templates\\multi-chars.jadels', function (module, exports, __dirname, __filename) {
         var lang, join;
-        lang = require('/node_modules\\lang\\index.ls');
+        lang = require('/node_modules\\lang\\index.ls', module);
         join = function (it) {
             if (it) {
                 return it.join('');
@@ -1424,7 +1485,7 @@
             }()) || '') + '</ul></div>';
         };
     });
-    require.define('/src\\topic-characters\\improve-topic.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\topic-characters\\improve-topic.ls', function (module, exports, __dirname, __filename) {
         var i$, ref$, len$, infos, realm, ref1$;
         for (i$ = 0, len$ = (ref$ = document.getElementsByClassName('character-info')).length; i$ < len$; ++i$) {
             infos = ref$[i$];
@@ -1438,11 +1499,11 @@
             }
         }
     });
-    require.define('/src\\topic-characters\\context-links.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\topic-characters\\context-links.ls', function (module, exports, __dirname, __filename) {
         var topic, el, templateContextLinks, i$, ref$, len$, context, extraContext;
-        topic = require('/src\\topic.ls');
-        el = require('/node_modules\\dom\\index.ls').el;
-        templateContextLinks = require('/src\\topic-characters\\templates\\context-links.jadels');
+        topic = require('/src\\topic.ls', module);
+        el = require('/node_modules\\dom\\index.ls', module).el;
+        templateContextLinks = require('/src\\topic-characters\\templates\\context-links.jadels', module);
         for (i$ = 0, len$ = (ref$ = topic.querySelectorAll('.context-links')).length; i$ < len$; ++i$) {
             context = ref$[i$];
             if (context.children.length === 1) {
@@ -1452,7 +1513,7 @@
             context.insertBefore(extraContext, context.querySelector('.link-last'));
         }
     });
-    require.define('/src\\topic-characters\\templates\\context-links.jadels', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\topic-characters\\templates\\context-links.jadels', function (module, exports, __dirname, __filename) {
         var join;
         join = function (it) {
             if (it) {
@@ -1465,14 +1526,14 @@
             return '<span class="extra-links"><a href="' + locals.link + 'achievement" class="link-first extra-link">HF</a><a href="' + locals.link + 'statistic#21:152" class="link-first extra-link">PvP</a></span>';
         };
     });
-    require.define('/src\\fix\\index.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\fix\\index.ls', function (module, exports, __dirname, __filename) {
         var htmlOverrides, menu, setView, crabby;
-        htmlOverrides = require('/src\\fix\\html-overrides.ls');
-        menu = require('/src\\fix\\menu.ls');
-        setView = require('/src\\fix\\set-view.ls');
-        crabby = require('/src\\fix\\crabby.ls');
+        htmlOverrides = require('/src\\fix\\html-overrides.ls', module);
+        menu = require('/src\\fix\\menu.ls', module);
+        setView = require('/src\\fix\\set-view.ls', module);
+        crabby = require('/src\\fix\\crabby.ls', module);
     });
-    require.define('/src\\fix\\crabby.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\fix\\crabby.ls', function (module, exports, __dirname, __filename) {
         var that;
         if (that = document.getElementById('crabby-shell')) {
             that.parentNode.removeChild(that);
@@ -1485,9 +1546,9 @@
             }, 300);
         }
     });
-    require.define('/src\\fix\\set-view.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\fix\\set-view.ls', function (module, exports, __dirname, __filename) {
         var w, ref$;
-        w = require('/src\\w.ls');
+        w = require('/src\\w.ls', module);
         if ((ref$ = w.Cms) != null) {
             ref$.Forum.setView = function (type, target) {
                 w.Cookie.create('forumView', type, {
@@ -1499,9 +1560,9 @@
             };
         }
     });
-    require.define('/src\\fix\\menu.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\fix\\menu.ls', function (module, exports, __dirname, __filename) {
         var w, old;
-        w = require('/src\\w.ls');
+        w = require('/src\\w.ls', module);
         old = w.Menu.show;
         w.Menu.show = function (arg$, arg1$, options) {
             var ref$, key$, x, ref1$;
@@ -1510,10 +1571,10 @@
             return old.apply(this, arguments);
         };
     });
-    require.define('/src\\fix\\html-overrides.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\fix\\html-overrides.ls', function (module, exports, __dirname, __filename) {
         var lang, $, that, k, v, ref$;
-        lang = require('/node_modules\\lang\\index.ls');
-        $ = require('/node_modules\\dom\\index.ls').$;
+        lang = require('/node_modules\\lang\\index.ls', module);
+        $ = require('/node_modules\\dom\\index.ls', module).$;
         if (that = lang.htmlOverrides) {
             for (k in that) {
                 v = that[k];
@@ -1523,44 +1584,44 @@
             }
         }
     });
-    require.define('/src\\jumps\\index.ls', function (module, exports, __dirname, __filename, process) {
-        var top, $;
-        top = require('/src\\jumps\\top.ls');
-        $ = require('/node_modules\\dom\\index.ls').$;
+    require.define('/src\\jumps\\index.ls', function (module, exports, __dirname, __filename) {
+        var $;
+        $ = require('/node_modules\\dom\\index.ls', module).$;
+        require('/src\\jumps\\top.ls', module);
         if (!$('.player-name')) {
-            require('/src\\jumps\\login.ls');
+            require('/src\\jumps\\login.ls', module);
         }
     });
-    require.define('/src\\jumps\\login.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\jumps\\login.ls', function (module, exports, __dirname, __filename) {
         var bindKey, w;
-        bindKey = require('/src\\cheatsheet\\bind-key.ls');
-        w = require('/src\\w.ls');
+        bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
+        w = require('/src\\w.ls', module);
         bindKey('l', 'login', function () {
             w.Login.open('https://eu.battle.net/login/login.frag');
         });
     });
-    require.define('/src\\jumps\\top.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\jumps\\top.ls', function (module, exports, __dirname, __filename) {
         var bindKey, $;
-        bindKey = require('/src\\cheatsheet\\bind-key.ls');
-        $ = require('/node_modules\\dom\\index.ls').$;
+        bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
+        $ = require('/node_modules\\dom\\index.ls', module).$;
         bindKey('t', 'page-top', function () {
             $('#logo').scrollIntoView();
         });
     });
-    require.define('/src\\board\\css.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\board\\css.ls', function (module, exports, __dirname, __filename) {
         var node, style;
-        node = require('/node_modules\\dom\\index.ls').node;
+        node = require('/node_modules\\dom\\index.ls', module).node;
         style = node('style', {
             type: 'text/css',
             innerHTML: '/*slake:build#compile-ls embeds css*/\n#forum-actions-top h1 {\n  text-align: center;\n  margin-left: 200px;\n}\n.forum .forum-actions {\n  padding: 0px;\n}\n.forum .actions-panel {\n  margin-right: 15px;\n}\n.forum .forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.last-read {\n  opacity: 0;\n}\ntr:hover .last-read {\n  opacity: 1;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.advanced .post-author {\n  width: 15px;\n}\n#posts.advanced .post-views {\n  width: 15px;\n}\n#posts.advanced .post-lastPost {\n  width: 90px;\n  text-align: center;\n}\n#posts.advanced .post-lastPost .more-arrow {\n  display: none;\n}\n#posts.advanced .post-th .replies {\n  padding-right: 2px;\n  text-align: center;\n}\n#posts.advanced .post-th .poster {\n  text-align: right;\n  font-weight: normal;\n  padding-right: 5px;\n}\n#posts.advanced .post-th .last-post-th {\n  text-align: left;\n}\n#posts.advanced .post-last-updated {\n  width: 70px;\n}\n#posts.advanced .post-replies {\n  width: 10px;\n  text-align: right;\n  padding-right: 10px;\n}\n#posts.simple .tt-last-updated {\n  display: inline;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\n#memebox {\n  position: relative;\n  float: right;\n  width: 150px;\n  top: 5px;\n}\n#memebox h1 {\n  font-size: 1.8em;\n  display: inline;\n}\n#memebox .hider {\n  color: #f00;\n  display: none;\n}\n#memebox:hover .hider {\n  display: inline;\n}\n#memebox .unhider {\n  color: #008000;\n  display: none;\n}\n#memebox:hover .unhider {\n  display: inline;\n}\n#memebox ul#memes {\n  margin-top: 10px;\n  margin-left: 30px;\n  list-style-type: circle;\n}\n#memebox li {\n  font-weight: bold;\n  color: link;\n  text-decoration: underline;\n}\n.context-links .extra-link {\n  background-image: none !important;\n  padding-left: 8px !important;\n  border-top-left-radius: 0px !important;\n  border-bottom-left-radius: 0px !important;\n}\n.ui-context {\n  width: 240px !important;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n#account-characters {\n  margin-left: 30px;\n}\n#account-characters h1 {\n  display: inline;\n}\n#account-characters ul {\n  list-style: circle;\n  margin-left: 20px;\n}\n#account-characters a {\n  font-weight: bold;\n}\nimg.autolink {\n  border: 5px solid #000;\n  max-width: 540px;\n  max-height: 500px;\n}\n'
         });
         document.head.appendChild(style);
     });
-    require.define('/src\\board\\content-class.ls', function (module, exports, __dirname, __filename, process) {
+    require.define('/src\\board\\content-class.ls', function (module, exports, __dirname, __filename) {
         var topic, forum, $, content;
-        topic = require('/src\\topic.ls');
-        forum = require('/src\\forum.ls');
-        $ = require('/node_modules\\dom\\index.ls').$;
+        topic = require('/src\\topic.ls', module);
+        forum = require('/src\\forum.ls', module);
+        $ = require('/node_modules\\dom\\index.ls', module).$;
         content = $('#content');
         content.className = function () {
             switch (false) {

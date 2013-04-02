@@ -14,3 +14,7 @@ results
 npm-debug.log
 
 node_modules/
+
+manifest.json
+script.js
+script.js.map

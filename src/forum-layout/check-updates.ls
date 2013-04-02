@@ -21,11 +21,12 @@ refresh = ->
 		h1.innerHTML = lang.checking-new
 		after-regular = @response.slice(tbody-html.length + @response.indexOf tbody-html)trim!
 
+		# crappy html check ... should probably try to parse
 		if tr-html is after-regular.substr 0 tr-html.length
 			h1.innerHTML += " <u>#{lang.no-new}</u>"
 			setTimeout -> #clear message
 				h1.innerHTML = ""
-			, 1500ms #1s
+			, 1_500ms
 			setTimeout refresh, timeout # here we go again
 		else
 			#get new post title
@@ -35,7 +36,7 @@ refresh = ->
 
 			h1.innerHTML = "<a href='#{document.location}'>#{lang.new-messages}</a> : 
 			#{['<br />' if title.length > 30]}#title"
-timeout = 15s * 1000ms #15s
 
 #timeout clearing is in hide-topic
+timeout = 15s * 1000ms
 module.exports = setTimeout refresh, timeout
