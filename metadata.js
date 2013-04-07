@@ -6,9 +6,12 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 3.3.1
+// @version 4.0
 // ==/UserScript==
  * changelog
+ * 4.0
+ *  SugarJS, FUCK YOU WORLD; YOLO
+ *  Allow for multi-binds
  * 3.3.1
  *  Fuck you crabby :)
  * 3.3

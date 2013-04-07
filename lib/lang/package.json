@@ -1,7 +1,5 @@
 {
   "name": "lang",
   "version": "0.1.0",
-  "dependencies": {
-  	"to-camel-case": "~0.0.1"
-  }
+  "dependencies": {}
 }

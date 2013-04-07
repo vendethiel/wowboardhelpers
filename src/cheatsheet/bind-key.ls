@@ -2,13 +2,13 @@ require! lang
 {$} = require 'dom'
 
 html = $ 'html'
-module.exports = bind-key = !(bind, lang-key, cb) ->
-	cheatsheet[bind] = lang lang-key
+module.exports = bind-key = !(binds, lang-key, cb) ->
+	cheatsheet[binds.toUpperCase!chars! * ', '] = lang lang-key
 
-	bind .= toUpperCase!charCodeAt!
+	codes = binds.toUpperCase!codes!map (0+)
 
 	document.addEventListener 'keydown' !->
-		return unless bind is it.keyCode
+		return unless it.keyCode in codes
 		return unless it.target is html #not typing
 		it.preventDefault!
 

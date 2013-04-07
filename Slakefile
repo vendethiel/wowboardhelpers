@@ -30,6 +30,9 @@ compile-styles = ->
 
   nib source * '\n' .render!
 
+minify = ->
+  require \uglify-js .minify it, {+fromString} .code
+
 nib = -> stylus it .use require(\nib)!
 
 task \npm "does npm related crap" !->
@@ -40,6 +43,9 @@ task \npm "does npm related crap" !->
     "cd lib/lang     && npm link ../string && cd ../.."
     "npm install"
   for cmd in cmds then shell cmd
+
+cache =
+  ls: []
 
 task \build "build userscript" ->
   try
@@ -107,11 +113,10 @@ task \build "build userscript" ->
       sourceMap: true*/
     console.timeEnd "codegen"
 
-    spit outfile,
-      join do
-        metadata
-        '"use strict";'
-        code
+    # minify gives us nuttin'
+    spit outfile, join do
+      metadata
+      code
     console.timeEnd "Total  "
     say "compiled script to #outfile"
   catch
@@ -129,8 +134,15 @@ debounce = (delay, fn) ->
 
 task \watch 'watch for changes and rebuild automatically' ->
   invoke \build
-  err, files <- glob "src/**/*.*" {}
+  files = []
+
+  err, _files <- glob "src/**/*.*" {}
   throw err if err?
+  files ++= _files
+
+  err, _files <- glob "lib/**/*.*" {}
+  throw err if err?
+  files ++= _files
 
   for file in files
     fs.watch file, interval: 1000, debounce 1000 (event, filename) ->

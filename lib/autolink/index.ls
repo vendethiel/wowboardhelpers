@@ -91,7 +91,7 @@ function el-autolink(el)
 		r = //\>((?:http:\/\/)?[a-z]{2}\.battle\.net/[^<\s.]*)//g
 		while [, url]? = r.exec h
 			let url
-				full-url = if ~url.indexOf 'http://'
+				full-url = if url.has 'http://'
 					url # we already have the leading http:// part
 				else "http://#url"
 

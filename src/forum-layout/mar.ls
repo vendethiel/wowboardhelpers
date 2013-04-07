@@ -1,5 +1,5 @@
-require! <[lang ../forum-options ../tbody-regular ../w]>
-{fetch-siblings, node} = require 'dom'
+require! <[lang fetch-siblings ../forum-options ../tbody-regular ../w]>
+{node} = require 'dom'
 
 all-read = false
 

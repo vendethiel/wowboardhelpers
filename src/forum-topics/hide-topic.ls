@@ -1,12 +1,12 @@
-require! <[../tbody-regular ../w]>
+require! '../tbody-regular'
 {$, $$, el} = require 'dom'
 template-hide-topic = require './templates/hide-topic'
 
-hidden-topics = (w.localStorage.getItem "hidden_topics" or "") / ";"
+hidden-topics = (localStorage.getItem "hidden_topics" or "") / ";"
 
 # propagates hidden list to localStorage
 !function save-hiddens
-	w.localStorage.setItem "hidden_topics" hidden-topics * ";"
+	localStorage.setItem "hidden_topics" hidden-topics * ";"
 
 # hides a topic, doing dom interactions
 !function hide

@@ -1,6 +1,13 @@
 console.log 'Ahhhh…greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !'
 console.time 'wowboardhelpers'
 
+console.time 'WBH: Sugar'
+require 'sugar'
+Object.extend!
+
+Date.setLocale location.href.split('/')4
+console.timeEnd 'WBH: Sugar'
+
 require './board/content-class'
 require './board/css'
 

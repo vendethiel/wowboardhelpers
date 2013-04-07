@@ -1,10 +1,11 @@
 {cheatsheet} = require './bind-key'
+{$, el} = require 'dom'
+
 if Object.keys cheatsheet .length
 	possible-divs =
 		'.forum-info' # forum topics page
 		'.talkback form'
 
-	{$, el} = require 'dom'
 	template-cheatsheet = require './templates/cheatsheet'
 
 	for sel in possible-divs when $ sel
@@ -14,7 +15,5 @@ if Object.keys cheatsheet .length
 				ul.style.display = 'none'
 
 				..querySelector '.toggler' .onclick = ->
-					ul.style.display = if ul.style.display is 'none'
-						''
-					else 'none'
+					ul.style.display = ['none' '']exclude(ul.style.display)0
 		break

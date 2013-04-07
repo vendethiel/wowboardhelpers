@@ -16,13 +16,15 @@ $ '#forum-actions-top'
 # XXX should parse somehow to know what the actual fuck is going on
 refresh = ->
 	ajax.get document.location, !->
-		return unless @status is 200
+		unless @status is 200
+			console.log "encountered status #{@status} while checking for updates; forum might be unstable"
+			return
 
 		h1.innerHTML = lang.checking-new
 		after-regular = @response.slice(tbody-html.length + @response.indexOf tbody-html)trim!
 
 		# crappy html check ... should probably try to parse
-		if tr-html is after-regular.substr 0 tr-html.length
+		if after-regular.starts-with tr-html
 			h1.innerHTML += " <u>#{lang.no-new}</u>"
 			setTimeout -> #clear message
 				h1.innerHTML = ""
@@ -32,11 +34,11 @@ refresh = ->
 			#get new post title
 			start-pos = a-end-html.length + after-regular.indexOf a-end-html
 			after-regular .= slice start-pos
-			title = after-regular.slice(0 after-regular.indexOf '<')trim!
+			title = after-regular.to(after-regular.indexOf '<')trim!
 
 			h1.innerHTML = "<a href='#{document.location}'>#{lang.new-messages}</a> : 
 			#{['<br />' if title.length > 30]}#title"
 
 #timeout clearing is in hide-topic
-timeout = 15s * 1000ms
+timeout = 15.seconds!
 module.exports = setTimeout refresh, timeout

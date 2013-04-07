@@ -8,7 +8,7 @@ unless 'show' is w.localStorage.getItem 'show-stickies'
 
 #add sticky-toggling button
 module.exports = button-sticky = node 'a' innerHTML: 'Post-its' title: lang.toggle-sticky, onclick: !->
-	sticky.style.display = if sticky.style.display is 'none' then '' else 'none'
+	sticky.style.display = ['none' '']exclude(sticky.style.display)0
 
 	#save user pref
 	w.localStorage.setItem 'show-stickies' s.display || 'show'

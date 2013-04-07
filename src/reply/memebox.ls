@@ -42,7 +42,7 @@ if $ '.post.general'
 
 	ul = memebox.querySelector '#memes'
 	memebox.querySelector '#meme-search' .onkeyup = !->
-		value = @value.replace /[\s_-]+/ ''
+		value = @value - /[\s_-]+/
 		ul.innerHTML = ''
 
 		return unless value

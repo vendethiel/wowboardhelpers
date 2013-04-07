@@ -1,14 +1,9 @@
-require! 'fetch-siblings'
+require! <[fetch-siblings ../characters]>
 {simplify-time}:lang = require 'lang'
 {$, $$, el, node} = require 'dom'
 template-author = require './templates/author'
 template-tt-last-updated = require './templates/tt-last-updated'
 template-default-pagination = require './templates/default-pagination'
-
-#get account's character names
-characters = $$ '.char-wrapper .name'
-if characters.length
-	characters = [(name / ' ')[*-1] - '\n' for {innerHTML: name} in characters]
 
 
 #last message column in ADV mode
@@ -62,13 +57,13 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 	
 	inline-text = text
 	inline-text .= slice (text.indexOf '(') + 1, -1 unless post-only
-	simplified-time = if ~inline-text.indexOf '/'
+	simplified-time = if inline-text.has '/'
 		inline-text #post is so old it's DD/MM/YYYY
 	else
 		simplified-time = (inline-text / ' ')[lang.time-index to lang.time-outdex-1] * ' '
-		post.dataset <<< {simplified-time}
-		text .= replace simplified-time, "<span class='simplified-time'>#simplified-time</span>"
+		text .= replace inline-text, "<span class='relative-date'>#inline-text</span>"
 
+		post.dataset.date-string = simplified-time # for parsing in ./times
 		simplify-time simplified-time
 
 	#manipulated to en<span simplified time (if necessary)
@@ -87,7 +82,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 			state = TSTATE_CHK if that in characters
 
 		#we created the topic and no one answered yet
-		if replies ~= 0 and author.innerHTML.trim! in characters
+		if replies ~= 0 and author-name.trim! in characters
 			state = TSTATE_CHK
 
 	#we've read the last answer
@@ -115,8 +110,7 @@ for {[div, a]:children, parentNode: td}:post in document.getElementsByClassName 
 !function mark-state({innerHTML}:node, state)
 	# ❢ = HEAVY EXCLAMATION MARK ORNAMENT
 	states = <[? ! ✓]>
-	
-	# could've used #<> but I'm using LS :(
+
 	node.innerHTML = "<b>[#{states[state]}]</b> #innerHTML"
 
 /**
