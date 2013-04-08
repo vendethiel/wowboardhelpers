@@ -12,6 +12,7 @@
  * 4.0
  *  SugarJS, FUCK YOU WORLD; YOLO
  *  Allow for multi-binds
+ *  Crabby's dead
  * 3.3.1
  *  Fuck you crabby :)
  * 3.3

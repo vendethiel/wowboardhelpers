@@ -30,9 +30,6 @@ compile-styles = ->
 
   nib source * '\n' .render!
 
-minify = ->
-  require \uglify-js .minify it, {+fromString} .code
-
 nib = -> stylus it .use require(\nib)!
 
 task \npm "does npm related crap" !->
@@ -43,9 +40,6 @@ task \npm "does npm related crap" !->
     "cd lib/lang     && npm link ../string && cd ../.."
     "npm install"
   for cmd in cmds then shell cmd
-
-cache =
-  ls: []
 
 task \build "build userscript" ->
   try
