@@ -11,7 +11,7 @@ shell = (command) ->
   err, sout, serr <- exec command
   process.stdout.write sout if sout
   process.stderr.write serr if serr
-  console.log err if err
+  say err if err
 
 ##########
 # CONFIG #
@@ -33,13 +33,12 @@ compile-styles = ->
 nib = -> stylus it .use require(\nib)!
 
 task \npm "does npm related crap" !->
-  libs = <[ajax autolink dom fetch-siblings lang parse-time string]>
+  libs = <[ajax autolink dom fetch-siblings lang parse-time]>
   cmds =
     "npm link #{["lib/#lib" for lib in libs] * ' '}"
-    "cd lib/autolink && npm link ../ajax   && cd ../.."
-    "cd lib/lang     && npm link ../string && cd ../.."
     "npm install"
-  for cmd in cmds then shell cmd
+  for cmd in cmds
+    shell cmd
 
 task \build "build userscript" ->
   try

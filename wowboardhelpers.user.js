@@ -6,9 +6,13 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 3.3.1
+// @version 4.0
 // ==/UserScript==
  * changelog
+ * 4.0
+ *  SugarJS, FUCK YOU WORLD; YOLO
+ *  Allow for multi-binds
+ *  Crabby's dead
  * 3.3.1
  *  Fuck you crabby :)
  * 3.3
@@ -442,13 +446,15 @@
         };
     });
     require.define('/lib\\dom\\$$.ls', function (module, exports, __dirname, __filename) {
-        module.exports = function (it) {
-            return document.querySelectorAll(it);
+        module.exports = function (it, ctx) {
+            ctx == null && (ctx = document);
+            return ctx.querySelectorAll(it);
         };
     });
     require.define('/lib\\dom\\$.ls', function (module, exports, __dirname, __filename) {
-        module.exports = function (it) {
-            return document.querySelector(it);
+        module.exports = function (it, ctx) {
+            ctx == null && (ctx = document);
+            return ctx.querySelector(it);
         };
     });
     require.define('/src\\cheatsheet\\bind-key.ls', function (module, exports, __dirname, __filename) {
@@ -1255,13 +1261,14 @@
         topic = require('/src\\topic.ls', module);
         $$ = require('/node_modules\\dom\\index.ls', module).$$;
         pages = $$('#forum-actions-top .ui-pagination li:not(.cap-item)');
-        if (pages) {
-            if (!pages.length || pages.length && 'current' === pages[pages.length - 1].className || !localStorage.getItem('topic_' + topic.dataset.id)) {
-                postCount = (ref$ = topic.getElementsByClassName('post-info'))[ref$.length - 1].getElementsByTagName('a')[0].getAttribute('href').slice(1);
-                lastPosterName = (ref$ = topic.getElementsByClassName('char-name-code'))[ref$.length - 1].innerHTML.trim();
-                localStorage.setItem('topic_' + topic.dataset.id, postCount);
-                localStorage.setItem('topic_lp_' + topic.dataset.id, lastPosterName);
-            }
+        if (pages && needUpdate()) {
+            postCount = (ref$ = topic.getElementsByClassName('post-info'))[ref$.length - 1].getElementsByTagName('a')[0].getAttribute('href').from(1);
+            lastPosterName = (ref$ = $$('.char-name-code', topic))[ref$.length - 1].innerHTML.trim();
+            localStorage.setItem('topic_' + topic.dataset.id, postCount);
+            localStorage.setItem('topic_lp_' + topic.dataset.id, lastPosterName);
+        }
+        function needUpdate() {
+            return !pages.length || pages.length && 'current' === pages[pages.length - 1].className || !localStorage.getItem('topic_' + topic.dataset.id);
         }
     });
     require.define('/src\\topic-posts\\autolink.ls', function (module, exports, __dirname, __filename) {
@@ -1399,11 +1406,9 @@
             var character;
             return '    <div id="account-characters"><h1 class="toggle">' + (lang('otherCharacters') || '') + '\n' + ((locals.toggle ? '<span class="toggler">' + (' [+]' || '') + '</span>' : void 8) || '') + '</h1><br/><ul>' + (join(function () {
                 var i$, ref$, len$, results$ = [];
-                for (i$ = 0, len$ = (ref$ = locals.characters).length; i$ < len$; ++i$) {
+                for (i$ = 0, len$ = (ref$ = locals.characters.exclude(locals.current)).length; i$ < len$; ++i$) {
                     character = ref$[i$];
-                    if (character !== locals.current) {
-                        results$.push('<li style="' + [locals.toggle ? 'display: none' : void 8] + '">' + (character || '') + '</li>');
-                    }
+                    results$.push('<li style="' + [locals.toggle ? 'display: none' : void 8] + '">' + (character || '') + '</li>');
                 }
                 return results$;
             }()) || '') + '</ul></div>';

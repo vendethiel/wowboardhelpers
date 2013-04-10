@@ -1,1 +1,1 @@
-module.exports = -> document.querySelectorAll it
+module.exports = (it, ctx = document) -> ctx.querySelectorAll it

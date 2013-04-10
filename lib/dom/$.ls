@@ -1,1 +1,1 @@
-module.exports = -> document.querySelector it
+module.exports = (it, ctx = document) -> ctx.querySelector it
