@@ -592,11 +592,13 @@
             postTitle = postTitles[i$];
             postTimestamp = parseTime(postTitle.dataset.dateString);
             date = new Date(timestamp - postTimestamp);
+            console.log(postTitle.dataset.dateString, postTimestamp, date);
             timestamp = date.getTime();
             dates[timestamp] = date;
             postTitle.dataset.timestamp = timestamp;
         }
         timeout = 10..seconds();
+        console.log(30..hoursAgo().relative());
         refresh = function () {
             var i$, ref$, len$, postTitle, date;
             for (i$ = 0, len$ = (ref$ = postTitles).length; i$ < len$; ++i$) {
@@ -609,14 +611,19 @@
         refresh();
     });
     require.define('/node_modules\\parse-time\\index.ls', function (module, exports, __dirname, __filename) {
-        var lang, units, split$ = ''.split;
+        var lang, units, res$, i$, ref$, len$, name, split$ = ''.split;
         lang = require('/node_modules\\lang\\index.ls', module);
-        units = {
-            second: 1000,
-            minute: 60000,
-            hour: 3600000,
-            day: 86400000
-        };
+        res$ = {};
+        for (i$ = 0, len$ = (ref$ = [
+                'second',
+                'minute',
+                'hour',
+                'day'
+            ]).length; i$ < len$; ++i$) {
+            name = ref$[i$];
+            res$[name] = 1[name]();
+        }
+        units = res$;
         module.exports = function (it) {
             var total, i$, ref$, len$, timespan, ref1$, count, unit;
             total = 0;

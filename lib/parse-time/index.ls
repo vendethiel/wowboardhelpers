@@ -1,10 +1,6 @@
 require! lang
 
-units =
-	second: 1000ms
-	minute: 60_000ms
-	hour  : 3_600_000ms
-	day   : 86_400_000ms
+units = {[name, 1[name]!] for name in <[second minute hour day]>}
 
 module.exports = ->
 	total = 0
