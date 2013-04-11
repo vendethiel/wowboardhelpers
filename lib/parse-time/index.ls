@@ -6,6 +6,7 @@ module.exports = ->
 	total = 0
 	for timespan in it / ', '
 		[count, unit] = timespan / ' '
+		+ = count
 
 		if count is lang 'few'
 			count = 5

@@ -137,7 +137,7 @@ task \watch 'watch for changes and rebuild automatically' ->
   throw err if err?
   files ++= _files
 
-  for file in files
+  for file in files ++ <[metadata.js]>
     fs.watch file, interval: 1000, debounce 1000 (event, filename) ->
       say "#event event detected on #filename. rebuilding..."
       invoke \build

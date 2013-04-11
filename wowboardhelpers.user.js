@@ -9,6 +9,8 @@
 // @version 4.0
 // ==/UserScript==
  * changelog
+ * 4.0.1
+ *  Fix parse-time stupid mistake
  * 4.0
  *  SugarJS, FUCK YOU WORLD; YOLO
  *  Allow for multi-binds
@@ -581,24 +583,22 @@
         times = require('/src\\forum-topics\\times.ls', module);
     });
     require.define('/src\\forum-topics\\times.ls', function (module, exports, __dirname, __filename) {
-        var lang, parseTime, $$, timestamp, postTitles, dates, i$, len$, postTitle, postTimestamp, date, timeout, refresh;
+        var lang, parseTime, $$, current, postTitles, dates, i$, len$, postTitle, postTimestamp, date, timestamp, timeout, refresh;
         lang = require('/node_modules\\lang\\index.ls', module);
         parseTime = require('/node_modules\\parse-time\\index.ls', module);
         $$ = require('/node_modules\\dom\\index.ls', module).$$;
-        timestamp = Date.now();
+        current = Date.now();
         postTitles = $$('.post-title[data-date-string]');
         dates = [];
         for (i$ = 0, len$ = postTitles.length; i$ < len$; ++i$) {
             postTitle = postTitles[i$];
             postTimestamp = parseTime(postTitle.dataset.dateString);
-            date = new Date(timestamp - postTimestamp);
-            console.log(postTitle.dataset.dateString, postTimestamp, date);
+            date = Date.create(current - postTimestamp);
             timestamp = date.getTime();
             dates[timestamp] = date;
             postTitle.dataset.timestamp = timestamp;
         }
         timeout = 10..seconds();
-        console.log(30..hoursAgo().relative());
         refresh = function () {
             var i$, ref$, len$, postTitle, date;
             for (i$ = 0, len$ = (ref$ = postTitles).length; i$ < len$; ++i$) {
@@ -630,6 +630,7 @@
             for (i$ = 0, len$ = (ref$ = split$.call(it, ', ')).length; i$ < len$; ++i$) {
                 timespan = ref$[i$];
                 ref1$ = split$.call(timespan, ' '), count = ref1$[0], unit = ref1$[1];
+                count = +count;
                 if (count === lang('few')) {
                     count = 5;
                     unit = lang('second');

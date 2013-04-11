@@ -9,6 +9,8 @@
 // @version 4.0
 // ==/UserScript==
  * changelog
+ * 4.0.1
+ *  Fix parse-time stupid mistake
  * 4.0
  *  SugarJS, FUCK YOU WORLD; YOLO
  *  Allow for multi-binds
