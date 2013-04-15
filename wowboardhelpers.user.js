@@ -1321,7 +1321,7 @@
         multiChars = require('/src\\topic-characters\\multi-chars.ls', module);
     });
     require.define('/src\\topic-characters\\multi-chars.ls', function (module, exports, __dirname, __filename) {
-        var ref$, $$, el, templateMultiChars, accountCharacters, that, modified, i$, len$, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul, limit, i, replace$ = ''.replace;
+        var ref$, $$, el, templateMultiChars, accountCharacters, that, modified, i$, len$, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul, children, limit, replace$ = ''.replace, slice$ = [].slice;
         ref$ = require('/node_modules\\dom\\index.ls', module), $$ = ref$.$$, el = ref$.el;
         templateMultiChars = require('/src\\topic-characters\\templates\\multi-chars.jadels', module);
         accountCharacters = (that = localStorage.getItem('accountCharacters')) ? JSON.parse(that) : {};
@@ -1369,15 +1369,13 @@
                 characters: characters
             })));
             if (toggle) {
-                ul = postCharacter.querySelector('ul');
+                ul = postCharacter.querySelector('ul'), children = ul.children;
+                children = slice$.call(children);
                 if ((limit = ((height - 130) / 15).floor()) > 1) {
-                    i = 0;
-                    for (; i < limit; i++) {
-                        ul.children[i].style.display = '';
-                    }
+                    children.to(limit).each(fn$);
                 }
                 toggle = postCharacter.querySelector('.toggle');
-                fn$.call(this, ul, toggle, postCharacter);
+                fn1$.call(this, ul, children, toggle, postCharacter);
             }
         }
         function in$(x, arr) {
@@ -1387,13 +1385,14 @@
                     return true;
             return false;
         }
-        function fn$(ul, toggle, postCharacter) {
+        function fn$(it) {
+            return it.style.display = '';
+        }
+        function fn1$(ul, children, toggle, postCharacter) {
             toggle.onclick = function () {
-                var i$, ref$, len$, li;
-                for (i$ = 0, len$ = (ref$ = ul.children).length; i$ < len$; ++i$) {
-                    li = ref$[i$];
-                    li.style.display = '';
-                }
+                children.each(function (it) {
+                    return it.style.display = '';
+                });
                 postCharacter.querySelector('.toggler').style.display = 'none';
                 return toggle.onclick = function () {
                 };

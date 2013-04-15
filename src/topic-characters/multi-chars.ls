@@ -6,8 +6,8 @@ account-characters = if localStorage.getItem 'accountCharacters'
 else {}
 
 function clean
-	it -= "context-link" # remove class
-	it -= "xmlns=\"http://www.w3.org/1999/xhtml\" "
+	it -= 'context-link' # remove class
+	it -= 'xmlns="http://www.w3.org/1999/xhtml" '
 	it
 
 modified = false # avoid saving if useless
@@ -27,7 +27,7 @@ for post-character in $$ '.post-character'
 		account-characters[account]push link
 
 if modified # save it !
-	localStorage.setItem "accountCharacters" JSON.stringify account-characters
+	localStorage.setItem 'accountCharacters' JSON.stringify account-characters
 
 for post-character in $$ '.post:not(.hidden) .post-character'
 	{account, link: current} = post-character.dataset
@@ -46,22 +46,20 @@ for post-character in $$ '.post:not(.hidden) .post-character'
 	post-character.appendChild do
 		el template-multi-chars {toggle, current, characters}
 
-	if toggle 
-		ul = post-character.querySelector 'ul'
+	if toggle
+		{children}:ul = post-character.querySelector 'ul'
+		children = [...children]
 
-		# floor it. if we have 8.2 we want it to be 8 (displayed)
-		# so that we'll have one hidden
+		# floor it to display the max possible. if we have 8.2 we want
+		# it to be 8 (displayed) so that we'll have one hidden
 		if (limit = ((height - 130) / 15)floor!) > 1
-			i = 0 # try to display properly as much as we can
-			while i < limit, i++
-				ul.children[i]style.display = ''
+			children.to(limit)each (.style.display = '')
 
 		toggle = post-character.querySelector '.toggle'
 
-		let ul, toggle
+		let ul, children, toggle
 			toggle.onclick = ->
-				for li in ul.children
-					li.style.display = ''
+				children.each (.style.display = '')
 				postCharacter.querySelector '.toggler' .style.display = 'none'
 
 				# no-op onclick as the h1 itself is toggling
