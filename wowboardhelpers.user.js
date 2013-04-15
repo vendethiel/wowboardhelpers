@@ -133,25 +133,6 @@
  *  Fix a bug when logged off
 */
 (function (global) {
-    var process = function () {
-            var cwd = '/';
-            return {
-                title: 'browser',
-                version: 'v0.10.2',
-                browser: true,
-                env: {},
-                argv: [],
-                nextTick: function (fn) {
-                    setTimeout(fn, 0);
-                },
-                cwd: function () {
-                    return cwd;
-                },
-                chdir: function (dir) {
-                    cwd = dir;
-                }
-            };
-        }();
     function require(file, parentModule) {
         if ({}.hasOwnProperty.call(require.cache, file))
             return require.cache[file];

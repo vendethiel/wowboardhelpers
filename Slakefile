@@ -1,5 +1,5 @@
 require! <[fs LiveScript nephrite stylus esprima glob]>
-{exec} = require 'child_process'
+# {exec} = require 'child_process'
 {cjsify-sync: cjsify} = require 'commonjs-everywhere'
 
 ls = -> ["#it/#file" for file in fs.readdirSync it]
@@ -78,6 +78,7 @@ task \build "build userscript" ->
 
     ast = cjsify "src/wowboardhelpers.ls", __dirname,
       export: null
+      node: false
       handlers:
         '.jadels': (it, filename) ->
           it .= toString!
@@ -113,7 +114,7 @@ task \build "build userscript" ->
     console.timeEnd "Total  "
     say "compiled script to #outfile"
   catch
-    console.error e.message
+    console.error e.stack || e.message
 
 debounce = (delay, fn) ->
   var timeout
