@@ -9,6 +9,8 @@
 // @version 4.0
 // ==/UserScript==
  * changelog
+ * 4.0.2
+ *  Fix keybinds firing with alt ctrl shift
  * 4.0.1
  *  Fix parse-time stupid mistake
  * 4.0
@@ -452,6 +454,9 @@
                 return 0 + it;
             });
             document.addEventListener('keydown', function (it) {
+                if (it.altKey || it.ctrlKey || it.shiftKey) {
+                    return;
+                }
                 if (!in$(it.keyCode, codes)) {
                     return;
                 }
