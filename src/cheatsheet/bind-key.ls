@@ -15,4 +15,5 @@ module.exports = bind-key = !(binds, lang-key, cb) ->
 
 		cb!
 
+# This should be in index.ls
 bind-key.cheatsheet = cheatsheet = {}

@@ -116,29 +116,15 @@ task \build "build userscript" ->
   catch
     console.error e.stack || e.message
 
-debounce = (delay, fn) ->
-  var timeout
-  !->
-    ctx = this
-    args = arguments
-    clearTimeout timeout
-    timeout := setTimeout do
-      !-> fn.apply ctx, args
-      delay
-
-task \watch 'watch for changes and rebuild automatically' ->
+task \watch 'watch for changes and rebuild automatically' !->
   invoke \build
-  files = []
 
-  err, _files <- glob "src/**/*.*" {}
-  throw err if err?
-  files ++= _files
+  require('gaze') do
+    <[metadata.js src/**/* lib/**/*]>
+    debounce-delay: 1000ms # XXX does not seem to work
+    !->
+      say "Watching files for changes."
+      @on 'all' !(ev, file) ->
+        say "Event #ev on #{file.slice __dirname.length}. Rebuilding."
 
-  err, _files <- glob "lib/**/*.*" {}
-  throw err if err?
-  files ++= _files
-
-  for file in files ++ <[metadata.js]>
-    fs.watch file, interval: 1000, debounce 1000 (event, filename) ->
-      say "#event event detected on #filename. rebuilding..."
-      invoke \build
+        invoke 'build'
