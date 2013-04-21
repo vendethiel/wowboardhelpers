@@ -40,6 +40,8 @@ task \npm "does npm related crap" !->
   for cmd in cmds
     shell cmd
 
+cache = js: {}
+
 task \build "build userscript" ->
   try
     css = compile-styles!
@@ -51,13 +53,13 @@ task \build "build userscript" ->
     jade-time = 0
     esprima-time = 0
 
-    esprima-parse = (src, filename) ->
+    esprima-parse = (src, source) ->
       c = Date.now!
 
       try
-        ast = esprima.parse src
+        ast = esprima.parse src, {+loc, source}
       catch {message}
-        say "Esprima Error on #filename : #message"
+        say "Esprima Error on #source : #message"
 
       esprima-time += Date.now! - c
 
@@ -95,6 +97,9 @@ task \build "build userscript" ->
           src = ls-parse it, filename
           esprima-parse src, filename
 
+        '.js': (it, filename) ->
+          cache.js[filename] ?= esprima-parse it, filename
+
     say "cjsify : #{Date.now! - cjs-time-base - ls-time - esprima-time}ms"
     say "ls     : #{ls-time}ms"
     say "jadeLS : #{jade-time}ms"
@@ -124,7 +129,10 @@ task \watch 'watch for changes and rebuild automatically' !->
     debounce-delay: 1000ms # XXX does not seem to work
     !->
       say "Watching files for changes."
-      @on 'all' !(ev, file) ->
+      @on "all" !(ev, file) ->
+        if file is "Slakefile"
+          say "Slakefile changed."
+          process.exit!
         say "Event #ev on #{file.slice __dirname.length}. Rebuilding."
 
         invoke 'build'
