@@ -130,6 +130,5 @@ function check-topic(id, count, last-poster)
 	| 0 or null  => TSTATE_UNK
 	| _          => TSTATE_ALR
 
-
 function get-last-poster
 	localStorage.getItem "topic_lp_#it"

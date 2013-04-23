@@ -1522,7 +1522,178 @@
         node = require('/node_modules\\dom\\index.ls', module).node;
         style = node('style', {
             type: 'text/css',
-            innerHTML: '/*slake:build#compile-ls embeds css*/\n#forum-actions-top h1 {\n  text-align: center;\n  margin-left: 200px;\n}\n.forum .forum-actions {\n  padding: 0px;\n}\n.forum .actions-panel {\n  margin-right: 15px;\n}\n.forum .forum-options {\n  float: right;\n  right: auto;\n  position: relative;\n  margin-top: 25px;\n  margin-right: 15px;\n}\n.poster {\n  font-weight: bold;\n}\n.own-poster {\n  text-decoration: underline;\n}\na.show-topic {\n  cursor: pointer;\n  color: #008000;\n}\na.show-topic:hover {\n  color: #008000 !important;\n}\na.hide-topic {\n  cursor: pointer;\n  color: #f00;\n}\na.hide-topic:hover {\n  color: #f00 !important;\n}\n.last-read {\n  opacity: 0;\n}\ntr:hover .last-read {\n  opacity: 1;\n}\n.post-pages .last-read {\n  background-image: none !important;\n  background: none !important;\n}\ntr:not(.stickied) a[data-tooltip] {\n  display: inline !important;\n}\n#posts.advanced .tt-last-updated {\n  display: none;\n}\n#posts.advanced .post-author {\n  width: 15px;\n}\n#posts.advanced .post-views {\n  width: 15px;\n}\n#posts.advanced .post-lastPost {\n  width: 90px;\n  text-align: center;\n}\n#posts.advanced .post-lastPost .more-arrow {\n  display: none;\n}\n#posts.advanced .post-th .replies {\n  padding-right: 2px;\n  text-align: center;\n}\n#posts.advanced .post-th .poster {\n  text-align: right;\n  font-weight: normal;\n  padding-right: 5px;\n}\n#posts.advanced .post-th .last-post-th {\n  text-align: left;\n}\n#posts.advanced .post-last-updated {\n  width: 70px;\n}\n#posts.advanced .post-replies {\n  width: 10px;\n  text-align: right;\n  padding-right: 10px;\n}\n#posts.simple .tt-last-updated {\n  display: inline;\n}\n#posts.simple .last-post-th {\n  display: none;\n}\n#posts.simple .post-last-updated {\n  display: none;\n}\n.clear-textarea {\n  display: block;\n  margin: 1px 0 1px 553px;\n  font-weight: bold;\n  font-size: 2em;\n  position: absolute;\n  z-index: 2;\n  cursor: pointer;\n}\n#memebox {\n  position: relative;\n  float: right;\n  width: 150px;\n  top: 5px;\n}\n#memebox h1 {\n  font-size: 1.8em;\n  display: inline;\n}\n#memebox .hider {\n  color: #f00;\n  display: none;\n}\n#memebox:hover .hider {\n  display: inline;\n}\n#memebox .unhider {\n  color: #008000;\n  display: none;\n}\n#memebox:hover .unhider {\n  display: inline;\n}\n#memebox ul#memes {\n  margin-top: 10px;\n  margin-left: 30px;\n  list-style-type: circle;\n}\n#memebox li {\n  font-weight: bold;\n  color: link;\n  text-decoration: underline;\n}\n.context-links .extra-link {\n  background-image: none !important;\n  padding-left: 8px !important;\n  border-top-left-radius: 0px !important;\n  border-bottom-left-radius: 0px !important;\n}\n.ui-context {\n  width: 240px !important;\n}\n.karma {\n  white-space: normal !important;\n}\n.post-user .avatar {\n  top: 27px !important;\n}\n#account-characters {\n  margin-left: 30px;\n}\n#account-characters h1 {\n  display: inline;\n}\n#account-characters ul {\n  list-style: circle;\n  margin-left: 20px;\n}\n#account-characters a {\n  font-weight: bold;\n}\nimg.autolink {\n  border: 5px solid #000;\n  max-width: 540px;\n  max-height: 500px;\n}\n'
+            innerHTML: '/*slake:build#compile-ls embeds css*/\n#forum-actions-top h1 {
+  text-align: center;
+  margin-left: 200px;
+}
+.forum .forum-actions {
+  padding: 0px;
+}
+.forum .actions-panel {
+  margin-right: 15px;
+}
+.forum .forum-options {
+  float: right;
+  right: auto;
+  position: relative;
+  margin-top: 25px;
+  margin-right: 15px;
+}
+.poster {
+  font-weight: bold;
+}
+.own-poster {
+  text-decoration: underline;
+}
+a.show-topic {
+  cursor: pointer;
+  color: #008000;
+}
+a.show-topic:hover {
+  color: #008000 !important;
+}
+a.hide-topic {
+  cursor: pointer;
+  color: #f00;
+}
+a.hide-topic:hover {
+  color: #f00 !important;
+}
+.last-read {
+  opacity: 0;
+}
+tr:hover .last-read {
+  opacity: 1;
+}
+.post-pages .last-read {
+  background-image: none !important;
+  background: none !important;
+}
+tr:not(.stickied) a[data-tooltip] {
+  display: inline !important;
+}
+#posts.advanced .tt-last-updated {
+  display: none;
+}
+#posts.advanced .post-author {
+  width: 15px;
+}
+#posts.advanced .post-views {
+  width: 15px;
+}
+#posts.advanced .post-lastPost {
+  width: 90px;
+  text-align: center;
+}
+#posts.advanced .post-lastPost .more-arrow {
+  display: none;
+}
+#posts.advanced .post-th .replies {
+  padding-right: 2px;
+  text-align: center;
+}
+#posts.advanced .post-th .poster {
+  text-align: right;
+  font-weight: normal;
+  padding-right: 5px;
+}
+#posts.advanced .post-th .last-post-th {
+  text-align: left;
+}
+#posts.advanced .post-last-updated {
+  width: 70px;
+}
+#posts.advanced .post-replies {
+  width: 10px;
+  text-align: right;
+  padding-right: 10px;
+}
+#posts.simple .tt-last-updated {
+  display: inline;
+}
+#posts.simple .last-post-th {
+  display: none;
+}
+#posts.simple .post-last-updated {
+  display: none;
+}
+.clear-textarea {
+  display: block;
+  margin: 1px 0 1px 553px;
+  font-weight: bold;
+  font-size: 2em;
+  position: absolute;
+  z-index: 2;
+  cursor: pointer;
+}
+#memebox {
+  position: relative;
+  float: right;
+  width: 150px;
+  top: 5px;
+}
+#memebox h1 {
+  font-size: 1.8em;
+  display: inline;
+}
+#memebox .hider {
+  color: #f00;
+  display: none;
+}
+#memebox:hover .hider {
+  display: inline;
+}
+#memebox .unhider {
+  color: #008000;
+  display: none;
+}
+#memebox:hover .unhider {
+  display: inline;
+}
+#memebox ul#memes {
+  margin-top: 10px;
+  margin-left: 30px;
+  list-style-type: circle;
+}
+#memebox li {
+  font-weight: bold;
+  color: link;
+  text-decoration: underline;
+}
+.context-links .extra-link {
+  background-image: none !important;
+  padding-left: 8px !important;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+}
+.ui-context {
+  width: 240px !important;
+}
+.karma {
+  white-space: normal !important;
+}
+.post-user .avatar {
+  top: 27px !important;
+}
+#account-characters {
+  margin-left: 30px;
+}
+#account-characters h1 {
+  display: inline;
+}
+#account-characters ul {
+  list-style: circle;
+  margin-left: 20px;
+}
+#account-characters a {
+  font-weight: bold;
+}
+img.autolink {
+  border: 5px solid #000;
+  max-width: 540px;
+  max-height: 500px;
+}
+'
         });
         document.head.appendChild(style);
     });
