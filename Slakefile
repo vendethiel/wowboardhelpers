@@ -36,7 +36,9 @@ cjs-options =
   export: null
   node: false
   handlers:
-    '.styl': -> # trap it, not sure how triggered
+    '.styl': ->
+      # trap it, triggered when last-changed is a .styl
+      # XXX could maybe actually be used to notice css changed
     '.ne': en-ast (src, filename) ->
       try src = nephrite src, filename
       catch {message} => say "Nephrite (#filename): #message"
