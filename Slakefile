@@ -56,13 +56,13 @@ last-changed = entry-point
 traverseDeps = cjs~traverseDependenciesSync
 bundle = cjs~bundle
 
-var ast, css-change
-css = compile-styles!
+var ast, css, css-change
 
 task \build "build userscript" ->
   if css-change or not css
     console.time "CSS"
     css := compile-styles!
+    css .= trim!replace /\n/g '\\\n'
     console.timeEnd "CSS"
 
   unless css-change

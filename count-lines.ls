@@ -24,4 +24,4 @@ for file in files
 	unless ignored file
 		lines += len file
 
-console.log "There's currently #lines lines => #{len "wowboardhelpers.user.js"} compiled (compiled CSS is one line)."
+console.log "There's currently #lines lines => #{len "wowboardhelpers.user.js"} compiled."

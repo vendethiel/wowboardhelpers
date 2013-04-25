@@ -1522,178 +1522,177 @@
         node = require('/node_modules\\dom\\index.ls', module).node;
         style = node('style', {
             type: 'text/css',
-            innerHTML: '/*slake:build#compile-ls embeds css*/\n#forum-actions-top h1 {
-  text-align: center;
-  margin-left: 200px;
-}
-.forum .forum-actions {
-  padding: 0px;
-}
-.forum .actions-panel {
-  margin-right: 15px;
-}
-.forum .forum-options {
-  float: right;
-  right: auto;
-  position: relative;
-  margin-top: 25px;
-  margin-right: 15px;
-}
-.poster {
-  font-weight: bold;
-}
-.own-poster {
-  text-decoration: underline;
-}
-a.show-topic {
-  cursor: pointer;
-  color: #008000;
-}
-a.show-topic:hover {
-  color: #008000 !important;
-}
-a.hide-topic {
-  cursor: pointer;
-  color: #f00;
-}
-a.hide-topic:hover {
-  color: #f00 !important;
-}
-.last-read {
-  opacity: 0;
-}
-tr:hover .last-read {
-  opacity: 1;
-}
-.post-pages .last-read {
-  background-image: none !important;
-  background: none !important;
-}
-tr:not(.stickied) a[data-tooltip] {
-  display: inline !important;
-}
-#posts.advanced .tt-last-updated {
-  display: none;
-}
-#posts.advanced .post-author {
-  width: 15px;
-}
-#posts.advanced .post-views {
-  width: 15px;
-}
-#posts.advanced .post-lastPost {
-  width: 90px;
-  text-align: center;
-}
-#posts.advanced .post-lastPost .more-arrow {
-  display: none;
-}
-#posts.advanced .post-th .replies {
-  padding-right: 2px;
-  text-align: center;
-}
-#posts.advanced .post-th .poster {
-  text-align: right;
-  font-weight: normal;
-  padding-right: 5px;
-}
-#posts.advanced .post-th .last-post-th {
-  text-align: left;
-}
-#posts.advanced .post-last-updated {
-  width: 70px;
-}
-#posts.advanced .post-replies {
-  width: 10px;
-  text-align: right;
-  padding-right: 10px;
-}
-#posts.simple .tt-last-updated {
-  display: inline;
-}
-#posts.simple .last-post-th {
-  display: none;
-}
-#posts.simple .post-last-updated {
-  display: none;
-}
-.clear-textarea {
-  display: block;
-  margin: 1px 0 1px 553px;
-  font-weight: bold;
-  font-size: 2em;
-  position: absolute;
-  z-index: 2;
-  cursor: pointer;
-}
-#memebox {
-  position: relative;
-  float: right;
-  width: 150px;
-  top: 5px;
-}
-#memebox h1 {
-  font-size: 1.8em;
-  display: inline;
-}
-#memebox .hider {
-  color: #f00;
-  display: none;
-}
-#memebox:hover .hider {
-  display: inline;
-}
-#memebox .unhider {
-  color: #008000;
-  display: none;
-}
-#memebox:hover .unhider {
-  display: inline;
-}
-#memebox ul#memes {
-  margin-top: 10px;
-  margin-left: 30px;
-  list-style-type: circle;
-}
-#memebox li {
-  font-weight: bold;
-  color: link;
-  text-decoration: underline;
-}
-.context-links .extra-link {
-  background-image: none !important;
-  padding-left: 8px !important;
-  border-top-left-radius: 0px !important;
-  border-bottom-left-radius: 0px !important;
-}
-.ui-context {
-  width: 240px !important;
-}
-.karma {
-  white-space: normal !important;
-}
-.post-user .avatar {
-  top: 27px !important;
-}
-#account-characters {
-  margin-left: 30px;
-}
-#account-characters h1 {
-  display: inline;
-}
-#account-characters ul {
-  list-style: circle;
-  margin-left: 20px;
-}
-#account-characters a {
-  font-weight: bold;
-}
-img.autolink {
-  border: 5px solid #000;
-  max-width: 540px;
-  max-height: 500px;
-}
-'
+            innerHTML: '/*slake:build#compile-ls embeds css*/\n#forum-actions-top h1 {\
+  text-align: center;\
+  margin-left: 200px;\
+}\
+.forum .forum-actions {\
+  padding: 0px;\
+}\
+.forum .actions-panel {\
+  margin-right: 15px;\
+}\
+.forum .forum-options {\
+  float: right;\
+  right: auto;\
+  position: relative;\
+  margin-top: 25px;\
+  margin-right: 15px;\
+}\
+.poster {\
+  font-weight: bold;\
+}\
+.own-poster {\
+  text-decoration: underline;\
+}\
+a.show-topic {\
+  cursor: pointer;\
+  color: #008000;\
+}\
+a.show-topic:hover {\
+  color: #008000 !important;\
+}\
+a.hide-topic {\
+  cursor: pointer;\
+  color: #f00;\
+}\
+a.hide-topic:hover {\
+  color: #f00 !important;\
+}\
+.last-read {\
+  opacity: 0;\
+}\
+tr:hover .last-read {\
+  opacity: 1;\
+}\
+.post-pages .last-read {\
+  background-image: none !important;\
+  background: none !important;\
+}\
+tr:not(.stickied) a[data-tooltip] {\
+  display: inline !important;\
+}\
+#posts.advanced .tt-last-updated {\
+  display: none;\
+}\
+#posts.advanced .post-author {\
+  width: 15px;\
+}\
+#posts.advanced .post-views {\
+  width: 15px;\
+}\
+#posts.advanced .post-lastPost {\
+  width: 90px;\
+  text-align: center;\
+}\
+#posts.advanced .post-lastPost .more-arrow {\
+  display: none;\
+}\
+#posts.advanced .post-th .replies {\
+  padding-right: 2px;\
+  text-align: center;\
+}\
+#posts.advanced .post-th .poster {\
+  text-align: right;\
+  font-weight: normal;\
+  padding-right: 5px;\
+}\
+#posts.advanced .post-th .last-post-th {\
+  text-align: left;\
+}\
+#posts.advanced .post-last-updated {\
+  width: 70px;\
+}\
+#posts.advanced .post-replies {\
+  width: 10px;\
+  text-align: right;\
+  padding-right: 10px;\
+}\
+#posts.simple .tt-last-updated {\
+  display: inline;\
+}\
+#posts.simple .last-post-th {\
+  display: none;\
+}\
+#posts.simple .post-last-updated {\
+  display: none;\
+}\
+.clear-textarea {\
+  display: block;\
+  margin: 1px 0 1px 553px;\
+  font-weight: bold;\
+  font-size: 2em;\
+  position: absolute;\
+  z-index: 2;\
+  cursor: pointer;\
+}\
+#memebox {\
+  position: relative;\
+  float: right;\
+  width: 150px;\
+  top: 5px;\
+}\
+#memebox h1 {\
+  font-size: 1.8em;\
+  display: inline;\
+}\
+#memebox .hider {\
+  color: #f00;\
+  display: none;\
+}\
+#memebox:hover .hider {\
+  display: inline;\
+}\
+#memebox .unhider {\
+  color: #008000;\
+  display: none;\
+}\
+#memebox:hover .unhider {\
+  display: inline;\
+}\
+#memebox ul#memes {\
+  margin-top: 10px;\
+  margin-left: 30px;\
+  list-style-type: circle;\
+}\
+#memebox li {\
+  font-weight: bold;\
+  color: link;\
+  text-decoration: underline;\
+}\
+.context-links .extra-link {\
+  background-image: none !important;\
+  padding-left: 8px !important;\
+  border-top-left-radius: 0px !important;\
+  border-bottom-left-radius: 0px !important;\
+}\
+.ui-context {\
+  width: 240px !important;\
+}\
+.karma {\
+  white-space: normal !important;\
+}\
+.post-user .avatar {\
+  top: 27px !important;\
+}\
+#account-characters {\
+  margin-left: 30px;\
+}\
+#account-characters h1 {\
+  display: inline;\
+}\
+#account-characters ul {\
+  list-style: circle;\
+  margin-left: 20px;\
+}\
+#account-characters a {\
+  font-weight: bold;\
+}\
+img.autolink {\
+  border: 5px solid #000;\
+  max-width: 540px;\
+  max-height: 500px;\
+}'
         });
         document.head.appendChild(style);
     });
