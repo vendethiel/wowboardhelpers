@@ -1,4 +1,10 @@
-~ require! lang
+:prelude
+	require! lang
+	posts-of = ->
+		name = it.split('/')[5 4]
+		name.1 .= humanize!
+		"http://eu.battle.net/wow/fr/search?f=post&amp;a=#{name * '%40'}&amp;sort=time"
+
 
 #account-characters
 	h1.toggle
@@ -10,4 +16,6 @@
 
 	ul
 		for character in @characters.exclude @current
-			li(style='#{["display: none" if @toggle]}')= character
+			li(style='#{["display: none" if @toggle]}')
+				= character
+				a.see-messages(href="#{posts-of character}")

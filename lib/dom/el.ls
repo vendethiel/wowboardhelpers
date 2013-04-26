@@ -1,4 +1,5 @@
 module.exports = ->
 	document.createElement 'div'
-		..innerHTML = it
+		try ..innerHTML = it
+		catch => console.log "failing html" it
 		return ..firstElementChild

@@ -6,9 +6,11 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 4.0
+// @version 4.1
 // ==/UserScript==
  * changelog
+ * 4.1
+ *  Add a direct link other characters messages
  * 4.0.2
  *  Fix keybinds firing with alt ctrl shift
  * 4.0.1

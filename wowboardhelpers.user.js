@@ -424,9 +424,14 @@
     });
     require.define('/lib\\dom\\el.ls', function (module, exports, __dirname, __filename) {
         module.exports = function (it) {
-            var x$;
+            var x$, e;
             x$ = document.createElement('div');
-            x$.innerHTML = it;
+            try {
+                x$.innerHTML = it;
+            } catch (e$) {
+                e = e$;
+                console.log('failing html', it);
+            }
             return x$.firstElementChild;
             return x$;
         };
@@ -1387,8 +1392,17 @@
         }
     });
     require.define('/src\\topic-characters\\templates\\multi-chars.ne', function (module, exports, __dirname, __filename) {
-        var lang, join;
+        var lang, postsOf, join, join$ = [].join;
         lang = require('/node_modules\\lang\\index.ls', module);
+        postsOf = function (it) {
+            var name, ref$;
+            name = [
+                (ref$ = it.split('/'))[5],
+                ref$[4]
+            ];
+            name[1] = name[1].humanize();
+            return 'http://eu.battle.net/wow/fr/search?f=post&amp;a=' + join$.call(name, '%40') + '&amp;sort=time';
+        };
         join = function (it) {
             if (it) {
                 return it.join('');
@@ -1402,7 +1416,7 @@
                 var i$, ref$, len$, results$ = [];
                 for (i$ = 0, len$ = (ref$ = locals.characters.exclude(locals.current)).length; i$ < len$; ++i$) {
                     character = ref$[i$];
-                    results$.push('<li style="' + [locals.toggle ? 'display: none' : void 8] + '">' + (character || '') + '</li>');
+                    results$.push('<li style="' + [locals.toggle ? 'display: none' : void 8] + '">' + (character || '') + '<a href="' + postsOf(character) + '" class="see-messages"></a></li>');
                 }
                 return results$;
             }()) || '') + '</ul></div>';
@@ -1687,6 +1701,14 @@ tr:not(.stickied) a[data-tooltip] {\
 }\
 #account-characters a {\
   font-weight: bold;\
+}\
+#account-characters .see-messages {\
+  background-image: url("http://eu.battle.net/wow/static/images/icons/context.gif");\
+  background-position: 0 -30px;\
+  display: inline-block;\
+  margin-bottom: -10px;\
+  width: 30px;\
+  height: 30px;\
 }\
 img.autolink {\
   border: 5px solid #000;\
@@ -6738,6 +6760,8 @@ img.autolink {\
                 ]
             });
         }());
+    });
+    require.define('/metadata.js', function (module, exports, __dirname, __filename) {
     });
     require('/src\\wowboardhelpers.ls');
 }.call(this, this));

@@ -25,11 +25,11 @@ nib = -> stylus it .use require(\nib)!
 
 ls-parse = (src, filename) ->
   try LiveScript.compile src, {+bare, filename}
-  catch {message} => say "LiveScript (#source): #message"
+  catch {message} => say "LiveScript (#filename): #message"
 
 en-ast = (fn) -> (src, filename) ->
   try esprima.parse fn src.toString!, filename
-  catch {message} => say "Esprima (#source): #message"
+  catch {message} => say "Esprima (#filename): #message"
 
 
 cjs-options =
@@ -61,8 +61,7 @@ var ast, css, css-change
 task \build "build userscript" ->
   if css-change or not css
     console.time "CSS"
-    css := compile-styles!
-    css .= trim!replace /\n/g '\\\n'
+    css := compile-styles!trim!replace /\n/g '\\\n'
     console.timeEnd "CSS"
 
   unless css-change
