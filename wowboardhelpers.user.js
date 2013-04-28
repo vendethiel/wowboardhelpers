@@ -7,9 +7,12 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 4.0
+// @version 4.1
 // ==/UserScript==
  * changelog
+ * 4.1
+ *  Add a direct link other characters messages
+ *  Use correct nephrite extension
  * 4.0.2
  *  Fix keybinds firing with alt ctrl shift
  * 4.0.1
@@ -532,14 +535,27 @@
         }
     });
     require.define('/src\\w.ls', function (module, exports, __dirname, __filename) {
-        var w;
+        var node, w, inject;
+        node = require('/node_modules\\dom\\index.ls', module).node;
         w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
+        inject = function (it) {
+            return document.body.appendChild(node('script', { innerHTML: ';' + it + ';' }));
+        };
         if (!w.Cms) {
             w = w.window = function () {
-                var el;
+                var el, fetchedWindow, fetchWindow;
                 el = document.createElement('p');
                 el.setAttribute('onclick', 'return window;');
-                return el.onclick();
+                el = el.onclick();
+                if (el.Cms) {
+                    return el;
+                }
+                fetchWindow = function (it) {
+                    return fetchedWindow = it.detail;
+                };
+                addEventListener('chrome:ownage', fetchWindow);
+                inject('window.dispatchEvent(new CustomEvent("chrome:ownage", {detail: window}))');
+                return fetchedWindow;
             }.call(this);
         }
         module.exports = w;
@@ -6760,8 +6776,6 @@ img.autolink {\
                 ]
             });
         }());
-    });
-    require.define('/metadata.js', function (module, exports, __dirname, __filename) {
     });
     require('/src\\wowboardhelpers.ls');
 }.call(this, this));
