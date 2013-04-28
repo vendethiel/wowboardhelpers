@@ -11,6 +11,7 @@
  * changelog
  * 4.1
  *  Add a direct link other characters messages
+ *  Use correct nephrite extension
  * 4.0.2
  *  Fix keybinds firing with alt ctrl shift
  * 4.0.1
