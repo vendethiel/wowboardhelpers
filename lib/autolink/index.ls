@@ -13,7 +13,7 @@ rules = # indent looks nasty because array star is just `void =` which adds 2 in
 				youtube\.com\/watch\?
 					([&=\w\-_;\.\?\#\%]*) # pre video id options
 					v=([\w\-_]+) # video id
-					([&=\w\-\._;\?\#\%]*) # post vieo id options
+					([&=\w\-\._;\?\#\%]*) # post video id options
 			)
 //g
 			* '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5#$3$4$6" frameborder="0">
