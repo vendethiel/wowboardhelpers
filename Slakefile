@@ -1,15 +1,15 @@
 require! <[fs LiveScript nephrite stylus esprima glob md5 escodegen]>
-# {exec} = require 'child_process'
+{exec} = require 'child_process'
 cjs = require 'commonjs-everywhere'
 
 ls = -> ["#it/#file" for file in fs.readdirSync it]
+blame = -> say ...; process.exit!
 
 ##########
 # CONFIG #
 ##########
 outfile = \wowboardhelpers.user.js
 metadata = slurp \metadata.js
-
 
 compile-styles = ->
   # XXX kind of relying on lexicographic ordering here
@@ -99,3 +99,20 @@ task \watch 'watch for changes and rebuild automatically' !->
       say "Event #ev on #file. Rebuilding."
 
       invoke 'build'
+
+task \linkdeps 'Link the fuck out of the deps' !->
+  lib-deps =
+    autolink: <[ajax]>
+    "parse-time": <[lang]>
+  for lib, deps of lib-deps
+    for dep in deps
+      exec "cd lib/#lib && npm link ../#dep" !(err, a, b) ->
+        blame "#lib: #err" if err
+  
+task \link 'Link the fuck out of the npm modules' !->
+  modules = <[ajax autolink dom fetch-siblings lang parse-time]>
+  for module in modules
+    exec "rm -rf node_modules/#module"
+    exec "npm link lib/#module" !(err, stdout, stderr) ->
+      blame "#module: #err" if err
+  say "Linked #{modules * ', '}."

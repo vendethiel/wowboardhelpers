@@ -493,12 +493,11 @@
         }
     });
     require.define('/src\\forum-layout\\mar.ls', function (module, exports, __dirname, __filename) {
-        var lang, fetchSiblings, forumOptions, tbodyRegular, w, node, allRead, buttonMar, x$, split$ = ''.split;
+        var lang, fetchSiblings, forumOptions, tbodyRegular, node, allRead, buttonMar, x$, split$ = ''.split;
         lang = require('/node_modules\\lang\\index.ls', module);
         fetchSiblings = require('/node_modules\\fetch-siblings\\index.ls', module);
         forumOptions = require('/src\\forum-options.ls', module);
         tbodyRegular = require('/src\\tbody-regular.ls', module);
-        w = require('/src\\w.ls', module);
         node = require('/node_modules\\dom\\index.ls', module).node;
         allRead = false;
         module.exports = buttonMar = node('a', {
@@ -620,7 +619,7 @@
     });
     require.define('/node_modules\\parse-time\\index.ls', function (module, exports, __dirname, __filename) {
         var lang, units, res$, i$, ref$, len$, name, split$ = ''.split;
-        lang = require('/node_modules\\lang\\index.ls', module);
+        lang = require('/lib\\parse-time\\node_modules\\lang\\index.ls', module);
         res$ = {};
         for (i$ = 0, len$ = (ref$ = [
                 'second',
@@ -647,6 +646,42 @@
             }
             return total;
         };
+    });
+    require.define('/lib\\parse-time\\node_modules\\lang\\index.ls', function (module, exports, __dirname, __filename) {
+        var l, langs, lang, split$ = ''.split;
+        l = split$.call(document.location, '/')[4];
+        langs = {
+            fr: require('/lib\\lang\\fr.ls', module),
+            en: require('/lib\\lang\\en.ls', module)
+        };
+        module.exports = lang = function () {
+            lang.displayName = 'lang';
+            var ref$, prototype = lang.prototype, constructor = lang;
+            import$(lang, (ref$ = langs[l]) != null ? ref$ : langs.en);
+            function lang(it) {
+                var ref$;
+                return (ref$ = lang[it]) != null ? ref$ : (ref$ = lang[it.camelize(false)]) != null ? ref$ : it;
+            }
+            lang.pluralize == null && (lang.pluralize = function (count, key) {
+                return Math.round(count) + ' ' + lang(key) + [count > 1.5 ? 's' : void 8];
+            });
+            lang.singularize == null && (lang.singularize = function (it) {
+                if (it[it.length - 1] === 's') {
+                    return it.slice(0, -1);
+                } else {
+                    return it;
+                }
+            });
+            lang.simplifyTime = require('/lib\\lang\\simplify-time.ls', module);
+            return lang;
+        }();
+        function import$(obj, src) {
+            var own = {}.hasOwnProperty;
+            for (var key in src)
+                if (own.call(src, key))
+                    obj[key] = src[key];
+            return obj;
+        }
     });
     require.define('/src\\forum-topics\\hide-topic.ls', function (module, exports, __dirname, __filename) {
         var tbodyRegular, ref$, $, $$, el, templateHideTopic, hiddenTopics, i$, len$, postPages, that, tr, topicId, split$ = ''.split, join$ = [].join;
@@ -967,13 +1002,12 @@
         stickies = require('/src\\forum-layout\\stickies.ls', module);
     });
     require.define('/src\\forum-layout\\stickies.ls', function (module, exports, __dirname, __filename) {
-        var lang, forumOptions, w, ref$, $, node, sticky, buttonSticky, x$;
+        var lang, forumOptions, ref$, $, node, sticky, buttonSticky, x$;
         lang = require('/node_modules\\lang\\index.ls', module);
         forumOptions = require('/src\\forum-options.ls', module);
-        w = require('/src\\w.ls', module);
         ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, node = ref$.node;
         sticky = $('.sticky');
-        if ('show' !== w.localStorage.getItem('show-stickies')) {
+        if ('show' !== localStorage.getItem('show-stickies')) {
             sticky.style.display = 'none';
         }
         module.exports = buttonSticky = node('a', {
@@ -984,7 +1018,7 @@
                     'none',
                     ''
                 ].exclude(sticky.style.display)[0];
-                w.localStorage.setItem('show-stickies', s.display || 'show');
+                localStorage.setItem('show-stickies', s.display || 'show');
             }
         });
         x$ = buttonSticky;
@@ -1003,9 +1037,8 @@
         newTopic = require('/src\\forum-layout\\jumps\\new-topic.ls', module);
     });
     require.define('/src\\forum-layout\\jumps\\new-topic.ls', function (module, exports, __dirname, __filename) {
-        var bindKey, w, $;
+        var bindKey, $;
         bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
-        w = require('/src\\w.ls', module);
         $ = require('/node_modules\\dom\\index.ls', module).$;
         if (!$('a.button1.disabled')) {
             bindKey('n', 'new-topic', function () {
@@ -1074,13 +1107,15 @@
         autolink = require('/node_modules\\autolink\\index.ls', module);
         $ = require('/node_modules\\dom\\index.ls', module).$;
         postPreview = $('#post-preview');
-        old = bind$(w.BML, 'preview');
-        w.BML.preview = function (content, target, callback) {
-            old(content, target, function () {
-                callback();
-                autolink(postPreview);
-            });
-        };
+        if ('BML' in w) {
+            old = bind$(w.BML, 'preview');
+            w.BML.preview = function (content, target, callback) {
+                old(content, target, function () {
+                    callback();
+                    autolink(postPreview);
+                });
+            };
+        }
         function bind$(obj, key, target) {
             return function () {
                 return (target || obj)[key].apply(obj, arguments);
@@ -1113,7 +1148,7 @@
             ]
         ];
         module.exports = elAutolink;
-        ajax = require('/node_modules\\ajax\\index.ls', module);
+        ajax = require('/lib\\autolink\\node_modules\\ajax\\index.ls', module);
         function elAutolink(el) {
             var h, r, ref$, url, e;
             try {
@@ -1146,6 +1181,18 @@
             }
             return it;
         }
+    });
+    require.define('/lib\\autolink\\node_modules\\ajax\\index.ls', function (module, exports, __dirname, __filename) {
+        module.exports = {
+            get: function (url, success) {
+                var x$;
+                x$ = new XMLHttpRequest();
+                x$.open('GET', url);
+                x$.onload = success;
+                x$.send();
+                return x$;
+            }
+        };
     });
     require.define('/src\\reply\\memebox.ls', function (module, exports, __dirname, __filename) {
         var memes, textarea, ref$, $, el, templateMemebox, that, addMeme, appendMeme, memebox, ul, replace$ = ''.replace;
@@ -1486,29 +1533,41 @@
         setView = require('/src\\fix\\set-view.ls', module);
     });
     require.define('/src\\fix\\set-view.ls', function (module, exports, __dirname, __filename) {
-        var w, ref$;
-        w = require('/src\\w.ls', module);
-        if ((ref$ = w.Cms) != null) {
-            ref$.Forum.setView = function (type, target) {
-                w.Cookie.create('forumView', type, {
-                    path: '/',
-                    expires: 8760
-                });
-                w.$(target).addClass('active').siblings().removeClass('active');
-                return w.$('#posts').attr('class', type);
+        var ref$, $, $$, states, posts, i$, len$, state, slice$ = [].slice;
+        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, $$ = ref$.$$;
+        states = slice$.call($$('a.simple, a.advanced'));
+        posts = $('#posts');
+        updateView((ref$ = localStorage.forumView) != null ? ref$ : 'simple');
+        for (i$ = 0, len$ = states.length; i$ < len$; ++i$) {
+            state = states[i$];
+            fn$.call(this, state);
+        }
+        function updateView(view) {
+            posts.className = view;
+            $('.view-options a.active').classList.remove('active');
+            return $('a.' + view).className = view + ' active';
+        }
+        function fn$(state) {
+            var stateName;
+            stateName = state.className.split(' ')[0];
+            state.onclick = function () {
+                localStorage.forumView = stateName;
+                updateView(stateName);
             };
         }
     });
     require.define('/src\\fix\\menu.ls', function (module, exports, __dirname, __filename) {
         var w, old;
         w = require('/src\\w.ls', module);
-        old = w.Menu.show;
-        w.Menu.show = function (arg$, arg1$, options) {
-            var ref$, key$, x, ref1$;
-            options == null && (options = {});
-            (ref$ = w.Menu.dataIndex)[key$ = x = (ref1$ = options.set) != null ? ref1$ : 'base'] == null && (ref$[key$] = []);
-            return old.apply(this, arguments);
-        };
+        if ('Menu' in w) {
+            old = w.Menu.show;
+            w.Menu.show = function (arg$, arg1$, options) {
+                var ref$, key$, x, ref1$;
+                options == null && (options = {});
+                (ref$ = w.Menu.dataIndex)[key$ = x = (ref1$ = options.set) != null ? ref1$ : 'base'] == null && (ref$[key$] = []);
+                return old.apply(this, arguments);
+            };
+        }
     });
     require.define('/src\\fix\\html-overrides.ls', function (module, exports, __dirname, __filename) {
         var lang, $, that, k, v, ref$;
@@ -1535,9 +1594,11 @@
         var bindKey, w;
         bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
         w = require('/src\\w.ls', module);
-        bindKey('l', 'login', function () {
-            w.Login.open('https://eu.battle.net/login/login.frag');
-        });
+        if (w.Login) {
+            bindKey('l', 'login', function () {
+                w.Login.open('https://eu.battle.net/login/login.frag');
+            });
+        }
     });
     require.define('/src\\jumps\\top.ls', function (module, exports, __dirname, __filename) {
         var bindKey, $;

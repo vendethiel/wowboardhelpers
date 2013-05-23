@@ -1,4 +1,4 @@
-require! <[../../cheatsheet/bind-key ../../w]>
+require! <[../../cheatsheet/bind-key]>
 {$} = require 'dom'
 
 # account disabled

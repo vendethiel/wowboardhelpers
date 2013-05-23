@@ -1,9 +1,9 @@
-require! <[lang ../forum-options ../w]>
+require! <[lang ../forum-options]>
 {$, node} = require 'dom'
 
 #remove sticky part (tbody.sticky)
 sticky = $ '.sticky'
-unless 'show' is w.localStorage.getItem 'show-stickies'
+unless 'show' is localStorage.getItem 'show-stickies'
 	sticky.style.display = 'none'
 
 #add sticky-toggling button
@@ -11,7 +11,7 @@ module.exports = button-sticky = node 'a' innerHTML: 'Post-its' title: lang.togg
 	sticky.style.display = ['none' '']exclude(sticky.style.display)0
 
 	#save user pref
-	w.localStorage.setItem 'show-stickies' s.display || 'show'
+	localStorage.setItem 'show-stickies' s.display || 'show'
 
 button-sticky
 	..style.cursor = 'pointer'
