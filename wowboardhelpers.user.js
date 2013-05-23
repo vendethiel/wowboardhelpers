@@ -533,32 +533,6 @@
             };
         }
     });
-    require.define('/src\\w.ls', function (module, exports, __dirname, __filename) {
-        var node, w, inject;
-        node = require('/node_modules\\dom\\index.ls', module).node;
-        w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
-        inject = function (it) {
-            return document.body.appendChild(node('script', { innerHTML: ';' + it + ';' }));
-        };
-        if (!w.Cms) {
-            w = w.window = function () {
-                var el, fetchedWindow, fetchWindow;
-                el = document.createElement('p');
-                el.setAttribute('onclick', 'return window;');
-                el = el.onclick();
-                if (el.Cms) {
-                    return el;
-                }
-                fetchWindow = function (it) {
-                    return fetchedWindow = it.detail;
-                };
-                addEventListener('chrome:ownage', fetchWindow);
-                inject('window.dispatchEvent(new CustomEvent("chrome:ownage", {detail: window}))');
-                return fetchedWindow;
-            }.call(this);
-        }
-        module.exports = w;
-    });
     require.define('/src\\tbody-regular.ls', function (module, exports, __dirname, __filename) {
         var $;
         $ = require('/node_modules\\dom\\index.ls', module).$;
@@ -994,12 +968,37 @@
         module.exports = characters;
     });
     require.define('/src\\forum-layout\\index.ls', function (module, exports, __dirname, __filename) {
-        var jumps, checkUpdates, mar, moveActions, stickies;
+        var jumps, checkUpdates, mar, moveActions, stickies, setView;
         jumps = require('/src\\forum-layout\\jumps\\index.ls', module);
         checkUpdates = require('/src\\forum-layout\\check-updates.ls', module);
         mar = require('/src\\forum-layout\\mar.ls', module);
         moveActions = require('/src\\forum-layout\\move-actions.ls', module);
         stickies = require('/src\\forum-layout\\stickies.ls', module);
+        setView = require('/src\\forum-layout\\set-view.ls', module);
+    });
+    require.define('/src\\forum-layout\\set-view.ls', function (module, exports, __dirname, __filename) {
+        var ref$, $, $$, states, posts, i$, len$, state, slice$ = [].slice;
+        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, $$ = ref$.$$;
+        states = slice$.call($$('a.simple, a.advanced'));
+        posts = $('#posts');
+        updateView((ref$ = localStorage.forumView) != null ? ref$ : 'simple');
+        for (i$ = 0, len$ = states.length; i$ < len$; ++i$) {
+            state = states[i$];
+            fn$.call(this, state);
+        }
+        function updateView(view) {
+            posts.className = view;
+            $('.view-options a.active').classList.remove('active');
+            return $('a.' + view).className = view + ' active';
+        }
+        function fn$(state) {
+            var stateName;
+            stateName = state.className.split(' ')[0];
+            state.onclick = function () {
+                localStorage.forumView = stateName;
+                updateView(stateName);
+            };
+        }
     });
     require.define('/src\\forum-layout\\stickies.ls', function (module, exports, __dirname, __filename) {
         var lang, forumOptions, ref$, $, node, sticky, buttonSticky, x$;
@@ -1100,6 +1099,32 @@
             }
             $('#forum-actions-bottom').scrollIntoView();
         });
+    });
+    require.define('/src\\w.ls', function (module, exports, __dirname, __filename) {
+        var node, w, inject;
+        node = require('/node_modules\\dom\\index.ls', module).node;
+        w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
+        inject = function (it) {
+            return document.body.appendChild(node('script', { innerHTML: ';' + it + ';' }));
+        };
+        if (!w.Cms) {
+            w = w.window = function () {
+                var el, fetchedWindow, fetchWindow;
+                el = document.createElement('p');
+                el.setAttribute('onclick', 'return window;');
+                el = el.onclick();
+                if (el.Cms) {
+                    return el;
+                }
+                fetchWindow = function (it) {
+                    return fetchedWindow = it.detail;
+                };
+                addEventListener('chrome:ownage', fetchWindow);
+                inject('window.dispatchEvent(new CustomEvent("chrome:ownage", {detail: window}))');
+                return fetchedWindow;
+            }.call(this);
+        }
+        module.exports = w;
     });
     require.define('/src\\reply\\preview.ls', function (module, exports, __dirname, __filename) {
         var w, autolink, $, postPreview, old;
@@ -1527,34 +1552,9 @@
         };
     });
     require.define('/src\\fix\\index.ls', function (module, exports, __dirname, __filename) {
-        var htmlOverrides, menu, setView;
+        var htmlOverrides, menu;
         htmlOverrides = require('/src\\fix\\html-overrides.ls', module);
         menu = require('/src\\fix\\menu.ls', module);
-        setView = require('/src\\fix\\set-view.ls', module);
-    });
-    require.define('/src\\fix\\set-view.ls', function (module, exports, __dirname, __filename) {
-        var ref$, $, $$, states, posts, i$, len$, state, slice$ = [].slice;
-        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, $$ = ref$.$$;
-        states = slice$.call($$('a.simple, a.advanced'));
-        posts = $('#posts');
-        updateView((ref$ = localStorage.forumView) != null ? ref$ : 'simple');
-        for (i$ = 0, len$ = states.length; i$ < len$; ++i$) {
-            state = states[i$];
-            fn$.call(this, state);
-        }
-        function updateView(view) {
-            posts.className = view;
-            $('.view-options a.active').classList.remove('active');
-            return $('a.' + view).className = view + ' active';
-        }
-        function fn$(state) {
-            var stateName;
-            stateName = state.className.split(' ')[0];
-            state.onclick = function () {
-                localStorage.forumView = stateName;
-                updateView(stateName);
-            };
-        }
     });
     require.define('/src\\fix\\menu.ls', function (module, exports, __dirname, __filename) {
         var w, old;

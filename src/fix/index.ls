@@ -1,1 +1,1 @@
-require! <[./html-overrides ./menu ./set-view]>
+require! <[./html-overrides ./menu]>
