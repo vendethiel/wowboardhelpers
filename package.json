@@ -1,6 +1,6 @@
 {
   "name": "wowboardhelpers",
-  "version": "2.0.5",
+  "version": "0.0.1",
   "author": "Nami-Doc <nami.d0c.0@gmail.com>",
   "dependencies": {
     "LiveScript": "1.1.1",

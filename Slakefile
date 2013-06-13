@@ -106,13 +106,13 @@ task \linkdeps 'Link the fuck out of the deps' !->
     "parse-time": <[lang]>
   for lib, deps of lib-deps
     for dep in deps
-      exec "cd lib/#lib && npm link ../#dep" !(err, a, b) ->
+      exec "cd lib/#lib && npm link ../#dep" !(err) ->
         blame "#lib: #err" if err
   
 task \link 'Link the fuck out of the npm modules' !->
   modules = <[ajax autolink dom fetch-siblings lang parse-time]>
   for module in modules
     exec "rm -rf node_modules/#module"
-    exec "npm link lib/#module" !(err, stdout, stderr) ->
+    exec "npm link lib/#module" !(err) ->
       blame "#module: #err" if err
   say "Linked #{modules * ', '}."

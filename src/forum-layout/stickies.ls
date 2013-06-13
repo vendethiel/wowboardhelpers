@@ -8,10 +8,10 @@ unless 'show' is localStorage.getItem 'show-stickies'
 
 #add sticky-toggling button
 module.exports = button-sticky = node 'a' innerHTML: 'Post-its' title: lang.toggle-sticky, onclick: !->
-	sticky.style.display = ['none' '']exclude(sticky.style.display)0
+	(s = sticky.style)display = ['none' '']find (!= s.display)
 
 	#save user pref
-	localStorage.setItem 'show-stickies' s.display || 'show'
+	localStorage.setItem 'show-stickies' s.display or 'show'
 
 button-sticky
 	..style.cursor = 'pointer'

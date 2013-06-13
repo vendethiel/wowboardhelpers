@@ -7,9 +7,15 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 4.1
+// @version 4.1.1
 // ==/UserScript==
  * changelog
+ * 4.1.2
+ *  Fix stickies toggling
+ *  Add a message for lolchrome
+ * 4.1.1
+ *  Fix userscript for chrome 27 which breaks our
+ *   window reference (FUCK)
  * 4.1
  *  Add a direct link other characters messages
  *  Use correct nephrite extension
@@ -1013,11 +1019,14 @@
             innerHTML: 'Post-its',
             title: lang.toggleSticky,
             onclick: function () {
-                sticky.style.display = [
+                var s;
+                (s = sticky.style).display = [
                     'none',
                     ''
-                ].exclude(sticky.style.display)[0];
-                localStorage.setItem('show-stickies', s.display || 'show');
+                ].find(function (it) {
+                    return it !== s.display;
+                });
+                localStorage.setItem('show-stickies', s.display) || 'show';
             }
         });
         x$ = buttonSticky;
@@ -1109,19 +1118,14 @@
         };
         if (!w.Cms) {
             w = w.window = function () {
-                var el, fetchedWindow, fetchWindow;
+                var ret, el;
                 el = document.createElement('p');
                 el.setAttribute('onclick', 'return window;');
-                el = el.onclick();
-                if (el.Cms) {
-                    return el;
+                el = el.el.onclick();
+                if (!el.Cms) {
+                    console.log('It seems you\'re using Google Chrome, which is a bad browser and disables some of the features Wow Board Helpers provides.');
                 }
-                fetchWindow = function (it) {
-                    return fetchedWindow = it.detail;
-                };
-                addEventListener('chrome:ownage', fetchWindow);
-                inject('window.dispatchEvent(new CustomEvent("chrome:ownage", {detail: window}))');
-                return fetchedWindow;
+                return el;
             }.call(this);
         }
         module.exports = w;
@@ -1595,6 +1599,7 @@
         bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
         w = require('/src\\w.ls', module);
         if (w.Login) {
+            console.log(w.Login.open + '');
             bindKey('l', 'login', function () {
                 w.Login.open('https://eu.battle.net/login/login.frag');
             });

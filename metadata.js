@@ -6,9 +6,15 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 4.1
+// @version 4.1.1
 // ==/UserScript==
  * changelog
+ * 4.1.2
+ *  Fix stickies toggling
+ *  Add a message for lolchrome
+ * 4.1.1
+ *  Fix userscript for chrome 27 which breaks our
+ *   window reference (FUCK)
  * 4.1
  *  Add a direct link other characters messages
  *  Use correct nephrite extension

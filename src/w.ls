@@ -6,17 +6,14 @@ inject = ->
 
 unless w.Cms # let's detect this, 'tis something comin' from Blizzard Forums
 	w = w.window = let
+		var ret
 		# fuck you chrome 27 http://crbug.com/222652
 		el = document.createElement 'p'
 		el.setAttribute 'onclick' 'return window;'
-		el .= onclick!
-		if el.Cms # WE DID IT
-			return el
-		
-		var fetched-window
-		fetch-window = -> fetched-window := it.detail
-		addEventListener 'chrome:ownage' fetch-window
-		inject 'window.dispatchEvent(new CustomEvent("chrome:ownage", {detail: window}))'
-		fetched-window
+		el .= el.onclick!
+
+		unless el.Cms
+			console.log "It seems you're using Google Chrome, which is a bad browser and disables some of the features Wow Board Helpers provides."
+		el
 
 module.exports = w
