@@ -6,9 +6,12 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 4.1.1
+// @version 4.2
 // ==/UserScript==
  * changelog
+ * 4.2
+ *  Stylus as a file with `@import`s rather than `glob`ing a directory
+ *  Pin deps
  * 4.1.2
  *  Fix stickies toggling
  *  Add a message for lolchrome
@@ -101,7 +104,7 @@
  *  Added autolink handling edge cases
  *   Also links youtube videos (iframe embedding)
  * 1.3.0
- *  Added `r` as hotkey for "quickquote"
+ *  Added `r` as hotkey for "reply"
  * 1.2.2
  *  Better handling of CMs
  * 1.2.1

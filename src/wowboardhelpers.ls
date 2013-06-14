@@ -8,7 +8,7 @@ Object.extend!
 Date.setLocale location.href.split('/')4
 console.timeEnd 'WBH: Sugar'
 
-require './board/content-class'
+require './board/content-classes'
 require './board/css'
 
 require './jumps'

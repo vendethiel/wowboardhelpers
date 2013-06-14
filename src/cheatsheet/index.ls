@@ -15,5 +15,5 @@ if Object.keys cheatsheet .length
 				ul.style.display = 'none'
 
 				..querySelector '.toggler' .onclick = ->
-					ul.style.display = ['none' '']exclude(ul.style.display)0
+					ul.style.display = ['none' '']find (!= ul.style.display)
 		break

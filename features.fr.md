@@ -9,6 +9,7 @@ Forum :
  - Post-its cachables (actif par défaut)
  - Les actions (MAR Post-its Simple Avancé) ont été déplacées pour gagner de l'espace
  - Si un forum est lu, vérifie périodiquement si des nouveaux messages ont été postés
+   sans avoir à recharger la page manuellement
 
 Topic :
  - Sélectionner un bout de message et appuyer sur "r" rajoute le bout sélectionné entre [quote] à votre réponse

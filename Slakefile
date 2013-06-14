@@ -2,7 +2,7 @@ require! <[fs LiveScript nephrite stylus esprima glob md5 escodegen]>
 {exec} = require 'child_process'
 cjs = require 'commonjs-everywhere'
 
-ls = -> ["#it/#file" for file in fs.readdirSync it]
+read = -> fs.readFileSync it
 blame = -> say ...; process.exit!
 
 ##########
@@ -12,16 +12,10 @@ outfile = \wowboardhelpers.user.js
 metadata = slurp \metadata.js
 
 compile-styles = ->
-  # XXX kind of relying on lexicographic ordering here
-  source = []
-  for dir in ls \src
-    if fs.existsSync "#dir/styles/"
-      for file in ls "#dir/styles/"
-        source.push slurp file
+  filename = 'src/wowboardhelpers.styl'
+  nib String(read filename), {filename} .render!
 
-  nib source * '\n' .render!
-
-nib = -> stylus it .use require(\nib)!
+nib = -> stylus ... .use require(\nib)!
 
 ls-parse = (src, filename) ->
   try LiveScript.compile src, {+bare, filename}

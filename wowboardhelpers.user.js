@@ -7,9 +7,12 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 4.1.1
+// @version 4.2
 // ==/UserScript==
  * changelog
+ * 4.2
+ *  Stylus as a file with `@import`s rather than `glob`ing a directory
+ *  Pin deps
  * 4.1.2
  *  Fix stickies toggling
  *  Add a message for lolchrome
@@ -102,7 +105,7 @@
  *  Added autolink handling edge cases
  *   Also links youtube videos (iframe embedding)
  * 1.3.0
- *  Added `r` as hotkey for "quickquote"
+ *  Added `r` as hotkey for "reply"
  * 1.2.2
  *  Better handling of CMs
  * 1.2.1
@@ -184,7 +187,7 @@
         Object.extend();
         Date.setLocale(location.href.split('/')[4]);
         console.timeEnd('WBH: Sugar');
-        require('/src\\board\\content-class.ls', module);
+        require('/src\\board\\content-classes.ls', module);
         require('/src\\board\\css.ls', module);
         require('/src\\jumps\\index.ls', module);
         require('/src\\fix\\index.ls', module);
@@ -225,7 +228,9 @@
             return ul.style.display = [
                 'none',
                 ''
-            ].exclude(ul.style.display)[0];
+            ].find(function (it) {
+                return it !== ul.style.display;
+            });
         }
     });
     require.define('/src\\cheatsheet\\templates\\cheatsheet.ne', function (module, exports, __dirname, __filename) {
@@ -1121,7 +1126,7 @@
                 var ret, el;
                 el = document.createElement('p');
                 el.setAttribute('onclick', 'return window;');
-                el = el.el.onclick();
+                el = el.onclick();
                 if (!el.Cms) {
                     console.log('It seems you\'re using Google Chrome, which is a bad browser and disables some of the features Wow Board Helpers provides.');
                 }
@@ -1618,7 +1623,10 @@
         node = require('/node_modules\\dom\\index.ls', module).node;
         style = node('style', {
             type: 'text/css',
-            innerHTML: '/*slake:build#compile-ls embeds css*/\n#forum-actions-top h1 {\
+            innerHTML: '/*slake:build#compile-ls embeds css*/\n/**\
+ * Wow Board Helpers Stylesheet file\
+ */\
+#forum-actions-top h1 {\
   text-align: center;\
   margin-left: 200px;\
 }\
@@ -1660,13 +1668,6 @@ a.hide-topic:hover {\
 }\
 tr:hover .last-read {\
   opacity: 1;\
-}\
-.post-pages .last-read {\
-  background-image: none !important;\
-  background: none !important;\
-}\
-tr:not(.stickied) a[data-tooltip] {\
-  display: inline !important;\
 }\
 #posts.advanced .tt-last-updated {\
   display: none;\
@@ -1713,6 +1714,57 @@ tr:not(.stickied) a[data-tooltip] {\
 #posts.simple .post-last-updated {\
   display: none;\
 }\
+.post-pages .last-read {\
+  background-image: none !important;\
+  background: none !important;\
+}\
+tr:not(.stickied) a[data-tooltip] {\
+  display: inline !important;\
+}\
+#account-characters {\
+  margin-left: 30px;\
+}\
+#account-characters h1 {\
+  display: inline;\
+}\
+#account-characters ul {\
+  list-style: circle;\
+  margin-left: 20px;\
+}\
+#account-characters a {\
+  font-weight: bold;\
+}\
+#account-characters .see-messages {\
+  background-image: url("http://eu.battle.net/wow/static/images/icons/context.gif");\
+  background-position: 0 -30px;\
+  display: inline-block;\
+  margin-bottom: -10px;\
+  width: 30px;\
+  height: 30px;\
+}\
+.context-links .extra-link {\
+  background-image: none !important;\
+  padding-left: 8px !important;\
+  border-top-left-radius: 0px !important;\
+  border-bottom-left-radius: 0px !important;\
+}\
+.ui-context {\
+  width: 240px !important;\
+}\
+.karma {\
+  white-space: normal !important;\
+}\
+.post-user .avatar {\
+  top: 27px !important;\
+}\
+img.autolink {\
+  border: 5px solid #000;\
+  max-width: 540px;\
+  max-height: 500px;\
+}\
+.logged-off .karma {\
+  display: none;\
+}\
 .clear-textarea {\
   display: block;\
   margin: 1px 0 1px 553px;\
@@ -1755,58 +1807,18 @@ tr:not(.stickied) a[data-tooltip] {\
   font-weight: bold;\
   color: link;\
   text-decoration: underline;\
-}\
-.context-links .extra-link {\
-  background-image: none !important;\
-  padding-left: 8px !important;\
-  border-top-left-radius: 0px !important;\
-  border-bottom-left-radius: 0px !important;\
-}\
-.ui-context {\
-  width: 240px !important;\
-}\
-.karma {\
-  white-space: normal !important;\
-}\
-.post-user .avatar {\
-  top: 27px !important;\
-}\
-#account-characters {\
-  margin-left: 30px;\
-}\
-#account-characters h1 {\
-  display: inline;\
-}\
-#account-characters ul {\
-  list-style: circle;\
-  margin-left: 20px;\
-}\
-#account-characters a {\
-  font-weight: bold;\
-}\
-#account-characters .see-messages {\
-  background-image: url("http://eu.battle.net/wow/static/images/icons/context.gif");\
-  background-position: 0 -30px;\
-  display: inline-block;\
-  margin-bottom: -10px;\
-  width: 30px;\
-  height: 30px;\
-}\
-img.autolink {\
-  border: 5px solid #000;\
-  max-width: 540px;\
-  max-height: 500px;\
 }'
         });
         document.head.appendChild(style);
     });
-    require.define('/src\\board\\content-class.ls', function (module, exports, __dirname, __filename) {
-        var topic, forum, $, content;
+    require.define('/src\\board\\content-classes.ls', function (module, exports, __dirname, __filename) {
+        var topic, forum, $, content, classes, join$ = [].join;
         topic = require('/src\\topic.ls', module);
         forum = require('/src\\forum.ls', module);
         $ = require('/node_modules\\dom\\index.ls', module).$;
         content = $('#content');
-        content.className = function () {
+        classes = [];
+        classes.push(function () {
             switch (false) {
             case !topic:
                 return 'topic';
@@ -1815,7 +1827,9 @@ img.autolink {\
             default:
                 return '';
             }
-        }();
+        }());
+        classes.push($('.login-msg') ? 'logged-off' : 'logged-in');
+        content.className = join$.call(classes, ' ');
     });
     require.define('/node_modules\\sugar\\release\\sugar-full.development.js', function (module, exports, __dirname, __filename) {
         (function () {
