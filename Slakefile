@@ -13,7 +13,7 @@ metadata = slurp \metadata.js
 
 compile-styles = ->
   filename = 'src/wowboardhelpers.styl'
-  nib String(read filename), {filename} .render!
+  nib read(filename)+'' {filename} .render!
 
 nib = -> stylus ... .use require(\nib)!
 
@@ -32,7 +32,7 @@ cjs-options =
   handlers:
     '.styl': ->
       # trap it, triggered when last-changed is a .styl
-      # XXX could maybe actually be used to notice css changed
+
     '.ne': en-ast (src, filename) ->
       try src = nephrite src, filename
       catch {message} => say "Nephrite (#filename): #message"

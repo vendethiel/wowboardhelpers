@@ -1,6 +1,7 @@
 {cheatsheet} = require './bind-key'
 {$, el} = require 'dom'
 
+#if cheatsheet.values!length
 if Object.keys cheatsheet .length
 	possible-divs =
 		'.forum-info' # forum topics page
