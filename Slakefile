@@ -38,8 +38,7 @@ cjs-options =
       catch {message} => say "Nephrite (#filename): #message"
       ls-parse src, filename
 
-    '.ls': en-ast (it, filename) ->
-      ls-parse it, filename
+    '.ls': en-ast ls-parse
 
     '.js': en-ast (it, filename) -> it
 
@@ -83,7 +82,7 @@ task \watch 'watch for changes and rebuild automatically' !->
       return unless fs.statSync file .isFile!
       last-changed := file
 
-      file .= slice __dirname.length + 1 # leading (anti)slash
+      file .= slice __dirname.length + 1 # leading (back)slash
       if file is "Slakefile"
         say "Slakefile changed."
         process.exit!

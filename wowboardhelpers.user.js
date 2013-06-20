@@ -1115,12 +1115,9 @@
         });
     });
     require.define('/src\\w.ls', function (module, exports, __dirname, __filename) {
-        var node, w, inject;
+        var node, w;
         node = require('/node_modules\\dom\\index.ls', module).node;
         w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
-        inject = function (it) {
-            return document.body.appendChild(node('script', { innerHTML: ';' + it + ';' }));
-        };
         if (!w.Cms) {
             w = w.window = function () {
                 var ret, el;
@@ -1129,6 +1126,7 @@
                 el = el.onclick();
                 if (!el.Cms) {
                     console.log('It seems you\'re using Google Chrome, which is a bad browser and disables some of the features Wow Board Helpers provides.');
+                    console.log('You may want to try the Injector version of this User Script, which should resolve your problems.');
                 }
                 return el;
             }.call(this);
@@ -1604,7 +1602,6 @@
         bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
         w = require('/src\\w.ls', module);
         if (w.Login) {
-            console.log(w.Login.open + '');
             bindKey('l', 'login', function () {
                 w.Login.open('https://eu.battle.net/login/login.frag');
             });

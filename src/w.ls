@@ -1,8 +1,6 @@
 {node} = require 'dom'
 
 w = unsafeWindow ? window
-inject = ->
-	document.body.appendChild node 'script' innerHTML: ";#it;"
 
 unless w.Cms # let's detect this, 'tis something comin' from Blizzard Forums
 	w = w.window = let
@@ -14,6 +12,7 @@ unless w.Cms # let's detect this, 'tis something comin' from Blizzard Forums
 
 		unless el.Cms
 			console.log "It seems you're using Google Chrome, which is a bad browser and disables some of the features Wow Board Helpers provides."
+			console.log "You may want to try the Injector version of this User Script, which should resolve your problems."
 		el
 
 module.exports = w
