@@ -11,12 +11,13 @@
     "esprima": "1.0.2",
     "escodegen": "0.0.17",
     "glob": "*",
-    "gaze": "0.3.3",
+    "gaze": "0.4.1",
     "MD5": "1.0.3",
 
 
     "sugar": "1.3.8",
-
+  },
+  "npm sucks so hard, it's hardly believable": {
     "ajax": "~0.1.0",
     "autolink": "~0.1.0",
     "dom": "~0.1.0",
