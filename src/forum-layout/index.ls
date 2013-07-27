@@ -1,1 +1,1 @@
-require! <[./jumps ./check-updates ./mar ./move-actions ./stickies ./set-view]>
+require! <[./mar ./move-actions ./set-view ./stickies]>

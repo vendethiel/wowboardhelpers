@@ -26,8 +26,10 @@ module.exports =
 	other-characters: 'Autres personnages'
 
 	cheatsheet: 'Raccourcis'
-	jump-to-last-read: 'Aller au dernier message lu'
 	quick-quote: 'Citer le bout de message sélectionné'
+	jump-to-last-read: 'Aller au dernier message lu'
+	jump-to-page: 'Aller à la page'
+	page-number: 'N° de la page'
 
 	page-top: 'Haut de page'
 	page-bottom: 'Bas de page'

@@ -199,6 +199,7 @@
             }
         }
         if (require('/src\\forum.ls', module)) {
+            require('/src\\forum-actions\\index.ls', module);
             require('/src\\forum-layout\\index.ls', module);
             require('/src\\forum-topics\\index.ls', module);
             require('/src\\forum-layout\\hide-mar.ls', module);
@@ -372,8 +373,10 @@
             noNew: 'No new message.',
             otherCharacters: 'Other characters',
             cheatsheet: 'Cheatsheet',
-            jumpToLastRead: 'Jump to last read message',
             quickQuote: 'Quote the selected part',
+            jumpToLastRead: 'Jump to last read message',
+            jumpToPage: 'Jump to page',
+            pageNumber: 'Page number',
             pageTop: 'Go to top',
             pageBottom: 'Go to bottom',
             login: 'Login',
@@ -404,8 +407,10 @@
             },
             otherCharacters: 'Autres personnages',
             cheatsheet: 'Raccourcis',
-            jumpToLastRead: 'Aller au dernier message lu',
             quickQuote: 'Citer le bout de message s\xe9lectionn\xe9',
+            jumpToLastRead: 'Aller au dernier message lu',
+            jumpToPage: 'Aller \xe0 la page',
+            pageNumber: 'N\xb0 de la page',
             pageTop: 'Haut de page',
             pageBottom: 'Bas de page',
             login: 'Connexion',
@@ -699,7 +704,7 @@
             fn$.call(this, tr, topicId, postPages);
         }
         if ($('tbody.regular tr:not(.hidden):not(.read)')) {
-            clearTimeout(require('/src\\forum-layout\\check-updates.ls', module));
+            clearTimeout(require('/src\\forum-actions\\check-updates.ls', module));
         }
         function in$(x, arr) {
             var i = -1, l = arr.length >>> 0;
@@ -724,7 +729,7 @@
             postPages.insertBefore(x$, postPages.children[0]);
         }
     });
-    require.define('/src\\forum-layout\\check-updates.ls', function (module, exports, __dirname, __filename) {
+    require.define('/src\\forum-actions\\check-updates.ls', function (module, exports, __dirname, __filename) {
         var lang, tbodyRegular, ajax, ref$, $, node, firstTopicId, trHtml, aEndHtml, tbodyHtml, x$, h1, refresh, timeout;
         lang = require('/node_modules\\lang\\index.ls', module);
         tbodyRegular = require('/src\\tbody-regular.ls', module);
@@ -979,37 +984,11 @@
         module.exports = characters;
     });
     require.define('/src\\forum-layout\\index.ls', function (module, exports, __dirname, __filename) {
-        var jumps, checkUpdates, mar, moveActions, stickies, setView;
-        jumps = require('/src\\forum-layout\\jumps\\index.ls', module);
-        checkUpdates = require('/src\\forum-layout\\check-updates.ls', module);
+        var mar, moveActions, setView, stickies;
         mar = require('/src\\forum-layout\\mar.ls', module);
         moveActions = require('/src\\forum-layout\\move-actions.ls', module);
-        stickies = require('/src\\forum-layout\\stickies.ls', module);
         setView = require('/src\\forum-layout\\set-view.ls', module);
-    });
-    require.define('/src\\forum-layout\\set-view.ls', function (module, exports, __dirname, __filename) {
-        var ref$, $, $$, states, posts, i$, len$, state, slice$ = [].slice;
-        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, $$ = ref$.$$;
-        states = slice$.call($$('a.simple, a.advanced'));
-        posts = $('#posts');
-        updateView((ref$ = localStorage.forumView) != null ? ref$ : 'simple');
-        for (i$ = 0, len$ = states.length; i$ < len$; ++i$) {
-            state = states[i$];
-            fn$.call(this, state);
-        }
-        function updateView(view) {
-            posts.className = view;
-            $('.view-options a.active').classList.remove('active');
-            return $('a.' + view).className = view + ' active';
-        }
-        function fn$(state) {
-            var stateName;
-            stateName = state.className.split(' ')[0];
-            state.onclick = function () {
-                localStorage.forumView = stateName;
-                updateView(stateName);
-            };
-        }
+        stickies = require('/src\\forum-layout\\stickies.ls', module);
     });
     require.define('/src\\forum-layout\\stickies.ls', function (module, exports, __dirname, __filename) {
         var lang, forumOptions, ref$, $, node, sticky, buttonSticky, x$;
@@ -1038,6 +1017,30 @@
         x$.style.cursor = 'pointer';
         forumOptions.appendChild(x$);
     });
+    require.define('/src\\forum-layout\\set-view.ls', function (module, exports, __dirname, __filename) {
+        var ref$, $, $$, states, posts, i$, len$, state, slice$ = [].slice;
+        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, $$ = ref$.$$;
+        states = slice$.call($$('a.simple, a.advanced'));
+        posts = $('#posts');
+        updateView((ref$ = localStorage.forumView) != null ? ref$ : 'simple');
+        for (i$ = 0, len$ = states.length; i$ < len$; ++i$) {
+            state = states[i$];
+            fn$.call(this, state);
+        }
+        function updateView(view) {
+            posts.className = view;
+            $('.view-options a.active').classList.remove('active');
+            return $('a.' + view).className = view + ' active';
+        }
+        function fn$(state) {
+            var stateName;
+            stateName = state.className.split(' ')[0];
+            state.onclick = function () {
+                localStorage.forumView = stateName;
+                updateView(stateName);
+            };
+        }
+    });
     require.define('/src\\forum-layout\\move-actions.ls', function (module, exports, __dirname, __filename) {
         var $, x$;
         $ = require('/node_modules\\dom\\index.ls', module).$;
@@ -1045,11 +1048,39 @@
         x$.parentNode.removeChild(x$);
         $('.content-trail').appendChild(x$);
     });
-    require.define('/src\\forum-layout\\jumps\\index.ls', function (module, exports, __dirname, __filename) {
-        var newTopic;
-        newTopic = require('/src\\forum-layout\\jumps\\new-topic.ls', module);
+    require.define('/src\\forum-actions\\index.ls', function (module, exports, __dirname, __filename) {
+        var jumps, checkUpdates;
+        jumps = require('/src\\forum-actions\\jumps\\index.ls', module);
+        checkUpdates = require('/src\\forum-actions\\check-updates.ls', module);
     });
-    require.define('/src\\forum-layout\\jumps\\new-topic.ls', function (module, exports, __dirname, __filename) {
+    require.define('/src\\forum-actions\\jumps\\index.ls', function (module, exports, __dirname, __filename) {
+        var newTopic, page;
+        newTopic = require('/src\\forum-actions\\jumps\\new-topic.ls', module);
+        page = require('/src\\forum-actions\\jumps\\page.ls', module);
+    });
+    require.define('/src\\forum-actions\\jumps\\page.ls', function (module, exports, __dirname, __filename) {
+        var bindKey, page;
+        bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
+        page = require('/src\\forum-actions\\page.ls', module);
+        bindKey('p', 'jump-to-page', page);
+    });
+    require.define('/src\\forum-actions\\page.ls', function (module, exports, __dirname, __filename) {
+        var lang, $$, jump, i$, x$, ref$, len$, join$ = [].join, slice$ = [].slice;
+        lang = require('/node_modules\\lang\\index.ls', module);
+        $$ = require('/node_modules\\dom\\index.ls', module).$$;
+        module.exports = jump = function () {
+            var page;
+            page = prompt(lang('page-number'));
+            if (+page + '' === page) {
+                document.location = join$.call(slice$.call((document.location + '').split('/'), 0, -1), '/') + ('/?page=' + (page > 1 ? page : 1));
+            }
+        };
+        for (i$ = 0, len$ = (ref$ = $$('.forum-actions .expander')).length; i$ < len$; ++i$) {
+            x$ = ref$[i$];
+            x$.onclick = jump;
+        }
+    });
+    require.define('/src\\forum-actions\\jumps\\new-topic.ls', function (module, exports, __dirname, __filename) {
         var bindKey, $;
         bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
         $ = require('/node_modules\\dom\\index.ls', module).$;
@@ -1666,6 +1697,37 @@ a.hide-topic:hover {\
 tr:hover .last-read {\
   opacity: 1;\
 }\
+.post-pages .last-read {\
+  background-image: none !important;\
+  background: none !important;\
+}\
+tr:not(.stickied) a[data-tooltip] {\
+  display: inline !important;\
+}\
+#posts.simple .post-th .last-post-th {\
+  display: none;\
+}\
+#posts.simple .tt-last-updated {\
+  display: inline;\
+}\
+#posts.simple .post-last-updated {\
+  display: none;\
+}\
+#posts.simple tbody.regular .post-author {\
+  width: 1px;\
+}\
+#posts.advanced .post-th .replies {\
+  padding-right: 2px;\
+  text-align: center;\
+}\
+#posts.advanced .post-th .poster {\
+  text-align: right;\
+  font-weight: normal;\
+  padding-right: 5px;\
+}\
+#posts.advanced .post-th .last-post-th {\
+  text-align: left;\
+}\
 #posts.advanced .tt-last-updated {\
   display: none;\
 }\
@@ -1682,41 +1744,13 @@ tr:hover .last-read {\
 #posts.advanced .post-lastPost .more-arrow {\
   display: none;\
 }\
-#posts.advanced .post-th .replies {\
-  padding-right: 2px;\
-  text-align: center;\
-}\
-#posts.advanced .post-th .poster {\
-  text-align: right;\
-  font-weight: normal;\
-  padding-right: 5px;\
-}\
-#posts.advanced .post-th .last-post-th {\
-  text-align: left;\
-}\
-#posts.advanced .post-last-updated {\
-  width: 70px;\
-}\
 #posts.advanced .post-replies {\
   width: 10px;\
   text-align: right;\
   padding-right: 10px;\
 }\
-#posts.simple .tt-last-updated {\
-  display: inline;\
-}\
-#posts.simple .last-post-th {\
-  display: none;\
-}\
-#posts.simple .post-last-updated {\
-  display: none;\
-}\
-.post-pages .last-read {\
-  background-image: none !important;\
-  background: none !important;\
-}\
-tr:not(.stickied) a[data-tooltip] {\
-  display: inline !important;\
+#posts.advanced .post-last-updated {\
+  width: 70px;\
 }\
 #account-characters {\
   margin-left: 30px;\
@@ -6853,6 +6887,8 @@ img.autolink {\
                 ]
             });
         }());
+    });
+    require.define('/metadata.js', function (module, exports, __dirname, __filename) {
     });
     require('/src\\wowboardhelpers.ls');
 }.call(this, this));

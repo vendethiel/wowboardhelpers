@@ -23,6 +23,7 @@ if require './topic'
 
 
 if require './forum'
+	require './forum-actions'
 	require './forum-layout'
 	require './forum-topics'
 	require './forum-layout/hide-mar'

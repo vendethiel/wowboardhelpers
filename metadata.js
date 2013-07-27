@@ -6,9 +6,13 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 4.2
+// @version 4.2.1
 // ==/UserScript==
+ * TODO
+- jump to page for topics too
  * changelog
+ * 4.2.1
+ *  "Jump to page" via "p" bind or expander ("...")
  * 4.2
  *  Stylus as a file with `@import`s rather than `glob`ing a directory
  *  Pin deps

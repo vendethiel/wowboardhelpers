@@ -9,6 +9,7 @@ Forum :
  - Hideable post-its (enabled by default)
  - Actions (simple adv MAR post-its) were moved to gain space
  - Polls for updates every 15 seconds if you read the forum without having to manually refresh
+ - Jump to page by clicking on page-list expander or via bind "p"
 
 Topic :
  - Selecting a part of a post and typing "r" quick quotes the selected part

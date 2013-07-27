@@ -10,6 +10,7 @@ Forum :
  - Les actions (MAR Post-its Simple Avancé) ont été déplacées pour gagner de l'espace
  - Si un forum est lu, vérifie périodiquement si des nouveaux messages ont été postés
    sans avoir à recharger la page manuellement
+ - "Aller à la page" via le "..." de la liste des pages ou en appuyant sur "p"
 
 Topic :
  - Sélectionner un bout de message et appuyer sur "r" rajoute le bout sélectionné entre [quote] à votre réponse

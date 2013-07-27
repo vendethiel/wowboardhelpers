@@ -13,8 +13,10 @@ module.exports =
 	other-characters: 'Other characters'
 
 	cheatsheet: 'Cheatsheet'
-	jump-to-last-read: 'Jump to last read message'
 	quick-quote: 'Quote the selected part'
+	jump-to-last-read: 'Jump to last read message'
+	jump-to-page: 'Jump to page'
+	page-number: 'Page number'
 
 	page-top: 'Go to top'
 	page-bottom: 'Go to bottom'
