@@ -18,7 +18,10 @@ for post-character in $$ '.post-character'
 	# yes <| binds tighter than =, fuck LS
 	link = clean post-character.querySelector('.user-name > a')outerHTML.trim!
 
-	[, account] = /ignore\(([0-9]+)/ == icon-ignore.onclick.toString!
+	# need to use getAttribute() for chrome because it sucks
+	# and it's returned as a string, which should be the same in other browsers
+	# since it's a DOM thing, but better safe than sorry ...
+	[, account] = /ignore\(([0-9]+)/ == icon-ignore.getAttribute('onclick')toString!
 	
 	post-character.dataset <<< {account, link}
 

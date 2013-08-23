@@ -7,8 +7,9 @@ unless w.Cms # let's detect this, 'tis something comin' from Blizzard Forums
 		var ret
 		# fuck you chrome 27 http://crbug.com/222652
 		el = document.createElement 'a'
+		# chrome returns it at string because it sucks but it's fine since it'll fail anyway
 		el.setAttribute 'onclick' 'return window;'
-		el .= onclick!
+		el = that if el.onclick?!
 
 		unless el.Cms
 			console.log "It seems you're using Google Chrome, which is a bad browser and disables some of the features Wow Board Helpers provides."

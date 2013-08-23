@@ -7,9 +7,13 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 4.2
+// @version 4.2.1
 // ==/UserScript==
+ * TODO
+- jump to page for topics too
  * changelog
+ * 4.2.1
+ *  "Jump to page" via "p" bind or expander ("...")
  * 4.2
  *  Stylus as a file with `@import`s rather than `glob`ing a directory
  *  Pin deps
@@ -246,14 +250,14 @@
         };
         module.exports = function (locals, extra) {
             var key, val;
-            return '<div id="cheatsheet-container"><!-- that\'s meh but ...--><span class="clear"></span><div id="cheatsheet"><!-- what\'s wrong with you blizz ?--><a class="toggler ui-button button1"><span><span>' + (lang.cheatsheet || '') + '</span></span></a><ul>' + (join(function () {
+            return '    \n<div id="cheatsheet-container">\n  <!-- that\'s meh but ...--><span class="clear"></span>\n  <div id="cheatsheet">\n    <!-- what\'s wrong with you blizz ?--><a class="toggler ui-button button1"><span><span>' + (lang.cheatsheet || '') + '</span></span></a>\n    <ul>' + (join(function () {
                 var ref$, results$ = [];
                 for (key in ref$ = locals.cheatsheet) {
                     val = ref$[key];
                     results$.push('<li><b>' + (key || '') + '</b>: ' + val + '</li>');
                 }
                 return results$;
-            }()) || '') + '</ul></div></div>';
+            }()) || '') + '\n    </ul>\n  </div>\n</div>';
         };
     });
     require.define('/node_modules\\lang\\index.ls', function (module, exports, __dirname, __filename) {
@@ -941,7 +945,7 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '<ul class="ui-pagination"><li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li></ul>';
+            return '    \n<ul class="ui-pagination">\n  <li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li>\n</ul>';
         };
     });
     require.define('/src\\forum-topics\\templates\\tt-last-updated.ne', function (module, exports, __dirname, __filename) {
@@ -954,7 +958,7 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '<div class="tt-last-updated"><br/>' + (locals.text || '') + '</div>';
+            return '    \n<div class="tt-last-updated"><br/>' + (locals.text || '') + '</div>';
         };
     });
     require.define('/src\\forum-topics\\templates\\author.ne', function (module, exports, __dirname, __filename) {
@@ -967,7 +971,7 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '    <span class="' + [
+            return '  <span class="' + [
                 'poster',
                 locals.own ? 'own-poster' : void 8,
                 locals.cm ? 'type-blizzard' : void 8
@@ -1151,10 +1155,12 @@
         w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
         if (!w.Cms) {
             w = w.window = function () {
-                var ret, el;
+                var ret, el, that;
                 el = document.createElement('a');
                 el.setAttribute('onclick', 'return window;');
-                if (el.onclick) el = el.onclick();
+                if (that = typeof el.onclick === 'function' ? el.onclick() : void 8) {
+                    el = that;
+                }
                 if (!el.Cms) {
                     console.log('It seems you\'re using Google Chrome, which is a bad browser and disables some of the features Wow Board Helpers provides.');
                     console.log('You may want to try the Injector version of this User Script, which should resolve your problems.');
@@ -1345,7 +1351,7 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '<div id="memebox"><h1>MemeBox</h1><br/><input id="meme-search" placeholder="meme" autocomplete="off" size="15"/><ul id="memes"></ul></div>';
+            return '    \n<div id="memebox">\n  <h1>MemeBox</h1><br/>\n  <input id="meme-search" placeholder="meme" autocomplete="off" size="15"/>\n  <ul id="memes"></ul>\n</div>';
         };
     });
     require.define('/src\\reply\\clear-textarea.ls', function (module, exports, __dirname, __filename) {
@@ -1373,7 +1379,7 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '<div class="clear-textarea">X</div>';
+            return '    \n<div class="clear-textarea">X</div>';
         };
     });
     require.define('/src\\topic-posts\\index.ls', function (module, exports, __dirname, __filename) {
@@ -1456,7 +1462,7 @@
                 continue;
             }
             link = clean(postCharacter.querySelector('.user-name > a').outerHTML.trim());
-            ref1$ = /ignore\(([0-9]+)/.exec(iconIgnore.onclick.toString()), account = ref1$[1];
+            ref1$ = /ignore\(([0-9]+)/.exec(iconIgnore.getAttribute('onclick').toString()), account = ref1$[1];
             ref1$ = postCharacter.dataset;
             ref1$.account = account;
             ref1$.link = link;
@@ -1518,7 +1524,7 @@
         }
     });
     require.define('/src\\topic-characters\\templates\\multi-chars.ne', function (module, exports, __dirname, __filename) {
-        var lang, postsOf, join, join$ = [].join;
+        var lang, postsOf, join;
         lang = require('/node_modules\\lang\\index.ls', module);
         postsOf = function (it) {
             var name, ref$;
@@ -1527,7 +1533,7 @@
                 ref$[4]
             ];
             name[1] = name[1].humanize();
-            return 'http://eu.battle.net/wow/fr/search?f=post&amp;a=' + join$.call(name, '%40') + '&amp;sort=time';
+            return 'http://eu.battle.net/wow/fr/search?f=post&amp;a={{name * \'%40\'}&amp;sort=time';
         };
         join = function (it) {
             if (it) {
@@ -1538,14 +1544,14 @@
         };
         module.exports = function (locals, extra) {
             var character;
-            return '    <div id="account-characters"><h1 class="toggle">' + (lang('otherCharacters') || '') + '\n' + ((locals.toggle ? '<span class="toggler">' + (' [+]' || '') + '</span>' : void 8) || '') + '</h1><br/><ul>' + (join(function () {
+            return '    \n<div id="account-characters">\n  <h1 class="toggle">\n    ' + (lang('otherCharacters') || '') + '\n    ' + ((locals.toggle ? '<span class="toggler">' + (' [+]' || '') + '</span>' : void 8) || '') + '\n  </h1><br/>\n  <ul>' + (join(function () {
                 var i$, ref$, len$, results$ = [];
                 for (i$ = 0, len$ = (ref$ = locals.characters.exclude(locals.current)).length; i$ < len$; ++i$) {
                     character = ref$[i$];
                     results$.push('<li style="' + [locals.toggle ? 'display: none' : void 8] + '">' + (character || '') + '<a href="' + postsOf(character) + '" class="see-messages"></a></li>');
                 }
                 return results$;
-            }()) || '') + '</ul></div>';
+            }()) || '') + '\n  </ul>\n</div>';
         };
     });
     require.define('/src\\topic-characters\\improve-topic.ls', function (module, exports, __dirname, __filename) {
@@ -1900,8 +1906,6 @@ img.autolink {\
                 });
             }
             function initializeClass(klass) {
-                if (!klass)
-                    debugger;
                 if (klass['SugarMethods'])
                     return;
                 defineProperty(klass, 'SugarMethods', {});
@@ -6887,8 +6891,6 @@ img.autolink {\
                 ]
             });
         }());
-    });
-    require.define('/metadata.js', function (module, exports, __dirname, __filename) {
     });
     require('/src\\wowboardhelpers.ls');
 }.call(this, this));

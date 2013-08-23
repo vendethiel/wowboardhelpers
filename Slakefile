@@ -109,6 +109,7 @@ task 'watch' 'watch for changes and rebuild automatically' !->
 
   invoke 'build'
 
+#desc 'I hate NPM. So much.'
 task 'linkdeps' 'Link the fuck out of the deps' !->
   lib-deps =
     autolink: <[ajax]>
@@ -120,8 +121,8 @@ task 'linkdeps' 'Link the fuck out of the deps' !->
   
 task 'link' 'Link the fuck out of the npm modules' !->
   modules = <[ajax autolink dom fetch-siblings lang parse-time]>
+  say "Linking #{modules * ', '} ..."
   for module in modules
     exec "rm -rf node_modules/#module"
     exec "npm link lib/#module" !(err) ->
       blame "#module: #err" if err
-  say "Linked #{modules * ', '}."

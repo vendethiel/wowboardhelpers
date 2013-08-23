@@ -13,9 +13,10 @@
     "glob": "*",
     "gaze": "0.4.1",
     "MD5": "1.0.3",
+    "nephrite": "2.3.0",
 
 
-    "sugar": "1.3.8",
+    "sugar": "1.3.8"
   },
   "npm sucks so hard, it's hardly believable": {
     "ajax": "~0.1.0",
