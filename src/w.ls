@@ -6,7 +6,7 @@ unless w.Cms # let's detect this, 'tis something comin' from Blizzard Forums
 	w = w.window = let
 		var ret
 		# fuck you chrome 27 http://crbug.com/222652
-		el = document.createElement 'p'
+		el = document.createElement 'a'
 		el.setAttribute 'onclick' 'return window;'
 		el .= onclick!
 
