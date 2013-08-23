@@ -1152,7 +1152,7 @@
         if (!w.Cms) {
             w = w.window = function () {
                 var ret, el;
-                el = document.createElement('p');
+                el = document.createElement('a');
                 el.setAttribute('onclick', 'return window;');
                 el = el.onclick();
                 if (!el.Cms) {
