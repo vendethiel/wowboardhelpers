@@ -1154,7 +1154,7 @@
                 var ret, el;
                 el = document.createElement('a');
                 el.setAttribute('onclick', 'return window;');
-                el = el.onclick();
+                if (el.onclick) el = el.onclick();
                 if (!el.Cms) {
                     console.log('It seems you\'re using Google Chrome, which is a bad browser and disables some of the features Wow Board Helpers provides.');
                     console.log('You may want to try the Injector version of this User Script, which should resolve your problems.');
