@@ -1524,7 +1524,7 @@
         }
     });
     require.define('/src\\topic-characters\\templates\\multi-chars.ne', function (module, exports, __dirname, __filename) {
-        var lang, postsOf, join;
+        var lang, postsOf, join, join$ = [].join;
         lang = require('/node_modules\\lang\\index.ls', module);
         postsOf = function (it) {
             var name, ref$;
@@ -1533,7 +1533,7 @@
                 ref$[4]
             ];
             name[1] = name[1].humanize();
-            return 'http://eu.battle.net/wow/fr/search?f=post&amp;a={{name * \'%40\'}&amp;sort=time';
+            return 'http://eu.battle.net/wow/fr/search?f=post&amp;a=' + join$.call(name, '%40') + '&amp;sort=time';
         };
         join = function (it) {
             if (it) {
