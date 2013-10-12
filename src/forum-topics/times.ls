@@ -14,13 +14,10 @@ for post-title in post-titles
 	dates[timestamp] = date
 	post-title.dataset <<< {timestamp}
 
-timeout = 10.seconds!
-refresh = ->
+(->
 	for post-title in post-titles
 		date = dates[post-title.dataset.timestamp]
 
 		post-title.querySelector '.relative-date'
 			.innerHTML = date.relative!
-
-	setTimeout refresh, timeout
-refresh!
+)every 10.seconds!

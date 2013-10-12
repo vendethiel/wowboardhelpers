@@ -2,7 +2,7 @@
 {$, el} = require 'dom'
 
 #if cheatsheet.values!length
-if Object.keys cheatsheet .length
+if cheatsheet.size!
 	possible-divs =
 		'.forum-info' # forum topics page
 		'.talkback form'

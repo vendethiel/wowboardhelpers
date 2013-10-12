@@ -8,7 +8,9 @@ blame = -> say ...; process.exit!
 ##########
 # CONFIG #
 ##########
-outfile = \wowboardhelpers.user.js
+outfile = 'wowboardhelpers.user.js'
+stylefile = 'src/wowboardhelpers.styl'
+modulefile = 'src/wowboardhelpers.ls'
 metadata = slurp 'metadata.js'
 
 errinfo = ->
@@ -16,7 +18,7 @@ errinfo = ->
   console.log '\007'
 
 compile-styles = ->
-  filename = 'src/wowboardhelpers.styl'
+  filename = stylefile
   nib read(filename)+'' {filename} .render!
 
 nib = -> stylus ... .use require(\nib)!
@@ -47,7 +49,7 @@ cjs-options =
     '.js': en-ast (it, filename) -> it
 
 processed = {}
-entry-point = "src/wowboardhelpers.ls"
+entry-point = modulefile
 last-changed = entry-point
 
 traverseDeps = cjs~traverseDependenciesSync
@@ -89,20 +91,20 @@ task 'watch' 'watch for changes and rebuild automatically' !->
   invoke 'build'
 
   <-! require('gaze') <[metadata.js src/**/* lib/**/* Slakefile]>
-  say "Watching files for changes."
+  say 'Watching files for changes.'
   (ev, file) <-! @on 'all'
   css-change := ~file.indexOf '.styl'
 
   if ev is 'deleted'
-    # We `last-changed := entry-point unless css-change` ?
+    # `last-changed := entry-point unless css-change` ?
     return
 
   return unless fs.statSync file .isFile!
   last-changed := file
 
   file .= slice __dirname.length + 1 # leading (back)slash
-  if file is "Slakefile"
-    say "Slakefile changed."
+  if file is 'Slakefile'
+    say 'Slakefile changed.'
     process.exit!
 
   say "Event #ev on #file. Rebuilding."
@@ -113,7 +115,7 @@ task 'watch' 'watch for changes and rebuild automatically' !->
 task 'linkdeps' 'Link the fuck out of the deps' !->
   lib-deps =
     autolink: <[ajax]>
-    "parse-time": <[lang]>
+    'parse-time': <[lang]>
   for lib, deps of lib-deps
     for dep in deps
       exec "cd lib/#lib && npm link ../#dep" !(err) ->

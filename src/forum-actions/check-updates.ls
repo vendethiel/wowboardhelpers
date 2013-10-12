@@ -1,7 +1,7 @@
 require! <[lang ../tbody-regular ajax]>
 {$, node} = require 'dom'
 
-#we DON'T delay execution because server reponse won't be ordered
+# we DON'T delay parsing because server reponse won't be ordered
 first-topic-id = tbody-regular.children.0.id.slice 'postRow'length
 tr-html = """<tr id="postRow#first-topic-id"""
 a-end-html = 'data-tooltip-options=\'{"location": "mouse"}\'>'
@@ -14,6 +14,7 @@ $ '#forum-actions-top'
 
 
 # XXX should parse somehow to know what the actual fuck is going on
+# XXX should try to use sugar's Fn#every somehow
 refresh = ->
 	ajax.get document.location, !->
 		unless @status is 200
