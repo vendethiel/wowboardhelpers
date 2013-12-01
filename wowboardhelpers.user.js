@@ -214,8 +214,8 @@
     require.define('/src\\cheatsheet\\index.ls', function (module, exports, __dirname, __filename) {
         var cheatsheet, ref$, $, el, possibleDivs, templateCheatsheet, i$, len$, sel, that, x$, ul;
         cheatsheet = require('/src\\cheatsheet\\bind-key.ls', module).cheatsheet;
-        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, el = ref$.el;
-        if (Object.keys(cheatsheet).length) {
+        ref$ = require('/lib\\dom\\index.ls', module), $ = ref$.$, el = ref$.el;
+        if (cheatsheet.size()) {
             possibleDivs = [
                 '.forum-info',
                 '.talkback form'
@@ -240,7 +240,7 @@
     });
     require.define('/src\\cheatsheet\\templates\\cheatsheet.ne', function (module, exports, __dirname, __filename) {
         var lang, join;
-        lang = require('/node_modules\\lang\\index.ls', module);
+        lang = require('/lib\\lang\\index.ls', module);
         join = function (it) {
             if (it) {
                 return it.join('');
@@ -250,17 +250,17 @@
         };
         module.exports = function (locals, extra) {
             var key, val;
-            return '    \n<div id="cheatsheet-container">\n  <!-- that\'s meh but ...--><span class="clear"></span>\n  <div id="cheatsheet">\n    <!-- what\'s wrong with you blizz ?--><a class="toggler ui-button button1"><span><span>' + (lang.cheatsheet || '') + '</span></span></a>\n    <ul>' + (join(function () {
+            return '<div id="cheatsheet-container"><!-- that\'s meh but ...--><span class="clear"></span><div id="cheatsheet"><!-- what\'s wrong with you blizz ?--><a class="toggler ui-button button1"><span><span>' + (lang.cheatsheet || '') + '</span></span></a><ul>' + (join(function () {
                 var ref$, results$ = [];
                 for (key in ref$ = locals.cheatsheet) {
                     val = ref$[key];
                     results$.push('<li><b>' + (key || '') + '</b>: ' + val + '</li>');
                 }
                 return results$;
-            }()) || '') + '\n    </ul>\n  </div>\n</div>';
+            }()) || '') + '</ul></div></div>';
         };
     });
-    require.define('/node_modules\\lang\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define('/lib\\lang\\index.ls', function (module, exports, __dirname, __filename) {
         var l, langs, lang, split$ = ''.split;
         l = split$.call(document.location, '/')[4];
         langs = {
@@ -421,7 +421,7 @@
             newTopic: 'Nouveau sujet'
         };
     });
-    require.define('/node_modules\\dom\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define('/lib\\dom\\index.ls', function (module, exports, __dirname, __filename) {
         module.exports = {
             $: require('/lib\\dom\\$.ls', module),
             $$: require('/lib\\dom\\$$.ls', module),
@@ -473,8 +473,8 @@
     });
     require.define('/src\\cheatsheet\\bind-key.ls', function (module, exports, __dirname, __filename) {
         var lang, $, html, bindKey, cheatsheet, join$ = [].join;
-        lang = require('/node_modules\\lang\\index.ls', module);
-        $ = require('/node_modules\\dom\\index.ls', module).$;
+        lang = require('/lib\\lang\\index.ls', module);
+        $ = require('/lib\\dom\\index.ls', module).$;
         html = $('html');
         module.exports = bindKey = function (binds, langKey, cb) {
             var codes;
@@ -507,18 +507,18 @@
     });
     require.define('/src\\forum-layout\\hide-mar.ls', function (module, exports, __dirname, __filename) {
         var $;
-        $ = require('/node_modules\\dom\\index.ls', module).$;
+        $ = require('/lib\\dom\\index.ls', module).$;
         if (!$('.regular > .unread:not(.hidden)')) {
             require('/src\\forum-options.ls', module).removeChild(require('/src\\forum-layout\\mar.ls', module));
         }
     });
     require.define('/src\\forum-layout\\mar.ls', function (module, exports, __dirname, __filename) {
         var lang, fetchSiblings, forumOptions, tbodyRegular, node, allRead, buttonMar, x$, split$ = ''.split;
-        lang = require('/node_modules\\lang\\index.ls', module);
-        fetchSiblings = require('/node_modules\\fetch-siblings\\index.ls', module);
+        lang = require('/lib\\lang\\index.ls', module);
+        fetchSiblings = require('/lib\\fetch-siblings\\index.ls', module);
         forumOptions = require('/src\\forum-options.ls', module);
         tbodyRegular = require('/src\\tbody-regular.ls', module);
-        node = require('/node_modules\\dom\\index.ls', module).node;
+        node = require('/lib\\dom\\index.ls', module).node;
         allRead = false;
         module.exports = buttonMar = node('a', {
             innerHTML: 'MAR',
@@ -555,15 +555,15 @@
     });
     require.define('/src\\tbody-regular.ls', function (module, exports, __dirname, __filename) {
         var $;
-        $ = require('/node_modules\\dom\\index.ls', module).$;
+        $ = require('/lib\\dom\\index.ls', module).$;
         module.exports = $('tbody.regular');
     });
     require.define('/src\\forum-options.ls', function (module, exports, __dirname, __filename) {
         var $;
-        $ = require('/node_modules\\dom\\index.ls', module).$;
+        $ = require('/lib\\dom\\index.ls', module).$;
         module.exports = $('.forum-options');
     });
-    require.define('/node_modules\\fetch-siblings\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define('/lib\\fetch-siblings\\index.ls', function (module, exports, __dirname, __filename) {
         module.exports = function () {
             function fetchSiblings(elem, arg$) {
                 var slice, ref$, indexBy, results$ = {};
@@ -584,10 +584,10 @@
         times = require('/src\\forum-topics\\times.ls', module);
     });
     require.define('/src\\forum-topics\\times.ls', function (module, exports, __dirname, __filename) {
-        var lang, parseTime, $$, current, postTitles, dates, i$, len$, postTitle, postTimestamp, date, timestamp, timeout, refresh;
-        lang = require('/node_modules\\lang\\index.ls', module);
-        parseTime = require('/node_modules\\parse-time\\index.ls', module);
-        $$ = require('/node_modules\\dom\\index.ls', module).$$;
+        var lang, parseTime, $$, current, postTitles, dates, i$, len$, postTitle, postTimestamp, date, timestamp;
+        lang = require('/lib\\lang\\index.ls', module);
+        parseTime = require('/lib\\parse-time\\index.ls', module);
+        $$ = require('/lib\\dom\\index.ls', module).$$;
         current = Date.now();
         postTitles = $$('.post-title[data-date-string]');
         dates = [];
@@ -599,21 +599,19 @@
             dates[timestamp] = date;
             postTitle.dataset.timestamp = timestamp;
         }
-        timeout = 10..seconds();
-        refresh = function () {
-            var i$, ref$, len$, postTitle, date;
+        (function () {
+            var i$, ref$, len$, postTitle, date, results$ = [];
             for (i$ = 0, len$ = (ref$ = postTitles).length; i$ < len$; ++i$) {
                 postTitle = ref$[i$];
                 date = dates[postTitle.dataset.timestamp];
-                postTitle.querySelector('.relative-date').innerHTML = date.relative();
+                results$.push(postTitle.querySelector('.relative-date').innerHTML = date.relative());
             }
-            return setTimeout(refresh, timeout);
-        };
-        refresh();
+            return results$;
+        }.every(10..seconds()));
     });
-    require.define('/node_modules\\parse-time\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define('/lib\\parse-time\\index.ls', function (module, exports, __dirname, __filename) {
         var lang, units, res$, i$, ref$, len$, name, split$ = ''.split;
-        lang = require('/lib\\parse-time\\node_modules\\lang\\index.ls', module);
+        lang = require('/lib\\lang\\index.ls', module);
         res$ = {};
         for (i$ = 0, len$ = (ref$ = [
                 'second',
@@ -641,46 +639,10 @@
             return total;
         };
     });
-    require.define('/lib\\parse-time\\node_modules\\lang\\index.ls', function (module, exports, __dirname, __filename) {
-        var l, langs, lang, split$ = ''.split;
-        l = split$.call(document.location, '/')[4];
-        langs = {
-            fr: require('/lib\\lang\\fr.ls', module),
-            en: require('/lib\\lang\\en.ls', module)
-        };
-        module.exports = lang = function () {
-            lang.displayName = 'lang';
-            var ref$, prototype = lang.prototype, constructor = lang;
-            import$(lang, (ref$ = langs[l]) != null ? ref$ : langs.en);
-            function lang(it) {
-                var ref$;
-                return (ref$ = lang[it]) != null ? ref$ : (ref$ = lang[it.camelize(false)]) != null ? ref$ : it;
-            }
-            lang.pluralize == null && (lang.pluralize = function (count, key) {
-                return Math.round(count) + ' ' + lang(key) + [count > 1.5 ? 's' : void 8];
-            });
-            lang.singularize == null && (lang.singularize = function (it) {
-                if (it[it.length - 1] === 's') {
-                    return it.slice(0, -1);
-                } else {
-                    return it;
-                }
-            });
-            lang.simplifyTime = require('/lib\\lang\\simplify-time.ls', module);
-            return lang;
-        }();
-        function import$(obj, src) {
-            var own = {}.hasOwnProperty;
-            for (var key in src)
-                if (own.call(src, key))
-                    obj[key] = src[key];
-            return obj;
-        }
-    });
     require.define('/src\\forum-topics\\hide-topic.ls', function (module, exports, __dirname, __filename) {
         var tbodyRegular, ref$, $, $$, el, templateHideTopic, hiddenTopics, i$, len$, postPages, that, tr, topicId, split$ = ''.split, join$ = [].join;
         tbodyRegular = require('/src\\tbody-regular.ls', module);
-        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, $$ = ref$.$$, el = ref$.el;
+        ref$ = require('/lib\\dom\\index.ls', module), $ = ref$.$, $$ = ref$.$$, el = ref$.el;
         templateHideTopic = require('/src\\forum-topics\\templates\\hide-topic.ne', module);
         hiddenTopics = split$.call(localStorage.getItem('hidden_topics') || '', ';');
         function saveHiddens() {
@@ -734,11 +696,11 @@
         }
     });
     require.define('/src\\forum-actions\\check-updates.ls', function (module, exports, __dirname, __filename) {
-        var lang, tbodyRegular, ajax, ref$, $, node, firstTopicId, trHtml, aEndHtml, tbodyHtml, x$, h1, refresh, timeout;
-        lang = require('/node_modules\\lang\\index.ls', module);
+        var lang, ajax, tbodyRegular, ref$, $, node, firstTopicId, trHtml, aEndHtml, tbodyHtml, x$, h1, refresh, timeout;
+        lang = require('/lib\\lang\\index.ls', module);
+        ajax = require('/lib\\ajax\\index.ls', module);
         tbodyRegular = require('/src\\tbody-regular.ls', module);
-        ajax = require('/node_modules\\ajax\\index.ls', module);
-        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, node = ref$.node;
+        ref$ = require('/lib\\dom\\index.ls', module), $ = ref$.$, node = ref$.node;
         firstTopicId = tbodyRegular.children[0].id.slice('postRow'.length);
         trHtml = '<tr id="postRow' + firstTopicId;
         aEndHtml = 'data-tooltip-options=\'{"location": "mouse"}\'>';
@@ -771,7 +733,7 @@
         timeout = 15..seconds();
         module.exports = setTimeout(refresh, timeout);
     });
-    require.define('/node_modules\\ajax\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define('/lib\\ajax\\index.ls', function (module, exports, __dirname, __filename) {
         module.exports = {
             get: function (url, success) {
                 var x$;
@@ -809,10 +771,10 @@
     });
     require.define('/src\\forum-topics\\last-updated.ls', function (module, exports, __dirname, __filename) {
         var fetchSiblings, characters, lang, simplifyTime, ref$, $, $$, el, node, templateAuthor, templateTtLastUpdated, templateDefaultPagination, lastPostTh, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, hasUnread, i$, len$, post, children, div, a, td, lastPostTd, topicId, ref1$, pages, lastPost, lastPostLink, replies, author, postCount, postOnly, text, isCm, that, authorName, inlineText, simplifiedTime, state, out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, join$ = [].join, slice$ = [].slice;
-        fetchSiblings = require('/node_modules\\fetch-siblings\\index.ls', module);
+        fetchSiblings = require('/lib\\fetch-siblings\\index.ls', module);
         characters = require('/src\\characters.ls', module);
-        lang = require('/node_modules\\lang\\index.ls', module), simplifyTime = lang.simplifyTime;
-        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, $$ = ref$.$$, el = ref$.el, node = ref$.node;
+        lang = require('/lib\\lang\\index.ls', module), simplifyTime = lang.simplifyTime;
+        ref$ = require('/lib\\dom\\index.ls', module), $ = ref$.$, $$ = ref$.$$, el = ref$.el, node = ref$.node;
         templateAuthor = require('/src\\forum-topics\\templates\\author.ne', module);
         templateTtLastUpdated = require('/src\\forum-topics\\templates\\tt-last-updated.ne', module);
         templateDefaultPagination = require('/src\\forum-topics\\templates\\default-pagination.ne', module);
@@ -945,7 +907,7 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '    \n<ul class="ui-pagination">\n  <li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li>\n</ul>';
+            return '<ul class="ui-pagination"><li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li></ul>';
         };
     });
     require.define('/src\\forum-topics\\templates\\tt-last-updated.ne', function (module, exports, __dirname, __filename) {
@@ -958,7 +920,7 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '    \n<div class="tt-last-updated"><br/>' + (locals.text || '') + '</div>';
+            return '<div class="tt-last-updated"><br/>' + (locals.text || '') + '</div>';
         };
     });
     require.define('/src\\forum-topics\\templates\\author.ne', function (module, exports, __dirname, __filename) {
@@ -971,7 +933,7 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '  <span class="' + [
+            return '    <span class="' + [
                 'poster',
                 locals.own ? 'own-poster' : void 8,
                 locals.cm ? 'type-blizzard' : void 8
@@ -980,7 +942,7 @@
     });
     require.define('/src\\characters.ls', function (module, exports, __dirname, __filename) {
         var $$, characters, slice$ = [].slice;
-        $$ = require('/node_modules\\dom\\index.ls', module).$$;
+        $$ = require('/lib\\dom\\index.ls', module).$$;
         characters = slice$.call($$('.char-wrapper .name'));
         if (characters.length) {
             characters = characters.map('innerHTML');
@@ -996,9 +958,9 @@
     });
     require.define('/src\\forum-layout\\stickies.ls', function (module, exports, __dirname, __filename) {
         var lang, forumOptions, ref$, $, node, sticky, buttonSticky, x$;
-        lang = require('/node_modules\\lang\\index.ls', module);
+        lang = require('/lib\\lang\\index.ls', module);
         forumOptions = require('/src\\forum-options.ls', module);
-        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, node = ref$.node;
+        ref$ = require('/lib\\dom\\index.ls', module), $ = ref$.$, node = ref$.node;
         sticky = $('.sticky');
         if ('show' !== localStorage.getItem('show-stickies')) {
             sticky.style.display = 'none';
@@ -1023,7 +985,7 @@
     });
     require.define('/src\\forum-layout\\set-view.ls', function (module, exports, __dirname, __filename) {
         var ref$, $, $$, states, posts, i$, len$, state, slice$ = [].slice;
-        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, $$ = ref$.$$;
+        ref$ = require('/lib\\dom\\index.ls', module), $ = ref$.$, $$ = ref$.$$;
         states = slice$.call($$('a.simple, a.advanced'));
         posts = $('#posts');
         updateView((ref$ = localStorage.forumView) != null ? ref$ : 'simple');
@@ -1047,7 +1009,7 @@
     });
     require.define('/src\\forum-layout\\move-actions.ls', function (module, exports, __dirname, __filename) {
         var $, x$;
-        $ = require('/node_modules\\dom\\index.ls', module).$;
+        $ = require('/lib\\dom\\index.ls', module).$;
         x$ = $('.forum-options');
         x$.parentNode.removeChild(x$);
         $('.content-trail').appendChild(x$);
@@ -1070,8 +1032,8 @@
     });
     require.define('/src\\forum-actions\\page.ls', function (module, exports, __dirname, __filename) {
         var lang, $$, jump, i$, x$, ref$, len$, join$ = [].join, slice$ = [].slice;
-        lang = require('/node_modules\\lang\\index.ls', module);
-        $$ = require('/node_modules\\dom\\index.ls', module).$$;
+        lang = require('/lib\\lang\\index.ls', module);
+        $$ = require('/lib\\dom\\index.ls', module).$$;
         module.exports = jump = function () {
             var page;
             page = prompt(lang('page-number'));
@@ -1087,7 +1049,7 @@
     require.define('/src\\forum-actions\\jumps\\new-topic.ls', function (module, exports, __dirname, __filename) {
         var bindKey, $;
         bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
-        $ = require('/node_modules\\dom\\index.ls', module).$;
+        $ = require('/lib\\dom\\index.ls', module).$;
         if (!$('a.button1.disabled')) {
             bindKey('n', 'new-topic', function () {
                 document.location += 'topic';
@@ -1110,7 +1072,7 @@
         var textarea, topic, $, submit;
         textarea = require('/src\\textarea.ls', module);
         topic = require('/src\\topic.ls', module);
-        $ = require('/node_modules\\dom\\index.ls', module).$;
+        $ = require('/lib\\dom\\index.ls', module).$;
         submit = $('.post [type=submit]');
         if (!textarea.value) {
             textarea.value = localStorage.getItem('post_' + topic.dataset.id) || '';
@@ -1129,7 +1091,7 @@
     require.define('/src\\textarea.ls', function (module, exports, __dirname, __filename) {
         var topic, $;
         topic = require('/src\\topic.ls', module);
-        $ = require('/node_modules\\dom\\index.ls', module).$;
+        $ = require('/lib\\dom\\index.ls', module).$;
         module.exports = topic ? $('#post-edit textarea') : null;
     });
     require.define('/src\\reply\\quick-quote.ls', function (module, exports, __dirname, __filename) {
@@ -1137,7 +1099,7 @@
         bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
         textarea = require('/src\\textarea.ls', module);
         w = require('/src\\w.ls', module);
-        $ = require('/node_modules\\dom\\index.ls', module).$;
+        $ = require('/lib\\dom\\index.ls', module).$;
         bindKey('r', 'quick-quote', function () {
             var that, x$;
             if (that = w.getSelection().toString()) {
@@ -1151,7 +1113,7 @@
     });
     require.define('/src\\w.ls', function (module, exports, __dirname, __filename) {
         var node, w;
-        node = require('/node_modules\\dom\\index.ls', module).node;
+        node = require('/lib\\dom\\index.ls', module).node;
         w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
         if (!w.Cms) {
             w = w.window = function () {
@@ -1173,8 +1135,8 @@
     require.define('/src\\reply\\preview.ls', function (module, exports, __dirname, __filename) {
         var w, autolink, $, postPreview, old;
         w = require('/src\\w.ls', module);
-        autolink = require('/node_modules\\autolink\\index.ls', module);
-        $ = require('/node_modules\\dom\\index.ls', module).$;
+        autolink = require('/lib\\autolink\\index.ls', module);
+        $ = require('/lib\\dom\\index.ls', module).$;
         postPreview = $('#post-preview');
         if ('BML' in w) {
             old = bind$(w.BML, 'preview');
@@ -1191,7 +1153,7 @@
             };
         }
     });
-    require.define('/node_modules\\autolink\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define('/lib\\autolink\\index.ls', function (module, exports, __dirname, __filename) {
         var extensions, rules, ajax, replace$ = ''.replace;
         extensions = '(?:com|net|org|eu|fr|jp|us|co.uk|me)';
         rules = [
@@ -1217,7 +1179,7 @@
             ]
         ];
         module.exports = elAutolink;
-        ajax = require('/lib\\autolink\\node_modules\\ajax\\index.ls', module);
+        ajax = require('/lib\\ajax\\index.ls', module);
         function elAutolink(el) {
             var h, r, ref$, url, e;
             try {
@@ -1251,18 +1213,6 @@
             return it;
         }
     });
-    require.define('/lib\\autolink\\node_modules\\ajax\\index.ls', function (module, exports, __dirname, __filename) {
-        module.exports = {
-            get: function (url, success) {
-                var x$;
-                x$ = new XMLHttpRequest();
-                x$.open('GET', url);
-                x$.onload = success;
-                x$.send();
-                return x$;
-            }
-        };
-    });
     require.define('/src\\reply\\memebox.ls', function (module, exports, __dirname, __filename) {
         var memes, textarea, ref$, $, el, templateMemebox, that, addMeme, appendMeme, memebox, ul, replace$ = ''.replace;
         memes = {
@@ -1289,7 +1239,7 @@
             no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
         };
         textarea = require('/src\\textarea.ls', module);
-        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, el = ref$.el;
+        ref$ = require('/lib\\dom\\index.ls', module), $ = ref$.$, el = ref$.el;
         templateMemebox = require('/src\\reply\\templates\\memebox.ne', module);
         if (that = $('.post.general')) {
             that.removeChild((ref$ = that.children)[ref$.length - 1]);
@@ -1351,14 +1301,14 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '    \n<div id="memebox">\n  <h1>MemeBox</h1><br/>\n  <input id="meme-search" placeholder="meme" autocomplete="off" size="15"/>\n  <ul id="memes"></ul>\n</div>';
+            return '<div id="memebox"><h1>MemeBox</h1><br/><input id="meme-search" placeholder="meme" autocomplete="off" size="15"/><ul id="memes"></ul></div>';
         };
     });
     require.define('/src\\reply\\clear-textarea.ls', function (module, exports, __dirname, __filename) {
         var textarea, topic, ref$, $, el, templateClearTextarea, clearer, that;
         textarea = require('/src\\textarea.ls', module);
         topic = require('/src\\topic.ls', module);
-        ref$ = require('/node_modules\\dom\\index.ls', module), $ = ref$.$, el = ref$.el;
+        ref$ = require('/lib\\dom\\index.ls', module), $ = ref$.$, el = ref$.el;
         templateClearTextarea = require('/src\\reply\\templates\\clear-textarea.ne', module);
         clearer = el(templateClearTextarea());
         if (that = $('.editor1')) {
@@ -1379,7 +1329,7 @@
             }
         };
         module.exports = function (locals, extra) {
-            return '    \n<div class="clear-textarea">X</div>';
+            return '<div class="clear-textarea">X</div>';
         };
     });
     require.define('/src\\topic-posts\\index.ls', function (module, exports, __dirname, __filename) {
@@ -1391,7 +1341,7 @@
     require.define('/src\\topic-posts\\update-count.ls', function (module, exports, __dirname, __filename) {
         var topic, $$, pages, postCount, ref$, lastPosterName;
         topic = require('/src\\topic.ls', module);
-        $$ = require('/node_modules\\dom\\index.ls', module).$$;
+        $$ = require('/lib\\dom\\index.ls', module).$$;
         pages = $$('#forum-actions-top .ui-pagination li:not(.cap-item)');
         if (pages && needUpdate()) {
             postCount = (ref$ = topic.getElementsByClassName('post-info'))[ref$.length - 1].getElementsByTagName('a')[0].getAttribute('href').from(1);
@@ -1405,8 +1355,8 @@
     });
     require.define('/src\\topic-posts\\autolink.ls', function (module, exports, __dirname, __filename) {
         var autolink, $$, i$, ref$, len$, post;
-        autolink = require('/node_modules\\autolink\\index.ls', module);
-        $$ = require('/node_modules\\dom\\index.ls', module).$$;
+        autolink = require('/lib\\autolink\\index.ls', module);
+        $$ = require('/lib\\dom\\index.ls', module).$$;
         for (i$ = 0, len$ = (ref$ = $$('.post-detail')).length; i$ < len$; ++i$) {
             post = ref$[i$];
             if (post.parentNode.parentNode.parentNode.parentNode.parentNode.classList.contains('blizzard')) {
@@ -1423,7 +1373,7 @@
         var topic, bindKey, $$, lastPostId;
         topic = require('/src\\topic.ls', module);
         bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
-        $$ = require('/node_modules\\dom\\index.ls', module).$$;
+        $$ = require('/lib\\dom\\index.ls', module).$$;
         if (lastPostId = localStorage.getItem('topic_' + topic.dataset.id)) {
             bindKey('jf', 'jump-to-last-read', function () {
                 var lastPostPage, ref$;
@@ -1446,7 +1396,7 @@
     });
     require.define('/src\\topic-characters\\multi-chars.ls', function (module, exports, __dirname, __filename) {
         var ref$, $$, el, templateMultiChars, accountCharacters, that, modified, i$, len$, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul, children, limit, replace$ = ''.replace, slice$ = [].slice;
-        ref$ = require('/node_modules\\dom\\index.ls', module), $$ = ref$.$$, el = ref$.el;
+        ref$ = require('/lib\\dom\\index.ls', module), $$ = ref$.$$, el = ref$.el;
         templateMultiChars = require('/src\\topic-characters\\templates\\multi-chars.ne', module);
         accountCharacters = (that = localStorage.getItem('accountCharacters')) ? JSON.parse(that) : {};
         function clean(it) {
@@ -1525,7 +1475,7 @@
     });
     require.define('/src\\topic-characters\\templates\\multi-chars.ne', function (module, exports, __dirname, __filename) {
         var lang, postsOf, join, join$ = [].join;
-        lang = require('/node_modules\\lang\\index.ls', module);
+        lang = require('/lib\\lang\\index.ls', module);
         postsOf = function (it) {
             var name, ref$;
             name = [
@@ -1544,14 +1494,14 @@
         };
         module.exports = function (locals, extra) {
             var character;
-            return '    \n<div id="account-characters">\n  <h1 class="toggle">\n    ' + (lang('otherCharacters') || '') + '\n    ' + ((locals.toggle ? '<span class="toggler">' + (' [+]' || '') + '</span>' : void 8) || '') + '\n  </h1><br/>\n  <ul>' + (join(function () {
+            return '    <div id="account-characters"><h1 class="toggle">' + (lang('otherCharacters') || '') + '\n' + ((locals.toggle ? '<span class="toggler">' + (' [+]' || '') + '</span>' : void 8) || '') + '</h1><br/><ul>' + (join(function () {
                 var i$, ref$, len$, results$ = [];
                 for (i$ = 0, len$ = (ref$ = locals.characters.exclude(locals.current)).length; i$ < len$; ++i$) {
                     character = ref$[i$];
                     results$.push('<li style="' + [locals.toggle ? 'display: none' : void 8] + '">' + (character || '') + '<a href="' + postsOf(character) + '" class="see-messages"></a></li>');
                 }
                 return results$;
-            }()) || '') + '\n  </ul>\n</div>';
+            }()) || '') + '</ul></div>';
         };
     });
     require.define('/src\\topic-characters\\improve-topic.ls', function (module, exports, __dirname, __filename) {
@@ -1571,7 +1521,7 @@
     require.define('/src\\topic-characters\\context-links.ls', function (module, exports, __dirname, __filename) {
         var topic, el, templateContextLinks, i$, ref$, len$, context, extraContext;
         topic = require('/src\\topic.ls', module);
-        el = require('/node_modules\\dom\\index.ls', module).el;
+        el = require('/lib\\dom\\index.ls', module).el;
         templateContextLinks = require('/src\\topic-characters\\templates\\context-links.ne', module);
         for (i$ = 0, len$ = (ref$ = topic.querySelectorAll('.context-links')).length; i$ < len$; ++i$) {
             context = ref$[i$];
@@ -1615,8 +1565,8 @@
     });
     require.define('/src\\fix\\html-overrides.ls', function (module, exports, __dirname, __filename) {
         var lang, $, that, k, v, ref$;
-        lang = require('/node_modules\\lang\\index.ls', module);
-        $ = require('/node_modules\\dom\\index.ls', module).$;
+        lang = require('/lib\\lang\\index.ls', module);
+        $ = require('/lib\\dom\\index.ls', module).$;
         if (that = lang.htmlOverrides) {
             for (k in that) {
                 v = that[k];
@@ -1628,7 +1578,7 @@
     });
     require.define('/src\\jumps\\index.ls', function (module, exports, __dirname, __filename) {
         var $;
-        $ = require('/node_modules\\dom\\index.ls', module).$;
+        $ = require('/lib\\dom\\index.ls', module).$;
         require('/src\\jumps\\top.ls', module);
         if (!$('.player-name')) {
             require('/src\\jumps\\login.ls', module);
@@ -1647,14 +1597,14 @@
     require.define('/src\\jumps\\top.ls', function (module, exports, __dirname, __filename) {
         var bindKey, $;
         bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
-        $ = require('/node_modules\\dom\\index.ls', module).$;
+        $ = require('/lib\\dom\\index.ls', module).$;
         bindKey('t', 'page-top', function () {
             $('#logo').scrollIntoView();
         });
     });
     require.define('/src\\board\\css.ls', function (module, exports, __dirname, __filename) {
         var node, style;
-        node = require('/node_modules\\dom\\index.ls', module).node;
+        node = require('/lib\\dom\\index.ls', module).node;
         style = node('style', {
             type: 'text/css',
             innerHTML: '/*slake:build#compile-ls embeds css*/\n/**\
@@ -1852,7 +1802,7 @@ img.autolink {\
         var topic, forum, $, content, classes, join$ = [].join;
         topic = require('/src\\topic.ls', module);
         forum = require('/src\\forum.ls', module);
-        $ = require('/node_modules\\dom\\index.ls', module).$;
+        $ = require('/lib\\dom\\index.ls', module).$;
         content = $('#content');
         classes = [];
         classes.push(function () {
@@ -1870,34 +1820,47 @@ img.autolink {\
     });
     require.define('/node_modules\\sugar\\release\\sugar-full.development.js', function (module, exports, __dirname, __filename) {
         (function () {
+            'use strict';
             var object = Object, array = Array, regexp = RegExp, date = Date, string = String, number = Number, math = Math, Undefined;
             var globalContext = typeof global !== 'undefined' ? global : this;
-            var typeChecks = {};
+            var internalToString = object.prototype.toString;
+            var internalHasOwnProperty = object.prototype.hasOwnProperty;
             var definePropertySupport = object.defineProperty && object.defineProperties;
-            var ClassNames = 'Array,Boolean,Date,Function,Number,String,RegExp'.split(',');
-            var isArray = buildClassCheck(ClassNames[0]);
-            var isBoolean = buildClassCheck(ClassNames[1]);
-            var isDate = buildClassCheck(ClassNames[2]);
-            var isFunction = buildClassCheck(ClassNames[3]);
-            var isNumber = buildClassCheck(ClassNames[4]);
-            var isString = buildClassCheck(ClassNames[5]);
-            var isRegExp = buildClassCheck(ClassNames[6]);
-            function buildClassCheck(name) {
-                var type, fn;
-                if (/String|Number|Boolean/.test(name)) {
-                    type = name.toLowerCase();
-                }
-                fn = name === 'Array' && array.isArray || function (obj) {
-                    if (type && typeof obj === type) {
-                        return true;
+            var regexIsFunction = typeof regexp() === 'function';
+            var noKeysInStringObjects = !('0' in new string('a'));
+            var typeChecks = {};
+            var matchedByValueReg = /^\[object Date|Array|String|Number|RegExp|Boolean|Arguments\]$/;
+            var ClassNames = 'Boolean,Number,String,Array,Date,RegExp,Function'.split(',');
+            var isBoolean = buildPrimitiveClassCheck('boolean', ClassNames[0]);
+            var isNumber = buildPrimitiveClassCheck('number', ClassNames[1]);
+            var isString = buildPrimitiveClassCheck('string', ClassNames[2]);
+            var isArray = buildClassCheck(ClassNames[3]);
+            var isDate = buildClassCheck(ClassNames[4]);
+            var isRegExp = buildClassCheck(ClassNames[5]);
+            var isFunction = buildClassCheck(ClassNames[6]);
+            function isClass(obj, klass, cached) {
+                var k = cached || className(obj);
+                return k === '[object ' + klass + ']';
+            }
+            function buildClassCheck(klass) {
+                var fn = klass === 'Array' && array.isArray || function (obj, cached) {
+                        return isClass(obj, klass, cached);
+                    };
+                typeChecks[klass] = fn;
+                return fn;
+            }
+            function buildPrimitiveClassCheck(type, klass) {
+                var fn = function (obj) {
+                    if (isObjectType(obj)) {
+                        return isClass(obj, klass);
                     }
-                    return className(obj) === '[object ' + name + ']';
+                    return typeof obj === type;
                 };
-                typeChecks[name] = fn;
+                typeChecks[klass] = fn;
                 return fn;
             }
             function className(obj) {
-                return object.prototype.toString.call(obj);
+                return internalToString.call(obj);
             }
             function initializeClasses() {
                 initializeClass(object);
@@ -1909,19 +1872,19 @@ img.autolink {\
                 if (klass['SugarMethods'])
                     return;
                 defineProperty(klass, 'SugarMethods', {});
-                extend(klass, false, false, {
+                extend(klass, false, true, {
                     'extend': function (methods, override, instance) {
                         extend(klass, instance !== false, override, methods);
                     },
                     'sugarRestore': function () {
-                        return batchMethodExecute(klass, arguments, function (target, name, m) {
+                        return batchMethodExecute(this, klass, arguments, function (target, name, m) {
                             defineProperty(target, name, m.method);
                         });
                     },
                     'sugarRevert': function () {
-                        return batchMethodExecute(klass, arguments, function (target, name, m) {
-                            if (m.existed) {
-                                defineProperty(target, name, m.original);
+                        return batchMethodExecute(this, klass, arguments, function (target, name, m) {
+                            if (m['existed']) {
+                                defineProperty(target, name, m['original']);
                             } else {
                                 delete target[name];
                             }
@@ -1932,20 +1895,19 @@ img.autolink {\
             function extend(klass, instance, override, methods) {
                 var extendee = instance ? klass.prototype : klass;
                 initializeClass(klass);
-                iterateOverObject(methods, function (name, method) {
-                    var original = extendee[name];
-                    var existed = hasOwnProperty(extendee, name);
-                    if (typeof override === 'function') {
-                        method = wrapNative(extendee[name], method, override);
+                iterateOverObject(methods, function (name, extendedFn) {
+                    var nativeFn = extendee[name], existed = hasOwnProperty(extendee, name);
+                    if (isFunction(override) && nativeFn) {
+                        extendedFn = wrapNative(nativeFn, extendedFn, override);
                     }
-                    if (override !== false || !extendee[name]) {
-                        defineProperty(extendee, name, method);
+                    if (override !== false || !nativeFn) {
+                        defineProperty(extendee, name, extendedFn);
                     }
                     klass['SugarMethods'][name] = {
-                        instance: instance,
-                        method: method,
-                        original: original,
-                        existed: existed
+                        'method': extendedFn,
+                        'existed': existed,
+                        'original': nativeFn,
+                        'instance': instance
                     };
                 });
             }
@@ -1957,25 +1919,19 @@ img.autolink {\
                 });
                 extend(klass, instance, override, methods);
             }
-            function batchMethodExecute(klass, args, fn) {
+            function batchMethodExecute(target, klass, args, fn) {
                 var all = args.length === 0, methods = multiArgs(args), changed = false;
                 iterateOverObject(klass['SugarMethods'], function (name, m) {
-                    if (all || methods.indexOf(name) > -1) {
+                    if (all || methods.indexOf(name) !== -1) {
                         changed = true;
-                        fn(m.instance ? klass.prototype : klass, name, m);
+                        fn(m['instance'] ? target.prototype : target, name, m);
                     }
                 });
                 return changed;
             }
             function wrapNative(nativeFn, extendedFn, condition) {
-                return function () {
-                    var fn;
-                    if (nativeFn && (condition === true || !condition.apply(this, arguments))) {
-                        fn = nativeFn;
-                    } else {
-                        fn = extendedFn;
-                    }
-                    return fn.apply(this, arguments);
+                return function (a) {
+                    return condition.apply(this, arguments) ? extendedFn.apply(this, arguments) : nativeFn.apply(this, arguments);
                 };
             }
             function defineProperty(target, name, method) {
@@ -1990,17 +1946,22 @@ img.autolink {\
                     target[name] = method;
                 }
             }
-            function multiArgs(args, fn) {
-                var result = [], i, len;
-                for (i = 0, len = args.length; i < len; i++) {
+            function multiArgs(args, fn, from) {
+                var result = [], i = from || 0, len;
+                for (len = args.length; i < len; i++) {
                     result.push(args[i]);
                     if (fn)
                         fn.call(args, args[i], i);
                 }
                 return result;
             }
-            function flattenedArgs(obj, fn, from) {
-                multiArgs(array.prototype.concat.apply([], array.prototype.slice.call(obj, from || 0)), fn);
+            function flattenedArgs(args, fn, from) {
+                var arg = args[from || 0];
+                if (isArray(arg)) {
+                    args = arg;
+                    from = 0;
+                }
+                return multiArgs(args, fn, from);
             }
             function checkCallback(fn) {
                 if (!fn || !fn.call) {
@@ -2013,14 +1974,29 @@ img.autolink {\
             function isUndefined(o) {
                 return o === Undefined;
             }
-            function isObjectPrimitive(obj) {
-                return obj && typeof obj === 'object';
+            function hasProperty(obj, prop) {
+                return !isPrimitiveType(obj) && prop in obj;
             }
-            function isObject(obj) {
-                return !!obj && className(obj) === '[object Object]' && 'hasOwnProperty' in obj;
+            function hasOwnProperty(obj, prop) {
+                return !!obj && internalHasOwnProperty.call(obj, prop);
             }
-            function hasOwnProperty(obj, key) {
-                return object['hasOwnProperty'].call(obj, key);
+            function isObjectType(obj) {
+                return !!obj && (typeof obj === 'object' || regexIsFunction && isRegExp(obj));
+            }
+            function isPrimitiveType(obj) {
+                var type = typeof obj;
+                return obj == null || type === 'string' || type === 'number' || type === 'boolean';
+            }
+            function isPlainObject(obj, klass) {
+                klass = klass || className(obj);
+                try {
+                    if (obj && obj.constructor && !hasOwnProperty(obj, 'constructor') && !hasOwnProperty(obj.constructor.prototype, 'isPrototypeOf')) {
+                        return false;
+                    }
+                } catch (e) {
+                    return false;
+                }
+                return !!obj && klass === '[object Object]' && 'hasOwnProperty' in obj;
             }
             function iterateOverObject(obj, fn) {
                 var key;
@@ -2031,43 +2007,108 @@ img.autolink {\
                         break;
                 }
             }
+            function simpleRepeat(n, fn) {
+                for (var i = 0; i < n; i++) {
+                    fn(i);
+                }
+            }
             function simpleMerge(target, source) {
                 iterateOverObject(source, function (key) {
                     target[key] = source[key];
                 });
                 return target;
             }
+            function coercePrimitiveToObject(obj) {
+                if (isPrimitiveType(obj)) {
+                    obj = object(obj);
+                }
+                if (noKeysInStringObjects && isString(obj)) {
+                    forceStringCoercion(obj);
+                }
+                return obj;
+            }
+            function forceStringCoercion(obj) {
+                var i = 0, chr;
+                while (chr = obj.charAt(i)) {
+                    obj[i++] = chr;
+                }
+            }
             function Hash(obj) {
-                simpleMerge(this, obj);
+                simpleMerge(this, coercePrimitiveToObject(obj));
             }
             ;
             Hash.prototype.constructor = object;
-            function getRange(start, stop, fn, step) {
-                var arr = [], i = parseInt(start), down = step < 0;
-                while (!down && i <= stop || down && i >= stop) {
-                    arr.push(i);
-                    if (fn)
-                        fn.call(this, i);
-                    i += step || 1;
-                }
-                return arr;
-            }
-            function round(val, precision, method) {
-                var fn = math[method || 'round'];
-                var multiplier = math.pow(10, math.abs(precision || 0));
+            var abs = math.abs;
+            var pow = math.pow;
+            var ceil = math.ceil;
+            var floor = math.floor;
+            var round = math.round;
+            var min = math.min;
+            var max = math.max;
+            function withPrecision(val, precision, fn) {
+                var multiplier = pow(10, abs(precision || 0));
+                fn = fn || round;
                 if (precision < 0)
                     multiplier = 1 / multiplier;
                 return fn(val * multiplier) / multiplier;
             }
-            function ceil(val, precision) {
-                return round(val, precision, 'ceil');
+            var HalfWidthZeroCode = 48;
+            var HalfWidthNineCode = 57;
+            var FullWidthZeroCode = 65296;
+            var FullWidthNineCode = 65305;
+            var HalfWidthPeriod = '.';
+            var FullWidthPeriod = '\uff0e';
+            var HalfWidthComma = ',';
+            var FullWidthDigits = '';
+            var NumberNormalizeMap = {};
+            var NumberNormalizeReg;
+            function codeIsNumeral(code) {
+                return code >= HalfWidthZeroCode && code <= HalfWidthNineCode || code >= FullWidthZeroCode && code <= FullWidthNineCode;
             }
-            function floor(val, precision) {
-                return round(val, precision, 'floor');
+            function buildNumberHelpers() {
+                var digit, i;
+                for (i = 0; i <= 9; i++) {
+                    digit = chr(i + FullWidthZeroCode);
+                    FullWidthDigits += digit;
+                    NumberNormalizeMap[digit] = chr(i + HalfWidthZeroCode);
+                }
+                NumberNormalizeMap[HalfWidthComma] = '';
+                NumberNormalizeMap[FullWidthPeriod] = HalfWidthPeriod;
+                NumberNormalizeMap[HalfWidthPeriod] = HalfWidthPeriod;
+                NumberNormalizeReg = regexp('[' + FullWidthDigits + FullWidthPeriod + HalfWidthComma + HalfWidthPeriod + ']', 'g');
+            }
+            function chr(num) {
+                return string.fromCharCode(num);
+            }
+            function getTrimmableCharacters() {
+                return '\t\n\v\f\r \xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u2028\u2029\u3000\ufeff';
+            }
+            function repeatString(str, num) {
+                var result = '', str = str.toString();
+                while (num > 0) {
+                    if (num & 1) {
+                        result += str;
+                    }
+                    if (num >>= 1) {
+                        str += str;
+                    }
+                }
+                return result;
+            }
+            function stringToNumber(str, base) {
+                var sanitized, isDecimal;
+                sanitized = str.replace(NumberNormalizeReg, function (chr) {
+                    var replacement = NumberNormalizeMap[chr];
+                    if (replacement === HalfWidthPeriod) {
+                        isDecimal = true;
+                    }
+                    return replacement;
+                });
+                return isDecimal ? parseFloat(sanitized) : parseInt(sanitized, base || 10);
             }
             function padNumber(num, place, sign, base) {
-                var str = math.abs(num).toString(base || 10);
-                str = repeatString(place - str.replace(/\.\d+/, '').length, '0') + str;
+                var str = abs(num).toString(base || 10);
+                str = repeatString('0', place - str.replace(/\.\d+/, '').length) + str;
                 if (sign || num < 0) {
                     str = (num < 0 ? '-' : '+') + str;
                 }
@@ -2089,31 +2130,38 @@ img.autolink {\
                     }
                 }
             }
-            function getTrimmableCharacters() {
-                return '\t\n\v\f\r \xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u2028\u2029\u3000\ufeff';
-            }
-            function repeatString(times, str) {
-                return array(math.max(0, isDefined(times) ? times : 1) + 1).join(str || '');
-            }
             function getRegExpFlags(reg, add) {
-                var flags = reg.toString().match(/[^/]*$/)[0];
-                if (add) {
-                    flags = (flags + add).split('').sort().join('').replace(/([gimy])\1+/g, '$1');
+                var flags = '';
+                add = add || '';
+                function checkFlag(prop, flag) {
+                    if (prop || add.indexOf(flag) > -1) {
+                        flags += flag;
+                    }
                 }
+                checkFlag(reg.multiline, 'm');
+                checkFlag(reg.ignoreCase, 'i');
+                checkFlag(reg.global, 'g');
+                checkFlag(reg.sticky, 'y');
                 return flags;
             }
             function escapeRegExp(str) {
                 if (!isString(str))
                     str = string(str);
-                return str.replace(/([\\/'*+?|()\[\]{}.^$])/g, '\\$1');
+                return str.replace(/([\\/\'*+?|()\[\]{}.^$])/g, '\\$1');
+            }
+            function callDateGet(d, method) {
+                return d['get' + (d._utc ? 'UTC' : '') + method]();
+            }
+            function callDateSet(d, method, value) {
+                return d['set' + (d._utc && method != 'ISOWeek' ? 'UTC' : '') + method](value);
             }
             function stringify(thing, stack) {
                 var type = typeof thing, thingIsObject, thingIsArray, klass, value, arr, key, i, len;
                 if (type === 'string')
                     return thing;
-                klass = object.prototype.toString.call(thing);
-                thingIsObject = isObject(thing);
-                thingIsArray = klass === '[object Array]';
+                klass = internalToString.call(thing);
+                thingIsObject = isPlainObject(thing, klass);
+                thingIsArray = isArray(thing, klass);
                 if (thing != null && thingIsObject || thingIsArray) {
                     if (!stack)
                         stack = [];
@@ -2126,7 +2174,7 @@ img.autolink {\
                         }
                     }
                     stack.push(thing);
-                    value = string(thing.constructor);
+                    value = thing.valueOf() + string(thing.constructor);
                     arr = thingIsArray ? thing : object.keys(thing).sort();
                     for (i = 0, len = arr.length; i < len; i++) {
                         key = thingIsArray ? i : arr[i];
@@ -2141,30 +2189,37 @@ img.autolink {\
                 return type + klass + value;
             }
             function isEqual(a, b) {
-                if (objectIsMatchedByValue(a) && objectIsMatchedByValue(b)) {
+                if (a === b) {
+                    return a !== 0 || 1 / a === 1 / b;
+                } else if (objectIsMatchedByValue(a) && objectIsMatchedByValue(b)) {
                     return stringify(a) === stringify(b);
-                } else {
-                    return a === b;
                 }
+                return false;
             }
             function objectIsMatchedByValue(obj) {
                 var klass = className(obj);
-                return /^\[object Date|Array|String|Number|RegExp|Boolean|Arguments\]$/.test(klass) || isObject(obj);
+                return matchedByValueReg.test(klass) || isPlainObject(obj, klass);
             }
-            function entryAtIndex(arr, args, str) {
-                var result = [], length = arr.length, loop = args[args.length - 1] !== false, r;
+            function getEntriesForIndexes(obj, args, isString) {
+                var result, length = obj.length, argsLen = args.length, overshoot = args[argsLen - 1] !== false, multiple = argsLen > (overshoot ? 1 : 2);
+                if (!multiple) {
+                    return entryAtIndex(obj, length, args[0], overshoot, isString);
+                }
+                result = [];
                 multiArgs(args, function (index) {
                     if (isBoolean(index))
                         return false;
-                    if (loop) {
-                        index = index % length;
-                        if (index < 0)
-                            index = length + index;
-                    }
-                    r = str ? arr.charAt(index) || '' : arr[index];
-                    result.push(r);
+                    result.push(entryAtIndex(obj, length, index, overshoot, isString));
                 });
-                return result.length < 2 ? result[0] : result;
+                return result;
+            }
+            function entryAtIndex(obj, length, index, overshoot, isString) {
+                if (overshoot) {
+                    index = index % length;
+                    if (index < 0)
+                        index = length + index;
+                }
+                return isString ? obj.charAt(index) : obj[index];
             }
             function buildObjectInstanceMethods(set, target) {
                 extendSimilar(target, true, false, set, function (methods, name) {
@@ -2174,10 +2229,11 @@ img.autolink {\
                 });
             }
             initializeClasses();
+            buildNumberHelpers();
             extend(object, false, false, {
                 'keys': function (obj) {
                     var keys = [];
-                    if (!isObjectPrimitive(obj) && !isRegExp(obj) && !isFunction(obj)) {
+                    if (!isObjectType(obj) && !isRegExp(obj) && !isFunction(obj)) {
                         throw new TypeError('Object required');
                     }
                     iterateOverObject(obj, function (key, value) {
@@ -2263,7 +2319,7 @@ img.autolink {\
                     return false;
                 },
                 'map': function (fn, scope) {
-                    var length = this.length, index = 0, result = new Array(length);
+                    var scope = arguments[1], length = this.length, index = 0, result = new Array(length);
                     checkFirstArgumentExists(arguments);
                     while (index < length) {
                         if (index in this) {
@@ -2273,7 +2329,8 @@ img.autolink {\
                     }
                     return result;
                 },
-                'filter': function (fn, scope) {
+                'filter': function (fn) {
+                    var scope = arguments[1];
                     var length = this.length, index = 0, result = [];
                     checkFirstArgumentExists(arguments);
                     while (index < length) {
@@ -2284,18 +2341,20 @@ img.autolink {\
                     }
                     return result;
                 },
-                'indexOf': function (search, fromIndex) {
+                'indexOf': function (search) {
+                    var fromIndex = arguments[1];
                     if (isString(this))
                         return this.indexOf(search, fromIndex);
                     return arrayIndexOf(this, search, fromIndex, 1);
                 },
-                'lastIndexOf': function (search, fromIndex) {
+                'lastIndexOf': function (search) {
+                    var fromIndex = arguments[1];
                     if (isString(this))
                         return this.lastIndexOf(search, fromIndex);
                     return arrayIndexOf(this, search, fromIndex, -1);
                 },
-                'forEach': function (fn, scope) {
-                    var length = this.length, index = 0;
+                'forEach': function (fn) {
+                    var length = this.length, index = 0, scope = arguments[1];
                     checkCallback(fn);
                     while (index < length) {
                         if (index in this) {
@@ -2304,11 +2363,11 @@ img.autolink {\
                         index++;
                     }
                 },
-                'reduce': function (fn, init) {
-                    return arrayReduce(this, fn, init);
+                'reduce': function (fn) {
+                    return arrayReduce(this, fn, arguments[1]);
                 },
-                'reduceRight': function (fn, init) {
-                    return arrayReduce(this, fn, init, true);
+                'reduceRight': function (fn) {
+                    return arrayReduce(this, fn, arguments[1], true);
                 }
             });
             function buildTrim() {
@@ -2332,7 +2391,7 @@ img.autolink {\
             }
             extend(Function, true, false, {
                 'bind': function (scope) {
-                    var fn = this, args = multiArgs(arguments).slice(1), nop, bound;
+                    var fn = this, args = multiArgs(arguments, null, 1), bound;
                     if (!isFunction(this)) {
                         throw new TypeError('Function.prototype.bind called on a non-function');
                     }
@@ -2359,32 +2418,70 @@ img.autolink {\
             }
             buildTrim();
             buildISOString();
-            function multiMatch(el, match, scope, params) {
-                var result = true;
-                if (el === match) {
-                    return true;
-                } else if (isRegExp(match) && isString(el)) {
-                    return regexp(match).test(el);
-                } else if (isFunction(match)) {
-                    return match.apply(scope, params);
-                } else if (isObject(match) && isObjectPrimitive(el)) {
-                    iterateOverObject(match, function (key, value) {
-                        if (!multiMatch(el[key], match[key], scope, [
-                                el[key],
-                                el
-                            ])) {
-                            result = false;
+            function regexMatcher(reg) {
+                reg = regexp(reg);
+                return function (el) {
+                    return reg.test(el);
+                };
+            }
+            function dateMatcher(d) {
+                var ms = d.getTime();
+                return function (el) {
+                    return !!(el && el.getTime) && el.getTime() === ms;
+                };
+            }
+            function functionMatcher(fn) {
+                return function (el, i, arr) {
+                    return el === fn || fn.call(this, el, i, arr);
+                };
+            }
+            function invertedArgsFunctionMatcher(fn) {
+                return function (value, key, obj) {
+                    return value === fn || fn.call(obj, key, value, obj);
+                };
+            }
+            function fuzzyMatcher(obj, isObject) {
+                var matchers = {};
+                return function (el, i, arr) {
+                    var key;
+                    if (!isObjectType(el)) {
+                        return false;
+                    }
+                    for (key in obj) {
+                        matchers[key] = matchers[key] || getMatcher(obj[key], isObject);
+                        if (matchers[key].call(arr, el[key], i, arr) === false) {
+                            return false;
                         }
-                    });
-                    return result;
-                } else {
-                    return isEqual(el, match);
+                    }
+                    return true;
+                };
+            }
+            function defaultMatcher(f) {
+                return function (el) {
+                    return el === f || isEqual(el, f);
+                };
+            }
+            function getMatcher(f, isObject) {
+                if (isPrimitiveType(f)) {
+                } else if (isRegExp(f)) {
+                    return regexMatcher(f);
+                } else if (isDate(f)) {
+                    return dateMatcher(f);
+                } else if (isFunction(f)) {
+                    if (isObject) {
+                        return invertedArgsFunctionMatcher(f);
+                    } else {
+                        return functionMatcher(f);
+                    }
+                } else if (isPlainObject(f)) {
+                    return fuzzyMatcher(f, isObject);
                 }
+                return defaultMatcher(f);
             }
             function transformArgument(el, map, context, mapArgs) {
-                if (isUndefined(map)) {
+                if (!map) {
                     return el;
-                } else if (isFunction(map)) {
+                } else if (map.apply) {
                     return map.apply(context, mapArgs || []);
                 } else if (isFunction(el[map])) {
                     return el[map].call(el);
@@ -2393,11 +2490,13 @@ img.autolink {\
                 }
             }
             function arrayEach(arr, fn, startIndex, loop) {
-                var length, index, i;
+                var index, i, length = +arr.length;
                 if (startIndex < 0)
                     startIndex = arr.length + startIndex;
                 i = isNaN(startIndex) ? 0 : startIndex;
-                length = loop === true ? arr.length + i : arr.length;
+                if (loop === true) {
+                    length += i;
+                }
                 while (i < length) {
                     index = i % arr.length;
                     if (!(index in arr)) {
@@ -2426,19 +2525,18 @@ img.autolink {\
             function toUInt32(i) {
                 return i >>> 0;
             }
-            function arrayFind(arr, f, startIndex, loop, returnIndex) {
-                var result, index;
-                arrayEach(arr, function (el, i, arr) {
-                    if (multiMatch(el, f, arr, [
-                            el,
-                            i,
-                            arr
-                        ])) {
-                        result = el;
-                        index = i;
-                        return false;
-                    }
-                }, startIndex, loop);
+            function arrayFind(arr, f, startIndex, loop, returnIndex, context) {
+                var result, index, matcher;
+                if (arr.length > 0) {
+                    matcher = getMatcher(f);
+                    arrayEach(arr, function (el, i) {
+                        if (matcher.call(context, el, i, arr)) {
+                            result = el;
+                            index = i;
+                            return false;
+                        }
+                    }, startIndex, loop);
+                }
                 return returnIndex ? index : result;
             }
             function arrayUnique(arr, map) {
@@ -2462,7 +2560,7 @@ img.autolink {\
                 });
                 arr1.each(function (el) {
                     var stringified = stringify(el), isReference = !objectIsMatchedByValue(el);
-                    if (elementExistsInHash(o, stringified, el, isReference) != subtract) {
+                    if (elementExistsInHash(o, stringified, el, isReference) !== subtract) {
                         discardElementFromHash(o, stringified, el, isReference);
                         result.push(el);
                     }
@@ -2481,6 +2579,12 @@ img.autolink {\
                     }
                 });
                 return result;
+            }
+            function isArrayLike(obj) {
+                return hasProperty(obj, 'length') && !isString(obj) && !isPlainObject(obj);
+            }
+            function isArgumentsObject(obj) {
+                return hasProperty(obj, 'length') && (className(obj) === '[object Arguments]' || !!obj.callee);
             }
             function flatArguments(args) {
                 var result = [];
@@ -2524,13 +2628,16 @@ img.autolink {\
                 }
             }
             function getMinOrMax(obj, map, which, all) {
-                var edge, result = [], max = which === 'max', min = which === 'min', isArray = Array.isArray(obj);
-                iterateOverObject(obj, function (key) {
-                    var el = obj[key], test = transformArgument(el, map, obj, isArray ? [
-                            el,
-                            parseInt(key),
-                            obj
-                        ] : []);
+                var el, key, edge, test, result = [], max = which === 'max', min = which === 'min', isArray = array.isArray(obj);
+                for (key in obj) {
+                    if (!obj.hasOwnProperty(key))
+                        continue;
+                    el = obj[key];
+                    test = transformArgument(el, map, obj, isArray ? [
+                        el,
+                        parseInt(key),
+                        obj
+                    ] : []);
                     if (isUndefined(test)) {
                         throw new TypeError('Cannot compare with undefined');
                     }
@@ -2540,80 +2647,98 @@ img.autolink {\
                         result = [el];
                         edge = test;
                     }
-                });
+                }
                 if (!isArray)
                     result = arrayFlatten(result, 1);
                 return all ? result : result[0];
             }
             function collateStrings(a, b) {
                 var aValue, bValue, aChar, bChar, aEquiv, bEquiv, index = 0, tiebreaker = 0;
-                a = getCollationReadyString(a);
-                b = getCollationReadyString(b);
+                var sortIgnore = array[AlphanumericSortIgnore];
+                var sortIgnoreCase = array[AlphanumericSortIgnoreCase];
+                var sortEquivalents = array[AlphanumericSortEquivalents];
+                var sortOrder = array[AlphanumericSortOrder];
+                var naturalSort = array[AlphanumericSortNatural];
+                a = getCollationReadyString(a, sortIgnore, sortIgnoreCase);
+                b = getCollationReadyString(b, sortIgnore, sortIgnoreCase);
                 do {
-                    aChar = getCollationCharacter(a, index);
-                    bChar = getCollationCharacter(b, index);
-                    aValue = getCollationValue(aChar);
-                    bValue = getCollationValue(bChar);
+                    aChar = getCollationCharacter(a, index, sortEquivalents);
+                    bChar = getCollationCharacter(b, index, sortEquivalents);
+                    aValue = getSortOrderIndex(aChar, sortOrder);
+                    bValue = getSortOrderIndex(bChar, sortOrder);
                     if (aValue === -1 || bValue === -1) {
                         aValue = a.charCodeAt(index) || null;
                         bValue = b.charCodeAt(index) || null;
-                    }
-                    aEquiv = aChar !== a.charAt(index);
-                    bEquiv = bChar !== b.charAt(index);
-                    if (aEquiv !== bEquiv && tiebreaker === 0) {
-                        tiebreaker = aEquiv - bEquiv;
+                        if (naturalSort && codeIsNumeral(aValue) && codeIsNumeral(bValue)) {
+                            aValue = stringToNumber(a.slice(index));
+                            bValue = stringToNumber(b.slice(index));
+                        }
+                    } else {
+                        aEquiv = aChar !== a.charAt(index);
+                        bEquiv = bChar !== b.charAt(index);
+                        if (aEquiv !== bEquiv && tiebreaker === 0) {
+                            tiebreaker = aEquiv - bEquiv;
+                        }
                     }
                     index += 1;
                 } while (aValue != null && bValue != null && aValue === bValue);
                 if (aValue === bValue)
                     return tiebreaker;
-                return aValue < bValue ? -1 : 1;
+                return aValue - bValue;
             }
-            function getCollationReadyString(str) {
-                if (array[AlphanumericSortIgnoreCase]) {
+            function getCollationReadyString(str, sortIgnore, sortIgnoreCase) {
+                if (!isString(str))
+                    str = string(str);
+                if (sortIgnoreCase) {
                     str = str.toLowerCase();
                 }
-                return str.replace(array[AlphanumericSortIgnore], '');
+                if (sortIgnore) {
+                    str = str.replace(sortIgnore, '');
+                }
+                return str;
             }
-            function getCollationCharacter(str, index) {
-                var chr = str.charAt(index), eq = array[AlphanumericSortEquivalents] || {};
-                return eq[chr] || chr;
+            function getCollationCharacter(str, index, sortEquivalents) {
+                var chr = str.charAt(index);
+                return sortEquivalents[chr] || chr;
             }
-            function getCollationValue(chr) {
-                var order = array[AlphanumericSortOrder];
+            function getSortOrderIndex(chr, sortOrder) {
                 if (!chr) {
                     return null;
                 } else {
-                    return order.indexOf(chr);
+                    return sortOrder.indexOf(chr);
                 }
             }
+            var AlphanumericSort = 'AlphanumericSort';
             var AlphanumericSortOrder = 'AlphanumericSortOrder';
             var AlphanumericSortIgnore = 'AlphanumericSortIgnore';
             var AlphanumericSortIgnoreCase = 'AlphanumericSortIgnoreCase';
             var AlphanumericSortEquivalents = 'AlphanumericSortEquivalents';
+            var AlphanumericSortNatural = 'AlphanumericSortNatural';
             function buildEnhancements() {
+                var nativeMap = array.prototype.map;
                 var callbackCheck = function () {
-                    var a = arguments;
-                    return a.length > 0 && !isFunction(a[0]);
+                    var args = arguments;
+                    return args.length > 0 && !isFunction(args[0]);
                 };
-                extendSimilar(array, true, callbackCheck, 'map,every,all,some,any,none,filter', function (methods, name) {
+                extendSimilar(array, true, callbackCheck, 'every,all,some,filter,any,none,find,findIndex', function (methods, name) {
+                    var nativeFn = array.prototype[name];
                     methods[name] = function (f) {
-                        return this[name](function (el, index) {
-                            if (name === 'map') {
-                                return transformArgument(el, f, this, [
-                                    el,
-                                    index,
-                                    this
-                                ]);
-                            } else {
-                                return multiMatch(el, f, this, [
-                                    el,
-                                    index,
-                                    this
-                                ]);
-                            }
+                        var matcher = getMatcher(f);
+                        return nativeFn.call(this, function (el, index) {
+                            return matcher(el, index, this);
                         });
                     };
+                });
+                extend(array, true, callbackCheck, {
+                    'map': function (f) {
+                        return nativeMap.call(this, function (el, index) {
+                            return transformArgument(el, f, this, [
+                                el,
+                                index,
+                                this
+                            ]);
+                        });
+                    }
                 });
             }
             function buildAlphanumericSort() {
@@ -2630,22 +2755,16 @@ img.autolink {\
                         equivalents[chr.toLowerCase()] = equivalent.toLowerCase();
                     });
                 });
+                array[AlphanumericSortNatural] = true;
                 array[AlphanumericSortIgnoreCase] = true;
                 array[AlphanumericSortEquivalents] = equivalents;
             }
-            extend(array, false, false, {
+            extend(array, false, true, {
                 'create': function () {
-                    var result = [], tmp;
+                    var result = [];
                     multiArgs(arguments, function (a) {
-                        if (isObjectPrimitive(a)) {
-                            try {
-                                tmp = array.prototype.slice.call(a, 0);
-                                if (tmp.length > 0) {
-                                    a = tmp;
-                                }
-                            } catch (e) {
-                            }
-                            ;
+                        if (isArgumentsObject(a) || isArrayLike(a)) {
+                            a = array.prototype.slice.call(a, 0);
                         }
                         result = result.concat(a);
                     });
@@ -2653,25 +2772,36 @@ img.autolink {\
                 }
             });
             extend(array, true, false, {
-                'find': function (f, index, loop) {
+                'find': function (f, context) {
+                    checkCallback(f);
+                    return arrayFind(this, f, 0, false, false, context);
+                },
+                'findIndex': function (f, context) {
+                    var index;
+                    checkCallback(f);
+                    index = arrayFind(this, f, 0, false, true, context);
+                    return isUndefined(index) ? -1 : index;
+                }
+            });
+            extend(array, true, true, {
+                'findFrom': function (f, index, loop) {
                     return arrayFind(this, f, index, loop);
                 },
-                'findAll': function (f, index, loop) {
-                    var result = [];
-                    arrayEach(this, function (el, i, arr) {
-                        if (multiMatch(el, f, arr, [
-                                el,
-                                i,
-                                arr
-                            ])) {
-                            result.push(el);
-                        }
-                    }, index, loop);
-                    return result;
-                },
-                'findIndex': function (f, startIndex, loop) {
-                    var index = arrayFind(this, f, startIndex, loop, true);
+                'findIndexFrom': function (f, index, loop) {
+                    var index = arrayFind(this, f, index, loop, true);
                     return isUndefined(index) ? -1 : index;
+                },
+                'findAll': function (f, index, loop) {
+                    var result = [], matcher;
+                    if (this.length > 0) {
+                        matcher = getMatcher(f);
+                        arrayEach(this, function (el, i, arr) {
+                            if (matcher(el, i, arr)) {
+                                result.push(el);
+                            }
+                        }, index, loop);
+                    }
+                    return result;
                 },
                 'count': function (f) {
                     if (isUndefined(f))
@@ -2679,14 +2809,11 @@ img.autolink {\
                     return this.findAll(f).length;
                 },
                 'removeAt': function (start, end) {
-                    var i, len;
                     if (isUndefined(start))
                         return this;
                     if (isUndefined(end))
                         end = start;
-                    for (i = 0, len = end - start; i <= len; i++) {
-                        this.splice(start, 1);
-                    }
+                    this.splice(start, end - start + 1);
                     return this;
                 },
                 'include': function (el, index) {
@@ -2714,7 +2841,7 @@ img.autolink {\
                     return arrayIntersect(this, flatArguments(arguments), true);
                 },
                 'at': function () {
-                    return entryAtIndex(this, arguments);
+                    return getEntriesForIndexes(this, arguments);
                 },
                 'first': function (num) {
                     if (isUndefined(num))
@@ -2764,11 +2891,11 @@ img.autolink {\
                     var arr = this;
                     var result = [];
                     var divisor = ceil(this.length / num);
-                    getRange(0, num - 1, function (i) {
+                    simpleRepeat(num, function (i) {
                         var index = i * divisor;
                         var group = arr.slice(index, index + divisor);
                         if (pad && group.length < divisor) {
-                            getRange(1, divisor - group.length, function () {
+                            simpleRepeat(divisor - group.length, function () {
                                 group = group.add(padding);
                             });
                         }
@@ -2784,7 +2911,7 @@ img.autolink {\
                         num = 1;
                     if (isUndefined(padding))
                         padding = null;
-                    getRange(0, ceil(len / num) - 1, function (i) {
+                    simpleRepeat(ceil(len / num), function (i) {
                         group = arr.slice(num * i, num * i + num);
                         while (group.length < num) {
                             group.push(padding);
@@ -2851,15 +2978,11 @@ img.autolink {\
                     return this;
                 },
                 'remove': function () {
-                    var i, arr = this;
+                    var arr = this;
                     multiArgs(arguments, function (f) {
-                        i = 0;
+                        var i = 0, matcher = getMatcher(f);
                         while (i < arr.length) {
-                            if (multiMatch(arr[i], f, arr, [
-                                    arr[i],
-                                    i,
-                                    arr
-                                ])) {
+                            if (matcher(arr[i], i, arr)) {
                                 arr.splice(i, 1);
                             } else {
                                 i++;
@@ -2902,34 +3025,31 @@ img.autolink {\
                     return !this.any.apply(this, arguments);
                 }
             });
-            extend(array, true, false, {
+            extend(array, true, true, {
                 'all': array.prototype.every,
                 'any': array.prototype.some,
                 'insert': array.prototype.add
             });
-            function keysWithCoercion(obj) {
-                if (obj && obj.valueOf) {
-                    obj = obj.valueOf();
-                }
-                return object.keys(obj);
+            function keysWithObjectCoercion(obj) {
+                return object.keys(coercePrimitiveToObject(obj));
             }
             function buildEnumerableMethods(names, mapping) {
-                extendSimilar(object, false, false, names, function (methods, name) {
+                extendSimilar(object, false, true, names, function (methods, name) {
                     methods[name] = function (obj, arg1, arg2) {
-                        var result, coerced = keysWithCoercion(obj);
+                        var result, coerced = keysWithObjectCoercion(obj), matcher;
+                        if (!mapping) {
+                            matcher = getMatcher(arg1, true);
+                        }
                         result = array.prototype[name].call(coerced, function (key) {
+                            var value = obj[key];
                             if (mapping) {
-                                return transformArgument(obj[key], arg1, obj, [
+                                return transformArgument(value, arg1, obj, [
                                     key,
-                                    obj[key],
+                                    value,
                                     obj
                                 ]);
                             } else {
-                                return multiMatch(obj[key], arg1, obj, [
-                                    key,
-                                    obj[key],
-                                    obj
-                                ]);
+                                return matcher(value, key, obj);
                             }
                         }, arg2);
                         if (isArray(result)) {
@@ -2943,22 +3063,29 @@ img.autolink {\
                 });
                 buildObjectInstanceMethods(names, Hash);
             }
-            extend(object, false, false, {
+            function exportSortAlgorithm() {
+                array[AlphanumericSort] = collateStrings;
+            }
+            extend(object, false, true, {
                 'map': function (obj, map) {
-                    return keysWithCoercion(obj).reduce(function (result, key) {
-                        result[key] = transformArgument(obj[key], map, obj, [
+                    var result = {}, key, value;
+                    for (key in obj) {
+                        if (!hasOwnProperty(obj, key))
+                            continue;
+                        value = obj[key];
+                        result[key] = transformArgument(value, map, obj, [
                             key,
-                            obj[key],
+                            value,
                             obj
                         ]);
-                        return result;
-                    }, {});
+                    }
+                    return result;
                 },
                 'reduce': function (obj) {
-                    var values = keysWithCoercion(obj).map(function (key) {
+                    var values = keysWithObjectCoercion(obj).map(function (key) {
                             return obj[key];
                         });
-                    return values.reduce.apply(values, multiArgs(arguments).slice(1));
+                    return values.reduce.apply(values, multiArgs(arguments, null, 1));
                 },
                 'each': function (obj, fn) {
                     checkCallback(fn);
@@ -2966,7 +3093,7 @@ img.autolink {\
                     return obj;
                 },
                 'size': function (obj) {
-                    return keysWithCoercion(obj).length;
+                    return keysWithObjectCoercion(obj).length;
                 }
             });
             var EnumerableFindingMethods = 'any,all,none,count,find,findAll,isEmpty'.split(',');
@@ -2978,6 +3105,7 @@ img.autolink {\
             buildEnumerableMethods(EnumerableFindingMethods);
             buildEnumerableMethods(EnumerableMappingMethods, true);
             buildObjectInstanceMethods(EnumerableOtherMethods, Hash);
+            exportSortAlgorithm();
             var English;
             var CurrentLocalization;
             var TimeFormat = [
@@ -2997,121 +3125,39 @@ img.autolink {\
             var SixtyReg = '[0-5]\\d' + DecimalReg;
             var RequiredTime = '({t})?\\s*(' + HoursReg + ')(?:{h}(' + SixtyReg + ')?{m}(?::?(' + SixtyReg + '){s})?\\s*(?:({t})|(Z)|(?:([+-])(\\d{2,2})(?::?(\\d{2,2}))?)?)?|\\s*({t}))';
             var KanjiDigits = '\u3007\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341\u767e\u5343\u4e07';
-            var FullWidthDigits = '\uff10\uff11\uff12\uff13\uff14\uff15\uff16\uff17\uff18\uff19';
             var AsianDigitMap = {};
             var AsianDigitReg;
             var DateArgumentUnits;
             var DateUnitsReversed;
             var CoreDateFormats = [];
-            var DateOutputFormats = [
-                    {
-                        token: 'f{1,4}|ms|milliseconds',
-                        format: function (d) {
-                            return callDateGet(d, 'Milliseconds');
-                        }
+            var CompiledOutputFormats = {};
+            var DateFormatTokens = {
+                    'yyyy': function (d) {
+                        return callDateGet(d, 'FullYear');
                     },
-                    {
-                        token: 'ss?|seconds',
-                        format: function (d, len) {
-                            return callDateGet(d, 'Seconds');
-                        }
+                    'yy': function (d) {
+                        return callDateGet(d, 'FullYear') % 100;
                     },
-                    {
-                        token: 'mm?|minutes',
-                        format: function (d, len) {
-                            return callDateGet(d, 'Minutes');
-                        }
+                    'ord': function (d) {
+                        var date = callDateGet(d, 'Date');
+                        return date + getOrdinalizedSuffix(date);
                     },
-                    {
-                        token: 'hh?|hours|12hr',
-                        format: function (d) {
-                            return getShortHour(d);
-                        }
+                    'tz': function (d) {
+                        return d.getUTCOffset();
                     },
-                    {
-                        token: 'HH?|24hr',
-                        format: function (d) {
-                            return callDateGet(d, 'Hours');
-                        }
+                    'isotz': function (d) {
+                        return d.getUTCOffset(true);
                     },
-                    {
-                        token: 'dd?|date|day',
-                        format: function (d) {
-                            return callDateGet(d, 'Date');
-                        }
+                    'Z': function (d) {
+                        return d.getUTCOffset();
                     },
-                    {
-                        token: 'dow|weekday',
-                        word: true,
-                        format: function (d, loc, n, t) {
-                            var dow = callDateGet(d, 'Day');
-                            return loc['weekdays'][dow + (n - 1) * 7];
-                        }
-                    },
-                    {
-                        token: 'MM?',
-                        format: function (d) {
-                            return callDateGet(d, 'Month') + 1;
-                        }
-                    },
-                    {
-                        token: 'mon|month',
-                        word: true,
-                        format: function (d, loc, n, len) {
-                            var month = callDateGet(d, 'Month');
-                            return loc['months'][month + (n - 1) * 12];
-                        }
-                    },
-                    {
-                        token: 'y{2,4}|year',
-                        format: function (d) {
-                            return callDateGet(d, 'FullYear');
-                        }
-                    },
-                    {
-                        token: '[Tt]{1,2}',
-                        format: function (d, loc, n, format) {
-                            if (loc['ampm'].length == 0)
-                                return '';
-                            var hours = callDateGet(d, 'Hours');
-                            var str = loc['ampm'][floor(hours / 12)];
-                            if (format.length === 1)
-                                str = str.slice(0, 1);
-                            if (format.slice(0, 1) === 'T')
-                                str = str.toUpperCase();
-                            return str;
-                        }
-                    },
-                    {
-                        token: 'z{1,4}|tz|timezone',
-                        text: true,
-                        format: function (d, loc, n, format) {
-                            var tz = d.getUTCOffset();
-                            if (format == 'z' || format == 'zz') {
-                                tz = tz.replace(/(\d{2})(\d{2})/, function (f, h, m) {
-                                    return padNumber(h, format.length);
-                                });
-                            }
-                            return tz;
-                        }
-                    },
-                    {
-                        token: 'iso(tz|timezone)',
-                        format: function (d) {
-                            return d.getUTCOffset(true);
-                        }
-                    },
-                    {
-                        token: 'ord',
-                        format: function (d) {
-                            var date = callDateGet(d, 'Date');
-                            return date + getOrdinalizedSuffix(date);
-                        }
+                    'ZZ': function (d) {
+                        return d.getUTCOffset().replace(/(\d{2})$/, ':$1');
                     }
-                ];
+                };
             var DateUnits = [
                     {
-                        unit: 'year',
+                        name: 'year',
                         method: 'FullYear',
                         ambiguous: true,
                         multiplier: function (d) {
@@ -3120,7 +3166,8 @@ img.autolink {\
                         }
                     },
                     {
-                        unit: 'month',
+                        name: 'month',
+                        error: 0.919,
                         method: 'Month',
                         ambiguous: true,
                         multiplier: function (d, ms) {
@@ -3132,18 +3179,18 @@ img.autolink {\
                                 }
                             }
                             return days * 24 * 60 * 60 * 1000;
-                        },
-                        error: 0.919
+                        }
                     },
                     {
-                        unit: 'week',
+                        name: 'week',
                         method: 'ISOWeek',
                         multiplier: function () {
                             return 7 * 24 * 60 * 60 * 1000;
                         }
                     },
                     {
-                        unit: 'day',
+                        name: 'day',
+                        error: 0.958,
                         method: 'Date',
                         ambiguous: true,
                         multiplier: function () {
@@ -3151,28 +3198,28 @@ img.autolink {\
                         }
                     },
                     {
-                        unit: 'hour',
+                        name: 'hour',
                         method: 'Hours',
                         multiplier: function () {
                             return 60 * 60 * 1000;
                         }
                     },
                     {
-                        unit: 'minute',
+                        name: 'minute',
                         method: 'Minutes',
                         multiplier: function () {
                             return 60 * 1000;
                         }
                     },
                     {
-                        unit: 'second',
+                        name: 'second',
                         method: 'Seconds',
                         multiplier: function () {
                             return 1000;
                         }
                     },
                     {
-                        unit: 'millisecond',
+                        name: 'millisecond',
                         method: 'Milliseconds',
                         multiplier: function () {
                             return 1;
@@ -3212,8 +3259,8 @@ img.autolink {\
                         return num || '';
                     });
                 },
-                getEnglishUnit: function (n) {
-                    return English['units'][this['units'].indexOf(n) % 8];
+                getUnitIndex: function (n) {
+                    return this['units'].indexOf(n) % 8;
                 },
                 getRelativeFormat: function (adu) {
                     return this.convertAdjustedToFormat(adu, adu[2] > 0 ? 'future' : 'past');
@@ -3259,7 +3306,7 @@ img.autolink {\
                 },
                 addFormat: function (src, allowsTime, match, variant, iso) {
                     var to = match || [], loc = this, time, timeMarkers, lastIsNumeral;
-                    src = src.replace(/\s+/g, '[-,. ]*');
+                    src = src.replace(/\s+/g, '[,. ]*');
                     src = src.replace(/\{([^,]+?)\}/g, function (all, k) {
                         var value, arr, result, opt = k.match(/\?$/), nc = k.match(/^(\d+)\??$/), slice = k.match(/(\d)(?:-(\d))?/), key = k.replace(/[^a-z]+$/, '');
                         if (nc) {
@@ -3313,7 +3360,7 @@ img.autolink {\
                     localeCode = '';
                 loc = Localizations[localeCode] || Localizations[localeCode.slice(0, 2)];
                 if (fallback === false && !loc) {
-                    throw new Error('Invalid locale.');
+                    throw new TypeError('Invalid locale.');
                 }
                 return loc || CurrentLocalization;
             }
@@ -3356,7 +3403,7 @@ img.autolink {\
                     return str;
                 }
                 function getNum() {
-                    var arr = ['\\d+'].concat(loc['articles']);
+                    var arr = ['-?\\d+'].concat(loc['articles']);
                     if (loc['numbers'])
                         arr = arr.concat(loc['numbers']);
                     return arrayToAlternates(arr);
@@ -3367,6 +3414,21 @@ img.autolink {\
                 function setModifiers() {
                     var arr = [];
                     loc.modifiersByName = {};
+                    loc['modifiers'].push({
+                        'name': 'day',
+                        'src': 'yesterday',
+                        'value': -1
+                    });
+                    loc['modifiers'].push({
+                        'name': 'day',
+                        'src': 'today',
+                        'value': 0
+                    });
+                    loc['modifiers'].push({
+                        'name': 'day',
+                        'src': 'tomorrow',
+                        'value': 1
+                    });
                     loc['modifiers'].forEach(function (modifier) {
                         var name = modifier.name;
                         eachAlternate(modifier.src, function (t) {
@@ -3398,7 +3460,7 @@ img.autolink {\
                 setModifiers();
                 if (loc['monthSuffix']) {
                     loc['month'] = getDigit(1, 2);
-                    loc['months'] = getRange(1, 12).map(function (n) {
+                    loc['months'] = '1,2,3,4,5,6,7,8,9,10,11,12'.split(',').map(function (n) {
                         return n + loc['monthSuffix'];
                     });
                 }
@@ -3433,9 +3495,13 @@ img.autolink {\
                     return !!el;
                 }).join('|');
             }
+            function getNewDate() {
+                var fn = date.SugarNewDate;
+                return fn ? fn() : new date();
+            }
             function collectDateArguments(args, allowDuration) {
-                var obj, arr;
-                if (isObject(args[0])) {
+                var obj;
+                if (isObjectType(args[0])) {
                     return args;
                 } else if (isNumber(args[0]) && !isNumber(args[1])) {
                     return [args[0]];
@@ -3447,12 +3513,12 @@ img.autolink {\
                 }
                 obj = {};
                 DateArgumentUnits.forEach(function (u, i) {
-                    obj[u.unit] = args[i];
+                    obj[u.name] = args[i];
                 });
                 return [obj];
             }
             function getDateParamsFromString(str, num) {
-                var params = {};
+                var match, params = {};
                 match = str.match(/^(\d+)?\s?(\w+?)s?$/i);
                 if (match) {
                     if (isUndefined(num)) {
@@ -3461,6 +3527,17 @@ img.autolink {\
                     params[match[2].toLowerCase()] = num;
                 }
                 return params;
+            }
+            function iterateOverDateUnits(fn, from, to) {
+                var i, unit;
+                if (isUndefined(to))
+                    to = DateUnitsReversed.length;
+                for (i = from || 0; i < to; i++) {
+                    unit = DateUnitsReversed[i];
+                    if (fn(unit.name, unit, i) === false) {
+                        break;
+                    }
+                }
             }
             function getFormatMatch(match, arr) {
                 var obj = {}, value, num;
@@ -3506,13 +3583,64 @@ img.autolink {\
                 });
             }
             function getExtendedDate(f, localeCode, prefer, forceUTC) {
-                var d = new date(), relative = false, baseLocalization, loc, format, set, unit, weekday, num, tmp, after;
+                var d, relative, baseLocalization, afterCallbacks, loc, set, unit, unitIndex, weekday, num, tmp;
+                d = getNewDate();
+                afterCallbacks = [];
+                function afterDateSet(fn) {
+                    afterCallbacks.push(fn);
+                }
+                function fireCallbacks() {
+                    afterCallbacks.forEach(function (fn) {
+                        fn.call();
+                    });
+                }
+                function setWeekdayOfMonth() {
+                    var w = d.getWeekday();
+                    d.setWeekday(7 * (set['num'] - 1) + (w > weekday ? weekday + 7 : weekday));
+                }
+                function setUnitEdge() {
+                    var modifier = loc.modifiersByName[set['edge']];
+                    iterateOverDateUnits(function (name) {
+                        if (isDefined(set[name])) {
+                            unit = name;
+                            return false;
+                        }
+                    }, 4);
+                    if (unit === 'year')
+                        set.specificity = 'month';
+                    else if (unit === 'month' || unit === 'week')
+                        set.specificity = 'day';
+                    d[(modifier.value < 0 ? 'endOf' : 'beginningOf') + simpleCapitalize(unit)]();
+                    if (modifier.value === -2)
+                        d.reset();
+                }
+                function separateAbsoluteUnits() {
+                    var params;
+                    iterateOverDateUnits(function (name, u, i) {
+                        if (name === 'day')
+                            name = 'date';
+                        if (isDefined(set[name])) {
+                            if (i >= unitIndex) {
+                                invalidateDate(d);
+                                return false;
+                            }
+                            params = params || {};
+                            params[name] = set[name];
+                            delete set[name];
+                        }
+                    });
+                    if (params) {
+                        afterDateSet(function () {
+                            d.set(params, true);
+                        });
+                    }
+                }
                 d.utc(forceUTC);
                 if (isDate(f)) {
                     d.utc(f.isUTC()).setTime(f.getTime());
                 } else if (isNumber(f)) {
                     d.setTime(f);
-                } else if (isObject(f)) {
+                } else if (isObjectType(f)) {
                     d.set(f, true);
                     set = f;
                 } else if (isString(f)) {
@@ -3522,18 +3650,17 @@ img.autolink {\
                         iterateOverObject(baseLocalization.getFormats(), function (i, dif) {
                             var match = f.match(dif.reg);
                             if (match) {
-                                format = dif;
-                                loc = format.locale;
-                                set = getFormatMatch(match, format.to, loc);
+                                loc = dif.locale;
+                                set = getFormatMatch(match, dif.to, loc);
+                                loc.cachedFormat = dif;
                                 if (set['utc']) {
                                     d.utc();
                                 }
-                                loc.cachedFormat = format;
                                 if (set.timestamp) {
                                     set = set.timestamp;
                                     return false;
                                 }
-                                if (format.variant && !isString(set['month']) && (isString(set['date']) || baseLocalization.hasVariant(localeCode))) {
+                                if (dif.variant && !isString(set['month']) && (isString(set['date']) || baseLocalization.hasVariant(localeCode))) {
                                     tmp = set['month'];
                                     set['month'] = set['date'];
                                     set['date'] = tmp;
@@ -3560,10 +3687,7 @@ img.autolink {\
                                 } else if (set['day'] && (weekday = loc.getWeekday(set['day'])) > -1) {
                                     delete set['day'];
                                     if (set['num'] && set['month']) {
-                                        after = function () {
-                                            var w = d.getWeekday();
-                                            d.setWeekday(7 * (set['num'] - 1) + (w > weekday ? weekday + 7 : weekday));
-                                        };
+                                        afterDateSet(setWeekdayOfMonth);
                                         set['day'] = 1;
                                     } else {
                                         set['weekday'] = weekday;
@@ -3589,21 +3713,11 @@ img.autolink {\
                                 if (set['unit']) {
                                     relative = true;
                                     num = loc.getNumber(set['num']);
-                                    unit = loc.getEnglishUnit(set['unit']);
-                                    if (set['shift'] || set['edge']) {
+                                    unitIndex = loc.getUnitIndex(set['unit']);
+                                    unit = English['units'][unitIndex];
+                                    separateAbsoluteUnits();
+                                    if (set['shift']) {
                                         num *= (tmp = loc.modifiersByName[set['shift']]) ? tmp.value : 0;
-                                        if (unit === 'month' && isDefined(set['date'])) {
-                                            d.set({ 'day': set['date'] }, true);
-                                            delete set['date'];
-                                        }
-                                        if (unit === 'year' && isDefined(set['month'])) {
-                                            d.set({
-                                                'month': set['month'],
-                                                'day': set['date']
-                                            }, true);
-                                            delete set['month'];
-                                            delete set['date'];
-                                        }
                                     }
                                     if (set['sign'] && (tmp = loc.modifiersByName[set['sign']])) {
                                         num *= tmp.value;
@@ -3614,21 +3728,24 @@ img.autolink {\
                                     }
                                     set[unit] = (set[unit] || 0) + num;
                                 }
+                                if (set['edge']) {
+                                    afterDateSet(setUnitEdge);
+                                }
                                 if (set['year_sign'] === '-') {
                                     set['year'] *= -1;
                                 }
-                                DateUnitsReversed.slice(1, 4).forEach(function (u, i) {
-                                    var value = set[u.unit], fraction = value % 1;
+                                iterateOverDateUnits(function (name, unit, i) {
+                                    var value = set[name], fraction = value % 1;
                                     if (fraction) {
-                                        set[DateUnitsReversed[i].unit] = round(fraction * (u.unit === 'second' ? 1000 : 60));
-                                        set[u.unit] = floor(value);
+                                        set[DateUnitsReversed[i - 1].name] = round(fraction * (name === 'second' ? 1000 : 60));
+                                        set[name] = floor(value);
                                     }
-                                });
+                                }, 1, 4);
                                 return false;
                             }
                         });
                     }
-                    if (!format) {
+                    if (!set) {
                         if (f !== 'now') {
                             d = new date(f);
                         }
@@ -3643,25 +3760,7 @@ img.autolink {\
                         }
                         updateDate(d, set, true, false, prefer);
                     }
-                    if (set && set['edge']) {
-                        tmp = loc.modifiersByName[set['edge']];
-                        iterateOverObject(DateUnitsReversed.slice(4), function (i, u) {
-                            if (isDefined(set[u.unit])) {
-                                unit = u.unit;
-                                return false;
-                            }
-                        });
-                        if (unit === 'year')
-                            set.specificity = 'month';
-                        else if (unit === 'month' || unit === 'week')
-                            set.specificity = 'day';
-                        d[(tmp.value < 0 ? 'endOf' : 'beginningOf') + simpleCapitalize(unit)]();
-                        if (tmp.value === -2)
-                            d.reset();
-                    }
-                    if (after) {
-                        after();
-                    }
+                    fireCallbacks();
                     d.utc(false);
                 }
                 return {
@@ -3670,7 +3769,7 @@ img.autolink {\
                 };
             }
             function getYearFromAbbreviation(year) {
-                return round(callDateGet(new date(), 'FullYear') / 100) * 100 - round(year / 100) * 100 + year;
+                return round(callDateGet(getNewDate(), 'FullYear') / 100) * 100 - round(year / 100) * 100 + year;
             }
             function getShortHour(d) {
                 var hours = callDateGet(d, 'Hours');
@@ -3683,66 +3782,138 @@ img.autolink {\
                 return 1 + floor(date.daysSince(date.clone().beginningOfYear()) / 7);
             }
             function getAdjustedUnit(ms) {
-                var next, ams = math.abs(ms), value = ams, unit = 0;
-                DateUnitsReversed.slice(1).forEach(function (u, i) {
-                    next = floor(round(ams / u.multiplier() * 10) / 10);
+                var next, ams = abs(ms), value = ams, unitIndex = 0;
+                iterateOverDateUnits(function (name, unit, i) {
+                    next = floor(withPrecision(ams / unit.multiplier(), 1));
                     if (next >= 1) {
                         value = next;
-                        unit = i + 1;
+                        unitIndex = i;
                     }
-                });
+                }, 1);
                 return [
                     value,
-                    unit,
+                    unitIndex,
                     ms
                 ];
             }
-            function getAdjustedUnitWithMonthFallback(date) {
+            function getRelativeWithMonthFallback(date) {
                 var adu = getAdjustedUnit(date.millisecondsFromNow());
-                if (adu[1] === 6) {
-                    adu[0] = math.abs(date.monthsFromNow());
+                if (allowMonthFallback(date, adu)) {
+                    adu[0] = abs(date.monthsFromNow());
+                    adu[1] = 6;
                 }
                 return adu;
             }
+            function allowMonthFallback(date, adu) {
+                return adu[1] === 6 || adu[1] === 5 && adu[0] === 4 && date.daysFromNow() >= getNewDate().daysInMonth();
+            }
+            function createMeridianTokens(slice, caps) {
+                var fn = function (d, localeCode) {
+                    var hours = callDateGet(d, 'Hours');
+                    return getLocalization(localeCode)['ampm'][floor(hours / 12)] || '';
+                };
+                createFormatToken('t', fn, 1);
+                createFormatToken('tt', fn);
+                createFormatToken('T', fn, 1, 1);
+                createFormatToken('TT', fn, null, 2);
+            }
+            function createWeekdayTokens(slice, caps) {
+                var fn = function (d, localeCode) {
+                    var dow = callDateGet(d, 'Day');
+                    return getLocalization(localeCode)['weekdays'][dow];
+                };
+                createFormatToken('dow', fn, 3);
+                createFormatToken('Dow', fn, 3, 1);
+                createFormatToken('weekday', fn);
+                createFormatToken('Weekday', fn, null, 1);
+            }
+            function createMonthTokens(slice, caps) {
+                createMonthToken('mon', 0, 3);
+                createMonthToken('month', 0);
+                createMonthToken('month2', 1);
+                createMonthToken('month3', 2);
+            }
+            function createMonthToken(token, multiplier, slice) {
+                var fn = function (d, localeCode) {
+                    var month = callDateGet(d, 'Month');
+                    return getLocalization(localeCode)['months'][month + multiplier * 12];
+                };
+                createFormatToken(token, fn, slice);
+                createFormatToken(simpleCapitalize(token), fn, slice, 1);
+            }
+            function createFormatToken(t, fn, slice, caps) {
+                DateFormatTokens[t] = function (d, localeCode) {
+                    var str = fn(d, localeCode);
+                    if (slice)
+                        str = str.slice(0, slice);
+                    if (caps)
+                        str = str.slice(0, caps).toUpperCase() + str.slice(caps);
+                    return str;
+                };
+            }
+            function createPaddedToken(t, fn, ms) {
+                DateFormatTokens[t] = fn;
+                DateFormatTokens[t + t] = function (d, localeCode) {
+                    return padNumber(fn(d, localeCode), 2);
+                };
+                if (ms) {
+                    DateFormatTokens[t + t + t] = function (d, localeCode) {
+                        return padNumber(fn(d, localeCode), 3);
+                    };
+                    DateFormatTokens[t + t + t + t] = function (d, localeCode) {
+                        return padNumber(fn(d, localeCode), 4);
+                    };
+                }
+            }
+            function buildCompiledOutputFormat(format) {
+                var match = format.match(/(\{\w+\})|[^{}]+/g);
+                CompiledOutputFormats[format] = match.map(function (p) {
+                    p.replace(/\{(\w+)\}/, function (full, token) {
+                        p = DateFormatTokens[token] || token;
+                        return token;
+                    });
+                    return p;
+                });
+            }
+            function executeCompiledOutputFormat(date, format, localeCode) {
+                var compiledFormat, length, i, t, result = '';
+                compiledFormat = CompiledOutputFormats[format];
+                for (i = 0, length = compiledFormat.length; i < length; i++) {
+                    t = compiledFormat[i];
+                    result += isFunction(t) ? t(date, localeCode) : t;
+                }
+                return result;
+            }
             function formatDate(date, format, relative, localeCode) {
-                var adu, loc = getLocalization(localeCode), caps = regexp(/^[A-Z]/), value, shortcut;
+                var adu;
                 if (!date.isValid()) {
                     return 'Invalid Date';
                 } else if (Date[format]) {
                     format = Date[format];
                 } else if (isFunction(format)) {
-                    adu = getAdjustedUnitWithMonthFallback(date);
-                    format = format.apply(date, adu.concat(loc));
+                    adu = getRelativeWithMonthFallback(date);
+                    format = format.apply(date, adu.concat(getLocalization(localeCode)));
                 }
                 if (!format && relative) {
-                    adu = adu || getAdjustedUnitWithMonthFallback(date);
+                    adu = adu || getRelativeWithMonthFallback(date);
                     if (adu[1] === 0) {
                         adu[1] = 1;
                         adu[0] = 1;
                     }
-                    return loc.getRelativeFormat(adu);
+                    return getLocalization(localeCode).getRelativeFormat(adu);
                 }
                 format = format || 'long';
-                format = loc[format] || format;
-                DateOutputFormats.forEach(function (dof) {
-                    format = format.replace(regexp('\\{(' + dof.token + ')(\\d)?\\}', dof.word ? 'i' : ''), function (m, t, d) {
-                        var val = dof.format(date, loc, d || 1, t), l = t.length, one = t.match(/^(.)\1+$/);
-                        if (dof.word) {
-                            if (l === 3)
-                                val = val.slice(0, 3);
-                            if (one || t.match(caps))
-                                val = simpleCapitalize(val);
-                        } else if (one && !dof.text) {
-                            val = (isNumber(val) ? padNumber(val, l) : val.toString()).slice(-l);
-                        }
-                        return val;
-                    });
-                });
-                return format;
+                if (format === 'short' || format === 'long' || format === 'full') {
+                    format = getLocalization(localeCode)[format];
+                }
+                if (!CompiledOutputFormats[format]) {
+                    buildCompiledOutputFormat(format);
+                }
+                return executeCompiledOutputFormat(date, format, localeCode);
             }
-            function compareDate(d, find, buffer, forceUTC) {
-                var p, t, min, max, minOffset, maxOffset, override, capitalized, accuracy = 0, loBuffer = 0, hiBuffer = 0;
-                p = getExtendedDate(find, null, null, forceUTC);
+            function compareDate(d, find, localeCode, buffer, forceUTC) {
+                var p, t, min, max, override, capitalized, accuracy = 0, loBuffer = 0, hiBuffer = 0;
+                p = getExtendedDate(find, localeCode, null, forceUTC);
                 if (buffer > 0) {
                     loBuffer = hiBuffer = buffer;
                     override = true;
@@ -3751,7 +3922,7 @@ img.autolink {\
                     return false;
                 if (p.set && p.set.specificity) {
                     DateUnits.forEach(function (u, i) {
-                        if (u.unit === p.set.specificity) {
+                        if (u.name === p.set.specificity) {
                             accuracy = u.multiplier(p.date, d - p.date) - 1;
                         }
                     });
@@ -3775,8 +3946,8 @@ img.autolink {\
             }
             function compensateForTimezoneTraversal(d, min, max) {
                 var dMin, dMax, minOffset, maxOffset;
-                dMin = new Date(min);
-                dMax = new Date(max).utc(d.isUTC());
+                dMin = new date(min);
+                dMax = new date(max).utc(d.isUTC());
                 if (callDateGet(dMax, 'Hours') !== 23) {
                     minOffset = dMin.getTimezoneOffset();
                     maxOffset = dMax.getTimezoneOffset();
@@ -3798,8 +3969,12 @@ img.autolink {\
                     return paramExists(key) || isDay && paramExists('weekday');
                 }
                 function canDisambiguate() {
-                    var now = new date();
-                    return prefer === -1 && d > now || prefer === 1 && d < now;
+                    switch (prefer) {
+                    case -1:
+                        return d > getNewDate();
+                    case 1:
+                        return d < getNewDate();
+                    }
                 }
                 if (isNumber(params) && advance) {
                     params = { 'milliseconds': params };
@@ -3810,32 +3985,32 @@ img.autolink {\
                 if (isDefined(params['date'])) {
                     params['day'] = params['date'];
                 }
-                iterateOverObject(DateUnitsReversed, function (i, u) {
-                    var isDay = u.unit === 'day';
-                    if (uniqueParamExists(u.unit, isDay)) {
-                        params.specificity = u.unit;
+                iterateOverDateUnits(function (name, unit, i) {
+                    var isDay = name === 'day';
+                    if (uniqueParamExists(name, isDay)) {
+                        params.specificity = name;
                         specificityIndex = +i;
                         return false;
-                    } else if (reset && u.unit !== 'week' && (!isDay || !paramExists('week'))) {
-                        callDateSet(d, u.method, isDay ? 1 : 0);
+                    } else if (reset && name !== 'week' && (!isDay || !paramExists('week'))) {
+                        callDateSet(d, unit.method, isDay ? 1 : 0);
                     }
                 });
                 DateUnits.forEach(function (u, i) {
-                    var unit = u.unit, method = u.method, higherUnit = DateUnits[i - 1], value;
-                    value = getParam(unit);
+                    var name = u.name, method = u.method, higherUnit = DateUnits[i - 1], value;
+                    value = getParam(name);
                     if (isUndefined(value))
                         return;
                     if (advance) {
-                        if (unit === 'week') {
+                        if (name === 'week') {
                             value = (params['day'] || 0) + value * 7;
                             method = 'Date';
                         }
                         value = value * advance + callDateGet(d, method);
-                    } else if (unit === 'month' && paramExists('day')) {
+                    } else if (name === 'month' && paramExists('day')) {
                         callDateSet(d, 'Date', 15);
                     }
                     callDateSet(d, method, value);
-                    if (advance && unit === 'month') {
+                    if (advance && name === 'month') {
                         checkMonthTraversal(d, value);
                     }
                 });
@@ -3844,21 +4019,15 @@ img.autolink {\
                     d.setWeekday(weekday);
                 }
                 if (canDisambiguate()) {
-                    iterateOverObject(DateUnitsReversed.slice(specificityIndex + 1), function (i, u) {
-                        var ambiguous = u.ambiguous || u.unit === 'week' && paramExists('weekday');
-                        if (ambiguous && !uniqueParamExists(u.unit, u.unit === 'day')) {
-                            d[u.addMethod](prefer);
+                    iterateOverDateUnits(function (name, unit) {
+                        var ambiguous = unit.ambiguous || name === 'week' && paramExists('weekday');
+                        if (ambiguous && !uniqueParamExists(name, name === 'day')) {
+                            d[unit.addMethod](prefer);
                             return false;
                         }
-                    });
+                    }, specificityIndex + 1);
                 }
                 return d;
-            }
-            function callDateGet(d, method) {
-                return d['get' + (d._utc ? 'UTC' : '') + method]();
-            }
-            function callDateSet(d, method, value) {
-                return d['set' + (d._utc && method != 'ISOWeek' ? 'UTC' : '') + method](value);
             }
             function prepareTime(format, loc, iso) {
                 var timeSuffixMapping = {
@@ -3900,21 +4069,24 @@ img.autolink {\
                 }
                 return getExtendedDate(f, localeCode, prefer, forceUTC).date;
             }
+            function invalidateDate(d) {
+                d.setTime(NaN);
+            }
             function buildDateUnits() {
                 DateUnitsReversed = DateUnits.concat().reverse();
                 DateArgumentUnits = DateUnits.concat();
                 DateArgumentUnits.splice(2, 1);
             }
             function buildDateMethods() {
-                extendSimilar(date, true, false, DateUnits, function (methods, u, i) {
-                    var unit = u.unit, caps = simpleCapitalize(unit), multiplier = u.multiplier(), since, until;
+                extendSimilar(date, true, true, DateUnits, function (methods, u, i) {
+                    var name = u.name, caps = simpleCapitalize(name), multiplier = u.multiplier(), since, until;
                     u.addMethod = 'add' + caps + 's';
                     function applyErrorMargin(ms) {
                         var num = ms / multiplier, fraction = num % 1, error = u.error || 0.999;
-                        if (fraction && math.abs(fraction % 1) > error) {
+                        if (fraction && abs(fraction % 1) > error) {
                             num = round(num);
                         }
-                        return parseInt(num);
+                        return num < 0 ? ceil(num) : floor(num);
                     }
                     since = function (f, localeCode) {
                         return applyErrorMargin(this.getTime() - date.create(f, localeCode).getTime());
@@ -3922,13 +4094,13 @@ img.autolink {\
                     until = function (f, localeCode) {
                         return applyErrorMargin(date.create(f, localeCode).getTime() - this.getTime());
                     };
-                    methods[unit + 'sAgo'] = until;
-                    methods[unit + 'sUntil'] = until;
-                    methods[unit + 'sSince'] = since;
-                    methods[unit + 'sFromNow'] = since;
+                    methods[name + 'sAgo'] = until;
+                    methods[name + 'sUntil'] = until;
+                    methods[name + 'sSince'] = since;
+                    methods[name + 'sFromNow'] = since;
                     methods[u.addMethod] = function (num, reset) {
                         var set = {};
-                        set[unit] = num;
+                        set[name] = num;
                         return this.advance(set, reset);
                     };
                     buildNumberToDateAlias(u, multiplier);
@@ -3939,14 +4111,14 @@ img.autolink {\
                             'Next'
                         ].forEach(function (shift) {
                             methods['is' + shift + caps] = function () {
-                                return this.is(shift + ' ' + unit);
+                                return compareDate(this, shift + ' ' + name, 'en');
                             };
                         });
                     }
                     if (i < 4) {
                         methods['beginningOf' + caps] = function () {
                             var set = {};
-                            switch (unit) {
+                            switch (name) {
                             case 'year':
                                 set['year'] = callDateGet(this, 'FullYear');
                                 break;
@@ -3969,7 +4141,7 @@ img.autolink {\
                                     'seconds': 59,
                                     'milliseconds': 999
                                 };
-                            switch (unit) {
+                            switch (name) {
                             case 'year':
                                 set['month'] = 11;
                                 set['day'] = 31;
@@ -4002,13 +4174,49 @@ img.autolink {\
                     'month',
                     'year'
                 ]);
-                English.addFormat('\\/Date\\((\\d+(?:\\+\\d{4,4})?)\\)\\/', false, ['timestamp']);
+                English.addFormat('\\/Date\\((\\d+(?:[+-]\\d{4,4})?)\\)\\/', false, ['timestamp']);
                 English.addFormat(prepareTime(RequiredTime, English), false, TimeFormat);
                 CoreDateFormats = English.compiledFormats.slice(0, 7).reverse();
                 English.compiledFormats = English.compiledFormats.slice(7).concat(CoreDateFormats);
             }
-            function buildDateOutputShortcuts() {
-                extendSimilar(date, true, false, 'short,long,full', function (methods, name) {
+            function buildFormatTokens() {
+                createPaddedToken('f', function (d) {
+                    return callDateGet(d, 'Milliseconds');
+                }, true);
+                createPaddedToken('s', function (d) {
+                    return callDateGet(d, 'Seconds');
+                });
+                createPaddedToken('m', function (d) {
+                    return callDateGet(d, 'Minutes');
+                });
+                createPaddedToken('h', function (d) {
+                    return callDateGet(d, 'Hours') % 12 || 12;
+                });
+                createPaddedToken('H', function (d) {
+                    return callDateGet(d, 'Hours');
+                });
+                createPaddedToken('d', function (d) {
+                    return callDateGet(d, 'Date');
+                });
+                createPaddedToken('M', function (d) {
+                    return callDateGet(d, 'Month') + 1;
+                });
+                createMeridianTokens();
+                createWeekdayTokens();
+                createMonthTokens();
+                DateFormatTokens['ms'] = DateFormatTokens['f'];
+                DateFormatTokens['milliseconds'] = DateFormatTokens['f'];
+                DateFormatTokens['seconds'] = DateFormatTokens['s'];
+                DateFormatTokens['minutes'] = DateFormatTokens['m'];
+                DateFormatTokens['hours'] = DateFormatTokens['h'];
+                DateFormatTokens['24hr'] = DateFormatTokens['H'];
+                DateFormatTokens['12hr'] = DateFormatTokens['h'];
+                DateFormatTokens['date'] = DateFormatTokens['d'];
+                DateFormatTokens['day'] = DateFormatTokens['d'];
+                DateFormatTokens['year'] = DateFormatTokens['yyyy'];
+            }
+            function buildFormatShortcuts() {
+                extendSimilar(date, true, true, 'short,long,full', function (methods, name) {
                     methods[name] = function (localeCode) {
                         return formatDate(this, name, false, localeCode);
                     };
@@ -4018,49 +4226,47 @@ img.autolink {\
                 KanjiDigits.split('').forEach(function (digit, value) {
                     var holder;
                     if (value > 9) {
-                        value = math.pow(10, value - 9);
+                        value = pow(10, value - 9);
                     }
                     AsianDigitMap[digit] = value;
                 });
-                FullWidthDigits.split('').forEach(function (digit, value) {
-                    AsianDigitMap[digit] = value;
-                });
+                simpleMerge(AsianDigitMap, NumberNormalizeMap);
                 AsianDigitReg = regexp('([\u671f\u9031\u5468])?([' + KanjiDigits + FullWidthDigits + ']+)(?!\u6628)', 'g');
             }
             function buildRelativeAliases() {
                 var special = 'today,yesterday,tomorrow,weekday,weekend,future,past'.split(',');
                 var weekdays = English['weekdays'].slice(0, 7);
                 var months = English['months'].slice(0, 12);
-                extendSimilar(date, true, false, special.concat(weekdays).concat(months), function (methods, name) {
+                extendSimilar(date, true, true, special.concat(weekdays).concat(months), function (methods, name) {
                     methods['is' + simpleCapitalize(name)] = function (utc) {
                         return this.is(name, 0, utc);
                     };
                 });
             }
             function buildUTCAliases() {
-                date.extend({
-                    'utc': {
-                        'create': function () {
-                            return createDate(arguments, 0, true);
-                        },
-                        'past': function () {
-                            return createDate(arguments, -1, true);
-                        },
-                        'future': function () {
-                            return createDate(arguments, 1, true);
-                        }
+                if (date['utc'])
+                    return;
+                date['utc'] = {
+                    'create': function () {
+                        return createDate(arguments, 0, true);
+                    },
+                    'past': function () {
+                        return createDate(arguments, -1, true);
+                    },
+                    'future': function () {
+                        return createDate(arguments, 1, true);
                     }
-                }, false, false);
+                };
             }
             function setDateProperties() {
-                date.extend({
+                extend(date, false, true, {
                     'RFC1123': '{Dow}, {dd} {Mon} {yyyy} {HH}:{mm}:{ss} {tz}',
                     'RFC1036': '{Weekday}, {dd}-{Mon}-{yy} {HH}:{mm}:{ss} {tz}',
                     'ISO8601_DATE': '{yyyy}-{MM}-{dd}',
                     'ISO8601_DATETIME': '{yyyy}-{MM}-{dd}T{HH}:{mm}:{ss}.{fff}{isotz}'
-                }, false, false);
+                });
             }
-            date.extend({
+            extend(date, false, true, {
                 'create': function () {
                     return createDate(arguments);
                 },
@@ -4087,8 +4293,8 @@ img.autolink {\
                 'addFormat': function (format, match, localeCode) {
                     addDateInputFormat(getLocalization(localeCode), format, match);
                 }
-            }, false, false);
-            date.extend({
+            });
+            extend(date, true, true, {
                 'set': function () {
                     var args = collectDateArguments(arguments);
                     return updateDate(this, args[0], args[1]);
@@ -4118,12 +4324,28 @@ img.autolink {\
                 'getISOWeek': function () {
                     return getWeekNumber(this);
                 },
+                'beginningOfISOWeek': function () {
+                    var day = this.getDay();
+                    if (day === 0) {
+                        day = -6;
+                    } else if (day !== 1) {
+                        day = 1;
+                    }
+                    this.setWeekday(day);
+                    return this.reset();
+                },
+                'endOfISOWeek': function () {
+                    if (this.getDay() !== 0) {
+                        this.setWeekday(7);
+                    }
+                    return this.endOfDay();
+                },
                 'getUTCOffset': function (iso) {
                     var offset = this._utc ? 0 : this.getTimezoneOffset();
                     var colon = iso === true ? ':' : '';
                     if (!offset && iso)
                         return 'Z';
-                    return padNumber(round(-offset / 60), 2, true) + colon + padNumber(offset % 60, 2);
+                    return padNumber(floor(-offset / 60), 2, true) + colon + padNumber(abs(offset % 60), 2);
                 },
                 'utc': function (set) {
                     defineProperty(this, '_utc', set === true || arguments.length === 0);
@@ -4153,8 +4375,8 @@ img.autolink {\
                     var t = this.getTime();
                     var t1 = date.create(d1).getTime();
                     var t2 = date.create(d2).getTime();
-                    var lo = math.min(t1, t2);
-                    var hi = math.max(t1, t2);
+                    var lo = min(t1, t2);
+                    var hi = max(t1, t2);
                     margin = margin || 0;
                     return lo - margin < t && hi + margin > t;
                 },
@@ -4168,12 +4390,12 @@ img.autolink {\
                 'format': function (f, localeCode) {
                     return formatDate(this, f, false, localeCode);
                 },
-                'relative': function (f, localeCode) {
-                    if (isString(f)) {
-                        localeCode = f;
-                        f = null;
+                'relative': function (fn, localeCode) {
+                    if (isString(fn)) {
+                        localeCode = fn;
+                        fn = null;
                     }
-                    return formatDate(this, f, true, localeCode);
+                    return formatDate(this, fn, true, localeCode);
                 },
                 'is': function (d, margin, utc) {
                     var tmp, comp;
@@ -4184,9 +4406,9 @@ img.autolink {\
                         comp = this.clone().utc(utc);
                         switch (true) {
                         case d === 'future':
-                            return this.getTime() > new date().getTime();
+                            return this.getTime() > getNewDate().getTime();
                         case d === 'past':
-                            return this.getTime() < new date().getTime();
+                            return this.getTime() < getNewDate().getTime();
                         case d === 'weekday':
                             return callDateGet(comp, 'Day') > 0 && callDateGet(comp, 'Day') < 6;
                         case d === 'weekend':
@@ -4197,7 +4419,7 @@ img.autolink {\
                             return callDateGet(comp, 'Month') === tmp;
                         }
                     }
-                    return compareDate(this, d, margin, utc);
+                    return compareDate(this, d, null, margin, utc);
                 },
                 'reset': function (unit) {
                     var params = {}, recognized;
@@ -4205,7 +4427,7 @@ img.autolink {\
                     if (unit === 'date')
                         unit = 'days';
                     recognized = DateUnits.some(function (u) {
-                        return unit === u.unit || unit === u.unit + 's';
+                        return unit === u.name || unit === u.name + 's';
                     });
                     params[unit] = unit.match(/^days?/) ? 1 : 0;
                     return recognized ? this.set(params, true) : this;
@@ -4216,7 +4438,7 @@ img.autolink {\
                     return d;
                 }
             });
-            date.extend({
+            extend(date, true, true, {
                 'iso': function () {
                     return this.toISOString();
                 },
@@ -4224,7 +4446,7 @@ img.autolink {\
                 'getUTCWeekday': date.prototype.getUTCDay
             });
             function buildNumberToDateAlias(u, multiplier) {
-                var unit = u.unit, methods = {};
+                var name = u.name, methods = {};
                 function base() {
                     return round(this * multiplier);
                 }
@@ -4234,19 +4456,19 @@ img.autolink {\
                 function before() {
                     return createDate(arguments)[u.addMethod](-this);
                 }
-                methods[unit] = base;
-                methods[unit + 's'] = base;
-                methods[unit + 'Before'] = before;
-                methods[unit + 'sBefore'] = before;
-                methods[unit + 'Ago'] = before;
-                methods[unit + 'sAgo'] = before;
-                methods[unit + 'After'] = after;
-                methods[unit + 'sAfter'] = after;
-                methods[unit + 'FromNow'] = after;
-                methods[unit + 'sFromNow'] = after;
+                methods[name] = base;
+                methods[name + 's'] = base;
+                methods[name + 'Before'] = before;
+                methods[name + 'sBefore'] = before;
+                methods[name + 'Ago'] = before;
+                methods[name + 'sAgo'] = before;
+                methods[name + 'After'] = after;
+                methods[name + 'sAfter'] = after;
+                methods[name + 'FromNow'] = after;
+                methods[name + 'sFromNow'] = after;
                 number.extend(methods);
             }
-            number.extend({
+            extend(number, true, true, {
                 'duration': function (localeCode) {
                     return getLocalization(localeCode).getDuration(this);
                 }
@@ -4268,21 +4490,6 @@ img.autolink {\
                 'future': '{num} {unit} {sign}',
                 'duration': '{num} {unit}',
                 'modifiers': [
-                    {
-                        'name': 'day',
-                        'src': 'yesterday',
-                        'value': -1
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'today',
-                        'value': 0
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'tomorrow',
-                        'value': 1
-                    },
                     {
                         'name': 'sign',
                         'src': 'ago|before',
@@ -4325,14 +4532,14 @@ img.autolink {\
                     }
                 ],
                 'dateParse': [
-                    '{num} {unit} {sign}',
-                    '{sign} {num} {unit}',
                     '{month} {year}',
                     '{shift} {unit=5-7}',
                     '{0?} {date}{1}',
                     '{0?} {edge} of {shift?} {unit=4-7?}{month?}{year?}'
                 ],
                 'timeParse': [
+                    '{num} {unit} {sign}',
+                    '{sign} {num} {unit}',
                     '{0} {num}{1} {day} of {month} {year?}',
                     '{weekday?} {month} {date}{1?} {year?}',
                     '{date} {month} {year}',
@@ -4348,131 +4555,236 @@ img.autolink {\
             buildDateUnits();
             buildDateMethods();
             buildCoreInputFormats();
-            buildDateOutputShortcuts();
+            buildFormatTokens();
+            buildFormatShortcuts();
             buildAsianDigits();
             buildRelativeAliases();
             buildUTCAliases();
             setDateProperties();
-            var DateRange = function (start, end) {
-                this.start = date.create(start);
-                this.end = date.create(end);
+            function Range(start, end) {
+                this.start = cloneRangeMember(start);
+                this.end = cloneRangeMember(end);
+            }
+            ;
+            function getRangeMemberNumericValue(m) {
+                return isString(m) ? m.charCodeAt(0) : m;
+            }
+            function getRangeMemberPrimitiveValue(m) {
+                if (m == null)
+                    return m;
+                return isDate(m) ? m.getTime() : m.valueOf();
+            }
+            function cloneRangeMember(m) {
+                if (isDate(m)) {
+                    return new date(m.getTime());
+                } else {
+                    return getRangeMemberPrimitiveValue(m);
+                }
+            }
+            function isValidRangeMember(m) {
+                var val = getRangeMemberPrimitiveValue(m);
+                return !!val || val === 0;
+            }
+            function getDuration(amt) {
+                var match, val, unit;
+                if (isNumber(amt)) {
+                    return amt;
+                }
+                match = amt.toLowerCase().match(/^(\d+)?\s?(\w+?)s?$/i);
+                val = parseInt(match[1]) || 1;
+                unit = match[2].slice(0, 1).toUpperCase() + match[2].slice(1);
+                if (unit.match(/hour|minute|second/i)) {
+                    unit += 's';
+                } else if (unit === 'Year') {
+                    unit = 'FullYear';
+                } else if (unit === 'Day') {
+                    unit = 'Date';
+                }
+                return [
+                    val,
+                    unit
+                ];
+            }
+            function incrementDate(current, amount) {
+                var num, unit, val, d;
+                if (isNumber(amount)) {
+                    return new date(current.getTime() + amount);
+                }
+                num = amount[0];
+                unit = amount[1];
+                val = callDateGet(current, unit);
+                d = new date(current.getTime());
+                callDateSet(d, unit, val + num);
+                return d;
+            }
+            function incrementString(current, amount) {
+                return string.fromCharCode(current.charCodeAt(0) + amount);
+            }
+            function incrementNumber(current, amount) {
+                return current + amount;
+            }
+            Range.prototype.toString = function () {
+                return this.isValid() ? this.start + '..' + this.end : 'Invalid Range';
             };
-            DateRange.prototype.toString = function () {
-                return this.isValid() ? this.start.full() + '..' + this.end.full() : 'Invalid DateRange';
-            };
-            extend(DateRange, true, false, {
+            extend(Range, true, true, {
                 'isValid': function () {
-                    return this.start < this.end;
+                    return isValidRangeMember(this.start) && isValidRangeMember(this.end) && typeof this.start === typeof this.end;
                 },
-                'duration': function () {
-                    return this.isValid() ? this.end.getTime() - this.start.getTime() : NaN;
+                'span': function () {
+                    return this.isValid() ? abs(getRangeMemberNumericValue(this.end) - getRangeMemberNumericValue(this.start)) + 1 : NaN;
                 },
                 'contains': function (obj) {
-                    var self = this, arr = obj.start && obj.end ? [
-                            obj.start,
-                            obj.end
-                        ] : [obj];
-                    return arr.every(function (d) {
-                        return d >= self.start && d <= self.end;
-                    });
-                },
-                'every': function (increment, fn) {
-                    var current = this.start.clone(), result = [], index = 0, params, isDay;
-                    if (isString(increment)) {
-                        current.advance(getDateParamsFromString(increment, 0), true);
-                        params = getDateParamsFromString(increment);
-                        isDay = increment.toLowerCase() === 'day';
+                    var self = this, arr;
+                    if (obj == null)
+                        return false;
+                    if (obj.start && obj.end) {
+                        return obj.start >= this.start && obj.start <= this.end && obj.end >= this.start && obj.end <= this.end;
                     } else {
-                        params = { 'milliseconds': increment };
+                        return obj >= this.start && obj <= this.end;
                     }
-                    while (current <= this.end) {
+                },
+                'every': function (amount, fn) {
+                    var increment, start = this.start, end = this.end, inverse = end < start, current = start, index = 0, result = [];
+                    if (isFunction(amount)) {
+                        fn = amount;
+                        amount = null;
+                    }
+                    amount = amount || 1;
+                    if (isNumber(start)) {
+                        increment = incrementNumber;
+                    } else if (isString(start)) {
+                        increment = incrementString;
+                    } else if (isDate(start)) {
+                        amount = getDuration(amount);
+                        increment = incrementDate;
+                    }
+                    if (inverse && amount > 0) {
+                        amount *= -1;
+                    }
+                    while (inverse ? current >= end : current <= end) {
                         result.push(current);
-                        if (fn)
+                        if (fn) {
                             fn(current, index);
-                        if (isDay && callDateGet(current, 'Hours') === 23) {
-                            current = current.clone();
-                            callDateSet(current, 'Hours', 48);
-                        } else {
-                            current = current.clone().advance(params, true);
                         }
+                        current = increment(current, amount);
                         index++;
                     }
                     return result;
                 },
                 'union': function (range) {
-                    return new DateRange(this.start < range.start ? this.start : range.start, this.end > range.end ? this.end : range.end);
+                    return new Range(this.start < range.start ? this.start : range.start, this.end > range.end ? this.end : range.end);
                 },
                 'intersect': function (range) {
-                    return new DateRange(this.start > range.start ? this.start : range.start, this.end < range.end ? this.end : range.end);
+                    if (range.start > this.end || range.end < this.start) {
+                        return new Range(NaN, NaN);
+                    }
+                    return new Range(this.start > range.start ? this.start : range.start, this.end < range.end ? this.end : range.end);
                 },
                 'clone': function (range) {
-                    return new DateRange(this.start, this.end);
+                    return new Range(this.start, this.end);
+                },
+                'clamp': function (obj) {
+                    var clamped, start = this.start, end = this.end, min = end < start ? end : start, max = start > end ? start : end;
+                    if (obj < min) {
+                        clamped = min;
+                    } else if (obj > max) {
+                        clamped = max;
+                    } else {
+                        clamped = obj;
+                    }
+                    return cloneRangeMember(clamped);
                 }
             });
-            extendSimilar(DateRange, true, false, 'Millisecond,Second,Minute,Hour,Day,Week,Month,Year', function (methods, name) {
-                methods['each' + name] = function (fn) {
-                    return this.every(name, fn);
-                };
+            [
+                number,
+                string,
+                date
+            ].forEach(function (klass) {
+                extend(klass, false, true, {
+                    'range': function (start, end) {
+                        if (klass.create) {
+                            start = klass.create(start);
+                            end = klass.create(end);
+                        }
+                        return new Range(start, end);
+                    }
+                });
             });
-            extend(date, false, false, {
-                'range': function (start, end) {
-                    return new DateRange(start, end);
+            extend(number, true, true, {
+                'upto': function (num, fn, step) {
+                    return number.range(this, num).every(step, fn);
+                },
+                'clamp': function (start, end) {
+                    return new Range(start, end).clamp(this);
+                },
+                'cap': function (max) {
+                    return this.clamp(Undefined, max);
+                }
+            });
+            extend(number, true, true, { 'downto': number.prototype.upto });
+            extend(array, false, function (a) {
+                return a instanceof Range;
+            }, {
+                'create': function (range) {
+                    return range.every();
                 }
             });
             function setDelay(fn, ms, after, scope, args) {
-                var index;
                 if (ms === Infinity)
                     return;
                 if (!fn.timers)
                     fn.timers = [];
                 if (!isNumber(ms))
-                    ms = 0;
+                    ms = 1;
+                fn._canceled = false;
                 fn.timers.push(setTimeout(function () {
-                    fn.timers.splice(index, 1);
-                    after.apply(scope, args || []);
+                    if (!fn._canceled) {
+                        after.apply(scope, args || []);
+                    }
                 }, ms));
-                index = fn.timers.length;
             }
-            extend(Function, true, false, {
-                'lazy': function (ms, limit) {
-                    var fn = this, queue = [], lock = false, execute, rounded, perExecution, result;
+            extend(Function, true, true, {
+                'lazy': function (ms, immediate, limit) {
+                    var fn = this, queue = [], locked = false, execute, rounded, perExecution, result;
                     ms = ms || 1;
                     limit = limit || Infinity;
                     rounded = ceil(ms);
                     perExecution = round(rounded / ms) || 1;
                     execute = function () {
-                        if (lock || queue.length == 0)
+                        var queueLength = queue.length, maxPerRound;
+                        if (queueLength == 0)
                             return;
-                        var max = math.max(queue.length - perExecution, 0);
-                        while (queue.length > max) {
+                        maxPerRound = max(queueLength - perExecution, 0);
+                        while (queueLength > maxPerRound) {
                             result = Function.prototype.apply.apply(fn, queue.shift());
+                            queueLength--;
                         }
                         setDelay(lazy, rounded, function () {
-                            lock = false;
+                            locked = false;
                             execute();
                         });
-                        lock = true;
                     };
                     function lazy() {
-                        if (!lock || queue.length < limit - 1) {
+                        if (queue.length < limit - (locked && immediate ? 1 : 0)) {
                             queue.push([
                                 this,
                                 arguments
                             ]);
-                            execute();
+                        }
+                        if (!locked) {
+                            locked = true;
+                            if (immediate) {
+                                execute();
+                            } else {
+                                setDelay(lazy, rounded, execute);
+                            }
                         }
                         return result;
                     }
                     return lazy;
                 },
-                'delay': function (ms) {
-                    var fn = this;
-                    var args = multiArgs(arguments).slice(1);
-                    setDelay(fn, ms, fn, fn, args);
-                    return fn;
-                },
                 'throttle': function (ms) {
-                    return this.lazy(ms, 1);
+                    return this.lazy(ms, true, 1);
                 },
                 'debounce': function (ms) {
                     var fn = this;
@@ -4483,12 +4795,30 @@ img.autolink {\
                     ;
                     return debounced;
                 },
+                'delay': function (ms) {
+                    var fn = this;
+                    var args = multiArgs(arguments, null, 1);
+                    setDelay(fn, ms, fn, fn, args);
+                    return fn;
+                },
+                'every': function (ms) {
+                    var fn = this, args = arguments;
+                    args = args.length > 1 ? multiArgs(args, null, 1) : [];
+                    function execute() {
+                        fn.apply(fn, args);
+                        setDelay(fn, ms, execute);
+                    }
+                    setDelay(fn, ms, execute);
+                    return fn;
+                },
                 'cancel': function () {
-                    if (isArray(this.timers)) {
-                        while (this.timers.length > 0) {
-                            clearTimeout(this.timers.shift());
+                    var timers = this.timers, timer;
+                    if (isArray(timers)) {
+                        while (timer = timers.shift()) {
+                            clearTimeout(timer);
                         }
                     }
+                    this._canceled = true;
                     return this;
                 },
                 'after': function (num) {
@@ -4512,7 +4842,7 @@ img.autolink {\
                     };
                 },
                 'once': function () {
-                    return this.throttle(Infinity);
+                    return this.throttle(Infinity, true);
                 },
                 'fill': function () {
                     var fn = this, curried = multiArgs(arguments);
@@ -4531,27 +4861,27 @@ img.autolink {\
                 if (significant > 0) {
                     significant -= 1;
                 }
-                i = math.max(math.min((significant / 3).floor(), limit === false ? str.length : limit), -mid);
+                i = max(min(floor(significant / 3), limit === false ? str.length : limit), -mid);
                 unit = str.charAt(i + mid - 1);
                 if (significant < -9) {
                     i = -3;
-                    roundTo = significant.abs() - 9;
+                    roundTo = abs(significant) - 9;
                     unit = str.slice(0, 1);
                 }
-                divisor = bytes ? 2..pow(10 * i) : 10..pow(i * 3);
-                return (num / divisor).round(roundTo || 0).format() + unit.trim();
+                divisor = bytes ? pow(2, 10 * i) : pow(10, i * 3);
+                return withPrecision(num / divisor, roundTo || 0).format() + unit.trim();
             }
-            extend(number, false, false, {
+            extend(number, false, true, {
                 'random': function (n1, n2) {
-                    var min, max;
+                    var minNum, maxNum;
                     if (arguments.length == 1)
                         n2 = n1, n1 = 0;
-                    min = math.min(n1 || 0, isUndefined(n2) ? 1 : n2);
-                    max = math.max(n1 || 0, isUndefined(n2) ? 1 : n2) + 1;
-                    return floor(math.random() * (max - min) + min);
+                    minNum = min(n1 || 0, isUndefined(n2) ? 1 : n2);
+                    maxNum = max(n1 || 0, isUndefined(n2) ? 1 : n2) + 1;
+                    return floor(math.random() * (maxNum - minNum) + minNum);
                 }
             });
-            extend(number, true, false, {
+            extend(number, true, true, {
                 'log': function (base) {
                     return math.log(this) / (base ? math.log(base) : 1);
                 },
@@ -4584,7 +4914,7 @@ img.autolink {\
                     if (isUndefined(decimal)) {
                         decimal = '.';
                     }
-                    str = (isNumber(place) ? round(this, place || 0).toFixed(math.max(place, 0)) : this.toString()).replace(/^-/, '');
+                    str = (isNumber(place) ? withPrecision(this, place || 0).toFixed(max(place, 0)) : this.toString()).replace(/^-/, '');
                     split = str.split('.');
                     integer = split[0];
                     fraction = split[1];
@@ -4592,21 +4922,15 @@ img.autolink {\
                         if (i < integer.length) {
                             result = thousands + result;
                         }
-                        result = integer.slice(math.max(0, i - 3), i) + result;
+                        result = integer.slice(max(0, i - 3), i) + result;
                     }
                     if (fraction) {
-                        result += decimal + repeatString((place || 0) - fraction.length, '0') + fraction;
+                        result += decimal + repeatString('0', (place || 0) - fraction.length) + fraction;
                     }
                     return (this < 0 ? '-' : '') + result;
                 },
                 'hex': function (pad) {
                     return this.pad(pad || 1, false, 16);
-                },
-                'upto': function (num, fn, step) {
-                    return getRange(this, num, fn, step || 1);
-                },
-                'downto': function (num, fn, step) {
-                    return getRange(this, num, fn, -(step || 1));
                 },
                 'times': function (fn) {
                     if (fn) {
@@ -4623,7 +4947,7 @@ img.autolink {\
                     return padNumber(this, place, sign, base);
                 },
                 'ordinalize': function () {
-                    var suffix, num = this.abs(), last = parseInt(num.toString().slice(-2));
+                    var suffix, num = abs(this), last = parseInt(num.toString().slice(-2));
                     return this + getOrdinalizedSuffix(last);
                 },
                 'toNumber': function () {
@@ -4631,12 +4955,17 @@ img.autolink {\
                 }
             });
             function buildNumber() {
-                extendSimilar(number, true, false, 'round,floor,ceil', function (methods, name) {
-                    methods[name] = function (precision) {
-                        return round(this, precision, name);
+                function createRoundingFunction(fn) {
+                    return function (precision) {
+                        return precision ? withPrecision(this, precision, fn) : fn(this);
                     };
+                }
+                extend(number, true, true, {
+                    'ceil': createRoundingFunction(ceil),
+                    'round': createRoundingFunction(round),
+                    'floor': createRoundingFunction(floor)
                 });
-                extendSimilar(number, true, false, 'abs,pow,sin,asin,cos,acos,tan,atan,exp,pow,sqrt', function (methods, name) {
+                extendSimilar(number, true, true, 'abs,pow,sin,asin,cos,acos,tan,atan,exp,pow,sqrt', function (methods, name) {
                     methods[name] = function (a, b) {
                         return math[name](this, a, b);
                     };
@@ -4644,10 +4973,10 @@ img.autolink {\
             }
             buildNumber();
             var ObjectTypeMethods = 'isObject,isNaN'.split(',');
-            var ObjectHashMethods = 'keys,values,select,reject,each,merge,clone,equal,watch,tap,has'.split(',');
-            function setParamsObject(obj, param, value, deep) {
+            var ObjectHashMethods = 'keys,values,select,reject,each,merge,clone,equal,watch,tap,has,toQueryString'.split(',');
+            function setParamsObject(obj, param, value, castBoolean) {
                 var reg = /^(.+?)(\[.*\])$/, paramIsArray, match, allKeys, key;
-                if (deep !== false && (match = param.match(reg))) {
+                if (match = param.match(reg)) {
                     key = match[1];
                     allKeys = match[2].replace(/^\[|\]$/g, '').split('][');
                     allKeys.forEach(function (k) {
@@ -4662,28 +4991,46 @@ img.autolink {\
                     });
                     if (!key && paramIsArray)
                         key = obj.length.toString();
-                    setParamsObject(obj, key, value);
-                } else if (value.match(/^[+-]?\d+(\.\d+)?$/)) {
-                    obj[param] = parseFloat(value);
-                } else if (value === 'true') {
+                    setParamsObject(obj, key, value, castBoolean);
+                } else if (castBoolean && value === 'true') {
                     obj[param] = true;
-                } else if (value === 'false') {
+                } else if (castBoolean && value === 'false') {
                     obj[param] = false;
                 } else {
                     obj[param] = value;
                 }
             }
+            function objectToQueryString(base, obj) {
+                var tmp;
+                if (isArray(obj) || isObjectType(obj) && obj.toString === internalToString) {
+                    tmp = [];
+                    iterateOverObject(obj, function (key, value) {
+                        if (base) {
+                            key = base + '[' + key + ']';
+                        }
+                        tmp.push(objectToQueryString(key, value));
+                    });
+                    return tmp.join('&');
+                } else {
+                    if (!base)
+                        return '';
+                    return sanitizeURIComponent(base) + '=' + (isDate(obj) ? obj.getTime() : sanitizeURIComponent(obj));
+                }
+            }
+            function sanitizeURIComponent(obj) {
+                return !obj && obj !== false && obj !== 0 ? '' : encodeURIComponent(obj).replace(/%20/g, '+');
+            }
             function matchKey(key, match) {
                 if (isRegExp(match)) {
                     return match.test(key);
-                } else if (isObjectPrimitive(match)) {
+                } else if (isObjectType(match)) {
                     return hasOwnProperty(match, key);
                 } else {
                     return key === string(match);
                 }
             }
             function selectFromObject(obj, args, select) {
-                var result = {}, match;
+                var match, result = obj instanceof Hash ? new Hash() : {};
                 iterateOverObject(obj, function (key, value) {
                     match = false;
                     flattenedArgs(args, function (arg) {
@@ -4698,7 +5045,7 @@ img.autolink {\
                 return result;
             }
             function buildTypeMethods() {
-                extendSimilar(object, false, false, ClassNames, function (methods, name) {
+                extendSimilar(object, false, true, ClassNames, function (methods, name) {
                     var method = 'is' + name;
                     ObjectTypeMethods.push(method);
                     methods[method] = typeChecks[name];
@@ -4734,8 +5081,8 @@ img.autolink {\
                     });
                 }
             });
-            extend(object, false, function (arg1, arg2) {
-                return isFunction(arg2);
+            extend(object, false, function () {
+                return arguments.length > 1;
             }, {
                 'keys': function (obj, fn) {
                     var keys = object.keys(obj);
@@ -4745,9 +5092,9 @@ img.autolink {\
                     return keys;
                 }
             });
-            extend(object, false, false, {
+            extend(object, false, true, {
                 'isObject': function (obj) {
-                    return isObject(obj);
+                    return isPlainObject(obj);
                 },
                 'isNaN': function (obj) {
                     return isNumber(obj) && obj.valueOf() !== obj.valueOf();
@@ -4759,21 +5106,22 @@ img.autolink {\
                     return new Hash(obj);
                 },
                 'merge': function (target, source, deep, resolve) {
-                    var key, val;
-                    if (target && typeof source != 'string') {
+                    var key, val, goDeep;
+                    if (target && typeof source !== 'string') {
                         for (key in source) {
                             if (!hasOwnProperty(source, key) || !target)
                                 continue;
                             val = source[key];
+                            goDeep = deep && isObjectType(val);
                             if (isDefined(target[key])) {
-                                if (resolve === false) {
+                                if (resolve === false && !goDeep) {
                                     continue;
                                 }
                                 if (isFunction(resolve)) {
                                     val = resolve.call(source, key, target[key], source[key]);
                                 }
                             }
-                            if (deep === true && val && isObjectPrimitive(val)) {
+                            if (goDeep) {
                                 if (isDate(val)) {
                                     val = new date(val.getTime());
                                 } else if (isRegExp(val)) {
@@ -4800,28 +5148,39 @@ img.autolink {\
                     return values;
                 },
                 'clone': function (obj, deep) {
-                    var target;
-                    if (isDate(obj) && obj.clone) {
-                        return obj.clone();
-                    } else if (!isObjectPrimitive(obj)) {
+                    var target, klass;
+                    if (!isObjectType(obj)) {
                         return obj;
+                    }
+                    klass = className(obj);
+                    if (isDate(obj, klass) && obj.clone) {
+                        return obj.clone();
+                    } else if (isDate(obj, klass) || isRegExp(obj, klass)) {
+                        return new obj.constructor(obj);
                     } else if (obj instanceof Hash) {
                         target = new Hash();
+                    } else if (isArray(obj, klass)) {
+                        target = [];
+                    } else if (isPlainObject(obj, klass)) {
+                        target = {};
                     } else {
-                        target = new obj.constructor();
+                        throw new TypeError('Clone must be a basic data type.');
                     }
                     return object.merge(target, obj, deep);
                 },
-                'fromQueryString': function (str, deep) {
+                'fromQueryString': function (str, castBoolean) {
                     var result = object.extended(), split;
                     str = str && str.toString ? str.toString() : '';
                     str.replace(/^.*?\?/, '').split('&').forEach(function (p) {
                         var split = p.split('=');
                         if (split.length !== 2)
                             return;
-                        setParamsObject(result, split[0], decodeURIComponent(split[1]), deep);
+                        setParamsObject(result, split[0], decodeURIComponent(split[1]), castBoolean);
                     });
                     return result;
+                },
+                'toQueryString': function (obj, namespace) {
+                    return objectToQueryString(namespace, obj);
                 },
                 'tap': function (obj, arg) {
                     var fn = arg;
@@ -4847,15 +5206,12 @@ img.autolink {\
             buildTypeMethods();
             buildObjectExtend();
             buildObjectInstanceMethods(ObjectHashMethods, Hash);
-            function uniqueRegExpFlags(flags) {
-                return flags.split('').sort().join('').replace(/([gimy])\1+/g, '$1');
-            }
-            extend(regexp, false, false, {
+            extend(regexp, false, true, {
                 'escape': function (str) {
                     return escapeRegExp(str);
                 }
             });
-            extend(regexp, true, false, {
+            extend(regexp, true, true, {
                 'getFlags': function () {
                     return getRegExpFlags(this);
                 },
@@ -4876,25 +5232,63 @@ img.autolink {\
                     return word;
                 }
             }
-            function padString(str, p, left, right) {
-                var padding = string(p);
-                if (padding != p) {
-                    padding = '';
+            function checkRepeatRange(num) {
+                num = +num;
+                if (num < 0 || num === Infinity) {
+                    throw new RangeError('Invalid number');
                 }
-                if (!isNumber(left))
-                    left = 1;
-                if (!isNumber(right))
-                    right = 1;
-                return padding.repeat(left) + str + padding.repeat(right);
+                return num;
             }
-            function chr(num) {
-                return string.fromCharCode(num);
+            function padString(num, padding) {
+                return repeatString(isDefined(padding) ? padding : ' ', num);
+            }
+            function truncateString(str, length, from, ellipsis, split) {
+                var str1, str2, len1, len2;
+                if (str.length <= length) {
+                    return str.toString();
+                }
+                ellipsis = isUndefined(ellipsis) ? '...' : ellipsis;
+                switch (from) {
+                case 'left':
+                    str2 = split ? truncateOnWord(str, length, true) : str.slice(str.length - length);
+                    return ellipsis + str2;
+                case 'middle':
+                    len1 = ceil(length / 2);
+                    len2 = floor(length / 2);
+                    str1 = split ? truncateOnWord(str, len1) : str.slice(0, len1);
+                    str2 = split ? truncateOnWord(str, len2, true) : str.slice(str.length - len2);
+                    return str1 + ellipsis + str2;
+                default:
+                    str1 = split ? truncateOnWord(str, length) : str.slice(0, length);
+                    return str1 + ellipsis;
+                }
+            }
+            function truncateOnWord(str, limit, fromLeft) {
+                if (fromLeft) {
+                    return truncateOnWord(str.reverse(), limit).reverse();
+                }
+                var reg = regexp('(?=[' + getTrimmableCharacters() + '])');
+                var words = str.split(reg);
+                var count = 0;
+                return words.filter(function (word) {
+                    count += word.length;
+                    return count <= limit;
+                }).join('');
+            }
+            function numberOrIndex(str, n, from) {
+                if (isString(n)) {
+                    n = str.indexOf(n);
+                    if (n === -1) {
+                        n = from ? str.length : 0;
+                    }
+                }
+                return n;
             }
             var btoa, atob;
             function buildBase64(key) {
-                if (this.btoa) {
-                    btoa = this.btoa;
-                    atob = this.atob;
+                if (globalContext.btoa) {
+                    btoa = globalContext.btoa;
+                    atob = globalContext.atob;
                     return;
                 }
                 var base64reg = /[^A-Za-z0-9\+\/\=]/g;
@@ -4955,8 +5349,8 @@ img.autolink {\
             extend(string, true, function (reg) {
                 return isRegExp(reg) || arguments.length > 2;
             }, {
-                'startsWith': function (reg, pos, c) {
-                    var str = this, source;
+                'startsWith': function (reg) {
+                    var args = arguments, pos = args[1], c = args[2], str = this, source;
                     if (pos)
                         str = str.slice(pos);
                     if (isUndefined(c))
@@ -4964,8 +5358,8 @@ img.autolink {\
                     source = isRegExp(reg) ? reg.source.replace('^', '') : escapeRegExp(reg);
                     return regexp('^' + source, c ? '' : 'i').test(str);
                 },
-                'endsWith': function (reg, pos, c) {
-                    var str = this, source;
+                'endsWith': function (reg) {
+                    var args = arguments, pos = args[1], c = args[2], str = this, source;
                     if (isDefined(pos))
                         str = str.slice(0, pos);
                     if (isUndefined(c))
@@ -4974,7 +5368,7 @@ img.autolink {\
                     return regexp(source + '$', c ? '' : 'i').test(str);
                 }
             });
-            extend(string, true, false, {
+            extend(string, true, true, {
                 'escapeRegExp': function () {
                     return escapeRegExp(this);
                 },
@@ -4991,10 +5385,10 @@ img.autolink {\
                     return this.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, '\'').replace(/&#x2f;/g, '/').replace(/&amp;/g, '&');
                 },
                 'encodeBase64': function () {
-                    return btoa(this);
+                    return btoa(unescape(encodeURIComponent(this)));
                 },
                 'decodeBase64': function () {
-                    return atob(this);
+                    return decodeURIComponent(escape(atob(this)));
                 },
                 'each': function (search, fn) {
                     var match, i, len;
@@ -5074,15 +5468,15 @@ img.autolink {\
                     });
                 },
                 'at': function () {
-                    return entryAtIndex(this, arguments, true);
+                    return getEntriesForIndexes(this, arguments, true);
                 },
-                'from': function (num) {
-                    return this.slice(num);
+                'from': function (from) {
+                    return this.slice(numberOrIndex(this, from, true));
                 },
-                'to': function (num) {
-                    if (isUndefined(num))
-                        num = this.length;
-                    return this.slice(0, num);
+                'to': function (to) {
+                    if (isUndefined(to))
+                        to = this.length;
+                    return this.slice(0, numberOrIndex(this, to));
                 },
                 'dasherize': function () {
                     return this.underscore().replace(/_/g, '-');
@@ -5118,42 +5512,27 @@ img.autolink {\
                     });
                     return str;
                 },
-                'truncate': function (length, split, from, ellipsis) {
-                    var pos, prepend = '', append = '', str = this.toString(), chars = '[' + getTrimmableCharacters() + ']+', space = '[^' + getTrimmableCharacters() + ']*', reg = regexp(chars + space + '$');
-                    ellipsis = isUndefined(ellipsis) ? '...' : string(ellipsis);
-                    if (str.length <= length) {
-                        return str;
-                    }
-                    switch (from) {
-                    case 'left':
-                        pos = str.length - length;
-                        prepend = ellipsis;
-                        str = str.slice(pos);
-                        reg = regexp('^' + space + chars);
-                        break;
-                    case 'middle':
-                        pos = floor(length / 2);
-                        append = ellipsis + str.slice(str.length - pos).trimLeft();
-                        str = str.slice(0, pos);
-                        break;
-                    default:
-                        pos = length;
-                        append = ellipsis;
-                        str = str.slice(0, pos);
-                    }
-                    if (split === false && this.slice(pos, pos + 1).match(/\S/)) {
-                        str = str.remove(reg);
-                    }
-                    return prepend + str + append;
+                'truncate': function (length, from, ellipsis) {
+                    return truncateString(this, length, from, ellipsis);
                 },
-                'pad': function (padding, num) {
-                    return repeatString(num, padding) + this + repeatString(num, padding);
+                'truncateOnWord': function (length, from, ellipsis) {
+                    return truncateString(this, length, from, ellipsis, true);
                 },
-                'padLeft': function (padding, num) {
-                    return repeatString(num, padding) + this;
+                'pad': function (num, padding) {
+                    var half, front, back;
+                    num = checkRepeatRange(num);
+                    half = max(0, num - this.length) / 2;
+                    front = floor(half);
+                    back = ceil(half);
+                    return padString(front, padding) + this + padString(back, padding);
                 },
-                'padRight': function (padding, num) {
-                    return this + repeatString(num, padding);
+                'padLeft': function (num, padding) {
+                    num = checkRepeatRange(num);
+                    return padString(max(0, num - this.length), padding) + this;
+                },
+                'padRight': function (num, padding) {
+                    num = checkRepeatRange(num);
+                    return this + padString(max(0, num - this.length), padding);
                 },
                 'first': function (num) {
                     if (isUndefined(num))
@@ -5167,26 +5546,15 @@ img.autolink {\
                     return this.substr(start);
                 },
                 'repeat': function (num) {
-                    var result = '', str = this;
-                    if (!isNumber(num) || num < 1)
-                        return '';
-                    while (num) {
-                        if (num & 1) {
-                            result += str;
-                        }
-                        if (num >>= 1) {
-                            str += str;
-                        }
-                    }
-                    return result;
+                    num = checkRepeatRange(num);
+                    return repeatString(this, num);
                 },
                 'toNumber': function (base) {
-                    var str = this.replace(/,/g, '');
-                    return str.match(/\./) ? parseFloat(str) : parseInt(str, base || 10);
+                    return stringToNumber(this, base);
                 },
                 'capitalize': function (all) {
                     var lastResponded;
-                    return this.toLowerCase().replace(all ? /[\s\S]/g : /^\S/, function (lower) {
+                    return this.toLowerCase().replace(all ? /[^']/g : /^\S/, function (lower) {
                         var upper = lower.toUpperCase(), result;
                         result = lastResponded ? lower : upper;
                         lastResponded = upper !== lower;
@@ -5195,8 +5563,8 @@ img.autolink {\
                 },
                 'assign': function () {
                     var assign = {};
-                    multiArgs(arguments, function (a, i) {
-                        if (isObject(a)) {
+                    flattenedArgs(arguments, function (a, i) {
+                        if (isObjectType(a)) {
                             simpleMerge(assign, a);
                         } else {
                             assign[i + 1] = a;
@@ -5205,16 +5573,9 @@ img.autolink {\
                     return this.replace(/\{([^{]+?)\}/g, function (m, key) {
                         return hasOwnProperty(assign, key) ? assign[key] : m;
                     });
-                },
-                'namespace': function (context) {
-                    context = context || globalContext;
-                    iterateOverObject(this.split('.'), function (i, s) {
-                        return !!(context = context[s]);
-                    });
-                    return context;
                 }
             });
-            extend(string, true, false, { 'insert': string.prototype.add });
+            extend(string, true, true, { 'insert': string.prototype.add });
             buildBase64('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=');
             var plurals = [], singulars = [], uncountables = [], humans = [], acronyms = {}, Downcased, Inflector;
             function removeFromArray(arr, find) {
@@ -5399,12 +5760,11 @@ img.autolink {\
             Inflector.irregular('sex', 'sexes');
             Inflector.irregular('move', 'moves');
             Inflector.irregular('save', 'saves');
-            Inflector.irregular('save', 'saves');
             Inflector.irregular('cow', 'kine');
             Inflector.irregular('goose', 'geese');
             Inflector.irregular('zombie', 'zombies');
             Inflector.uncountable('equipment,information,rice,money,species,series,fish,sheep,jeans'.split(','));
-            extend(string, true, false, {
+            extend(string, true, true, {
                 'pluralize': function () {
                     return inflect(this, true);
                 },
@@ -5449,7 +5809,6 @@ img.autolink {\
             });
             string.Inflector = Inflector;
             string.Inflector.acronyms = acronyms;
-            var NormalizeMap, NormalizeReg = '', NormalizeSource;
             var unicodeScripts = [
                     {
                         names: ['Arabic'],
@@ -5591,7 +5950,8 @@ img.autolink {\
                     'hankaku': {}
                 };
                 widthConversionRanges.forEach(function (r) {
-                    getRange(r.start, r.end, function (n) {
+                    simpleRepeat(r.end - r.start + 1, function (n) {
+                        n += r.start;
                         setWidthConversion(r.type, chr(n), chr(n + r.shift));
                     });
                 });
@@ -5622,112 +5982,7 @@ img.autolink {\
                     to: half
                 };
             }
-            function buildNormalizeMap() {
-                NormalizeMap = {};
-                iterateOverObject(NormalizeSource, function (normalized, str) {
-                    str.split('').forEach(function (character) {
-                        NormalizeMap[character] = normalized;
-                    });
-                    NormalizeReg += str;
-                });
-                NormalizeReg = regexp('[' + NormalizeReg + ']', 'g');
-            }
-            NormalizeSource = {
-                'A': 'A\u24b6\uff21\xc0\xc1\xc2\u1ea6\u1ea4\u1eaa\u1ea8\xc3\u0100\u0102\u1eb0\u1eae\u1eb4\u1eb2\u0226\u01e0\xc4\u01de\u1ea2\xc5\u01fa\u01cd\u0200\u0202\u1ea0\u1eac\u1eb6\u1e00\u0104\u023a\u2c6f',
-                'B': 'B\u24b7\uff22\u1e02\u1e04\u1e06\u0243\u0182\u0181',
-                'C': 'C\u24b8\uff23\u0106\u0108\u010a\u010c\xc7\u1e08\u0187\u023b\ua73e',
-                'D': 'D\u24b9\uff24\u1e0a\u010e\u1e0c\u1e10\u1e12\u1e0e\u0110\u018b\u018a\u0189\ua779',
-                'E': 'E\u24ba\uff25\xc8\xc9\xca\u1ec0\u1ebe\u1ec4\u1ec2\u1ebc\u0112\u1e14\u1e16\u0114\u0116\xcb\u1eba\u011a\u0204\u0206\u1eb8\u1ec6\u0228\u1e1c\u0118\u1e18\u1e1a\u0190\u018e',
-                'F': 'F\u24bb\uff26\u1e1e\u0191\ua77b',
-                'G': 'G\u24bc\uff27\u01f4\u011c\u1e20\u011e\u0120\u01e6\u0122\u01e4\u0193\ua7a0\ua77d\ua77e',
-                'H': 'H\u24bd\uff28\u0124\u1e22\u1e26\u021e\u1e24\u1e28\u1e2a\u0126\u2c67\u2c75\ua78d',
-                'I': 'I\u24be\uff29\xcc\xcd\xce\u0128\u012a\u012c\u0130\xcf\u1e2e\u1ec8\u01cf\u0208\u020a\u1eca\u012e\u1e2c\u0197',
-                'J': 'J\u24bf\uff2a\u0134\u0248',
-                'K': 'K\u24c0\uff2b\u1e30\u01e8\u1e32\u0136\u1e34\u0198\u2c69\ua740\ua742\ua744\ua7a2',
-                'L': 'L\u24c1\uff2c\u013f\u0139\u013d\u1e36\u1e38\u013b\u1e3c\u1e3a\u0141\u023d\u2c62\u2c60\ua748\ua746\ua780',
-                'M': 'M\u24c2\uff2d\u1e3e\u1e40\u1e42\u2c6e\u019c',
-                'N': 'N\u24c3\uff2e\u01f8\u0143\xd1\u1e44\u0147\u1e46\u0145\u1e4a\u1e48\u0220\u019d\ua790\ua7a4',
-                'O': 'O\u24c4\uff2f\xd2\xd3\xd4\u1ed2\u1ed0\u1ed6\u1ed4\xd5\u1e4c\u022c\u1e4e\u014c\u1e50\u1e52\u014e\u022e\u0230\xd6\u022a\u1ece\u0150\u01d1\u020c\u020e\u01a0\u1edc\u1eda\u1ee0\u1ede\u1ee2\u1ecc\u1ed8\u01ea\u01ec\xd8\u01fe\u0186\u019f\ua74a\ua74c',
-                'P': 'P\u24c5\uff30\u1e54\u1e56\u01a4\u2c63\ua750\ua752\ua754',
-                'Q': 'Q\u24c6\uff31\ua756\ua758\u024a',
-                'R': 'R\u24c7\uff32\u0154\u1e58\u0158\u0210\u0212\u1e5a\u1e5c\u0156\u1e5e\u024c\u2c64\ua75a\ua7a6\ua782',
-                'S': 'S\u24c8\uff33\u1e9e\u015a\u1e64\u015c\u1e60\u0160\u1e66\u1e62\u1e68\u0218\u015e\u2c7e\ua7a8\ua784',
-                'T': 'T\u24c9\uff34\u1e6a\u0164\u1e6c\u021a\u0162\u1e70\u1e6e\u0166\u01ac\u01ae\u023e\ua786',
-                'U': 'U\u24ca\uff35\xd9\xda\xdb\u0168\u1e78\u016a\u1e7a\u016c\xdc\u01db\u01d7\u01d5\u01d9\u1ee6\u016e\u0170\u01d3\u0214\u0216\u01af\u1eea\u1ee8\u1eee\u1eec\u1ef0\u1ee4\u1e72\u0172\u1e76\u1e74\u0244',
-                'V': 'V\u24cb\uff36\u1e7c\u1e7e\u01b2\ua75e\u0245',
-                'W': 'W\u24cc\uff37\u1e80\u1e82\u0174\u1e86\u1e84\u1e88\u2c72',
-                'X': 'X\u24cd\uff38\u1e8a\u1e8c',
-                'Y': 'Y\u24ce\uff39\u1ef2\xdd\u0176\u1ef8\u0232\u1e8e\u0178\u1ef6\u1ef4\u01b3\u024e\u1efe',
-                'Z': 'Z\u24cf\uff3a\u0179\u1e90\u017b\u017d\u1e92\u1e94\u01b5\u0224\u2c7f\u2c6b\ua762',
-                'a': 'a\u24d0\uff41\u1e9a\xe0\xe1\xe2\u1ea7\u1ea5\u1eab\u1ea9\xe3\u0101\u0103\u1eb1\u1eaf\u1eb5\u1eb3\u0227\u01e1\xe4\u01df\u1ea3\xe5\u01fb\u01ce\u0201\u0203\u1ea1\u1ead\u1eb7\u1e01\u0105\u2c65\u0250',
-                'b': 'b\u24d1\uff42\u1e03\u1e05\u1e07\u0180\u0183\u0253',
-                'c': 'c\u24d2\uff43\u0107\u0109\u010b\u010d\xe7\u1e09\u0188\u023c\ua73f\u2184',
-                'd': 'd\u24d3\uff44\u1e0b\u010f\u1e0d\u1e11\u1e13\u1e0f\u0111\u018c\u0256\u0257\ua77a',
-                'e': 'e\u24d4\uff45\xe8\xe9\xea\u1ec1\u1ebf\u1ec5\u1ec3\u1ebd\u0113\u1e15\u1e17\u0115\u0117\xeb\u1ebb\u011b\u0205\u0207\u1eb9\u1ec7\u0229\u1e1d\u0119\u1e19\u1e1b\u0247\u025b\u01dd',
-                'f': 'f\u24d5\uff46\u1e1f\u0192\ua77c',
-                'g': 'g\u24d6\uff47\u01f5\u011d\u1e21\u011f\u0121\u01e7\u0123\u01e5\u0260\ua7a1\u1d79\ua77f',
-                'h': 'h\u24d7\uff48\u0125\u1e23\u1e27\u021f\u1e25\u1e29\u1e2b\u1e96\u0127\u2c68\u2c76\u0265',
-                'i': 'i\u24d8\uff49\xec\xed\xee\u0129\u012b\u012d\xef\u1e2f\u1ec9\u01d0\u0209\u020b\u1ecb\u012f\u1e2d\u0268\u0131',
-                'j': 'j\u24d9\uff4a\u0135\u01f0\u0249',
-                'k': 'k\u24da\uff4b\u1e31\u01e9\u1e33\u0137\u1e35\u0199\u2c6a\ua741\ua743\ua745\ua7a3',
-                'l': 'l\u24db\uff4c\u0140\u013a\u013e\u1e37\u1e39\u013c\u1e3d\u1e3b\u017f\u0142\u019a\u026b\u2c61\ua749\ua781\ua747',
-                'm': 'm\u24dc\uff4d\u1e3f\u1e41\u1e43\u0271\u026f',
-                'n': 'n\u24dd\uff4e\u01f9\u0144\xf1\u1e45\u0148\u1e47\u0146\u1e4b\u1e49\u019e\u0272\u0149\ua791\ua7a5',
-                'o': 'o\u24de\uff4f\xf2\xf3\xf4\u1ed3\u1ed1\u1ed7\u1ed5\xf5\u1e4d\u022d\u1e4f\u014d\u1e51\u1e53\u014f\u022f\u0231\xf6\u022b\u1ecf\u0151\u01d2\u020d\u020f\u01a1\u1edd\u1edb\u1ee1\u1edf\u1ee3\u1ecd\u1ed9\u01eb\u01ed\xf8\u01ff\u0254\ua74b\ua74d\u0275',
-                'p': 'p\u24df\uff50\u1e55\u1e57\u01a5\u1d7d\ua751\ua753\ua755',
-                'q': 'q\u24e0\uff51\u024b\ua757\ua759',
-                'r': 'r\u24e1\uff52\u0155\u1e59\u0159\u0211\u0213\u1e5b\u1e5d\u0157\u1e5f\u024d\u027d\ua75b\ua7a7\ua783',
-                's': 's\u24e2\uff53\u015b\u1e65\u015d\u1e61\u0161\u1e67\u1e63\u1e69\u0219\u015f\u023f\ua7a9\ua785\u1e9b',
-                't': 't\u24e3\uff54\u1e6b\u1e97\u0165\u1e6d\u021b\u0163\u1e71\u1e6f\u0167\u01ad\u0288\u2c66\ua787',
-                'u': 'u\u24e4\uff55\xf9\xfa\xfb\u0169\u1e79\u016b\u1e7b\u016d\xfc\u01dc\u01d8\u01d6\u01da\u1ee7\u016f\u0171\u01d4\u0215\u0217\u01b0\u1eeb\u1ee9\u1eef\u1eed\u1ef1\u1ee5\u1e73\u0173\u1e77\u1e75\u0289',
-                'v': 'v\u24e5\uff56\u1e7d\u1e7f\u028b\ua75f\u028c',
-                'w': 'w\u24e6\uff57\u1e81\u1e83\u0175\u1e87\u1e85\u1e98\u1e89\u2c73',
-                'x': 'x\u24e7\uff58\u1e8b\u1e8d',
-                'y': 'y\u24e8\uff59\u1ef3\xfd\u0177\u1ef9\u0233\u1e8f\xff\u1ef7\u1e99\u1ef5\u01b4\u024f\u1eff',
-                'z': 'z\u24e9\uff5a\u017a\u1e91\u017c\u017e\u1e93\u1e95\u01b6\u0225\u0240\u2c6c\ua763',
-                'AA': '\ua732',
-                'AE': '\xc6\u01fc\u01e2',
-                'AO': '\ua734',
-                'AU': '\ua736',
-                'AV': '\ua738\ua73a',
-                'AY': '\ua73c',
-                'DZ': '\u01f1\u01c4',
-                'Dz': '\u01f2\u01c5',
-                'LJ': '\u01c7',
-                'Lj': '\u01c8',
-                'NJ': '\u01ca',
-                'Nj': '\u01cb',
-                'OI': '\u01a2',
-                'OO': '\ua74e',
-                'OU': '\u0222',
-                'TZ': '\ua728',
-                'VY': '\ua760',
-                'aa': '\ua733',
-                'ae': '\xe6\u01fd\u01e3',
-                'ao': '\ua735',
-                'au': '\ua737',
-                'av': '\ua739\ua73b',
-                'ay': '\ua73d',
-                'dz': '\u01f3\u01c6',
-                'hv': '\u0195',
-                'lj': '\u01c9',
-                'nj': '\u01cc',
-                'oi': '\u01a3',
-                'ou': '\u0223',
-                'oo': '\ua74f',
-                'ss': '\xdf',
-                'tz': '\ua729',
-                'vy': '\ua761'
-            };
-            extend(string, true, false, {
-                'normalize': function () {
-                    if (!NormalizeMap) {
-                        buildNormalizeMap();
-                    }
-                    return this.replace(NormalizeReg, function (character) {
-                        return NormalizeMap[character];
-                    });
-                },
+            extend(string, true, true, {
                 'hankaku': function () {
                     return convertCharacterWidth(this, arguments, allZenkaku, 'hankaku');
                 },
@@ -5908,12 +6163,12 @@ img.autolink {\
                 'weekdays': 'domingo,lunes,martes,mi\xe9rcoles|miercoles,jueves,viernes,s\xe1bado|sabado',
                 'units': 'milisegundo:|s,segundo:|s,minuto:|s,hora:|s,d\xeda|d\xedas|dia|dias,semana:|s,mes:|es,a\xf1o|a\xf1os|ano|anos',
                 'numbers': 'uno,dos,tres,cuatro,cinco,seis,siete,ocho,nueve,diez',
-                'tokens': 'el,de',
+                'tokens': 'el,la,de',
                 'short': '{d} {month} {yyyy}',
                 'long': '{d} {month} {yyyy} {H}:{mm}',
                 'full': '{Weekday} {d} {month} {yyyy} {H}:{mm}:{ss}',
                 'past': '{sign} {num} {unit}',
-                'future': '{num} {unit} {sign}',
+                'future': '{sign} {num} {unit}',
                 'duration': '{num} {unit}',
                 'timeMarker': 'a las',
                 'ampm': 'am,pm',
@@ -5945,7 +6200,7 @@ img.autolink {\
                     },
                     {
                         'name': 'sign',
-                        'src': 'de ahora',
+                        'src': 'dentro de',
                         'value': 1
                     },
                     {
@@ -5962,13 +6217,13 @@ img.autolink {\
                 'dateParse': [
                     '{sign} {num} {unit}',
                     '{num} {unit} {sign}',
-                    '{0?} {unit=5-7} {shift}',
-                    '{0?} {shift} {unit=5-7}'
+                    '{0?}{1?} {unit=5-7} {shift}',
+                    '{0?}{1?} {shift} {unit=5-7}'
                 ],
                 'timeParse': [
                     '{shift} {weekday}',
                     '{weekday} {shift}',
-                    '{date?} {1?} {month} {1?} {year?}'
+                    '{date?} {2?} {month} {2?} {year?}'
                 ]
             });
             Date.addLocale('fi', {
@@ -6089,7 +6344,7 @@ img.autolink {\
                 'weekdays': 'dimanche,lundi,mardi,mercredi,jeudi,vendredi,samedi',
                 'units': 'milliseconde:|s,seconde:|s,minute:|s,heure:|s,jour:|s,semaine:|s,mois,an:|s|n\xe9e|nee',
                 'numbers': 'un:|e,deux,trois,quatre,cinq,six,sept,huit,neuf,dix',
-                'tokens': ['l\'|la|le'],
+                'tokens': 'l\'|la|le',
                 'short': '{d} {month} {yyyy}',
                 'long': '{d} {month} {yyyy} {H}:{mm}',
                 'full': '{Weekday} {d} {month} {yyyy} {H}:{mm}:{ss}',
@@ -6574,7 +6829,7 @@ img.autolink {\
                 'long': '{d} {month} {yyyy} \u0433\u043e\u0434\u0430 {H}:{mm}',
                 'full': '{Weekday} {d} {month} {yyyy} \u0433\u043e\u0434\u0430 {H}:{mm}:{ss}',
                 'relative': function (num, unit, ms, format) {
-                    var numberWithUnit, last = num.toString().slice(-1);
+                    var numberWithUnit, last = num.toString().slice(-1), mult;
                     switch (true) {
                     case num >= 11 && num <= 15:
                         mult = 3;

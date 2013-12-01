@@ -1,5 +1,5 @@
-require! lang
-{$} = require 'dom'
+require! <[lib/lang]>
+{$} = require 'lib/dom'
 
 html = $ 'html'
 module.exports = bind-key = !(binds, lang-key, cb) ->

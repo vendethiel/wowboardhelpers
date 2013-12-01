@@ -17,13 +17,5 @@
 
 
     "sugar": "1.4.0"
-  },
-  "npm sucks so hard, it's hardly believable": {
-    "ajax": "~0.1.0",
-    "autolink": "~0.1.0",
-    "dom": "~0.1.0",
-    "fetch-siblings": "~0.1.0",
-    "lang": "~0.1.0",
-    "parse-time": "~0.1.0"
   }
 }

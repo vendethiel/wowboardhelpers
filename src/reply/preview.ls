@@ -1,5 +1,5 @@
-require! <[../w autolink]>
-{$} = require 'dom'
+require! <[../w lib/autolink]>
+{$} = require 'lib/dom'
 
 post-preview = $ '#post-preview'
 

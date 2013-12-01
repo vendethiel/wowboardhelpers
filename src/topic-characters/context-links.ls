@@ -1,5 +1,5 @@
 require! '../topic'
-{el} = require 'dom'
+{el} = require 'lib/dom'
 
 template-context-links = require './templates/context-links'
 

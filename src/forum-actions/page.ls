@@ -1,5 +1,5 @@
-require! lang
-{$$} = require 'dom'
+require! <[lib/lang]>
+{$$} = require 'lib/dom'
 
 module.exports = jump = !->
 	page = prompt lang 'page-number'

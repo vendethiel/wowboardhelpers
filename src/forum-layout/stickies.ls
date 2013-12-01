@@ -1,5 +1,5 @@
-require! <[lang ../forum-options]>
-{$, node} = require 'dom'
+require! <[lib/lang ../forum-options]>
+{$, node} = require 'lib/dom'
 
 #remove sticky part (tbody.sticky)
 sticky = $ '.sticky'

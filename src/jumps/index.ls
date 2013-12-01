@@ -1,4 +1,4 @@
-{$} = require 'dom'
+{$} = require 'lib/dom'
 
 require './top'
 

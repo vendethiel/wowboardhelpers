@@ -1,4 +1,4 @@
-{node} = require 'dom'
+{node} = require 'lib/dom'
 
 w = unsafeWindow ? window
 

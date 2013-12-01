@@ -1,5 +1,5 @@
 :prelude
-	require! lang
+	require! <[lib/lang]>
 	posts-of = ->
 		name = it.split('/')[5 4]
 		name.1 .= humanize!

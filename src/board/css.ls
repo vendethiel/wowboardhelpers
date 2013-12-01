@@ -1,4 +1,4 @@
-{node} = require 'dom'
+{node} = require 'lib/dom'
 
 style = node 'style' type: 'text/css' innerHTML: '''
 /*slake:build#compile-ls embeds css*/

@@ -1,5 +1,5 @@
 require! '../tbody-regular'
-{$, $$, el} = require 'dom'
+{$, $$, el} = require 'lib/dom'
 template-hide-topic = require './templates/hide-topic'
 
 hidden-topics = (localStorage.getItem "hidden_topics" or "") / ";"

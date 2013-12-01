@@ -1,4 +1,4 @@
-require! lang
+require! <[lib/lang]>
 
 units = {[name, 1[name]!] for name in <[second minute hour day]>}
 

@@ -1,5 +1,5 @@
-require! <[lang parse-time]>
-{$$} = require 'dom'
+require! <[lib/lang lib/parse-time]>
+{$$} = require 'lib/dom'
 
 current = Date.now!
 post-titles = $$ '.post-title[data-date-string]'

@@ -1,5 +1,5 @@
 require! <[../textarea ../topic]>
-{$} = require 'dom'
+{$} = require 'lib/dom'
 
 submit = $ '.post [type=submit]'
 

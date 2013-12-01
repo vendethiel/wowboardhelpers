@@ -1,5 +1,5 @@
 require! <[../textarea ../topic]>
-{$, el} = require 'dom'
+{$, el} = require 'lib/dom'
 template-clear-textarea = require './templates/clear-textarea'
 
 clearer = el template-clear-textarea!

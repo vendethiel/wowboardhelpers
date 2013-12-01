@@ -1,4 +1,4 @@
-~ require! lang
+~ require! 'lib/lang'
 
 #cheatsheet-container
 	// that's meh but ...

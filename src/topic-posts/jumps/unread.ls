@@ -1,5 +1,5 @@
-require! <[../../topic ../../cheatsheet/bind-key]>
-{$$} = require 'dom'
+require! <[src/topic src/cheatsheet/bind-key]>
+{$$} = require 'lib/dom'
 
 # cache it cause the script will modify it
 if last-post-id = localStorage.getItem "topic_#{topic.dataset.id}"

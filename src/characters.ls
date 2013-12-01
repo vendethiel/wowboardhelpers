@@ -1,4 +1,4 @@
-{$$} = require 'dom'
+{$$} = require 'lib/dom'
 
 # get account's character names
 characters = [...$$ '.char-wrapper .name']

@@ -1,5 +1,5 @@
 require! <[../cheatsheet/bind-key ../textarea ../w]>
-{$} = require 'dom'
+{$} = require 'lib/dom'
 
 bind-key 'r' 'quick-quote' !->
 	if w.getSelection!toString!

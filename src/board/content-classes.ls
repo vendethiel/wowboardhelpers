@@ -1,5 +1,5 @@
 require! <[../topic ../forum]>
-{$} = require 'dom'
+{$} = require 'lib/dom'
 
 content = $ '#content'
 

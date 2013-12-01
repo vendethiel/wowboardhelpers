@@ -22,7 +22,7 @@ memes =
 	no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
 
 require! '../textarea'
-{$, el} = require 'dom'
+{$, el} = require 'lib/dom'
 
 template-memebox = require './templates/memebox'
 

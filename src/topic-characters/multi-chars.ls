@@ -1,4 +1,4 @@
-{$$, el} = require 'dom'
+{$$, el} = require 'lib/dom'
 template-multi-chars = require './templates/multi-chars'
 
 account-characters = if localStorage.getItem 'accountCharacters'

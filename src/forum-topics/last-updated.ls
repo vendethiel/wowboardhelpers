@@ -1,6 +1,6 @@
-require! <[fetch-siblings ../characters]>
-{simplify-time}:lang = require 'lang'
-{$, $$, el, node} = require 'dom'
+require! <[lib/fetch-siblings ../characters]>
+{simplify-time}:lang = require 'lib/lang'
+{$, $$, el, node} = require 'lib/dom'
 template-author = require './templates/author'
 template-tt-last-updated = require './templates/tt-last-updated'
 template-default-pagination = require './templates/default-pagination'

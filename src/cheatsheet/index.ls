@@ -1,5 +1,5 @@
 {cheatsheet} = require './bind-key'
-{$, el} = require 'dom'
+{$, el} = require 'lib/dom'
 
 #if cheatsheet.values!length
 if cheatsheet.size!

@@ -1,5 +1,5 @@
 require! './topic'
-{$} = require 'dom'
+{$} = require 'lib/dom'
 
 module.exports = if topic
 	$ '#post-edit textarea'

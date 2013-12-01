@@ -1,5 +1,5 @@
-require! 'autolink'
-{$$} = require 'dom'
+require! <[lib/autolink]>
+{$$} = require 'lib/dom'
 
 for post in $$ '.post-detail'
 	# should probably lookahead in autolink module, uh?

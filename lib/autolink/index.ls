@@ -82,7 +82,7 @@ rules = # indent looks nasty because array star is just `void =` which adds 2 in
 
 module.exports = el-autolink
 
-require! ajax
+require! <[lib/ajax]>
 function el-autolink(el)
 	try
 		h = autolink el.innerHTML

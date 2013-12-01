@@ -1,5 +1,5 @@
 require! '../topic'
-{$$} = require 'dom'
+{$$} = require 'lib/dom'
 
 #pagination
 pages = $$ '#forum-actions-top .ui-pagination li:not(.cap-item)'

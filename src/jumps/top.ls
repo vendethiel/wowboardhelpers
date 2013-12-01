@@ -1,5 +1,5 @@
 require! '../cheatsheet/bind-key'
-{$} = require 'dom'
+{$} = require 'lib/dom'
 
 bind-key 't' 'page-top' !->
 	$ '#logo' .scrollIntoView!

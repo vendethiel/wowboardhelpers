@@ -1,5 +1,5 @@
-require! <[../../cheatsheet/bind-key]>
-{$} = require 'dom'
+require! <[src/cheatsheet/bind-key]>
+{$} = require 'lib/dom'
 
 # account disabled
 unless $ 'a.button1.disabled'

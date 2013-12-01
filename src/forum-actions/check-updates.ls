@@ -1,5 +1,5 @@
-require! <[lang ../tbody-regular ajax]>
-{$, node} = require 'dom'
+require! <[lib/lang lib/ajax ../tbody-regular]>
+{$, node} = require 'lib/dom'
 
 # we DON'T delay parsing because server reponse won't be ordered
 first-topic-id = tbody-regular.children.0.id.slice 'postRow'length
