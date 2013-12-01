@@ -1,4 +1,4 @@
-require! <[fs LiveScript nephrite stylus esprima glob md5 escodegen]>
+require! <[fs LiveScript nephrite stylus uglify-js acorn]>
 {exec} = require 'child_process'
 cjs = require 'commonjs-everywhere'
 
@@ -28,8 +28,8 @@ ls-parse = (src, filename) ->
   catch {message} => errinfo "LiveScript (#filename): #message"
 
 en-ast = (fn) -> (src, filename) ->
-  try esprima.parse fn src.toString!, filename
-  catch {message} => errinfo "Esprima (#filename): #message"
+  try acorn.parse fn src.toString!, filename
+  catch {message} => errinfo "Acorn (#filename): #message"
 
 
 cjs-options =
@@ -52,11 +52,12 @@ processed = {}
 entry-point = modulefile
 last-changed = entry-point
 
-traverseDeps = cjs~traverseDependenciesSync
+traverse-deps = cjs~traverseDependencies
 bundle = cjs~bundle
 
 var ast, css, css-change
 
+ast-node = uglify-js.AST_Node
 task 'build' 'build userscript' !->
   if css-change or not css
     console.time 'CSS'
@@ -70,14 +71,16 @@ task 'build' 'build userscript' !->
   unless css-change
     try
       console.time 'CJS'
-      new-deps = traverseDeps last-changed, __dirname, cjs-options
+      new-deps = traverse-deps last-changed, __dirname, cjs-options
       for file of new-deps => processed[file] = new-deps[file]
 
       ast := bundle processed, entry-point, __dirname, cjs-options
       console.timeEnd 'CJS'
 
       console.time 'gen'
-      code = escodegen.generate ast
+      code = ast-node
+        .from_mozilla_ast ast
+        .print_to_string {+beautify}
       console.timeEnd 'gen'
     catch {message, stack}
       errinfo "Compilation: #message\n#stack"

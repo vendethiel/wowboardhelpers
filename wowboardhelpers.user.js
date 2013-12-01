@@ -151,25 +151,22 @@
  *  Now works with advanced mode
  *  Fix a bug when logged off
 */
-(function (global) {
+(function(global) {
     function require(file, parentModule) {
-        if ({}.hasOwnProperty.call(require.cache, file))
-            return require.cache[file];
+        if ({}.hasOwnProperty.call(require.cache, file)) return require.cache[file];
         var resolved = require.resolve(file);
-        if (!resolved)
-            throw new Error('Failed to resolve module ' + file);
+        if (!resolved) throw new Error("Failed to resolve module " + file);
         var module$ = {
-                id: file,
-                require: require,
-                filename: file,
-                exports: {},
-                loaded: false,
-                parent: parentModule,
-                children: []
-            };
-        if (parentModule)
-            parentModule.children.push(module$);
-        var dirname = file.slice(0, file.lastIndexOf('/') + 1);
+            id: file,
+            require: require,
+            filename: file,
+            exports: {},
+            loaded: false,
+            parent: parentModule,
+            children: []
+        };
+        if (parentModule) parentModule.children.push(module$);
+        var dirname = file.slice(0, file.lastIndexOf("/") + 1);
         require.cache[file] = module$.exports;
         resolved.call(module$.exports, module$, module$.exports, dirname, file);
         module$.loaded = true;
@@ -177,182 +174,124 @@
     }
     require.modules = {};
     require.cache = {};
-    require.resolve = function (file) {
+    require.resolve = function(file) {
         return {}.hasOwnProperty.call(require.modules, file) ? require.modules[file] : void 0;
     };
-    require.define = function (file, fn) {
+    require.define = function(file, fn) {
         require.modules[file] = fn;
     };
-    require.define('/src\\wowboardhelpers.ls', function (module, exports, __dirname, __filename) {
-        console.log('Ahhhh\u2026greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !');
-        console.time('wowboardhelpers');
-        console.time('WBH: Sugar');
-        require('/node_modules\\sugar\\release\\sugar-full.development.js', module);
+    require.define("/src/wowboardhelpers.ls", function(module, exports, __dirname, __filename) {
+        console.log("Ahhhh…greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !");
+        console.time("wowboardhelpers");
+        console.time("WBH: Sugar");
+        require("/node_modules/sugar/release/sugar-full.development.js", module);
         Object.extend();
-        Date.setLocale(location.href.split('/')[4]);
-        console.timeEnd('WBH: Sugar');
-        require('/src\\board\\content-classes.ls', module);
-        require('/src\\board\\css.ls', module);
-        require('/src\\jumps\\index.ls', module);
-        require('/src\\fix\\index.ls', module);
-        if (require('/src\\topic.ls', module)) {
-            require('/src\\topic-characters\\index.ls', module);
-            require('/src\\topic-posts\\index.ls', module);
-            if (require('/src\\textarea.ls', module)) {
-                require('/src\\reply\\index.ls', module);
+        Date.setLocale(location.href.split("/")[4]);
+        console.timeEnd("WBH: Sugar");
+        require("/src/board/content-classes.ls", module);
+        require("/src/board/css.ls", module);
+        require("/src/jumps/index.ls", module);
+        require("/src/fix/index.ls", module);
+        if (require("/src/topic.ls", module)) {
+            require("/src/topic-characters/index.ls", module);
+            require("/src/topic-posts/index.ls", module);
+            if (require("/src/textarea.ls", module)) {
+                require("/src/reply/index.ls", module);
             }
         }
-        if (require('/src\\forum.ls', module)) {
-            require('/src\\forum-actions\\index.ls', module);
-            require('/src\\forum-layout\\index.ls', module);
-            require('/src\\forum-topics\\index.ls', module);
-            require('/src\\forum-layout\\hide-mar.ls', module);
+        if (require("/src/forum.ls", module)) {
+            require("/src/forum-actions/index.ls", module);
+            require("/src/forum-layout/index.ls", module);
+            require("/src/forum-topics/index.ls", module);
+            require("/src/forum-layout/hide-mar.ls", module);
         }
-        require('/src\\cheatsheet\\index.ls', module);
-        console.timeEnd('wowboardhelpers');
+        require("/src/cheatsheet/index.ls", module);
+        console.timeEnd("wowboardhelpers");
     });
-    require.define('/src\\cheatsheet\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/cheatsheet/index.ls", function(module, exports, __dirname, __filename) {
         var cheatsheet, ref$, $, el, possibleDivs, templateCheatsheet, i$, len$, sel, that, x$, ul;
-        cheatsheet = require('/src\\cheatsheet\\bind-key.ls', module).cheatsheet;
-        ref$ = require('/lib\\dom\\index.ls', module), $ = ref$.$, el = ref$.el;
+        cheatsheet = require("/src/cheatsheet/bind-key.ls", module).cheatsheet;
+        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, el = ref$.el;
         if (cheatsheet.size()) {
-            possibleDivs = [
-                '.forum-info',
-                '.talkback form'
-            ];
-            templateCheatsheet = require('/src\\cheatsheet\\templates\\cheatsheet.ne', module);
+            possibleDivs = [ ".forum-info", ".talkback form" ];
+            templateCheatsheet = require("/src/cheatsheet/templates/cheatsheet.ne", module);
             for (i$ = 0, len$ = possibleDivs.length; i$ < len$; ++i$) {
                 sel = possibleDivs[i$];
                 if (that = $(sel)) {
-                    that.appendChild((x$ = el(templateCheatsheet({ cheatsheet: cheatsheet })), ul = x$.querySelector('ul'), ul.style.display = 'none', x$.querySelector('.toggler').onclick = fn$, x$));
+                    that.appendChild((x$ = el(templateCheatsheet({
+                        cheatsheet: cheatsheet
+                    })), ul = x$.querySelector("ul"), ul.style.display = "none", x$.querySelector(".toggler").onclick = fn$, 
+                    x$));
                     break;
                 }
             }
         }
         function fn$() {
-            return ul.style.display = [
-                'none',
-                ''
-            ].find(function (it) {
+            return ul.style.display = [ "none", "" ].find(function(it) {
                 return it !== ul.style.display;
             });
         }
     });
-    require.define('/src\\cheatsheet\\templates\\cheatsheet.ne', function (module, exports, __dirname, __filename) {
+    require.define("/src/cheatsheet/templates/cheatsheet.ne", function(module, exports, __dirname, __filename) {
         var lang, join;
-        lang = require('/lib\\lang\\index.ls', module);
-        join = function (it) {
+        lang = require("/lib/lang/index.ls", module);
+        join = function(it) {
             if (it) {
-                return it.join('');
+                return it.join("");
             } else {
-                return '';
+                return "";
             }
         };
-        module.exports = function (locals, extra) {
+        module.exports = function(locals, extra) {
             var key, val;
-            return '<div id="cheatsheet-container"><!-- that\'s meh but ...--><span class="clear"></span><div id="cheatsheet"><!-- what\'s wrong with you blizz ?--><a class="toggler ui-button button1"><span><span>' + (lang.cheatsheet || '') + '</span></span></a><ul>' + (join(function () {
+            return '<div id="cheatsheet-container"><!-- that\'s meh but ...--><span class="clear"></span><div id="cheatsheet"><!-- what\'s wrong with you blizz ?--><a class="toggler ui-button button1"><span><span>' + (lang.cheatsheet || "") + "</span></span></a><ul>" + (join(function() {
                 var ref$, results$ = [];
                 for (key in ref$ = locals.cheatsheet) {
                     val = ref$[key];
-                    results$.push('<li><b>' + (key || '') + '</b>: ' + val + '</li>');
+                    results$.push("<li><b>" + (key || "") + "</b>: " + val + "</li>");
                 }
                 return results$;
-            }()) || '') + '</ul></div></div>';
+            }()) || "") + "</ul></div></div>";
         };
     });
-    require.define('/lib\\lang\\index.ls', function (module, exports, __dirname, __filename) {
-        var l, langs, lang, split$ = ''.split;
-        l = split$.call(document.location, '/')[4];
+    require.define("/lib/lang/index.ls", function(module, exports, __dirname, __filename) {
+        var l, langs, lang, split$ = "".split;
+        l = split$.call(document.location, "/")[4];
         langs = {
-            fr: require('/lib\\lang\\fr.ls', module),
-            en: require('/lib\\lang\\en.ls', module)
+            fr: require("/lib/lang/fr.ls", module),
+            en: require("/lib/lang/en.ls", module)
         };
-        module.exports = lang = function () {
-            lang.displayName = 'lang';
+        module.exports = lang = function() {
+            lang.displayName = "lang";
             var ref$, prototype = lang.prototype, constructor = lang;
             import$(lang, (ref$ = langs[l]) != null ? ref$ : langs.en);
             function lang(it) {
                 var ref$;
                 return (ref$ = lang[it]) != null ? ref$ : (ref$ = lang[it.camelize(false)]) != null ? ref$ : it;
             }
-            lang.pluralize == null && (lang.pluralize = function (count, key) {
-                return Math.round(count) + ' ' + lang(key) + [count > 1.5 ? 's' : void 8];
+            lang.pluralize == null && (lang.pluralize = function(count, key) {
+                return Math.round(count) + " " + lang(key) + [ count > 1.5 ? "s" : void 8 ];
             });
-            lang.singularize == null && (lang.singularize = function (it) {
-                if (it[it.length - 1] === 's') {
+            lang.singularize == null && (lang.singularize = function(it) {
+                if (it[it.length - 1] === "s") {
                     return it.slice(0, -1);
                 } else {
                     return it;
                 }
             });
-            lang.simplifyTime = require('/lib\\lang\\simplify-time.ls', module);
+            lang.simplifyTime = require("/lib/lang/simplify-time.ls", module);
             return lang;
         }();
         function import$(obj, src) {
             var own = {}.hasOwnProperty;
-            for (var key in src)
-                if (own.call(src, key))
-                    obj[key] = src[key];
+            for (var key in src) if (own.call(src, key)) obj[key] = src[key];
             return obj;
         }
     });
-    require.define('/lib\\lang\\simplify-time.ls', function (module, exports, __dirname, __filename) {
+    require.define("/lib/lang/simplify-time.ls", function(module, exports, __dirname, __filename) {
         var timeTable;
-        timeTable = [
-            [
-                'heures',
-                'h'
-            ],
-            [
-                'heure',
-                'h'
-            ],
-            [
-                'houres',
-                'h'
-            ],
-            [
-                'hour',
-                'h'
-            ],
-            [
-                'minutes',
-                'm'
-            ],
-            [
-                'minute',
-                'm'
-            ],
-            [
-                'jours',
-                'j'
-            ],
-            [
-                'jour',
-                'j'
-            ],
-            [
-                'days',
-                'd'
-            ],
-            [
-                'day',
-                'd'
-            ],
-            [
-                'secondes',
-                's'
-            ],
-            [
-                'seconds',
-                's'
-            ],
-            [
-                'second',
-                's'
-            ]
-        ];
-        module.exports = function () {
+        timeTable = [ [ "heures", "h" ], [ "heure", "h" ], [ "houres", "h" ], [ "hour", "h" ], [ "minutes", "m" ], [ "minute", "m" ], [ "jours", "j" ], [ "jour", "j" ], [ "days", "d" ], [ "day", "d" ], [ "secondes", "s" ], [ "seconds", "s" ], [ "second", "s" ] ];
+        module.exports = function() {
             function simplifyTime(it) {
                 var i$, ref$, len$, ref1$, convertFrom, convertTo;
                 for (i$ = 0, len$ = (ref$ = timeTable).length; i$ < len$; ++i$) {
@@ -364,73 +303,73 @@
             return simplifyTime;
         }();
     });
-    require.define('/lib\\lang\\en.ls', function (module, exports, __dirname, __filename) {
+    require.define("/lib/lang/en.ls", function(module, exports, __dirname, __filename) {
         module.exports = {
             timeIndex: 0,
             timeOutdex: -1,
-            lastMessage: 'Last',
-            toggleSticky: 'Show/Hide stickies',
-            mar: 'Mark all as read',
-            fewSecondsAgo: 'few seconds ago',
-            newMessages: 'There are new message(s)',
-            checkingNew: 'Checking new messages ...',
-            noNew: 'No new message.',
-            otherCharacters: 'Other characters',
-            cheatsheet: 'Cheatsheet',
-            quickQuote: 'Quote the selected part',
-            jumpToLastRead: 'Jump to last read message',
-            jumpToPage: 'Jump to page',
-            pageNumber: 'Page number',
-            pageTop: 'Go to top',
-            pageBottom: 'Go to bottom',
-            login: 'Login',
-            newTopic: 'New topic'
+            lastMessage: "Last",
+            toggleSticky: "Show/Hide stickies",
+            mar: "Mark all as read",
+            fewSecondsAgo: "few seconds ago",
+            newMessages: "There are new message(s)",
+            checkingNew: "Checking new messages ...",
+            noNew: "No new message.",
+            otherCharacters: "Other characters",
+            cheatsheet: "Cheatsheet",
+            quickQuote: "Quote the selected part",
+            jumpToLastRead: "Jump to last read message",
+            jumpToPage: "Jump to page",
+            pageNumber: "Page number",
+            pageTop: "Go to top",
+            pageBottom: "Go to bottom",
+            login: "Login",
+            newTopic: "New topic"
         };
     });
-    require.define('/lib\\lang\\fr.ls', function (module, exports, __dirname, __filename) {
+    require.define("/lib/lang/fr.ls", function(module, exports, __dirname, __filename) {
         module.exports = {
             timeIndex: 3,
             timeOutdex: 0,
-            toggleSticky: 'Afficher/Cacher les post-its',
-            mar: 'Tout marquer comme lu',
-            newMessages: 'Il y a des nouveau(x) message(s)',
-            checkingNew: 'V\xe9rification des nouveaux messages ...',
-            noNew: 'Pas de nouveau message.',
-            fewSecondsAgo: 'il y a quelques secondes',
-            seconde: 'second',
-            second: 'seconde',
-            heure: 'hour',
-            hour: 'heure',
-            jour: 'day',
-            day: 'jour',
-            few: 'quelques',
-            lastMessage: 'Message',
+            toggleSticky: "Afficher/Cacher les post-its",
+            mar: "Tout marquer comme lu",
+            newMessages: "Il y a des nouveau(x) message(s)",
+            checkingNew: "Vérification des nouveaux messages ...",
+            noNew: "Pas de nouveau message.",
+            fewSecondsAgo: "il y a quelques secondes",
+            seconde: "second",
+            second: "seconde",
+            heure: "hour",
+            hour: "heure",
+            jour: "day",
+            day: "jour",
+            few: "quelques",
+            lastMessage: "Message",
             htmlOverrides: {
-                '.replies': 'REPS',
-                '.poster': 'Dernier'
+                ".replies": "REPS",
+                ".poster": "Dernier"
             },
-            otherCharacters: 'Autres personnages',
-            cheatsheet: 'Raccourcis',
-            quickQuote: 'Citer le bout de message s\xe9lectionn\xe9',
-            jumpToLastRead: 'Aller au dernier message lu',
-            jumpToPage: 'Aller \xe0 la page',
-            pageNumber: 'N\xb0 de la page',
-            pageTop: 'Haut de page',
-            pageBottom: 'Bas de page',
-            login: 'Connexion',
-            newTopic: 'Nouveau sujet'
+            otherCharacters: "Autres personnages",
+            cheatsheet: "Raccourcis",
+            quickQuote: "Citer le bout de message sélectionné",
+            jumpToLastRead: "Aller au dernier message lu",
+            jumpToPage: "Aller à la page",
+            pageNumber: "N° de la page",
+            pageTop: "Haut de page",
+            pageBottom: "Bas de page",
+            login: "Connexion",
+            newTopic: "Nouveau sujet"
         };
     });
-    require.define('/lib\\dom\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define("/lib/dom/index.ls", function(module, exports, __dirname, __filename) {
         module.exports = {
-            $: require('/lib\\dom\\$.ls', module),
-            $$: require('/lib\\dom\\$$.ls', module),
-            el: require('/lib\\dom\\el.ls', module),
-            node: require('/lib\\dom\\node.ls', module)
+            $: require("/lib/dom/$.ls", module),
+            $$: require("/lib/dom/$$.ls", module),
+            el: require("/lib/dom/el.ls", module),
+            node: require("/lib/dom/node.ls", module)
         };
     });
-    require.define('/lib\\dom\\node.ls', function (module, exports, __dirname, __filename) {
-        module.exports = function () {
+    require.define("/lib/dom/node.ls", function(module, exports, __dirname, __filename) {
+        module.exports = function() {
             function node(tag, props) {
                 props == null && (props = {});
                 return import$(document.createElement(tag), props);
@@ -439,50 +378,48 @@
         }();
         function import$(obj, src) {
             var own = {}.hasOwnProperty;
-            for (var key in src)
-                if (own.call(src, key))
-                    obj[key] = src[key];
+            for (var key in src) if (own.call(src, key)) obj[key] = src[key];
             return obj;
         }
     });
-    require.define('/lib\\dom\\el.ls', function (module, exports, __dirname, __filename) {
-        module.exports = function (it) {
+    require.define("/lib/dom/el.ls", function(module, exports, __dirname, __filename) {
+        module.exports = function(it) {
             var x$, e;
-            x$ = document.createElement('div');
+            x$ = document.createElement("div");
             try {
                 x$.innerHTML = it;
             } catch (e$) {
                 e = e$;
-                console.log('failing html', it);
+                console.log("failing html", it);
             }
             return x$.firstElementChild;
             return x$;
         };
     });
-    require.define('/lib\\dom\\$$.ls', function (module, exports, __dirname, __filename) {
-        module.exports = function (it, ctx) {
+    require.define("/lib/dom/$$.ls", function(module, exports, __dirname, __filename) {
+        module.exports = function(it, ctx) {
             ctx == null && (ctx = document);
             return ctx.querySelectorAll(it);
         };
     });
-    require.define('/lib\\dom\\$.ls', function (module, exports, __dirname, __filename) {
-        module.exports = function (it, ctx) {
+    require.define("/lib/dom/$.ls", function(module, exports, __dirname, __filename) {
+        module.exports = function(it, ctx) {
             ctx == null && (ctx = document);
             return ctx.querySelector(it);
         };
     });
-    require.define('/src\\cheatsheet\\bind-key.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/cheatsheet/bind-key.ls", function(module, exports, __dirname, __filename) {
         var lang, $, html, bindKey, cheatsheet, join$ = [].join;
-        lang = require('/lib\\lang\\index.ls', module);
-        $ = require('/lib\\dom\\index.ls', module).$;
-        html = $('html');
-        module.exports = bindKey = function (binds, langKey, cb) {
+        lang = require("/lib/lang/index.ls", module);
+        $ = require("/lib/dom/index.ls", module).$;
+        html = $("html");
+        module.exports = bindKey = function(binds, langKey, cb) {
             var codes;
-            cheatsheet[join$.call(binds.toUpperCase().chars(), ', ')] = lang(langKey);
-            codes = binds.toUpperCase().codes().map(function (it) {
+            cheatsheet[join$.call(binds.toUpperCase().chars(), ", ")] = lang(langKey);
+            codes = binds.toUpperCase().codes().map(function(it) {
                 return 0 + it;
             });
-            document.addEventListener('keydown', function (it) {
+            document.addEventListener("keydown", function(it) {
                 if (it.altKey || it.ctrlKey || it.shiftKey) {
                     return;
                 }
@@ -497,33 +434,31 @@
             });
         };
         bindKey.cheatsheet = cheatsheet = {};
-        function in$(x, arr) {
-            var i = -1, l = arr.length >>> 0;
-            while (++i < l)
-                if (x === arr[i] && i in arr)
-                    return true;
+        function in$(x, xs) {
+            var i = -1, l = xs.length >>> 0;
+            while (++i < l) if (x === xs[i]) return true;
             return false;
         }
     });
-    require.define('/src\\forum-layout\\hide-mar.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-layout/hide-mar.ls", function(module, exports, __dirname, __filename) {
         var $;
-        $ = require('/lib\\dom\\index.ls', module).$;
-        if (!$('.regular > .unread:not(.hidden)')) {
-            require('/src\\forum-options.ls', module).removeChild(require('/src\\forum-layout\\mar.ls', module));
+        $ = require("/lib/dom/index.ls", module).$;
+        if (!$(".regular > .unread:not(.hidden)")) {
+            require("/src/forum-options.ls", module).removeChild(require("/src/forum-layout/mar.ls", module));
         }
     });
-    require.define('/src\\forum-layout\\mar.ls', function (module, exports, __dirname, __filename) {
-        var lang, fetchSiblings, forumOptions, tbodyRegular, node, allRead, buttonMar, x$, split$ = ''.split;
-        lang = require('/lib\\lang\\index.ls', module);
-        fetchSiblings = require('/lib\\fetch-siblings\\index.ls', module);
-        forumOptions = require('/src\\forum-options.ls', module);
-        tbodyRegular = require('/src\\tbody-regular.ls', module);
-        node = require('/lib\\dom\\index.ls', module).node;
+    require.define("/src/forum-layout/mar.ls", function(module, exports, __dirname, __filename) {
+        var lang, fetchSiblings, forumOptions, tbodyRegular, node, allRead, buttonMar, x$, split$ = "".split;
+        lang = require("/lib/lang/index.ls", module);
+        fetchSiblings = require("/lib/fetch-siblings/index.ls", module);
+        forumOptions = require("/src/forum-options.ls", module);
+        tbodyRegular = require("/src/tbody-regular.ls", module);
+        node = require("/lib/dom/index.ls", module).node;
         allRead = false;
-        module.exports = buttonMar = node('a', {
-            innerHTML: 'MAR',
+        module.exports = buttonMar = node("a", {
+            innerHTML: "MAR",
             title: lang.mar,
-            onclick: function () {
+            onclick: function() {
                 var i$, ref$, len$, row, topicId, siblings, x$;
                 if (allRead) {
                     return;
@@ -531,43 +466,45 @@
                 allRead = !allRead;
                 for (i$ = 0, len$ = (ref$ = tbodyRegular.children).length; i$ < len$; ++i$) {
                     row = ref$[i$];
-                    if (row.classList.contains('read')) {
+                    if (row.classList.contains("read")) {
                         continue;
                     }
-                    topicId = row.id.slice('postRow'.length);
-                    siblings = fetchSiblings(row.children[0], { slice: 5 });
-                    x$ = bind$(localStorage, 'setItem');
-                    x$('topic_' + topicId, split$.call(siblings.lastPost.children[0].href, '#')[1]);
-                    x$('topic_lp_' + topicId, siblings.author.innerHTML.trim());
-                    row.classList.add('read');
+                    topicId = row.id.slice("postRow".length);
+                    siblings = fetchSiblings(row.children[0], {
+                        slice: 5
+                    });
+                    x$ = bind$(localStorage, "setItem");
+                    x$("topic_" + topicId, split$.call(siblings.lastPost.children[0].href, "#")[1]);
+                    x$("topic_lp_" + topicId, siblings.author.innerHTML.trim());
+                    row.classList.add("read");
                 }
                 forumOptions.removeChild(buttonMar);
             }
         });
         x$ = buttonMar;
-        x$.style.cursor = 'pointer';
+        x$.style.cursor = "pointer";
         forumOptions.appendChild(x$);
         function bind$(obj, key, target) {
-            return function () {
+            return function() {
                 return (target || obj)[key].apply(obj, arguments);
             };
         }
     });
-    require.define('/src\\tbody-regular.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/tbody-regular.ls", function(module, exports, __dirname, __filename) {
         var $;
-        $ = require('/lib\\dom\\index.ls', module).$;
-        module.exports = $('tbody.regular');
+        $ = require("/lib/dom/index.ls", module).$;
+        module.exports = $("tbody.regular");
     });
-    require.define('/src\\forum-options.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-options.ls", function(module, exports, __dirname, __filename) {
         var $;
-        $ = require('/lib\\dom\\index.ls', module).$;
-        module.exports = $('.forum-options');
+        $ = require("/lib/dom/index.ls", module).$;
+        module.exports = $(".forum-options");
     });
-    require.define('/lib\\fetch-siblings\\index.ls', function (module, exports, __dirname, __filename) {
-        module.exports = function () {
+    require.define("/lib/fetch-siblings/index.ls", function(module, exports, __dirname, __filename) {
+        module.exports = function() {
             function fetchSiblings(elem, arg$) {
                 var slice, ref$, indexBy, results$ = {};
-                slice = (ref$ = arg$.slice) != null ? ref$ : 0, indexBy = (ref$ = arg$.indexBy) != null ? ref$ : 'className';
+                slice = (ref$ = arg$.slice) != null ? ref$ : 0, indexBy = (ref$ = arg$.indexBy) != null ? ref$ : "className";
                 while (elem != null && (elem = elem.nextElementSibling)) {
                     results$[elem[indexBy].slice(slice)] = elem;
                 }
@@ -576,20 +513,20 @@
             return fetchSiblings;
         }();
     });
-    require.define('/src\\forum-topics\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-topics/index.ls", function(module, exports, __dirname, __filename) {
         var lastUpdated, moveRedirects, hideTopic, times;
-        lastUpdated = require('/src\\forum-topics\\last-updated.ls', module);
-        moveRedirects = require('/src\\forum-topics\\move-redirects.ls', module);
-        hideTopic = require('/src\\forum-topics\\hide-topic.ls', module);
-        times = require('/src\\forum-topics\\times.ls', module);
+        lastUpdated = require("/src/forum-topics/last-updated.ls", module);
+        moveRedirects = require("/src/forum-topics/move-redirects.ls", module);
+        hideTopic = require("/src/forum-topics/hide-topic.ls", module);
+        times = require("/src/forum-topics/times.ls", module);
     });
-    require.define('/src\\forum-topics\\times.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-topics/times.ls", function(module, exports, __dirname, __filename) {
         var lang, parseTime, $$, current, postTitles, dates, i$, len$, postTitle, postTimestamp, date, timestamp;
-        lang = require('/lib\\lang\\index.ls', module);
-        parseTime = require('/lib\\parse-time\\index.ls', module);
-        $$ = require('/lib\\dom\\index.ls', module).$$;
+        lang = require("/lib/lang/index.ls", module);
+        parseTime = require("/lib/parse-time/index.ls", module);
+        $$ = require("/lib/dom/index.ls", module).$$;
         current = Date.now();
-        postTitles = $$('.post-title[data-date-string]');
+        postTitles = $$(".post-title[data-date-string]");
         dates = [];
         for (i$ = 0, len$ = postTitles.length; i$ < len$; ++i$) {
             postTitle = postTitles[i$];
@@ -599,90 +536,85 @@
             dates[timestamp] = date;
             postTitle.dataset.timestamp = timestamp;
         }
-        (function () {
+        (function() {
             var i$, ref$, len$, postTitle, date, results$ = [];
             for (i$ = 0, len$ = (ref$ = postTitles).length; i$ < len$; ++i$) {
                 postTitle = ref$[i$];
                 date = dates[postTitle.dataset.timestamp];
-                results$.push(postTitle.querySelector('.relative-date').innerHTML = date.relative());
+                results$.push(postTitle.querySelector(".relative-date").innerHTML = date.relative());
             }
             return results$;
-        }.every(10..seconds()));
+        }).every(10..seconds());
     });
-    require.define('/lib\\parse-time\\index.ls', function (module, exports, __dirname, __filename) {
-        var lang, units, res$, i$, ref$, len$, name, split$ = ''.split;
-        lang = require('/lib\\lang\\index.ls', module);
+    require.define("/lib/parse-time/index.ls", function(module, exports, __dirname, __filename) {
+        var lang, units, res$, i$, ref$, len$, name, split$ = "".split;
+        lang = require("/lib/lang/index.ls", module);
         res$ = {};
-        for (i$ = 0, len$ = (ref$ = [
-                'second',
-                'minute',
-                'hour',
-                'day'
-            ]).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = [ "second", "minute", "hour", "day" ]).length; i$ < len$; ++i$) {
             name = ref$[i$];
             res$[name] = 1[name]();
         }
         units = res$;
-        module.exports = function (it) {
+        module.exports = function(it) {
             var total, i$, ref$, len$, timespan, ref1$, count, unit;
             total = 0;
-            for (i$ = 0, len$ = (ref$ = split$.call(it, ', ')).length; i$ < len$; ++i$) {
+            for (i$ = 0, len$ = (ref$ = split$.call(it, ", ")).length; i$ < len$; ++i$) {
                 timespan = ref$[i$];
-                ref1$ = split$.call(timespan, ' '), count = ref1$[0], unit = ref1$[1];
+                ref1$ = split$.call(timespan, " "), count = ref1$[0], unit = ref1$[1];
                 count = +count;
-                if (count === lang('few')) {
+                if (count === lang("few")) {
                     count = 5;
-                    unit = lang('second');
+                    unit = lang("second");
                 }
                 total += count * units[lang(lang.singularize(unit))];
             }
             return total;
         };
     });
-    require.define('/src\\forum-topics\\hide-topic.ls', function (module, exports, __dirname, __filename) {
-        var tbodyRegular, ref$, $, $$, el, templateHideTopic, hiddenTopics, i$, len$, postPages, that, tr, topicId, split$ = ''.split, join$ = [].join;
-        tbodyRegular = require('/src\\tbody-regular.ls', module);
-        ref$ = require('/lib\\dom\\index.ls', module), $ = ref$.$, $$ = ref$.$$, el = ref$.el;
-        templateHideTopic = require('/src\\forum-topics\\templates\\hide-topic.ne', module);
-        hiddenTopics = split$.call(localStorage.getItem('hidden_topics') || '', ';');
+    require.define("/src/forum-topics/hide-topic.ls", function(module, exports, __dirname, __filename) {
+        var tbodyRegular, ref$, $, $$, el, templateHideTopic, hiddenTopics, i$, len$, postPages, that, tr, topicId, split$ = "".split, join$ = [].join;
+        tbodyRegular = require("/src/tbody-regular.ls", module);
+        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, $$ = ref$.$$, el = ref$.el;
+        templateHideTopic = require("/src/forum-topics/templates/hide-topic.ne", module);
+        hiddenTopics = split$.call(localStorage.getItem("hidden_topics") || "", ";");
         function saveHiddens() {
-            localStorage.setItem('hidden_topics', join$.call(hiddenTopics, ';'));
+            localStorage.setItem("hidden_topics", join$.call(hiddenTopics, ";"));
         }
         function hide(it) {
             var that;
             it.parentNode.removeChild(it);
             tbodyRegular.appendChild(it);
-            it.className += ' hidden';
-            if (that = it.querySelector('.last-read')) {
+            it.className += " hidden";
+            if (that = it.querySelector(".last-read")) {
                 that.parentNode.removeChild(that);
             }
         }
-        for (i$ = 0, len$ = (ref$ = $$('tbody.regular .post-pages')).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = $$("tbody.regular .post-pages")).length; i$ < len$; ++i$) {
             postPages = ref$[i$];
-            if (that = postPages.querySelector('.last-read')) {
+            if (that = postPages.querySelector(".last-read")) {
                 postPages.removeChild(that);
             }
             tr = postPages.parentNode;
-            topicId = tr.id.slice('postRow'.length);
+            topicId = tr.id.slice("postRow".length);
             if (in$(topicId, hiddenTopics)) {
                 hide(tr);
             }
             fn$.call(this, tr, topicId, postPages);
         }
-        if ($('tbody.regular tr:not(.hidden):not(.read)')) {
-            clearTimeout(require('/src\\forum-actions\\check-updates.ls', module));
+        if ($("tbody.regular tr:not(.hidden):not(.read)")) {
+            clearTimeout(require("/src/forum-actions/check-updates.ls", module));
         }
-        function in$(x, arr) {
-            var i = -1, l = arr.length >>> 0;
-            while (++i < l)
-                if (x === arr[i] && i in arr)
-                    return true;
+        function in$(x, xs) {
+            var i = -1, l = xs.length >>> 0;
+            while (++i < l) if (x === xs[i]) return true;
             return false;
         }
         function fn$(tr, topicId, postPages) {
             var x$;
-            x$ = el(templateHideTopic({ hidden: in$(topicId, hiddenTopics) }));
-            x$.onclick = function () {
+            x$ = el(templateHideTopic({
+                hidden: in$(topicId, hiddenTopics)
+            }));
+            x$.onclick = function() {
                 if (in$(topicId, hiddenTopics)) {
                     postPages.removeChild(x$);
                     hiddenTopics.splice(hiddenTopics.indexOf(topicId), 1);
@@ -695,131 +627,141 @@
             postPages.insertBefore(x$, postPages.children[0]);
         }
     });
-    require.define('/src\\forum-actions\\check-updates.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-actions/check-updates.ls", function(module, exports, __dirname, __filename) {
         var lang, ajax, tbodyRegular, ref$, $, node, firstTopicId, trHtml, aEndHtml, tbodyHtml, x$, h1, refresh, timeout;
-        lang = require('/lib\\lang\\index.ls', module);
-        ajax = require('/lib\\ajax\\index.ls', module);
-        tbodyRegular = require('/src\\tbody-regular.ls', module);
-        ref$ = require('/lib\\dom\\index.ls', module), $ = ref$.$, node = ref$.node;
-        firstTopicId = tbodyRegular.children[0].id.slice('postRow'.length);
+        lang = require("/lib/lang/index.ls", module);
+        ajax = require("/lib/ajax/index.ls", module);
+        tbodyRegular = require("/src/tbody-regular.ls", module);
+        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, node = ref$.node;
+        firstTopicId = tbodyRegular.children[0].id.slice("postRow".length);
         trHtml = '<tr id="postRow' + firstTopicId;
         aEndHtml = 'data-tooltip-options=\'{"location": "mouse"}\'>';
         tbodyHtml = '<tbody class="regular">';
-        x$ = $('#forum-actions-top');
-        x$.insertBefore(h1 = node('h1'), (ref$ = x$.children)[ref$.length - 1]);
-        refresh = function () {
-            return ajax.get(document.location, function () {
+        x$ = $("#forum-actions-top");
+        x$.insertBefore(h1 = node("h1"), (ref$ = x$.children)[ref$.length - 1]);
+        refresh = function() {
+            return ajax.get(document.location, function() {
                 var afterRegular, startPos, title;
                 if (this.status !== 200) {
-                    console.log('encountered status ' + this.status + ' while checking for updates; forum might be unstable');
+                    console.log("encountered status " + this.status + " while checking for updates; forum might be unstable");
                     return;
                 }
                 h1.innerHTML = lang.checkingNew;
                 afterRegular = this.response.slice(tbodyHtml.length + this.response.indexOf(tbodyHtml)).trim();
                 if (afterRegular.startsWith(trHtml)) {
-                    h1.innerHTML += ' <u>' + lang.noNew + '</u>';
-                    setTimeout(function () {
-                        return h1.innerHTML = '';
+                    h1.innerHTML += " <u>" + lang.noNew + "</u>";
+                    setTimeout(function() {
+                        return h1.innerHTML = "";
                     }, 1500);
                     setTimeout(refresh, timeout);
                 } else {
                     startPos = aEndHtml.length + afterRegular.indexOf(aEndHtml);
                     afterRegular = afterRegular.slice(startPos);
-                    title = afterRegular.to(afterRegular.indexOf('<')).trim();
-                    h1.innerHTML = '<a href=\'' + document.location + '\'>' + lang.newMessages + '</a> : ' + [title.length > 30 ? '<br />' : void 8] + title;
+                    title = afterRegular.to(afterRegular.indexOf("<")).trim();
+                    h1.innerHTML = "<a href='" + document.location + "'>" + lang.newMessages + "</a> : " + [ title.length > 30 ? "<br />" : void 8 ] + title;
                 }
             });
         };
         timeout = 15..seconds();
         module.exports = setTimeout(refresh, timeout);
     });
-    require.define('/lib\\ajax\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define("/lib/ajax/index.ls", function(module, exports, __dirname, __filename) {
         module.exports = {
-            get: function (url, success) {
+            get: function(url, success) {
                 var x$;
                 x$ = new XMLHttpRequest();
-                x$.open('GET', url);
+                x$.open("GET", url);
                 x$.onload = success;
                 x$.send();
                 return x$;
             }
         };
     });
-    require.define('/src\\forum-topics\\templates\\hide-topic.ne', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-topics/templates/hide-topic.ne", function(module, exports, __dirname, __filename) {
         var join;
-        join = function (it) {
+        join = function(it) {
             if (it) {
-                return it.join('');
+                return it.join("");
             } else {
-                return '';
+                return "";
             }
         };
-        module.exports = function (locals, extra) {
-            return '' + ((locals.hidden ? '<a class="last-read show-topic">\u2713</a>' : '<a class="last-read hide-topic">X</a>') || '');
+        module.exports = function(locals, extra) {
+            return "" + ((locals.hidden ? '<a class="last-read show-topic">✓</a>' : '<a class="last-read hide-topic">X</a>') || "");
         };
     });
-    require.define('/src\\forum-topics\\move-redirects.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-topics/move-redirects.ls", function(module, exports, __dirname, __filename) {
         var tbodyRegular, i$, ref$, len$, status, tr;
-        tbodyRegular = require('/src\\tbody-regular.ls', module);
-        for (i$ = 0, len$ = (ref$ = tbodyRegular.querySelectorAll('.post-status')).length; i$ < len$; ++i$) {
+        tbodyRegular = require("/src/tbody-regular.ls", module);
+        for (i$ = 0, len$ = (ref$ = tbodyRegular.querySelectorAll(".post-status")).length; i$ < len$; ++i$) {
             status = ref$[i$];
             tr = status.parentNode.parentNode;
-            tr.className += ' hidden redirect';
+            tr.className += " hidden redirect";
             tbodyRegular.removeChild(tr);
             tbodyRegular.appendChild(tr);
         }
     });
-    require.define('/src\\forum-topics\\last-updated.ls', function (module, exports, __dirname, __filename) {
-        var fetchSiblings, characters, lang, simplifyTime, ref$, $, $$, el, node, templateAuthor, templateTtLastUpdated, templateDefaultPagination, lastPostTh, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, hasUnread, i$, len$, post, children, div, a, td, lastPostTd, topicId, ref1$, pages, lastPost, lastPostLink, replies, author, postCount, postOnly, text, isCm, that, authorName, inlineText, simplifiedTime, state, out$ = typeof exports != 'undefined' && exports || this, split$ = ''.split, join$ = [].join, slice$ = [].slice;
-        fetchSiblings = require('/lib\\fetch-siblings\\index.ls', module);
-        characters = require('/src\\characters.ls', module);
-        lang = require('/lib\\lang\\index.ls', module), simplifyTime = lang.simplifyTime;
-        ref$ = require('/lib\\dom\\index.ls', module), $ = ref$.$, $$ = ref$.$$, el = ref$.el, node = ref$.node;
-        templateAuthor = require('/src\\forum-topics\\templates\\author.ne', module);
-        templateTtLastUpdated = require('/src\\forum-topics\\templates\\tt-last-updated.ne', module);
-        templateDefaultPagination = require('/src\\forum-topics\\templates\\default-pagination.ne', module);
-        out$.lastPostTh = lastPostTh = node('td', {
-            className: 'last-post-th',
+    require.define("/src/forum-topics/last-updated.ls", function(module, exports, __dirname, __filename) {
+        var fetchSiblings, characters, lang, simplifyTime, ref$, $, $$, el, node, templateAuthor, templateTtLastUpdated, templateDefaultPagination, lastPostTh, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, hasUnread, i$, len$, post, children, div, a, td, lastPostTd, topicId, ref1$, pages, lastPost, lastPostLink, replies, author, postCount, postOnly, text, isCm, that, authorName, inlineText, simplifiedTime, state, out$ = typeof exports != "undefined" && exports || this, split$ = "".split, join$ = [].join, slice$ = [].slice;
+        fetchSiblings = require("/lib/fetch-siblings/index.ls", module);
+        characters = require("/src/characters.ls", module);
+        lang = require("/lib/lang/index.ls", module), simplifyTime = lang.simplifyTime;
+        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, $$ = ref$.$$, el = ref$.el, 
+        node = ref$.node;
+        templateAuthor = require("/src/forum-topics/templates/author.ne", module);
+        templateTtLastUpdated = require("/src/forum-topics/templates/tt-last-updated.ne", module);
+        templateDefaultPagination = require("/src/forum-topics/templates/default-pagination.ne", module);
+        out$.lastPostTh = lastPostTh = node("td", {
+            className: "last-post-th",
             innerHTML: lang.lastMessage
         });
-        $('.post-th').appendChild(lastPostTh);
+        $(".post-th").appendChild(lastPostTh);
         TSTATE_UNK = 0;
         TSTATE_ALR = 1;
         TSTATE_CHK = 2;
         hasUnread = false;
-        for (i$ = 0, len$ = (ref$ = document.getElementsByClassName('post-title')).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = document.getElementsByClassName("post-title")).length; i$ < len$; ++i$) {
             post = ref$[i$], children = post.children, div = children[0], a = children[1], td = post.parentNode;
             if (children.length > 2) {
-                lastPostTd = node('td', {
-                    className: 'post-last-updated',
-                    innerHTML: ' '
+                lastPostTd = node("td", {
+                    className: "post-last-updated",
+                    innerHTML: " "
                 });
                 td.appendChild(lastPostTd);
                 continue;
             }
-            topicId = div.id.slice('thread_tt_'.length);
-            ref1$ = fetchSiblings(post, { slice: 5 }), pages = ref1$.pages, lastPost = ref1$.lastPost, lastPostLink = lastPost.children[0], replies = ref1$.replies, author = ref1$.author;
-            postCount = split$.call(lastPostLink.href, '#')[1];
-            if (!pages.querySelector('ul')) {
-                pages.innerHTML = templateDefaultPagination({ href: a.href });
+            topicId = div.id.slice("thread_tt_".length);
+            ref1$ = fetchSiblings(post, {
+                slice: 5
+            }), pages = ref1$.pages, lastPost = ref1$.lastPost, lastPostLink = lastPost.children[0], 
+            replies = ref1$.replies, author = ref1$.author;
+            postCount = split$.call(lastPostLink.href, "#")[1];
+            if (!pages.querySelector("ul")) {
+                pages.innerHTML = templateDefaultPagination({
+                    href: a.href
+                });
             }
             postOnly = false;
-            text = split$.call(div.querySelector('.tt_info').innerHTML, '\n');
-            text = text[2].trim().length ? text[2] : (postOnly = true, div.querySelector('.tt_time').innerHTML);
+            text = split$.call(div.querySelector(".tt_info").innerHTML, "\n");
+            text = text[2].trim().length ? text[2] : (postOnly = true, div.querySelector(".tt_time").innerHTML);
             isCm = false;
-            if (that = lastPostLink.querySelector('span')) {
+            if (that = lastPostLink.querySelector("span")) {
                 lastPostLink = that;
                 isCm = true;
             }
-            text = text.replace(RegExp('(' + (authorName = lastPostLink.innerHTML.trim()) + ')'), fn$);
+            text = text.replace(RegExp("(" + (authorName = lastPostLink.innerHTML.trim()) + ")"), fn$);
             inlineText = text;
             if (!postOnly) {
-                inlineText = inlineText.slice(text.indexOf('(') + 1, -1);
+                inlineText = inlineText.slice(text.indexOf("(") + 1, -1);
             }
-            simplifiedTime = inlineText.has('/') ? inlineText : (simplifiedTime = join$.call(slice$.call(split$.call(inlineText, ' '), lang.timeIndex, lang.timeOutdex - 1 + 1 || 9000000000), ' '), text = text.replace(inlineText, '<span class=\'relative-date\'>' + inlineText + '</span>'), post.dataset.dateString = simplifiedTime, simplifyTime(simplifiedTime));
-            post.appendChild(el(templateTtLastUpdated({ text: text })));
-            td.appendChild(node('td', {
-                className: 'post-last-updated',
+            simplifiedTime = inlineText.has("/") ? inlineText : (simplifiedTime = join$.call(slice$.call(split$.call(inlineText, " "), lang.timeIndex, lang.timeOutdex - 1 + 1 || 9e9), " "), 
+            text = text.replace(inlineText, "<span class='relative-date'>" + inlineText + "</span>"), 
+            post.dataset.dateString = simplifiedTime, simplifyTime(simplifiedTime));
+            post.appendChild(el(templateTtLastUpdated({
+                text: text
+            })));
+            td.appendChild(node("td", {
+                className: "post-last-updated",
                 innerHTML: simplifiedTime
             }));
             state = checkTopic(topicId, postCount, authorName);
@@ -834,33 +776,29 @@
                 }
             }
             if (state === TSTATE_CHK) {
-                td.className = 'read';
-                if (that = pages.querySelector('.last-read')) {
+                td.className = "read";
+                if (that = pages.querySelector(".last-read")) {
                     pages.removeChild(that);
                 }
             } else {
                 hasUnread = true;
-                td.className = 'unread';
+                td.className = "unread";
             }
             if (state !== TSTATE_UNK) {
-                a.href = (ref1$ = pages.getElementsByTagName('a'))[ref1$.length - 1].href;
+                a.href = (ref1$ = pages.getElementsByTagName("a"))[ref1$.length - 1].href;
             }
             markState(post, state);
         }
         function markState(node, state) {
             var innerHTML, states;
             innerHTML = node.innerHTML;
-            states = [
-                '?',
-                '!',
-                '\u2713'
-            ];
-            node.innerHTML = '<b>[' + states[state] + ']</b> ' + innerHTML;
+            states = [ "?", "!", "✓" ];
+            node.innerHTML = "<b>[" + states[state] + "]</b> " + innerHTML;
         }
         function checkTopic(id, count, lastPoster) {
             var ref$;
-            switch (ref$ = [localStorage.getItem('topic_' + id)], false) {
-            case !function (it) {
+            switch (ref$ = [ localStorage.getItem("topic_" + id) ], false) {
+              case !function(it) {
                     return it > count;
                 }(ref$[0]):
                 if (lastPoster === getLastPoster(id)) {
@@ -869,24 +807,25 @@
                     return TSTATE_ALR;
                 }
                 break;
-            case !function (it) {
+
+              case !function(it) {
                     return it === count;
                 }(ref$[0]):
                 return TSTATE_CHK;
-            case !(0 === ref$[0] || null === ref$[0]):
+
+              case !(0 === ref$[0] || null === ref$[0]):
                 return TSTATE_UNK;
-            default:
+
+              default:
                 return TSTATE_ALR;
             }
         }
         function getLastPoster(it) {
-            return localStorage.getItem('topic_lp_' + it);
+            return localStorage.getItem("topic_lp_" + it);
         }
-        function in$(x, arr) {
-            var i = -1, l = arr.length >>> 0;
-            while (++i < l)
-                if (x === arr[i] && i in arr)
-                    return true;
+        function in$(x, xs) {
+            var i = -1, l = xs.length >>> 0;
+            while (++i < l) if (x === xs[i]) return true;
             return false;
         }
         function fn$(it) {
@@ -897,289 +836,265 @@
             });
         }
     });
-    require.define('/src\\forum-topics\\templates\\default-pagination.ne', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-topics/templates/default-pagination.ne", function(module, exports, __dirname, __filename) {
         var join;
-        join = function (it) {
+        join = function(it) {
             if (it) {
-                return it.join('');
+                return it.join("");
             } else {
-                return '';
+                return "";
             }
         };
-        module.exports = function (locals, extra) {
+        module.exports = function(locals, extra) {
             return '<ul class="ui-pagination"><li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li></ul>';
         };
     });
-    require.define('/src\\forum-topics\\templates\\tt-last-updated.ne', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-topics/templates/tt-last-updated.ne", function(module, exports, __dirname, __filename) {
         var join;
-        join = function (it) {
+        join = function(it) {
             if (it) {
-                return it.join('');
+                return it.join("");
             } else {
-                return '';
+                return "";
             }
         };
-        module.exports = function (locals, extra) {
-            return '<div class="tt-last-updated"><br/>' + (locals.text || '') + '</div>';
+        module.exports = function(locals, extra) {
+            return '<div class="tt-last-updated"><br/>' + (locals.text || "") + "</div>";
         };
     });
-    require.define('/src\\forum-topics\\templates\\author.ne', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-topics/templates/author.ne", function(module, exports, __dirname, __filename) {
         var join;
-        join = function (it) {
+        join = function(it) {
             if (it) {
-                return it.join('');
+                return it.join("");
             } else {
-                return '';
+                return "";
             }
         };
-        module.exports = function (locals, extra) {
-            return '    <span class="' + [
-                'poster',
-                locals.own ? 'own-poster' : void 8,
-                locals.cm ? 'type-blizzard' : void 8
-            ].join(' ') + '">' + ((locals.cm ? '<img src="/wow/static/images/layout/cms/icon_blizzard.gif" alt="CM"/>' : void 8) || '') + '\n' + (locals.name || '') + '</span>';
+        module.exports = function(locals, extra) {
+            return '    <span class="' + [ "poster", locals.own ? "own-poster" : void 8, locals.cm ? "type-blizzard" : void 8 ].join(" ") + '">' + ((locals.cm ? '<img src="/wow/static/images/layout/cms/icon_blizzard.gif" alt="CM"/>' : void 8) || "") + "\n" + (locals.name || "") + "</span>";
         };
     });
-    require.define('/src\\characters.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/characters.ls", function(module, exports, __dirname, __filename) {
         var $$, characters, slice$ = [].slice;
-        $$ = require('/lib\\dom\\index.ls', module).$$;
-        characters = slice$.call($$('.char-wrapper .name'));
+        $$ = require("/lib/dom/index.ls", module).$$;
+        characters = slice$.call($$(".char-wrapper .name"));
         if (characters.length) {
-            characters = characters.map('innerHTML');
+            characters = characters.map("innerHTML");
         }
         module.exports = characters;
     });
-    require.define('/src\\forum-layout\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-layout/index.ls", function(module, exports, __dirname, __filename) {
         var mar, moveActions, setView, stickies;
-        mar = require('/src\\forum-layout\\mar.ls', module);
-        moveActions = require('/src\\forum-layout\\move-actions.ls', module);
-        setView = require('/src\\forum-layout\\set-view.ls', module);
-        stickies = require('/src\\forum-layout\\stickies.ls', module);
+        mar = require("/src/forum-layout/mar.ls", module);
+        moveActions = require("/src/forum-layout/move-actions.ls", module);
+        setView = require("/src/forum-layout/set-view.ls", module);
+        stickies = require("/src/forum-layout/stickies.ls", module);
     });
-    require.define('/src\\forum-layout\\stickies.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-layout/stickies.ls", function(module, exports, __dirname, __filename) {
         var lang, forumOptions, ref$, $, node, sticky, buttonSticky, x$;
-        lang = require('/lib\\lang\\index.ls', module);
-        forumOptions = require('/src\\forum-options.ls', module);
-        ref$ = require('/lib\\dom\\index.ls', module), $ = ref$.$, node = ref$.node;
-        sticky = $('.sticky');
-        if ('show' !== localStorage.getItem('show-stickies')) {
-            sticky.style.display = 'none';
+        lang = require("/lib/lang/index.ls", module);
+        forumOptions = require("/src/forum-options.ls", module);
+        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, node = ref$.node;
+        sticky = $(".sticky");
+        if ("show" !== localStorage.getItem("show-stickies")) {
+            sticky.style.display = "none";
         }
-        module.exports = buttonSticky = node('a', {
-            innerHTML: 'Post-its',
+        module.exports = buttonSticky = node("a", {
+            innerHTML: "Post-its",
             title: lang.toggleSticky,
-            onclick: function () {
+            onclick: function() {
                 var s;
-                (s = sticky.style).display = [
-                    'none',
-                    ''
-                ].find(function (it) {
+                (s = sticky.style).display = [ "none", "" ].find(function(it) {
                     return it !== s.display;
                 });
-                localStorage.setItem('show-stickies', s.display) || 'show';
+                localStorage.setItem("show-stickies", s.display) || "show";
             }
         });
         x$ = buttonSticky;
-        x$.style.cursor = 'pointer';
+        x$.style.cursor = "pointer";
         forumOptions.appendChild(x$);
     });
-    require.define('/src\\forum-layout\\set-view.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-layout/set-view.ls", function(module, exports, __dirname, __filename) {
         var ref$, $, $$, states, posts, i$, len$, state, slice$ = [].slice;
-        ref$ = require('/lib\\dom\\index.ls', module), $ = ref$.$, $$ = ref$.$$;
-        states = slice$.call($$('a.simple, a.advanced'));
-        posts = $('#posts');
-        updateView((ref$ = localStorage.forumView) != null ? ref$ : 'simple');
+        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, $$ = ref$.$$;
+        states = slice$.call($$("a.simple, a.advanced"));
+        posts = $("#posts");
+        updateView((ref$ = localStorage.forumView) != null ? ref$ : "simple");
         for (i$ = 0, len$ = states.length; i$ < len$; ++i$) {
             state = states[i$];
             fn$.call(this, state);
         }
         function updateView(view) {
             posts.className = view;
-            $('.view-options a.active').classList.remove('active');
-            return $('a.' + view).className = view + ' active';
+            $(".view-options a.active").classList.remove("active");
+            return $("a." + view).className = view + " active";
         }
         function fn$(state) {
             var stateName;
-            stateName = state.className.split(' ')[0];
-            state.onclick = function () {
+            stateName = state.className.split(" ")[0];
+            state.onclick = function() {
                 localStorage.forumView = stateName;
                 updateView(stateName);
             };
         }
     });
-    require.define('/src\\forum-layout\\move-actions.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-layout/move-actions.ls", function(module, exports, __dirname, __filename) {
         var $, x$;
-        $ = require('/lib\\dom\\index.ls', module).$;
-        x$ = $('.forum-options');
+        $ = require("/lib/dom/index.ls", module).$;
+        x$ = $(".forum-options");
         x$.parentNode.removeChild(x$);
-        $('.content-trail').appendChild(x$);
+        $(".content-trail").appendChild(x$);
     });
-    require.define('/src\\forum-actions\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-actions/index.ls", function(module, exports, __dirname, __filename) {
         var jumps, checkUpdates;
-        jumps = require('/src\\forum-actions\\jumps\\index.ls', module);
-        checkUpdates = require('/src\\forum-actions\\check-updates.ls', module);
+        jumps = require("/src/forum-actions/jumps/index.ls", module);
+        checkUpdates = require("/src/forum-actions/check-updates.ls", module);
     });
-    require.define('/src\\forum-actions\\jumps\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-actions/jumps/index.ls", function(module, exports, __dirname, __filename) {
         var newTopic, page;
-        newTopic = require('/src\\forum-actions\\jumps\\new-topic.ls', module);
-        page = require('/src\\forum-actions\\jumps\\page.ls', module);
+        newTopic = require("/src/forum-actions/jumps/new-topic.ls", module);
+        page = require("/src/forum-actions/jumps/page.ls", module);
     });
-    require.define('/src\\forum-actions\\jumps\\page.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-actions/jumps/page.ls", function(module, exports, __dirname, __filename) {
         var bindKey, page;
-        bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
-        page = require('/src\\forum-actions\\page.ls', module);
-        bindKey('p', 'jump-to-page', page);
+        bindKey = require("/src/cheatsheet/bind-key.ls", module);
+        page = require("/src/forum-actions/page.ls", module);
+        bindKey("p", "jump-to-page", page);
     });
-    require.define('/src\\forum-actions\\page.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-actions/page.ls", function(module, exports, __dirname, __filename) {
         var lang, $$, jump, i$, x$, ref$, len$, join$ = [].join, slice$ = [].slice;
-        lang = require('/lib\\lang\\index.ls', module);
-        $$ = require('/lib\\dom\\index.ls', module).$$;
-        module.exports = jump = function () {
+        lang = require("/lib/lang/index.ls", module);
+        $$ = require("/lib/dom/index.ls", module).$$;
+        module.exports = jump = function() {
             var page;
-            page = prompt(lang('page-number'));
-            if (+page + '' === page) {
-                document.location = join$.call(slice$.call((document.location + '').split('/'), 0, -1), '/') + ('/?page=' + (page > 1 ? page : 1));
+            page = prompt(lang("page-number"));
+            if (+page + "" === page) {
+                document.location = join$.call(slice$.call((document.location + "").split("/"), 0, -1), "/") + ("/?page=" + (page > 1 ? page : 1));
             }
         };
-        for (i$ = 0, len$ = (ref$ = $$('.forum-actions .expander')).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = $$(".forum-actions .expander")).length; i$ < len$; ++i$) {
             x$ = ref$[i$];
             x$.onclick = jump;
         }
     });
-    require.define('/src\\forum-actions\\jumps\\new-topic.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/forum-actions/jumps/new-topic.ls", function(module, exports, __dirname, __filename) {
         var bindKey, $;
-        bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
-        $ = require('/lib\\dom\\index.ls', module).$;
-        if (!$('a.button1.disabled')) {
-            bindKey('n', 'new-topic', function () {
-                document.location += 'topic';
+        bindKey = require("/src/cheatsheet/bind-key.ls", module);
+        $ = require("/lib/dom/index.ls", module).$;
+        if (!$("a.button1.disabled")) {
+            bindKey("n", "new-topic", function() {
+                document.location += "topic";
             });
         }
     });
-    require.define('/src\\forum.ls', function (module, exports, __dirname, __filename) {
-        var that, ref$, split$ = ''.split;
-        module.exports = (that = document.getElementById('posts')) ? (that.dataset.id = split$.call((ref$ = split$.call(document.location, '/'))[ref$.length - 2], '?')[0], that) : null;
+    require.define("/src/forum.ls", function(module, exports, __dirname, __filename) {
+        var that, ref$, split$ = "".split;
+        module.exports = (that = document.getElementById("posts")) ? (that.dataset.id = split$.call((ref$ = split$.call(document.location, "/"))[ref$.length - 2], "?")[0], 
+        that) : null;
     });
-    require.define('/src\\reply\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/reply/index.ls", function(module, exports, __dirname, __filename) {
         var clearTextarea, memebox, preview, quickQuote, rememberReply;
-        clearTextarea = require('/src\\reply\\clear-textarea.ls', module);
-        memebox = require('/src\\reply\\memebox.ls', module);
-        preview = require('/src\\reply\\preview.ls', module);
-        quickQuote = require('/src\\reply\\quick-quote.ls', module);
-        rememberReply = require('/src\\reply\\remember-reply.ls', module);
+        clearTextarea = require("/src/reply/clear-textarea.ls", module);
+        memebox = require("/src/reply/memebox.ls", module);
+        preview = require("/src/reply/preview.ls", module);
+        quickQuote = require("/src/reply/quick-quote.ls", module);
+        rememberReply = require("/src/reply/remember-reply.ls", module);
     });
-    require.define('/src\\reply\\remember-reply.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/reply/remember-reply.ls", function(module, exports, __dirname, __filename) {
         var textarea, topic, $, submit;
-        textarea = require('/src\\textarea.ls', module);
-        topic = require('/src\\topic.ls', module);
-        $ = require('/lib\\dom\\index.ls', module).$;
-        submit = $('.post [type=submit]');
+        textarea = require("/src/textarea.ls", module);
+        topic = require("/src/topic.ls", module);
+        $ = require("/lib/dom/index.ls", module).$;
+        submit = $(".post [type=submit]");
         if (!textarea.value) {
-            textarea.value = localStorage.getItem('post_' + topic.dataset.id) || '';
+            textarea.value = localStorage.getItem("post_" + topic.dataset.id) || "";
         }
-        textarea.onkeyup = function () {
-            return localStorage.setItem('post_' + topic.dataset.id, this.value);
+        textarea.onkeyup = function() {
+            return localStorage.setItem("post_" + topic.dataset.id, this.value);
         };
-        submit.onclick = function () {
-            return localStorage.setItem('post_' + topic.dataset.id, '');
+        submit.onclick = function() {
+            return localStorage.setItem("post_" + topic.dataset.id, "");
         };
     });
-    require.define('/src\\topic.ls', function (module, exports, __dirname, __filename) {
-        var that, x$, ref$, i$, replace$ = ''.replace, split$ = ''.split;
-        module.exports = (that = document.getElementById('thread')) ? (x$ = that.dataset, x$.url = replace$.call(split$.call(document.location, '?')[0], /#[0-9]+/, ''), x$.page = ((ref$ = /\?page=([0-9]+)/.exec(document.location)) != null ? ref$[1] : void 8) || 1, ref$ = split$.call(x$.url, '/'), i$ = ref$.length - 2, x$.topicId = ref$[i$], x$.id = ref$[i$ + 1], ref$, that) : null;
+    require.define("/src/topic.ls", function(module, exports, __dirname, __filename) {
+        var that, x$, ref$, i$, replace$ = "".replace, split$ = "".split;
+        module.exports = (that = document.getElementById("thread")) ? (x$ = that.dataset, 
+        x$.url = replace$.call(split$.call(document.location, "?")[0], /#[0-9]+/, ""), x$.page = ((ref$ = /\?page=([0-9]+)/.exec(document.location)) != null ? ref$[1] : void 8) || 1, 
+        ref$ = split$.call(x$.url, "/"), i$ = ref$.length - 2, x$.topicId = ref$[i$], x$.id = ref$[i$ + 1], 
+        ref$, that) : null;
     });
-    require.define('/src\\textarea.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/textarea.ls", function(module, exports, __dirname, __filename) {
         var topic, $;
-        topic = require('/src\\topic.ls', module);
-        $ = require('/lib\\dom\\index.ls', module).$;
-        module.exports = topic ? $('#post-edit textarea') : null;
+        topic = require("/src/topic.ls", module);
+        $ = require("/lib/dom/index.ls", module).$;
+        module.exports = topic ? $("#post-edit textarea") : null;
     });
-    require.define('/src\\reply\\quick-quote.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/reply/quick-quote.ls", function(module, exports, __dirname, __filename) {
         var bindKey, textarea, w, $;
-        bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
-        textarea = require('/src\\textarea.ls', module);
-        w = require('/src\\w.ls', module);
-        $ = require('/lib\\dom\\index.ls', module).$;
-        bindKey('r', 'quick-quote', function () {
+        bindKey = require("/src/cheatsheet/bind-key.ls", module);
+        textarea = require("/src/textarea.ls", module);
+        w = require("/src/w.ls", module);
+        $ = require("/lib/dom/index.ls", module).$;
+        bindKey("r", "quick-quote", function() {
             var that, x$;
             if (that = w.getSelection().toString()) {
                 x$ = textarea;
-                x$.value += (x$.value ? '\n' : '') + ('[quote]' + that + '[/quote]');
+                x$.value += (x$.value ? "\n" : "") + ("[quote]" + that + "[/quote]");
                 x$.selectionStart = x$.selectionEnd = x$.value.length;
                 x$.focus();
             }
-            $('#forum-actions-bottom').scrollIntoView();
+            $("#forum-actions-bottom").scrollIntoView();
         });
     });
-    require.define('/src\\w.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/w.ls", function(module, exports, __dirname, __filename) {
         var node, w;
-        node = require('/lib\\dom\\index.ls', module).node;
-        w = typeof unsafeWindow != 'undefined' && unsafeWindow !== null ? unsafeWindow : window;
+        node = require("/lib/dom/index.ls", module).node;
+        w = typeof unsafeWindow != "undefined" && unsafeWindow !== null ? unsafeWindow : window;
         if (!w.Cms) {
-            w = w.window = function () {
+            w = w.window = function() {
                 var ret, el, that;
-                el = document.createElement('a');
-                el.setAttribute('onclick', 'return window;');
-                if (that = typeof el.onclick === 'function' ? el.onclick() : void 8) {
+                el = document.createElement("a");
+                el.setAttribute("onclick", "return window;");
+                if (that = typeof el.onclick === "function" ? el.onclick() : void 8) {
                     el = that;
                 }
                 if (!el.Cms) {
-                    console.log('It seems you\'re using Google Chrome, which is a bad browser and disables some of the features Wow Board Helpers provides.');
-                    console.log('You may want to try the Injector version of this User Script, which should resolve your problems.');
+                    console.log("It seems you're using Google Chrome, which is a bad browser and disables some of the features Wow Board Helpers provides.");
+                    console.log("You may want to try the Injector version of this UserScript, which should resolve your problems.");
                 }
                 return el;
             }.call(this);
         }
         module.exports = w;
     });
-    require.define('/src\\reply\\preview.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/reply/preview.ls", function(module, exports, __dirname, __filename) {
         var w, autolink, $, postPreview, old;
-        w = require('/src\\w.ls', module);
-        autolink = require('/lib\\autolink\\index.ls', module);
-        $ = require('/lib\\dom\\index.ls', module).$;
-        postPreview = $('#post-preview');
-        if ('BML' in w) {
-            old = bind$(w.BML, 'preview');
-            w.BML.preview = function (content, target, callback) {
-                old(content, target, function () {
+        w = require("/src/w.ls", module);
+        autolink = require("/lib/autolink/index.ls", module);
+        $ = require("/lib/dom/index.ls", module).$;
+        postPreview = $("#post-preview");
+        if ("BML" in w) {
+            old = bind$(w.BML, "preview");
+            w.BML.preview = function(content, target, callback) {
+                old(content, target, function() {
                     callback();
                     autolink(postPreview);
                 });
             };
         }
         function bind$(obj, key, target) {
-            return function () {
+            return function() {
                 return (target || obj)[key].apply(obj, arguments);
             };
         }
     });
-    require.define('/lib\\autolink\\index.ls', function (module, exports, __dirname, __filename) {
-        var extensions, rules, ajax, replace$ = ''.replace;
-        extensions = '(?:com|net|org|eu|fr|jp|us|co.uk|me)';
-        rules = [
-            [
-                /(?:https?:\/\/)?(?:(?:www|m)\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g,
-                '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5#$3$4$6" frameborder="0"></iframe>'
-            ],
-            [
-                /\((https?:\/\/)([^<\s\)]+)\)/g,
-                '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" data-autolink="paren-specialcase" target="_blank">$2</a>)'
-            ],
-            [
-                RegExp('(^|>|;|\\s)(?:https?:\\/\\/)?([\\w\\.\\-]+\\.' + extensions + '(/[^<\\s]*)?(?=[\\s<]|$))', 'g'),
-                '$1<a class="external" rel="noreferrer" href="http://$2" data-autolink="protocol-specialcase" title="$2" target="_blank">$2</a>'
-            ],
-            [
-                /([^"'\/]|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g,
-                '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" data-autolink="quote-specialcase" target="_blank">$3</a>'
-            ],
-            [
-                RegExp('(^|>|;|\\s)((?!(?:www\\.)?dropbox)[\\w\\.\\-]+\\.' + extensions + '(/[^.<\\s]*)\\.(jpg|png|gif|jpeg)(?=[\\s<]|$)|puu\\.sh/[a-zA-Z0-9]+)', 'g'),
-                '$1<img src="http://$2" alt="$2" class="autolink" />'
-            ]
-        ];
+    require.define("/lib/autolink/index.ls", function(module, exports, __dirname, __filename) {
+        var extensions, rules, ajax, replace$ = "".replace;
+        extensions = "(?:com|net|org|eu|fr|jp|us|co.uk|me)";
+        rules = [ [ /(?:https?:\/\/)?(?:(?:www|m)\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g, '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5#$3$4$6" frameborder="0"></iframe>' ], [ /\((https?:\/\/)([^<\s\)]+)\)/g, '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" data-autolink="paren-specialcase" target="_blank">$2</a>)' ], [ RegExp("(^|>|;|\\s)(?:https?:\\/\\/)?([\\w\\.\\-]+\\." + extensions + "(/[^<\\s]*)?(?=[\\s<]|$))", "g"), '$1<a class="external" rel="noreferrer" href="http://$2" data-autolink="protocol-specialcase" title="$2" target="_blank">$2</a>' ], [ /([^"'\/]|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g, '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" data-autolink="quote-specialcase" target="_blank">$3</a>' ], [ RegExp("(^|>|;|\\s)((?!(?:www\\.)?dropbox)[\\w\\.\\-]+\\." + extensions + "(/[^.<\\s]*)\\.(jpg|png|gif|jpeg)(?=[\\s<]|$)|puu\\.sh/[a-zA-Z0-9]+)", "g"), '$1<img src="http://$2" alt="$2" class="autolink" />' ] ];
         module.exports = elAutolink;
-        ajax = require('/lib\\ajax\\index.ls', module);
+        ajax = require("/lib/ajax/index.ls", module);
         function elAutolink(el) {
             var h, r, ref$, url, e;
             try {
@@ -1191,15 +1106,15 @@
                 return el.innerHTML = h;
             } catch (e$) {
                 e = e$;
-                return console.log('Unable to generate valid HTML : ' + h + ' (' + e + ')');
+                return console.log("Unable to generate valid HTML : " + h + " (" + e + ")");
             }
             function fn$(url) {
                 var fullUrl;
-                fullUrl = url.has('http://') ? url : 'http://' + url;
-                ajax.get(fullUrl, function () {
+                fullUrl = url.has("http://") ? url : "http://" + url;
+                ajax.get(fullUrl, function() {
                     var that;
                     if (that = /<title>(.+)<\/title>/.exec(this.response)) {
-                        el.innerHTML = el.innerHTML.replace('>' + url, '>' + replace$.call(that[1], ' - World of Warcraft', ''));
+                        el.innerHTML = el.innerHTML.replace(">" + url, ">" + replace$.call(that[1], " - World of Warcraft", ""));
                     }
                 });
             }
@@ -1213,51 +1128,52 @@
             return it;
         }
     });
-    require.define('/src\\reply\\memebox.ls', function (module, exports, __dirname, __filename) {
-        var memes, textarea, ref$, $, el, templateMemebox, that, addMeme, appendMeme, memebox, ul, replace$ = ''.replace;
+    require.define("/src/reply/memebox.ls", function(module, exports, __dirname, __filename) {
+        var memes, textarea, ref$, $, el, templateMemebox, that, addMeme, appendMeme, memebox, ul, replace$ = "".replace;
         memes = {
-            challengeaccepted: 'http://sambacentral.files.wordpress.com/2012/11/challenge-accepted.jpg',
-            foreveralone: 'http://i1.kym-cdn.com/entries/icons/original/000/003/619/Untitled-1.jpg',
-            bitchplease: 'http://www.troll.me/images/yao-ming/bitch-please.jpg',
-            stfuandgtfo: 'http://4.bp.blogspot.com/-cD0QmZLGuAY/TnHyAD269EI/AAAAAAAAAkU/6O4rA1REcdI/s1600/STFU_and_GTFO.jpg',
-            youdontsay: 'http://bearsharkaxe.com/wp-content/uploads/2012/06/you-dont-say.jpg',
-            fullretard: 'http://www.osborneink.com/wp-content/uploads/2012/11/never_go_full_retard1.jpg',
-            susalenemi: 'http://img11.hostingpics.net/pics/311549libertlolxqt.png',
-            fulloffuck: 'http://www.mememaker.net/static/images/templates/14288.jpg',
-            seriously: 'http://i3.kym-cdn.com/entries/icons/original/000/005/545/OpoQQ.jpg',
-            trollface: 'http://fc09.deviantart.net/fs70/f/2012/342/5/a/troll_face_by_bmsproductionz-d5ng9k6.png',
-            escalated: 'http://cdn.memegenerator.net/instances/250x250/30199807.jpg',
-            fuckyeah: 'http://cdn.ebaumsworld.com/mediaFiles/picture/2168064/82942867.jpg',
-            pedobear: 'http://aserres.free.fr/pedobear/pedobear.png',
-            slowpoke: 'https://0-media-cdn.foolz.us/ffuuka/board/a/image/1351/43/1351437155488.png',
-            megusta: 'http://a400.idata.over-blog.com/5/08/51/37/me_gusta_by_projectendo-d2z3rku.jpg',
-            notbad: 'http://www.reactionface.info/sites/default/files/images/YvEN9.png',
-            ohcrap: 'http://i1.kym-cdn.com/entries/icons/original/000/004/077/Raisins_Face.jpg',
-            trauma: 'http://global3.memecdn.com/trauma_c_629591.jpg',
-            yuno: 'http://i1.kym-cdn.com/entries/icons/original/000/004/006/y-u-no-guy.jpg',
-            okay: 'http://cache.ohinternet.com/images/e/e6/Okay_guy.jpg',
-            no: 'http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png'
+            challengeaccepted: "http://sambacentral.files.wordpress.com/2012/11/challenge-accepted.jpg",
+            foreveralone: "http://i1.kym-cdn.com/entries/icons/original/000/003/619/Untitled-1.jpg",
+            bitchplease: "http://www.troll.me/images/yao-ming/bitch-please.jpg",
+            stfuandgtfo: "http://4.bp.blogspot.com/-cD0QmZLGuAY/TnHyAD269EI/AAAAAAAAAkU/6O4rA1REcdI/s1600/STFU_and_GTFO.jpg",
+            youdontsay: "http://bearsharkaxe.com/wp-content/uploads/2012/06/you-dont-say.jpg",
+            fullretard: "http://www.osborneink.com/wp-content/uploads/2012/11/never_go_full_retard1.jpg",
+            susalenemi: "http://img11.hostingpics.net/pics/311549libertlolxqt.png",
+            fulloffuck: "http://www.mememaker.net/static/images/templates/14288.jpg",
+            seriously: "http://i3.kym-cdn.com/entries/icons/original/000/005/545/OpoQQ.jpg",
+            trollface: "http://fc09.deviantart.net/fs70/f/2012/342/5/a/troll_face_by_bmsproductionz-d5ng9k6.png",
+            escalated: "http://cdn.memegenerator.net/instances/250x250/30199807.jpg",
+            fuckyeah: "http://cdn.ebaumsworld.com/mediaFiles/picture/2168064/82942867.jpg",
+            pedobear: "http://aserres.free.fr/pedobear/pedobear.png",
+            slowpoke: "https://0-media-cdn.foolz.us/ffuuka/board/a/image/1351/43/1351437155488.png",
+            megusta: "http://a400.idata.over-blog.com/5/08/51/37/me_gusta_by_projectendo-d2z3rku.jpg",
+            notbad: "http://www.reactionface.info/sites/default/files/images/YvEN9.png",
+            ohcrap: "http://i1.kym-cdn.com/entries/icons/original/000/004/077/Raisins_Face.jpg",
+            trauma: "http://global3.memecdn.com/trauma_c_629591.jpg",
+            yuno: "http://i1.kym-cdn.com/entries/icons/original/000/004/006/y-u-no-guy.jpg",
+            okay: "http://cache.ohinternet.com/images/e/e6/Okay_guy.jpg",
+            no: "http://stickerish.com/wp-content/uploads/2011/09/NoGuyBlackSS.png"
         };
-        textarea = require('/src\\textarea.ls', module);
-        ref$ = require('/lib\\dom\\index.ls', module), $ = ref$.$, el = ref$.el;
-        templateMemebox = require('/src\\reply\\templates\\memebox.ne', module);
-        if (that = $('.post.general')) {
+        textarea = require("/src/textarea.ls", module);
+        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, el = ref$.el;
+        templateMemebox = require("/src/reply/templates/memebox.ne", module);
+        if (that = $(".post.general")) {
             that.removeChild((ref$ = that.children)[ref$.length - 1]);
-            addMeme = function (url) {
-                return function () {
-                    return textarea.value += [textarea.value ? '\n' : void 8] + url;
+            addMeme = function(url) {
+                return function() {
+                    return textarea.value += [ textarea.value ? "\n" : void 8 ] + url;
                 };
             };
-            appendMeme = function (name, url) {
+            appendMeme = function(name, url) {
                 var x$;
-                return ul.appendChild((x$ = document.createElement('li'), x$.innerHTML = name, x$.onclick = addMeme(url), x$));
+                return ul.appendChild((x$ = document.createElement("li"), x$.innerHTML = name, x$.onclick = addMeme(url), 
+                x$));
             };
             memebox = el(templateMemebox());
-            ul = memebox.querySelector('#memes');
-            memebox.querySelector('#meme-search').onkeyup = function () {
+            ul = memebox.querySelector("#memes");
+            memebox.querySelector("#meme-search").onkeyup = function() {
                 var value, approximates, i, name, ref$, url, i$, len$;
-                value = replace$.call(this.value, /[\s_-]+/, '');
-                ul.innerHTML = '';
+                value = replace$.call(this.value, /[\s_-]+/, "");
+                ul.innerHTML = "";
                 if (!value) {
                     return;
                 }
@@ -1266,18 +1182,16 @@
                 for (name in ref$ = memes) {
                     url = ref$[name];
                     switch (name.indexOf(value)) {
-                    case -1:
-                    case 0:
+                      case -1:
+                      case 0:
                         appendMeme(name, url);
                         if (++i > 10) {
                             break;
                         }
                         break;
-                    default:
-                        approximates.push([
-                            name,
-                            url
-                        ]);
+
+                      default:
+                        approximates.push([ name, url ]);
                     }
                 }
                 for (i$ = 0, len$ = approximates.length; i$ < len$; ++i$) {
@@ -1291,128 +1205,129 @@
             that.appendChild(memebox);
         }
     });
-    require.define('/src\\reply\\templates\\memebox.ne', function (module, exports, __dirname, __filename) {
+    require.define("/src/reply/templates/memebox.ne", function(module, exports, __dirname, __filename) {
         var join;
-        join = function (it) {
+        join = function(it) {
             if (it) {
-                return it.join('');
+                return it.join("");
             } else {
-                return '';
+                return "";
             }
         };
-        module.exports = function (locals, extra) {
+        module.exports = function(locals, extra) {
             return '<div id="memebox"><h1>MemeBox</h1><br/><input id="meme-search" placeholder="meme" autocomplete="off" size="15"/><ul id="memes"></ul></div>';
         };
     });
-    require.define('/src\\reply\\clear-textarea.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/reply/clear-textarea.ls", function(module, exports, __dirname, __filename) {
         var textarea, topic, ref$, $, el, templateClearTextarea, clearer, that;
-        textarea = require('/src\\textarea.ls', module);
-        topic = require('/src\\topic.ls', module);
-        ref$ = require('/lib\\dom\\index.ls', module), $ = ref$.$, el = ref$.el;
-        templateClearTextarea = require('/src\\reply\\templates\\clear-textarea.ne', module);
+        textarea = require("/src/textarea.ls", module);
+        topic = require("/src/topic.ls", module);
+        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, el = ref$.el;
+        templateClearTextarea = require("/src/reply/templates/clear-textarea.ne", module);
         clearer = el(templateClearTextarea());
-        if (that = $('.editor1')) {
+        if (that = $(".editor1")) {
             that.insertBefore(clearer, textarea);
-            clearer.onclick = function () {
-                textarea.value = '';
-                localStorage.removeItem('post_' + topic.dataset.id);
+            clearer.onclick = function() {
+                textarea.value = "";
+                localStorage.removeItem("post_" + topic.dataset.id);
             };
         }
     });
-    require.define('/src\\reply\\templates\\clear-textarea.ne', function (module, exports, __dirname, __filename) {
+    require.define("/src/reply/templates/clear-textarea.ne", function(module, exports, __dirname, __filename) {
         var join;
-        join = function (it) {
+        join = function(it) {
             if (it) {
-                return it.join('');
+                return it.join("");
             } else {
-                return '';
+                return "";
             }
         };
-        module.exports = function (locals, extra) {
+        module.exports = function(locals, extra) {
             return '<div class="clear-textarea">X</div>';
         };
     });
-    require.define('/src\\topic-posts\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/topic-posts/index.ls", function(module, exports, __dirname, __filename) {
         var jumps, autolink, updateCount;
-        jumps = require('/src\\topic-posts\\jumps\\index.ls', module);
-        autolink = require('/src\\topic-posts\\autolink.ls', module);
-        updateCount = require('/src\\topic-posts\\update-count.ls', module);
+        jumps = require("/src/topic-posts/jumps/index.ls", module);
+        autolink = require("/src/topic-posts/autolink.ls", module);
+        updateCount = require("/src/topic-posts/update-count.ls", module);
     });
-    require.define('/src\\topic-posts\\update-count.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/topic-posts/update-count.ls", function(module, exports, __dirname, __filename) {
         var topic, $$, pages, postCount, ref$, lastPosterName;
-        topic = require('/src\\topic.ls', module);
-        $$ = require('/lib\\dom\\index.ls', module).$$;
-        pages = $$('#forum-actions-top .ui-pagination li:not(.cap-item)');
+        topic = require("/src/topic.ls", module);
+        $$ = require("/lib/dom/index.ls", module).$$;
+        pages = $$("#forum-actions-top .ui-pagination li:not(.cap-item)");
         if (pages && needUpdate()) {
-            postCount = (ref$ = topic.getElementsByClassName('post-info'))[ref$.length - 1].getElementsByTagName('a')[0].getAttribute('href').from(1);
-            lastPosterName = (ref$ = $$('.char-name-code', topic))[ref$.length - 1].innerHTML.trim();
-            localStorage.setItem('topic_' + topic.dataset.id, postCount);
-            localStorage.setItem('topic_lp_' + topic.dataset.id, lastPosterName);
+            postCount = (ref$ = topic.getElementsByClassName("post-info"))[ref$.length - 1].getElementsByTagName("a")[0].getAttribute("href").from(1);
+            lastPosterName = (ref$ = $$(".char-name-code", topic))[ref$.length - 1].innerHTML.trim();
+            localStorage.setItem("topic_" + topic.dataset.id, postCount);
+            localStorage.setItem("topic_lp_" + topic.dataset.id, lastPosterName);
         }
         function needUpdate() {
-            return !pages.length || pages.length && 'current' === pages[pages.length - 1].className || !localStorage.getItem('topic_' + topic.dataset.id);
+            return !pages.length || pages.length && "current" === pages[pages.length - 1].className || !localStorage.getItem("topic_" + topic.dataset.id);
         }
     });
-    require.define('/src\\topic-posts\\autolink.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/topic-posts/autolink.ls", function(module, exports, __dirname, __filename) {
         var autolink, $$, i$, ref$, len$, post;
-        autolink = require('/lib\\autolink\\index.ls', module);
-        $$ = require('/lib\\dom\\index.ls', module).$$;
-        for (i$ = 0, len$ = (ref$ = $$('.post-detail')).length; i$ < len$; ++i$) {
+        autolink = require("/lib/autolink/index.ls", module);
+        $$ = require("/lib/dom/index.ls", module).$$;
+        for (i$ = 0, len$ = (ref$ = $$(".post-detail")).length; i$ < len$; ++i$) {
             post = ref$[i$];
-            if (post.parentNode.parentNode.parentNode.parentNode.parentNode.classList.contains('blizzard')) {
+            if (post.parentNode.parentNode.parentNode.parentNode.parentNode.classList.contains("blizzard")) {
                 continue;
             }
             autolink(post);
         }
     });
-    require.define('/src\\topic-posts\\jumps\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/topic-posts/jumps/index.ls", function(module, exports, __dirname, __filename) {
         var unread;
-        unread = require('/src\\topic-posts\\jumps\\unread.ls', module);
+        unread = require("/src/topic-posts/jumps/unread.ls", module);
     });
-    require.define('/src\\topic-posts\\jumps\\unread.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/topic-posts/jumps/unread.ls", function(module, exports, __dirname, __filename) {
         var topic, bindKey, $$, lastPostId;
-        topic = require('/src\\topic.ls', module);
-        bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
-        $$ = require('/lib\\dom\\index.ls', module).$$;
-        if (lastPostId = localStorage.getItem('topic_' + topic.dataset.id)) {
-            bindKey('jf', 'jump-to-last-read', function () {
+        topic = require("/src/topic.ls", module);
+        bindKey = require("/src/cheatsheet/bind-key.ls", module);
+        $$ = require("/lib/dom/index.ls", module).$$;
+        if (lastPostId = localStorage.getItem("topic_" + topic.dataset.id)) {
+            bindKey("jf", "jump-to-last-read", function() {
                 var lastPostPage, ref$;
                 lastPostPage = Math.ceil(lastPostId / 20);
                 if (topic.dataset.page < lastPostPage) {
-                    document.location = topic.dataset.url + ('?page=' + lastPostPage);
+                    document.location = topic.dataset.url + ("?page=" + lastPostPage);
                 } else {
-                    if ((ref$ = $$('.post-detail')[lastPostId % 20 - 1]) != null) {
+                    if ((ref$ = $$(".post-detail")[lastPostId % 20 - 1]) != null) {
                         ref$.scrollIntoView();
                     }
                 }
             });
         }
     });
-    require.define('/src\\topic-characters\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/topic-characters/index.ls", function(module, exports, __dirname, __filename) {
         var contextLinks, improveTopic, multiChars;
-        contextLinks = require('/src\\topic-characters\\context-links.ls', module);
-        improveTopic = require('/src\\topic-characters\\improve-topic.ls', module);
-        multiChars = require('/src\\topic-characters\\multi-chars.ls', module);
+        contextLinks = require("/src/topic-characters/context-links.ls", module);
+        improveTopic = require("/src/topic-characters/improve-topic.ls", module);
+        multiChars = require("/src/topic-characters/multi-chars.ls", module);
     });
-    require.define('/src\\topic-characters\\multi-chars.ls', function (module, exports, __dirname, __filename) {
-        var ref$, $$, el, templateMultiChars, accountCharacters, that, modified, i$, len$, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul, children, limit, replace$ = ''.replace, slice$ = [].slice;
-        ref$ = require('/lib\\dom\\index.ls', module), $$ = ref$.$$, el = ref$.el;
-        templateMultiChars = require('/src\\topic-characters\\templates\\multi-chars.ne', module);
-        accountCharacters = (that = localStorage.getItem('accountCharacters')) ? JSON.parse(that) : {};
+    require.define("/src/topic-characters/multi-chars.ls", function(module, exports, __dirname, __filename) {
+        var ref$, $$, el, templateMultiChars, accountCharacters, that, modified, i$, len$, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul, children, limit, replace$ = "".replace, slice$ = [].slice;
+        ref$ = require("/lib/dom/index.ls", module), $$ = ref$.$$, el = ref$.el;
+        templateMultiChars = require("/src/topic-characters/templates/multi-chars.ne", module);
+        accountCharacters = (that = localStorage.getItem("accountCharacters")) ? JSON.parse(that) : {};
         function clean(it) {
-            it = replace$.call(it, 'context-link', '');
-            it = replace$.call(it, 'xmlns="http://www.w3.org/1999/xhtml" ', '');
+            it = replace$.call(it, "context-link", "");
+            it = replace$.call(it, 'xmlns="http://www.w3.org/1999/xhtml" ', "");
             return it;
         }
         modified = false;
-        for (i$ = 0, len$ = (ref$ = $$('.post-character')).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = $$(".post-character")).length; i$ < len$; ++i$) {
             postCharacter = ref$[i$];
-            iconIgnore = postCharacter.querySelector('.icon-ignore');
+            iconIgnore = postCharacter.querySelector(".icon-ignore");
             if (!iconIgnore) {
                 continue;
             }
-            link = clean(postCharacter.querySelector('.user-name > a').outerHTML.trim());
-            ref1$ = /ignore\(([0-9]+)/.exec(iconIgnore.getAttribute('onclick').toString()), account = ref1$[1];
+            link = clean(postCharacter.querySelector(".user-name > a").outerHTML.trim());
+            ref1$ = /ignore\(([0-9]+)/.exec(iconIgnore.getAttribute("onclick").toString()), 
+            account = ref1$[1];
             ref1$ = postCharacter.dataset;
             ref1$.account = account;
             ref1$.link = link;
@@ -1422,9 +1337,9 @@
             }
         }
         if (modified) {
-            localStorage.setItem('accountCharacters', JSON.stringify(accountCharacters));
+            localStorage.setItem("accountCharacters", JSON.stringify(accountCharacters));
         }
-        for (i$ = 0, len$ = (ref$ = $$('.post:not(.hidden) .post-character')).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = $$(".post:not(.hidden) .post-character")).length; i$ < len$; ++i$) {
             postCharacter = ref$[i$];
             ref1$ = postCharacter.dataset, account = ref1$.account, current = ref1$.link;
             if (!account) {
@@ -1434,7 +1349,7 @@
             if (characters.length === 1) {
                 continue;
             }
-            postDetail = postCharacter.parentNode.querySelector('.post-detail');
+            postDetail = postCharacter.parentNode.querySelector(".post-detail");
             height = postDetail.offsetHeight;
             toggle = characters.length > 2 && height < 130 + (characters.length - 1) * 15;
             postCharacter.appendChild(el(templateMultiChars({
@@ -1443,130 +1358,126 @@
                 characters: characters
             })));
             if (toggle) {
-                ul = postCharacter.querySelector('ul'), children = ul.children;
+                ul = postCharacter.querySelector("ul"), children = ul.children;
                 children = slice$.call(children);
                 if ((limit = ((height - 130) / 15).floor()) > 1) {
                     children.to(limit).each(fn$);
                 }
-                toggle = postCharacter.querySelector('.toggle');
+                toggle = postCharacter.querySelector(".toggle");
                 fn1$.call(this, ul, children, toggle, postCharacter);
             }
         }
-        function in$(x, arr) {
-            var i = -1, l = arr.length >>> 0;
-            while (++i < l)
-                if (x === arr[i] && i in arr)
-                    return true;
+        function in$(x, xs) {
+            var i = -1, l = xs.length >>> 0;
+            while (++i < l) if (x === xs[i]) return true;
             return false;
         }
         function fn$(it) {
-            return it.style.display = '';
+            return it.style.display = "";
         }
         function fn1$(ul, children, toggle, postCharacter) {
-            toggle.onclick = function () {
-                children.each(function (it) {
-                    return it.style.display = '';
+            toggle.onclick = function() {
+                children.each(function(it) {
+                    return it.style.display = "";
                 });
-                postCharacter.querySelector('.toggler').style.display = 'none';
-                return toggle.onclick = function () {
-                };
+                postCharacter.querySelector(".toggler").style.display = "none";
+                return toggle.onclick = function() {};
             };
         }
     });
-    require.define('/src\\topic-characters\\templates\\multi-chars.ne', function (module, exports, __dirname, __filename) {
+    require.define("/src/topic-characters/templates/multi-chars.ne", function(module, exports, __dirname, __filename) {
         var lang, postsOf, join, join$ = [].join;
-        lang = require('/lib\\lang\\index.ls', module);
-        postsOf = function (it) {
+        lang = require("/lib/lang/index.ls", module);
+        postsOf = function(it) {
             var name, ref$;
-            name = [
-                (ref$ = it.split('/'))[5],
-                ref$[4]
-            ];
+            name = [ (ref$ = it.split("/"))[5], ref$[4] ];
             name[1] = name[1].humanize();
-            return 'http://eu.battle.net/wow/fr/search?f=post&amp;a=' + join$.call(name, '%40') + '&amp;sort=time';
+            return "http://eu.battle.net/wow/fr/search?f=post&amp;a=" + join$.call(name, "%40") + "&amp;sort=time";
         };
-        join = function (it) {
+        join = function(it) {
             if (it) {
-                return it.join('');
+                return it.join("");
             } else {
-                return '';
+                return "";
             }
         };
-        module.exports = function (locals, extra) {
+        module.exports = function(locals, extra) {
             var character;
-            return '    <div id="account-characters"><h1 class="toggle">' + (lang('otherCharacters') || '') + '\n' + ((locals.toggle ? '<span class="toggler">' + (' [+]' || '') + '</span>' : void 8) || '') + '</h1><br/><ul>' + (join(function () {
+            return '    <div id="account-characters"><h1 class="toggle">' + (lang("otherCharacters") || "") + "\n" + ((locals.toggle ? '<span class="toggler">' + (" [+]" || "") + "</span>" : void 8) || "") + "</h1><br/><ul>" + (join(function() {
                 var i$, ref$, len$, results$ = [];
                 for (i$ = 0, len$ = (ref$ = locals.characters.exclude(locals.current)).length; i$ < len$; ++i$) {
                     character = ref$[i$];
-                    results$.push('<li style="' + [locals.toggle ? 'display: none' : void 8] + '">' + (character || '') + '<a href="' + postsOf(character) + '" class="see-messages"></a></li>');
+                    results$.push('<li style="' + [ locals.toggle ? "display: none" : void 8 ] + '">' + (character || "") + '<a href="' + postsOf(character) + '" class="see-messages"></a></li>');
                 }
                 return results$;
-            }()) || '') + '</ul></div>';
+            }()) || "") + "</ul></div>";
         };
     });
-    require.define('/src\\topic-characters\\improve-topic.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/topic-characters/improve-topic.ls", function(module, exports, __dirname, __filename) {
         var i$, ref$, len$, infos, realm, ref1$;
-        for (i$ = 0, len$ = (ref$ = document.getElementsByClassName('character-info')).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = document.getElementsByClassName("character-info")).length; i$ < len$; ++i$) {
             infos = ref$[i$];
-            realm = infos.querySelector('.context-user span');
+            realm = infos.querySelector(".context-user span");
             if (!realm) {
                 continue;
             }
             realm = realm.innerHTML;
-            if ((ref1$ = infos.querySelector('.character-desc')) != null) {
-                ref1$.innerHTML += '<br />' + realm;
+            if ((ref1$ = infos.querySelector(".character-desc")) != null) {
+                ref1$.innerHTML += "<br />" + realm;
             }
         }
     });
-    require.define('/src\\topic-characters\\context-links.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/topic-characters/context-links.ls", function(module, exports, __dirname, __filename) {
         var topic, el, templateContextLinks, i$, ref$, len$, context, extraContext;
-        topic = require('/src\\topic.ls', module);
-        el = require('/lib\\dom\\index.ls', module).el;
-        templateContextLinks = require('/src\\topic-characters\\templates\\context-links.ne', module);
-        for (i$ = 0, len$ = (ref$ = topic.querySelectorAll('.context-links')).length; i$ < len$; ++i$) {
+        topic = require("/src/topic.ls", module);
+        el = require("/lib/dom/index.ls", module).el;
+        templateContextLinks = require("/src/topic-characters/templates/context-links.ne", module);
+        for (i$ = 0, len$ = (ref$ = topic.querySelectorAll(".context-links")).length; i$ < len$; ++i$) {
             context = ref$[i$];
             if (context.children.length === 1) {
                 continue;
             }
-            extraContext = el(templateContextLinks({ link: context.children[0].href }));
-            context.insertBefore(extraContext, context.querySelector('.link-last'));
+            extraContext = el(templateContextLinks({
+                link: context.children[0].href
+            }));
+            context.insertBefore(extraContext, context.querySelector(".link-last"));
         }
     });
-    require.define('/src\\topic-characters\\templates\\context-links.ne', function (module, exports, __dirname, __filename) {
+    require.define("/src/topic-characters/templates/context-links.ne", function(module, exports, __dirname, __filename) {
         var join;
-        join = function (it) {
+        join = function(it) {
             if (it) {
-                return it.join('');
+                return it.join("");
             } else {
-                return '';
+                return "";
             }
         };
-        module.exports = function (locals, extra) {
+        module.exports = function(locals, extra) {
             return '<span class="extra-links"><a href="' + locals.link + 'achievement" class="link-first extra-link">HF</a><a href="' + locals.link + 'statistic#21:152" class="link-first extra-link">PvP</a></span>';
         };
     });
-    require.define('/src\\fix\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/fix/index.ls", function(module, exports, __dirname, __filename) {
         var htmlOverrides, menu;
-        htmlOverrides = require('/src\\fix\\html-overrides.ls', module);
-        menu = require('/src\\fix\\menu.ls', module);
+        htmlOverrides = require("/src/fix/html-overrides.ls", module);
+        menu = require("/src/fix/menu.ls", module);
     });
-    require.define('/src\\fix\\menu.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/fix/menu.ls", function(module, exports, __dirname, __filename) {
         var w, old;
-        w = require('/src\\w.ls', module);
-        if ('Menu' in w) {
+        w = require("/src/w.ls", module);
+        if ("Menu" in w) {
             old = w.Menu.show;
-            w.Menu.show = function (arg$, arg1$, options) {
+            w.Menu.show = function(arg$, arg1$, options) {
                 var ref$, key$, x, ref1$;
                 options == null && (options = {});
-                (ref$ = w.Menu.dataIndex)[key$ = x = (ref1$ = options.set) != null ? ref1$ : 'base'] == null && (ref$[key$] = []);
+                (ref$ = w.Menu.dataIndex)[key$ = x = (ref1$ = options.set) != null ? ref1$ : "base"] == null && (ref$[key$] = []);
                 return old.apply(this, arguments);
             };
         }
     });
-    require.define('/src\\fix\\html-overrides.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/fix/html-overrides.ls", function(module, exports, __dirname, __filename) {
         var lang, $, that, k, v, ref$;
-        lang = require('/lib\\lang\\index.ls', module);
-        $ = require('/lib\\dom\\index.ls', module).$;
+        lang = require("/lib/lang/index.ls", module);
+        $ = require("/lib/dom/index.ls", module).$;
         if (that = lang.htmlOverrides) {
             for (k in that) {
                 v = that[k];
@@ -1576,38 +1487,38 @@
             }
         }
     });
-    require.define('/src\\jumps\\index.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/jumps/index.ls", function(module, exports, __dirname, __filename) {
         var $;
-        $ = require('/lib\\dom\\index.ls', module).$;
-        require('/src\\jumps\\top.ls', module);
-        if (!$('.player-name')) {
-            require('/src\\jumps\\login.ls', module);
+        $ = require("/lib/dom/index.ls", module).$;
+        require("/src/jumps/top.ls", module);
+        if (!$(".player-name")) {
+            require("/src/jumps/login.ls", module);
         }
     });
-    require.define('/src\\jumps\\login.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/jumps/login.ls", function(module, exports, __dirname, __filename) {
         var bindKey, w;
-        bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
-        w = require('/src\\w.ls', module);
+        bindKey = require("/src/cheatsheet/bind-key.ls", module);
+        w = require("/src/w.ls", module);
         if (w.Login) {
-            bindKey('l', 'login', function () {
-                w.Login.open('https://eu.battle.net/login/login.frag');
+            bindKey("l", "login", function() {
+                w.Login.open("https://eu.battle.net/login/login.frag");
             });
         }
     });
-    require.define('/src\\jumps\\top.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/jumps/top.ls", function(module, exports, __dirname, __filename) {
         var bindKey, $;
-        bindKey = require('/src\\cheatsheet\\bind-key.ls', module);
-        $ = require('/lib\\dom\\index.ls', module).$;
-        bindKey('t', 'page-top', function () {
-            $('#logo').scrollIntoView();
+        bindKey = require("/src/cheatsheet/bind-key.ls", module);
+        $ = require("/lib/dom/index.ls", module).$;
+        bindKey("t", "page-top", function() {
+            $("#logo").scrollIntoView();
         });
     });
-    require.define('/src\\board\\css.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/board/css.ls", function(module, exports, __dirname, __filename) {
         var node, style;
-        node = require('/lib\\dom\\index.ls', module).node;
-        style = node('style', {
-            type: 'text/css',
-            innerHTML: '/*slake:build#compile-ls embeds css*/\n/**\
+        node = require("/lib/dom/index.ls", module).node;
+        style = node("style", {
+            type: "text/css",
+            innerHTML: "/*slake:build#compile-ls embeds css*/\n/**\
  * Wow Board Helpers Stylesheet file\
  */\
 #forum-actions-top h1 {\
@@ -1794,63 +1705,65 @@ img.autolink {\
   font-weight: bold;\
   color: link;\
   text-decoration: underline;\
-}'
+}"
         });
         document.head.appendChild(style);
     });
-    require.define('/src\\board\\content-classes.ls', function (module, exports, __dirname, __filename) {
+    require.define("/src/board/content-classes.ls", function(module, exports, __dirname, __filename) {
         var topic, forum, $, content, classes, join$ = [].join;
-        topic = require('/src\\topic.ls', module);
-        forum = require('/src\\forum.ls', module);
-        $ = require('/lib\\dom\\index.ls', module).$;
-        content = $('#content');
+        topic = require("/src/topic.ls", module);
+        forum = require("/src/forum.ls", module);
+        $ = require("/lib/dom/index.ls", module).$;
+        content = $("#content");
         classes = [];
-        classes.push(function () {
+        classes.push(function() {
             switch (false) {
-            case !topic:
-                return 'topic';
-            case !forum:
-                return 'forum';
-            default:
-                return '';
+              case !topic:
+                return "topic";
+
+              case !forum:
+                return "forum";
+
+              default:
+                return "";
             }
         }());
-        classes.push($('.login-msg') ? 'logged-off' : 'logged-in');
-        content.className = join$.call(classes, ' ');
+        classes.push($(".login-msg") ? "logged-off" : "logged-in");
+        content.className = join$.call(classes, " ");
     });
-    require.define('/node_modules\\sugar\\release\\sugar-full.development.js', function (module, exports, __dirname, __filename) {
-        (function () {
-            'use strict';
+    require.define("/node_modules/sugar/release/sugar-full.development.js", function(module, exports, __dirname, __filename) {
+        (function() {
+            "use strict";
             var object = Object, array = Array, regexp = RegExp, date = Date, string = String, number = Number, math = Math, Undefined;
-            var globalContext = typeof global !== 'undefined' ? global : this;
+            var globalContext = typeof global !== "undefined" ? global : this;
             var internalToString = object.prototype.toString;
             var internalHasOwnProperty = object.prototype.hasOwnProperty;
             var definePropertySupport = object.defineProperty && object.defineProperties;
-            var regexIsFunction = typeof regexp() === 'function';
-            var noKeysInStringObjects = !('0' in new string('a'));
+            var regexIsFunction = typeof regexp() === "function";
+            var noKeysInStringObjects = !("0" in new string("a"));
             var typeChecks = {};
             var matchedByValueReg = /^\[object Date|Array|String|Number|RegExp|Boolean|Arguments\]$/;
-            var ClassNames = 'Boolean,Number,String,Array,Date,RegExp,Function'.split(',');
-            var isBoolean = buildPrimitiveClassCheck('boolean', ClassNames[0]);
-            var isNumber = buildPrimitiveClassCheck('number', ClassNames[1]);
-            var isString = buildPrimitiveClassCheck('string', ClassNames[2]);
+            var ClassNames = "Boolean,Number,String,Array,Date,RegExp,Function".split(",");
+            var isBoolean = buildPrimitiveClassCheck("boolean", ClassNames[0]);
+            var isNumber = buildPrimitiveClassCheck("number", ClassNames[1]);
+            var isString = buildPrimitiveClassCheck("string", ClassNames[2]);
             var isArray = buildClassCheck(ClassNames[3]);
             var isDate = buildClassCheck(ClassNames[4]);
             var isRegExp = buildClassCheck(ClassNames[5]);
             var isFunction = buildClassCheck(ClassNames[6]);
             function isClass(obj, klass, cached) {
                 var k = cached || className(obj);
-                return k === '[object ' + klass + ']';
+                return k === "[object " + klass + "]";
             }
             function buildClassCheck(klass) {
-                var fn = klass === 'Array' && array.isArray || function (obj, cached) {
-                        return isClass(obj, klass, cached);
-                    };
+                var fn = klass === "Array" && array.isArray || function(obj, cached) {
+                    return isClass(obj, klass, cached);
+                };
                 typeChecks[klass] = fn;
                 return fn;
             }
             function buildPrimitiveClassCheck(type, klass) {
-                var fn = function (obj) {
+                var fn = function(obj) {
                     if (isObjectType(obj)) {
                         return isClass(obj, klass);
                     }
@@ -1864,27 +1777,26 @@ img.autolink {\
             }
             function initializeClasses() {
                 initializeClass(object);
-                iterateOverObject(ClassNames, function (i, name) {
+                iterateOverObject(ClassNames, function(i, name) {
                     initializeClass(globalContext[name]);
                 });
             }
             function initializeClass(klass) {
-                if (klass['SugarMethods'])
-                    return;
-                defineProperty(klass, 'SugarMethods', {});
+                if (klass["SugarMethods"]) return;
+                defineProperty(klass, "SugarMethods", {});
                 extend(klass, false, true, {
-                    'extend': function (methods, override, instance) {
+                    extend: function(methods, override, instance) {
                         extend(klass, instance !== false, override, methods);
                     },
-                    'sugarRestore': function () {
-                        return batchMethodExecute(this, klass, arguments, function (target, name, m) {
+                    sugarRestore: function() {
+                        return batchMethodExecute(this, klass, arguments, function(target, name, m) {
                             defineProperty(target, name, m.method);
                         });
                     },
-                    'sugarRevert': function () {
-                        return batchMethodExecute(this, klass, arguments, function (target, name, m) {
-                            if (m['existed']) {
-                                defineProperty(target, name, m['original']);
+                    sugarRevert: function() {
+                        return batchMethodExecute(this, klass, arguments, function(target, name, m) {
+                            if (m["existed"]) {
+                                defineProperty(target, name, m["original"]);
                             } else {
                                 delete target[name];
                             }
@@ -1895,7 +1807,7 @@ img.autolink {\
             function extend(klass, instance, override, methods) {
                 var extendee = instance ? klass.prototype : klass;
                 initializeClass(klass);
-                iterateOverObject(methods, function (name, extendedFn) {
+                iterateOverObject(methods, function(name, extendedFn) {
                     var nativeFn = extendee[name], existed = hasOwnProperty(extendee, name);
                     if (isFunction(override) && nativeFn) {
                         extendedFn = wrapNative(nativeFn, extendedFn, override);
@@ -1903,44 +1815,44 @@ img.autolink {\
                     if (override !== false || !nativeFn) {
                         defineProperty(extendee, name, extendedFn);
                     }
-                    klass['SugarMethods'][name] = {
-                        'method': extendedFn,
-                        'existed': existed,
-                        'original': nativeFn,
-                        'instance': instance
+                    klass["SugarMethods"][name] = {
+                        method: extendedFn,
+                        existed: existed,
+                        original: nativeFn,
+                        instance: instance
                     };
                 });
             }
             function extendSimilar(klass, instance, override, set, fn) {
                 var methods = {};
-                set = isString(set) ? set.split(',') : set;
-                set.forEach(function (name, i) {
+                set = isString(set) ? set.split(",") : set;
+                set.forEach(function(name, i) {
                     fn(methods, name, i);
                 });
                 extend(klass, instance, override, methods);
             }
             function batchMethodExecute(target, klass, args, fn) {
                 var all = args.length === 0, methods = multiArgs(args), changed = false;
-                iterateOverObject(klass['SugarMethods'], function (name, m) {
+                iterateOverObject(klass["SugarMethods"], function(name, m) {
                     if (all || methods.indexOf(name) !== -1) {
                         changed = true;
-                        fn(m['instance'] ? target.prototype : target, name, m);
+                        fn(m["instance"] ? target.prototype : target, name, m);
                     }
                 });
                 return changed;
             }
             function wrapNative(nativeFn, extendedFn, condition) {
-                return function (a) {
+                return function(a) {
                     return condition.apply(this, arguments) ? extendedFn.apply(this, arguments) : nativeFn.apply(this, arguments);
                 };
             }
             function defineProperty(target, name, method) {
                 if (definePropertySupport) {
                     object.defineProperty(target, name, {
-                        'value': method,
-                        'configurable': true,
-                        'enumerable': false,
-                        'writable': true
+                        value: method,
+                        configurable: true,
+                        enumerable: false,
+                        writable: true
                     });
                 } else {
                     target[name] = method;
@@ -1950,8 +1862,7 @@ img.autolink {\
                 var result = [], i = from || 0, len;
                 for (len = args.length; i < len; i++) {
                     result.push(args[i]);
-                    if (fn)
-                        fn.call(args, args[i], i);
+                    if (fn) fn.call(args, args[i], i);
                 }
                 return result;
             }
@@ -1965,7 +1876,7 @@ img.autolink {\
             }
             function checkCallback(fn) {
                 if (!fn || !fn.call) {
-                    throw new TypeError('Callback is not callable');
+                    throw new TypeError("Callback is not callable");
                 }
             }
             function isDefined(o) {
@@ -1981,30 +1892,28 @@ img.autolink {\
                 return !!obj && internalHasOwnProperty.call(obj, prop);
             }
             function isObjectType(obj) {
-                return !!obj && (typeof obj === 'object' || regexIsFunction && isRegExp(obj));
+                return !!obj && (typeof obj === "object" || regexIsFunction && isRegExp(obj));
             }
             function isPrimitiveType(obj) {
                 var type = typeof obj;
-                return obj == null || type === 'string' || type === 'number' || type === 'boolean';
+                return obj == null || type === "string" || type === "number" || type === "boolean";
             }
             function isPlainObject(obj, klass) {
                 klass = klass || className(obj);
                 try {
-                    if (obj && obj.constructor && !hasOwnProperty(obj, 'constructor') && !hasOwnProperty(obj.constructor.prototype, 'isPrototypeOf')) {
+                    if (obj && obj.constructor && !hasOwnProperty(obj, "constructor") && !hasOwnProperty(obj.constructor.prototype, "isPrototypeOf")) {
                         return false;
                     }
                 } catch (e) {
                     return false;
                 }
-                return !!obj && klass === '[object Object]' && 'hasOwnProperty' in obj;
+                return !!obj && klass === "[object Object]" && "hasOwnProperty" in obj;
             }
             function iterateOverObject(obj, fn) {
                 var key;
                 for (key in obj) {
-                    if (!hasOwnProperty(obj, key))
-                        continue;
-                    if (fn.call(obj, key, obj[key], obj) === false)
-                        break;
+                    if (!hasOwnProperty(obj, key)) continue;
+                    if (fn.call(obj, key, obj[key], obj) === false) break;
                 }
             }
             function simpleRepeat(n, fn) {
@@ -2013,7 +1922,7 @@ img.autolink {\
                 }
             }
             function simpleMerge(target, source) {
-                iterateOverObject(source, function (key) {
+                iterateOverObject(source, function(key) {
                     target[key] = source[key];
                 });
                 return target;
@@ -2036,7 +1945,6 @@ img.autolink {\
             function Hash(obj) {
                 simpleMerge(this, coercePrimitiveToObject(obj));
             }
-            ;
             Hash.prototype.constructor = object;
             var abs = math.abs;
             var pow = math.pow;
@@ -2048,18 +1956,17 @@ img.autolink {\
             function withPrecision(val, precision, fn) {
                 var multiplier = pow(10, abs(precision || 0));
                 fn = fn || round;
-                if (precision < 0)
-                    multiplier = 1 / multiplier;
+                if (precision < 0) multiplier = 1 / multiplier;
                 return fn(val * multiplier) / multiplier;
             }
             var HalfWidthZeroCode = 48;
             var HalfWidthNineCode = 57;
             var FullWidthZeroCode = 65296;
             var FullWidthNineCode = 65305;
-            var HalfWidthPeriod = '.';
-            var FullWidthPeriod = '\uff0e';
-            var HalfWidthComma = ',';
-            var FullWidthDigits = '';
+            var HalfWidthPeriod = ".";
+            var FullWidthPeriod = "．";
+            var HalfWidthComma = ",";
+            var FullWidthDigits = "";
             var NumberNormalizeMap = {};
             var NumberNormalizeReg;
             function codeIsNumeral(code) {
@@ -2072,19 +1979,19 @@ img.autolink {\
                     FullWidthDigits += digit;
                     NumberNormalizeMap[digit] = chr(i + HalfWidthZeroCode);
                 }
-                NumberNormalizeMap[HalfWidthComma] = '';
+                NumberNormalizeMap[HalfWidthComma] = "";
                 NumberNormalizeMap[FullWidthPeriod] = HalfWidthPeriod;
                 NumberNormalizeMap[HalfWidthPeriod] = HalfWidthPeriod;
-                NumberNormalizeReg = regexp('[' + FullWidthDigits + FullWidthPeriod + HalfWidthComma + HalfWidthPeriod + ']', 'g');
+                NumberNormalizeReg = regexp("[" + FullWidthDigits + FullWidthPeriod + HalfWidthComma + HalfWidthPeriod + "]", "g");
             }
             function chr(num) {
                 return string.fromCharCode(num);
             }
             function getTrimmableCharacters() {
-                return '\t\n\v\f\r \xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u2028\u2029\u3000\ufeff';
+                return "	\n\f\r   ᠎             \u2028\u2029　﻿";
             }
             function repeatString(str, num) {
-                var result = '', str = str.toString();
+                var result = "", str = str.toString();
                 while (num > 0) {
                     if (num & 1) {
                         result += str;
@@ -2097,7 +2004,7 @@ img.autolink {\
             }
             function stringToNumber(str, base) {
                 var sanitized, isDecimal;
-                sanitized = str.replace(NumberNormalizeReg, function (chr) {
+                sanitized = str.replace(NumberNormalizeReg, function(chr) {
                     var replacement = NumberNormalizeMap[chr];
                     if (replacement === HalfWidthPeriod) {
                         isDecimal = true;
@@ -2108,68 +2015,68 @@ img.autolink {\
             }
             function padNumber(num, place, sign, base) {
                 var str = abs(num).toString(base || 10);
-                str = repeatString('0', place - str.replace(/\.\d+/, '').length) + str;
+                str = repeatString("0", place - str.replace(/\.\d+/, "").length) + str;
                 if (sign || num < 0) {
-                    str = (num < 0 ? '-' : '+') + str;
+                    str = (num < 0 ? "-" : "+") + str;
                 }
                 return str;
             }
             function getOrdinalizedSuffix(num) {
                 if (num >= 11 && num <= 13) {
-                    return 'th';
+                    return "th";
                 } else {
                     switch (num % 10) {
-                    case 1:
-                        return 'st';
-                    case 2:
-                        return 'nd';
-                    case 3:
-                        return 'rd';
-                    default:
-                        return 'th';
+                      case 1:
+                        return "st";
+
+                      case 2:
+                        return "nd";
+
+                      case 3:
+                        return "rd";
+
+                      default:
+                        return "th";
                     }
                 }
             }
             function getRegExpFlags(reg, add) {
-                var flags = '';
-                add = add || '';
+                var flags = "";
+                add = add || "";
                 function checkFlag(prop, flag) {
                     if (prop || add.indexOf(flag) > -1) {
                         flags += flag;
                     }
                 }
-                checkFlag(reg.multiline, 'm');
-                checkFlag(reg.ignoreCase, 'i');
-                checkFlag(reg.global, 'g');
-                checkFlag(reg.sticky, 'y');
+                checkFlag(reg.multiline, "m");
+                checkFlag(reg.ignoreCase, "i");
+                checkFlag(reg.global, "g");
+                checkFlag(reg.sticky, "y");
                 return flags;
             }
             function escapeRegExp(str) {
-                if (!isString(str))
-                    str = string(str);
-                return str.replace(/([\\/\'*+?|()\[\]{}.^$])/g, '\\$1');
+                if (!isString(str)) str = string(str);
+                return str.replace(/([\\/\'*+?|()\[\]{}.^$])/g, "\\$1");
             }
             function callDateGet(d, method) {
-                return d['get' + (d._utc ? 'UTC' : '') + method]();
+                return d["get" + (d._utc ? "UTC" : "") + method]();
             }
             function callDateSet(d, method, value) {
-                return d['set' + (d._utc && method != 'ISOWeek' ? 'UTC' : '') + method](value);
+                return d["set" + (d._utc && method != "ISOWeek" ? "UTC" : "") + method](value);
             }
             function stringify(thing, stack) {
                 var type = typeof thing, thingIsObject, thingIsArray, klass, value, arr, key, i, len;
-                if (type === 'string')
-                    return thing;
+                if (type === "string") return thing;
                 klass = internalToString.call(thing);
                 thingIsObject = isPlainObject(thing, klass);
                 thingIsArray = isArray(thing, klass);
                 if (thing != null && thingIsObject || thingIsArray) {
-                    if (!stack)
-                        stack = [];
+                    if (!stack) stack = [];
                     if (stack.length > 1) {
                         i = stack.length;
                         while (i--) {
                             if (stack[i] === thing) {
-                                return 'CYC';
+                                return "CYC";
                             }
                         }
                     }
@@ -2182,7 +2089,7 @@ img.autolink {\
                     }
                     stack.pop();
                 } else if (1 / thing === -Infinity) {
-                    value = '-0';
+                    value = "-0";
                 } else {
                     value = string(thing && thing.valueOf ? thing.valueOf() : thing);
                 }
@@ -2206,9 +2113,8 @@ img.autolink {\
                     return entryAtIndex(obj, length, args[0], overshoot, isString);
                 }
                 result = [];
-                multiArgs(args, function (index) {
-                    if (isBoolean(index))
-                        return false;
+                multiArgs(args, function(index) {
+                    if (isBoolean(index)) return false;
                     result.push(entryAtIndex(obj, length, index, overshoot, isString));
                 });
                 return result;
@@ -2216,27 +2122,26 @@ img.autolink {\
             function entryAtIndex(obj, length, index, overshoot, isString) {
                 if (overshoot) {
                     index = index % length;
-                    if (index < 0)
-                        index = length + index;
+                    if (index < 0) index = length + index;
                 }
                 return isString ? obj.charAt(index) : obj[index];
             }
             function buildObjectInstanceMethods(set, target) {
-                extendSimilar(target, true, false, set, function (methods, name) {
-                    methods[name + (name === 'equal' ? 's' : '')] = function () {
-                        return object[name].apply(null, [this].concat(multiArgs(arguments)));
+                extendSimilar(target, true, false, set, function(methods, name) {
+                    methods[name + (name === "equal" ? "s" : "")] = function() {
+                        return object[name].apply(null, [ this ].concat(multiArgs(arguments)));
                     };
                 });
             }
             initializeClasses();
             buildNumberHelpers();
             extend(object, false, false, {
-                'keys': function (obj) {
+                keys: function(obj) {
                     var keys = [];
                     if (!isObjectType(obj) && !isRegExp(obj) && !isFunction(obj)) {
-                        throw new TypeError('Object required');
+                        throw new TypeError("Object required");
                     }
-                    iterateOverObject(obj, function (key, value) {
+                    iterateOverObject(obj, function(key, value) {
                         keys.push(key);
                     });
                     return keys;
@@ -2262,7 +2167,7 @@ img.autolink {\
                 var length = arr.length, count = 0, defined = isDefined(initialValue), result, index;
                 checkCallback(fn);
                 if (length == 0 && !defined) {
-                    throw new TypeError('Reduce called on empty array with no initial value');
+                    throw new TypeError("Reduce called on empty array with no initial value");
                 } else if (defined) {
                     result = initialValue;
                 } else {
@@ -2287,16 +2192,16 @@ img.autolink {\
             }
             function checkFirstArgumentExists(args) {
                 if (args.length === 0) {
-                    throw new TypeError('First argument must be defined');
+                    throw new TypeError("First argument must be defined");
                 }
             }
             extend(array, false, false, {
-                'isArray': function (obj) {
+                isArray: function(obj) {
                     return isArray(obj);
                 }
             });
             extend(array, true, false, {
-                'every': function (fn, scope) {
+                every: function(fn, scope) {
                     var length = this.length, index = 0;
                     checkFirstArgumentExists(arguments);
                     while (index < length) {
@@ -2307,7 +2212,7 @@ img.autolink {\
                     }
                     return true;
                 },
-                'some': function (fn, scope) {
+                some: function(fn, scope) {
                     var length = this.length, index = 0;
                     checkFirstArgumentExists(arguments);
                     while (index < length) {
@@ -2318,7 +2223,7 @@ img.autolink {\
                     }
                     return false;
                 },
-                'map': function (fn, scope) {
+                map: function(fn, scope) {
                     var scope = arguments[1], length = this.length, index = 0, result = new Array(length);
                     checkFirstArgumentExists(arguments);
                     while (index < length) {
@@ -2329,7 +2234,7 @@ img.autolink {\
                     }
                     return result;
                 },
-                'filter': function (fn) {
+                filter: function(fn) {
                     var scope = arguments[1];
                     var length = this.length, index = 0, result = [];
                     checkFirstArgumentExists(arguments);
@@ -2341,19 +2246,17 @@ img.autolink {\
                     }
                     return result;
                 },
-                'indexOf': function (search) {
+                indexOf: function(search) {
                     var fromIndex = arguments[1];
-                    if (isString(this))
-                        return this.indexOf(search, fromIndex);
+                    if (isString(this)) return this.indexOf(search, fromIndex);
                     return arrayIndexOf(this, search, fromIndex, 1);
                 },
-                'lastIndexOf': function (search) {
+                lastIndexOf: function(search) {
                     var fromIndex = arguments[1];
-                    if (isString(this))
-                        return this.lastIndexOf(search, fromIndex);
+                    if (isString(this)) return this.lastIndexOf(search, fromIndex);
                     return arrayIndexOf(this, search, fromIndex, -1);
                 },
-                'forEach': function (fn) {
+                forEach: function(fn) {
                     var length = this.length, index = 0, scope = arguments[1];
                     checkCallback(fn);
                     while (index < length) {
@@ -2363,39 +2266,39 @@ img.autolink {\
                         index++;
                     }
                 },
-                'reduce': function (fn) {
+                reduce: function(fn) {
                     return arrayReduce(this, fn, arguments[1]);
                 },
-                'reduceRight': function (fn) {
+                reduceRight: function(fn) {
                     return arrayReduce(this, fn, arguments[1], true);
                 }
             });
             function buildTrim() {
                 var support = getTrimmableCharacters().match(/^\s+$/);
                 try {
-                    string.prototype.trim.call([1]);
+                    string.prototype.trim.call([ 1 ]);
                 } catch (e) {
                     support = false;
                 }
                 extend(string, true, !support, {
-                    'trim': function () {
+                    trim: function() {
                         return this.toString().trimLeft().trimRight();
                     },
-                    'trimLeft': function () {
-                        return this.replace(regexp('^[' + getTrimmableCharacters() + ']+'), '');
+                    trimLeft: function() {
+                        return this.replace(regexp("^[" + getTrimmableCharacters() + "]+"), "");
                     },
-                    'trimRight': function () {
-                        return this.replace(regexp('[' + getTrimmableCharacters() + ']+$'), '');
+                    trimRight: function() {
+                        return this.replace(regexp("[" + getTrimmableCharacters() + "]+$"), "");
                     }
                 });
             }
             extend(Function, true, false, {
-                'bind': function (scope) {
+                bind: function(scope) {
                     var fn = this, args = multiArgs(arguments, null, 1), bound;
                     if (!isFunction(this)) {
-                        throw new TypeError('Function.prototype.bind called on a non-function');
+                        throw new TypeError("Function.prototype.bind called on a non-function");
                     }
-                    bound = function () {
+                    bound = function() {
                         return fn.apply(fn.prototype && this instanceof fn ? this : scope, args.concat(multiArgs(arguments)));
                     };
                     bound.prototype = this.prototype;
@@ -2403,16 +2306,16 @@ img.autolink {\
                 }
             });
             extend(date, false, false, {
-                'now': function () {
+                now: function() {
                     return new date().getTime();
                 }
             });
             function buildISOString() {
-                var d = new date(date.UTC(1999, 11, 31)), target = '1999-12-31T00:00:00.000Z';
+                var d = new date(date.UTC(1999, 11, 31)), target = "1999-12-31T00:00:00.000Z";
                 var support = d.toISOString && d.toISOString() === target;
-                extendSimilar(date, true, !support, 'toISOString,toJSON', function (methods, name) {
-                    methods[name] = function () {
-                        return padNumber(this.getUTCFullYear(), 4) + '-' + padNumber(this.getUTCMonth() + 1, 2) + '-' + padNumber(this.getUTCDate(), 2) + 'T' + padNumber(this.getUTCHours(), 2) + ':' + padNumber(this.getUTCMinutes(), 2) + ':' + padNumber(this.getUTCSeconds(), 2) + '.' + padNumber(this.getUTCMilliseconds(), 3) + 'Z';
+                extendSimilar(date, true, !support, "toISOString,toJSON", function(methods, name) {
+                    methods[name] = function() {
+                        return padNumber(this.getUTCFullYear(), 4) + "-" + padNumber(this.getUTCMonth() + 1, 2) + "-" + padNumber(this.getUTCDate(), 2) + "T" + padNumber(this.getUTCHours(), 2) + ":" + padNumber(this.getUTCMinutes(), 2) + ":" + padNumber(this.getUTCSeconds(), 2) + "." + padNumber(this.getUTCMilliseconds(), 3) + "Z";
                     };
                 });
             }
@@ -2420,29 +2323,29 @@ img.autolink {\
             buildISOString();
             function regexMatcher(reg) {
                 reg = regexp(reg);
-                return function (el) {
+                return function(el) {
                     return reg.test(el);
                 };
             }
             function dateMatcher(d) {
                 var ms = d.getTime();
-                return function (el) {
+                return function(el) {
                     return !!(el && el.getTime) && el.getTime() === ms;
                 };
             }
             function functionMatcher(fn) {
-                return function (el, i, arr) {
+                return function(el, i, arr) {
                     return el === fn || fn.call(this, el, i, arr);
                 };
             }
             function invertedArgsFunctionMatcher(fn) {
-                return function (value, key, obj) {
+                return function(value, key, obj) {
                     return value === fn || fn.call(obj, key, value, obj);
                 };
             }
             function fuzzyMatcher(obj, isObject) {
                 var matchers = {};
-                return function (el, i, arr) {
+                return function(el, i, arr) {
                     var key;
                     if (!isObjectType(el)) {
                         return false;
@@ -2457,13 +2360,12 @@ img.autolink {\
                 };
             }
             function defaultMatcher(f) {
-                return function (el) {
+                return function(el) {
                     return el === f || isEqual(el, f);
                 };
             }
             function getMatcher(f, isObject) {
-                if (isPrimitiveType(f)) {
-                } else if (isRegExp(f)) {
+                if (isPrimitiveType(f)) {} else if (isRegExp(f)) {
                     return regexMatcher(f);
                 } else if (isDate(f)) {
                     return dateMatcher(f);
@@ -2491,8 +2393,7 @@ img.autolink {\
             }
             function arrayEach(arr, fn, startIndex, loop) {
                 var index, i, length = +arr.length;
-                if (startIndex < 0)
-                    startIndex = arr.length + startIndex;
+                if (startIndex < 0) startIndex = arr.length + startIndex;
                 i = isNaN(startIndex) ? 0 : startIndex;
                 if (loop === true) {
                     length += i;
@@ -2514,7 +2415,7 @@ img.autolink {\
                         indexes.push(parseInt(i));
                     }
                 }
-                indexes.sort().each(function (index) {
+                indexes.sort().each(function(index) {
                     return fn.call(arr, arr[index], index, arr);
                 });
                 return arr;
@@ -2529,7 +2430,7 @@ img.autolink {\
                 var result, index, matcher;
                 if (arr.length > 0) {
                     matcher = getMatcher(f);
-                    arrayEach(arr, function (el, i) {
+                    arrayEach(arr, function(el, i) {
                         if (matcher.call(context, el, i, arr)) {
                             result = el;
                             index = i;
@@ -2541,12 +2442,8 @@ img.autolink {\
             }
             function arrayUnique(arr, map) {
                 var result = [], o = {}, transformed;
-                arrayEach(arr, function (el, i) {
-                    transformed = map ? transformArgument(el, map, arr, [
-                        el,
-                        i,
-                        arr
-                    ]) : el;
+                arrayEach(arr, function(el, i) {
+                    transformed = map ? transformArgument(el, map, arr, [ el, i, arr ]) : el;
                     if (!checkForElementInHashAndSet(o, transformed)) {
                         result.push(el);
                     }
@@ -2555,10 +2452,10 @@ img.autolink {\
             }
             function arrayIntersect(arr1, arr2, subtract) {
                 var result = [], o = {};
-                arr2.each(function (el) {
+                arr2.each(function(el) {
                     checkForElementInHashAndSet(o, el);
                 });
-                arr1.each(function (el) {
+                arr1.each(function(el) {
                     var stringified = stringify(el), isReference = !objectIsMatchedByValue(el);
                     if (elementExistsInHash(o, stringified, el, isReference) !== subtract) {
                         discardElementFromHash(o, stringified, el, isReference);
@@ -2571,7 +2468,7 @@ img.autolink {\
                 level = level || Infinity;
                 current = current || 0;
                 var result = [];
-                arrayEach(arr, function (el) {
+                arrayEach(arr, function(el) {
                     if (isArray(el) && current < level) {
                         result = result.concat(arrayFlatten(el, level, current + 1));
                     } else {
@@ -2581,14 +2478,14 @@ img.autolink {\
                 return result;
             }
             function isArrayLike(obj) {
-                return hasProperty(obj, 'length') && !isString(obj) && !isPlainObject(obj);
+                return hasProperty(obj, "length") && !isString(obj) && !isPlainObject(obj);
             }
             function isArgumentsObject(obj) {
-                return hasProperty(obj, 'length') && (className(obj) === '[object Arguments]' || !!obj.callee);
+                return hasProperty(obj, "length") && (className(obj) === "[object Arguments]" || !!obj.callee);
             }
             function flatArguments(args) {
                 var result = [];
-                multiArgs(args, function (arg) {
+                multiArgs(args, function(arg) {
                     result = result.concat(arg);
                 });
                 return result;
@@ -2628,28 +2525,22 @@ img.autolink {\
                 }
             }
             function getMinOrMax(obj, map, which, all) {
-                var el, key, edge, test, result = [], max = which === 'max', min = which === 'min', isArray = array.isArray(obj);
+                var el, key, edge, test, result = [], max = which === "max", min = which === "min", isArray = array.isArray(obj);
                 for (key in obj) {
-                    if (!obj.hasOwnProperty(key))
-                        continue;
+                    if (!obj.hasOwnProperty(key)) continue;
                     el = obj[key];
-                    test = transformArgument(el, map, obj, isArray ? [
-                        el,
-                        parseInt(key),
-                        obj
-                    ] : []);
+                    test = transformArgument(el, map, obj, isArray ? [ el, parseInt(key), obj ] : []);
                     if (isUndefined(test)) {
-                        throw new TypeError('Cannot compare with undefined');
+                        throw new TypeError("Cannot compare with undefined");
                     }
                     if (test === edge) {
                         result.push(el);
                     } else if (isUndefined(edge) || max && test > edge || min && test < edge) {
-                        result = [el];
+                        result = [ el ];
                         edge = test;
                     }
                 }
-                if (!isArray)
-                    result = arrayFlatten(result, 1);
+                if (!isArray) result = arrayFlatten(result, 1);
                 return all ? result : result[0];
             }
             function collateStrings(a, b) {
@@ -2682,18 +2573,16 @@ img.autolink {\
                     }
                     index += 1;
                 } while (aValue != null && bValue != null && aValue === bValue);
-                if (aValue === bValue)
-                    return tiebreaker;
+                if (aValue === bValue) return tiebreaker;
                 return aValue - bValue;
             }
             function getCollationReadyString(str, sortIgnore, sortIgnoreCase) {
-                if (!isString(str))
-                    str = string(str);
+                if (!isString(str)) str = string(str);
                 if (sortIgnoreCase) {
                     str = str.toLowerCase();
                 }
                 if (sortIgnore) {
-                    str = str.replace(sortIgnore, '');
+                    str = str.replace(sortIgnore, "");
                 }
                 return str;
             }
@@ -2708,49 +2597,45 @@ img.autolink {\
                     return sortOrder.indexOf(chr);
                 }
             }
-            var AlphanumericSort = 'AlphanumericSort';
-            var AlphanumericSortOrder = 'AlphanumericSortOrder';
-            var AlphanumericSortIgnore = 'AlphanumericSortIgnore';
-            var AlphanumericSortIgnoreCase = 'AlphanumericSortIgnoreCase';
-            var AlphanumericSortEquivalents = 'AlphanumericSortEquivalents';
-            var AlphanumericSortNatural = 'AlphanumericSortNatural';
+            var AlphanumericSort = "AlphanumericSort";
+            var AlphanumericSortOrder = "AlphanumericSortOrder";
+            var AlphanumericSortIgnore = "AlphanumericSortIgnore";
+            var AlphanumericSortIgnoreCase = "AlphanumericSortIgnoreCase";
+            var AlphanumericSortEquivalents = "AlphanumericSortEquivalents";
+            var AlphanumericSortNatural = "AlphanumericSortNatural";
             function buildEnhancements() {
                 var nativeMap = array.prototype.map;
-                var callbackCheck = function () {
+                var callbackCheck = function() {
                     var args = arguments;
                     return args.length > 0 && !isFunction(args[0]);
                 };
-                extendSimilar(array, true, callbackCheck, 'every,all,some,filter,any,none,find,findIndex', function (methods, name) {
+                extendSimilar(array, true, callbackCheck, "every,all,some,filter,any,none,find,findIndex", function(methods, name) {
                     var nativeFn = array.prototype[name];
-                    methods[name] = function (f) {
+                    methods[name] = function(f) {
                         var matcher = getMatcher(f);
-                        return nativeFn.call(this, function (el, index) {
+                        return nativeFn.call(this, function(el, index) {
                             return matcher(el, index, this);
                         });
                     };
                 });
                 extend(array, true, callbackCheck, {
-                    'map': function (f) {
-                        return nativeMap.call(this, function (el, index) {
-                            return transformArgument(el, f, this, [
-                                el,
-                                index,
-                                this
-                            ]);
+                    map: function(f) {
+                        return nativeMap.call(this, function(el, index) {
+                            return transformArgument(el, f, this, [ el, index, this ]);
                         });
                     }
                 });
             }
             function buildAlphanumericSort() {
-                var order = 'A\xc1\xc0\xc2\xc3\u0104BC\u0106\u010c\xc7D\u010e\xd0E\xc9\xc8\u011a\xca\xcb\u0118FG\u011eH\u0131I\xcd\xcc\u0130\xce\xcfJKL\u0141MN\u0143\u0147\xd1O\xd3\xd2\xd4PQR\u0158S\u015a\u0160\u015eT\u0164U\xda\xd9\u016e\xdb\xdcVWXY\xddZ\u0179\u017b\u017d\xde\xc6\u0152\xd8\xd5\xc5\xc4\xd6';
-                var equiv = 'A\xc1\xc0\xc2\xc3\xc4,C\xc7,E\xc9\xc8\xca\xcb,I\xcd\xcc\u0130\xce\xcf,O\xd3\xd2\xd4\xd5\xd6,S\xdf,U\xda\xd9\xdb\xdc';
-                array[AlphanumericSortOrder] = order.split('').map(function (str) {
+                var order = "AÁÀÂÃĄBCĆČÇDĎÐEÉÈĚÊËĘFGĞHıIÍÌİÎÏJKLŁMNŃŇÑOÓÒÔPQRŘSŚŠŞTŤUÚÙŮÛÜVWXYÝZŹŻŽÞÆŒØÕÅÄÖ";
+                var equiv = "AÁÀÂÃÄ,CÇ,EÉÈÊË,IÍÌİÎÏ,OÓÒÔÕÖ,Sß,UÚÙÛÜ";
+                array[AlphanumericSortOrder] = order.split("").map(function(str) {
                     return str + str.toLowerCase();
-                }).join('');
+                }).join("");
                 var equivalents = {};
-                arrayEach(equiv.split(','), function (set) {
+                arrayEach(equiv.split(","), function(set) {
                     var equivalent = set.charAt(0);
-                    arrayEach(set.slice(1).split(''), function (chr) {
+                    arrayEach(set.slice(1).split(""), function(chr) {
                         equivalents[chr] = equivalent;
                         equivalents[chr.toLowerCase()] = equivalent.toLowerCase();
                     });
@@ -2760,9 +2645,9 @@ img.autolink {\
                 array[AlphanumericSortEquivalents] = equivalents;
             }
             extend(array, false, true, {
-                'create': function () {
+                create: function() {
                     var result = [];
-                    multiArgs(arguments, function (a) {
+                    multiArgs(arguments, function(a) {
                         if (isArgumentsObject(a) || isArrayLike(a)) {
                             a = array.prototype.slice.call(a, 0);
                         }
@@ -2772,11 +2657,11 @@ img.autolink {\
                 }
             });
             extend(array, true, false, {
-                'find': function (f, context) {
+                find: function(f, context) {
                     checkCallback(f);
                     return arrayFind(this, f, 0, false, false, context);
                 },
-                'findIndex': function (f, context) {
+                findIndex: function(f, context) {
                     var index;
                     checkCallback(f);
                     index = arrayFind(this, f, 0, false, true, context);
@@ -2784,18 +2669,18 @@ img.autolink {\
                 }
             });
             extend(array, true, true, {
-                'findFrom': function (f, index, loop) {
+                findFrom: function(f, index, loop) {
                     return arrayFind(this, f, index, loop);
                 },
-                'findIndexFrom': function (f, index, loop) {
+                findIndexFrom: function(f, index, loop) {
                     var index = arrayFind(this, f, index, loop, true);
                     return isUndefined(index) ? -1 : index;
                 },
-                'findAll': function (f, index, loop) {
+                findAll: function(f, index, loop) {
                     var result = [], matcher;
                     if (this.length > 0) {
                         matcher = getMatcher(f);
-                        arrayEach(this, function (el, i, arr) {
+                        arrayEach(this, function(el, i, arr) {
                             if (matcher(el, i, arr)) {
                                 result.push(el);
                             }
@@ -2803,99 +2688,92 @@ img.autolink {\
                     }
                     return result;
                 },
-                'count': function (f) {
-                    if (isUndefined(f))
-                        return this.length;
+                count: function(f) {
+                    if (isUndefined(f)) return this.length;
                     return this.findAll(f).length;
                 },
-                'removeAt': function (start, end) {
-                    if (isUndefined(start))
-                        return this;
-                    if (isUndefined(end))
-                        end = start;
+                removeAt: function(start, end) {
+                    if (isUndefined(start)) return this;
+                    if (isUndefined(end)) end = start;
                     this.splice(start, end - start + 1);
                     return this;
                 },
-                'include': function (el, index) {
+                include: function(el, index) {
                     return this.clone().add(el, index);
                 },
-                'exclude': function () {
+                exclude: function() {
                     return array.prototype.remove.apply(this.clone(), arguments);
                 },
-                'clone': function () {
+                clone: function() {
                     return simpleMerge([], this);
                 },
-                'unique': function (map) {
+                unique: function(map) {
                     return arrayUnique(this, map);
                 },
-                'flatten': function (limit) {
+                flatten: function(limit) {
                     return arrayFlatten(this, limit);
                 },
-                'union': function () {
+                union: function() {
                     return arrayUnique(this.concat(flatArguments(arguments)));
                 },
-                'intersect': function () {
+                intersect: function() {
                     return arrayIntersect(this, flatArguments(arguments), false);
                 },
-                'subtract': function (a) {
+                subtract: function(a) {
                     return arrayIntersect(this, flatArguments(arguments), true);
                 },
-                'at': function () {
+                at: function() {
                     return getEntriesForIndexes(this, arguments);
                 },
-                'first': function (num) {
-                    if (isUndefined(num))
-                        return this[0];
-                    if (num < 0)
-                        num = 0;
+                first: function(num) {
+                    if (isUndefined(num)) return this[0];
+                    if (num < 0) num = 0;
                     return this.slice(0, num);
                 },
-                'last': function (num) {
-                    if (isUndefined(num))
-                        return this[this.length - 1];
+                last: function(num) {
+                    if (isUndefined(num)) return this[this.length - 1];
                     var start = this.length - num < 0 ? 0 : this.length - num;
                     return this.slice(start);
                 },
-                'from': function (num) {
+                from: function(num) {
                     return this.slice(num);
                 },
-                'to': function (num) {
-                    if (isUndefined(num))
-                        num = this.length;
+                to: function(num) {
+                    if (isUndefined(num)) num = this.length;
                     return this.slice(0, num);
                 },
-                'min': function (map, all) {
-                    return getMinOrMax(this, map, 'min', all);
+                min: function(map, all) {
+                    return getMinOrMax(this, map, "min", all);
                 },
-                'max': function (map, all) {
-                    return getMinOrMax(this, map, 'max', all);
+                max: function(map, all) {
+                    return getMinOrMax(this, map, "max", all);
                 },
-                'least': function (map, all) {
-                    return getMinOrMax(this.groupBy.apply(this, [map]), 'length', 'min', all);
+                least: function(map, all) {
+                    return getMinOrMax(this.groupBy.apply(this, [ map ]), "length", "min", all);
                 },
-                'most': function (map, all) {
-                    return getMinOrMax(this.groupBy.apply(this, [map]), 'length', 'max', all);
+                most: function(map, all) {
+                    return getMinOrMax(this.groupBy.apply(this, [ map ]), "length", "max", all);
                 },
-                'sum': function (map) {
+                sum: function(map) {
                     var arr = map ? this.map(map) : this;
-                    return arr.length > 0 ? arr.reduce(function (a, b) {
+                    return arr.length > 0 ? arr.reduce(function(a, b) {
                         return a + b;
                     }) : 0;
                 },
-                'average': function (map) {
+                average: function(map) {
                     var arr = map ? this.map(map) : this;
                     return arr.length > 0 ? arr.sum() / arr.length : 0;
                 },
-                'inGroups': function (num, padding) {
+                inGroups: function(num, padding) {
                     var pad = arguments.length > 1;
                     var arr = this;
                     var result = [];
                     var divisor = ceil(this.length / num);
-                    simpleRepeat(num, function (i) {
+                    simpleRepeat(num, function(i) {
                         var index = i * divisor;
                         var group = arr.slice(index, index + divisor);
                         if (pad && group.length < divisor) {
-                            simpleRepeat(divisor - group.length, function () {
+                            simpleRepeat(divisor - group.length, function() {
                                 group = group.add(padding);
                             });
                         }
@@ -2903,15 +2781,12 @@ img.autolink {\
                     });
                     return result;
                 },
-                'inGroupsOf': function (num, padding) {
+                inGroupsOf: function(num, padding) {
                     var result = [], len = this.length, arr = this, group;
-                    if (len === 0 || num === 0)
-                        return arr;
-                    if (isUndefined(num))
-                        num = 1;
-                    if (isUndefined(padding))
-                        padding = null;
-                    simpleRepeat(ceil(len / num), function (i) {
+                    if (len === 0 || num === 0) return arr;
+                    if (isUndefined(num)) num = 1;
+                    if (isUndefined(padding)) padding = null;
+                    simpleRepeat(ceil(len / num), function(i) {
                         group = arr.slice(num * i, num * i + num);
                         while (group.length < num) {
                             group.push(padding);
@@ -2920,15 +2795,15 @@ img.autolink {\
                     });
                     return result;
                 },
-                'isEmpty': function () {
+                isEmpty: function() {
                     return this.compact().length == 0;
                 },
-                'sortBy': function (map, desc) {
+                sortBy: function(map, desc) {
                     var arr = this.clone();
-                    arr.sort(function (a, b) {
+                    arr.sort(function(a, b) {
                         var aProperty, bProperty, comp;
-                        aProperty = transformArgument(a, map, arr, [a]);
-                        bProperty = transformArgument(b, map, arr, [b]);
+                        aProperty = transformArgument(a, map, arr, [ a ]);
+                        bProperty = transformArgument(b, map, arr, [ b ]);
                         if (isString(aProperty) && isString(bProperty)) {
                             comp = collateStrings(aProperty, bProperty);
                         } else if (aProperty < bProperty) {
@@ -2942,7 +2817,7 @@ img.autolink {\
                     });
                     return arr;
                 },
-                'randomize': function () {
+                randomize: function() {
                     var arr = this.concat(), i = arr.length, j, x;
                     while (i) {
                         j = math.random() * i | 0;
@@ -2952,34 +2827,30 @@ img.autolink {\
                     }
                     return arr;
                 },
-                'zip': function () {
+                zip: function() {
                     var args = multiArgs(arguments);
-                    return this.map(function (el, i) {
-                        return [el].concat(args.map(function (k) {
+                    return this.map(function(el, i) {
+                        return [ el ].concat(args.map(function(k) {
                             return i in k ? k[i] : null;
                         }));
                     });
                 },
-                'sample': function (num) {
+                sample: function(num) {
                     var arr = this.randomize();
                     return arguments.length > 0 ? arr.slice(0, num) : arr[0];
                 },
-                'each': function (fn, index, loop) {
+                each: function(fn, index, loop) {
                     arrayEach(this, fn, index, loop);
                     return this;
                 },
-                'add': function (el, index) {
-                    if (!isNumber(number(index)) || isNaN(index))
-                        index = this.length;
-                    array.prototype.splice.apply(this, [
-                        index,
-                        0
-                    ].concat(el));
+                add: function(el, index) {
+                    if (!isNumber(number(index)) || isNaN(index)) index = this.length;
+                    array.prototype.splice.apply(this, [ index, 0 ].concat(el));
                     return this;
                 },
-                'remove': function () {
+                remove: function() {
                     var arr = this;
-                    multiArgs(arguments, function (f) {
+                    multiArgs(arguments, function(f) {
                         var i = 0, matcher = getMatcher(f);
                         while (i < arr.length) {
                             if (matcher(arr[i], i, arr)) {
@@ -2991,9 +2862,9 @@ img.autolink {\
                     });
                     return arr;
                 },
-                'compact': function (all) {
+                compact: function(all) {
                     var result = [];
-                    arrayEach(this, function (el, i) {
+                    arrayEach(this, function(el, i) {
                         if (isArray(el)) {
                             result.push(el.compact());
                         } else if (all && el) {
@@ -3004,16 +2875,11 @@ img.autolink {\
                     });
                     return result;
                 },
-                'groupBy': function (map, fn) {
+                groupBy: function(map, fn) {
                     var arr = this, result = {}, key;
-                    arrayEach(arr, function (el, index) {
-                        key = transformArgument(el, map, arr, [
-                            el,
-                            index,
-                            arr
-                        ]);
-                        if (!result[key])
-                            result[key] = [];
+                    arrayEach(arr, function(el, index) {
+                        key = transformArgument(el, map, arr, [ el, index, arr ]);
+                        if (!result[key]) result[key] = [];
                         result[key].push(el);
                     });
                     if (fn) {
@@ -3021,39 +2887,35 @@ img.autolink {\
                     }
                     return result;
                 },
-                'none': function () {
+                none: function() {
                     return !this.any.apply(this, arguments);
                 }
             });
             extend(array, true, true, {
-                'all': array.prototype.every,
-                'any': array.prototype.some,
-                'insert': array.prototype.add
+                all: array.prototype.every,
+                any: array.prototype.some,
+                insert: array.prototype.add
             });
             function keysWithObjectCoercion(obj) {
                 return object.keys(coercePrimitiveToObject(obj));
             }
             function buildEnumerableMethods(names, mapping) {
-                extendSimilar(object, false, true, names, function (methods, name) {
-                    methods[name] = function (obj, arg1, arg2) {
+                extendSimilar(object, false, true, names, function(methods, name) {
+                    methods[name] = function(obj, arg1, arg2) {
                         var result, coerced = keysWithObjectCoercion(obj), matcher;
                         if (!mapping) {
                             matcher = getMatcher(arg1, true);
                         }
-                        result = array.prototype[name].call(coerced, function (key) {
+                        result = array.prototype[name].call(coerced, function(key) {
                             var value = obj[key];
                             if (mapping) {
-                                return transformArgument(value, arg1, obj, [
-                                    key,
-                                    value,
-                                    obj
-                                ]);
+                                return transformArgument(value, arg1, obj, [ key, value, obj ]);
                             } else {
                                 return matcher(value, key, obj);
                             }
                         }, arg2);
                         if (isArray(result)) {
-                            result = result.reduce(function (o, key, i) {
+                            result = result.reduce(function(o, key, i) {
                                 o[key] = obj[key];
                                 return o;
                             }, {});
@@ -3067,38 +2929,33 @@ img.autolink {\
                 array[AlphanumericSort] = collateStrings;
             }
             extend(object, false, true, {
-                'map': function (obj, map) {
+                map: function(obj, map) {
                     var result = {}, key, value;
                     for (key in obj) {
-                        if (!hasOwnProperty(obj, key))
-                            continue;
+                        if (!hasOwnProperty(obj, key)) continue;
                         value = obj[key];
-                        result[key] = transformArgument(value, map, obj, [
-                            key,
-                            value,
-                            obj
-                        ]);
+                        result[key] = transformArgument(value, map, obj, [ key, value, obj ]);
                     }
                     return result;
                 },
-                'reduce': function (obj) {
-                    var values = keysWithObjectCoercion(obj).map(function (key) {
-                            return obj[key];
-                        });
+                reduce: function(obj) {
+                    var values = keysWithObjectCoercion(obj).map(function(key) {
+                        return obj[key];
+                    });
                     return values.reduce.apply(values, multiArgs(arguments, null, 1));
                 },
-                'each': function (obj, fn) {
+                each: function(obj, fn) {
                     checkCallback(fn);
                     iterateOverObject(obj, fn);
                     return obj;
                 },
-                'size': function (obj) {
+                size: function(obj) {
                     return keysWithObjectCoercion(obj).length;
                 }
             });
-            var EnumerableFindingMethods = 'any,all,none,count,find,findAll,isEmpty'.split(',');
-            var EnumerableMappingMethods = 'sum,average,min,max,least,most'.split(',');
-            var EnumerableOtherMethods = 'map,reduce,size'.split(',');
+            var EnumerableFindingMethods = "any,all,none,count,find,findAll,isEmpty".split(",");
+            var EnumerableMappingMethods = "sum,average,min,max,least,most".split(",");
+            var EnumerableOtherMethods = "map,reduce,size".split(",");
             var EnumerableMethods = EnumerableFindingMethods.concat(EnumerableMappingMethods).concat(EnumerableOtherMethods);
             buildEnhancements();
             buildAlphanumericSort();
@@ -3108,23 +2965,12 @@ img.autolink {\
             exportSortAlgorithm();
             var English;
             var CurrentLocalization;
-            var TimeFormat = [
-                    'ampm',
-                    'hour',
-                    'minute',
-                    'second',
-                    'ampm',
-                    'utc',
-                    'offset_sign',
-                    'offset_hours',
-                    'offset_minutes',
-                    'ampm'
-                ];
-            var DecimalReg = '(?:[,.]\\d+)?';
-            var HoursReg = '\\d{1,2}' + DecimalReg;
-            var SixtyReg = '[0-5]\\d' + DecimalReg;
-            var RequiredTime = '({t})?\\s*(' + HoursReg + ')(?:{h}(' + SixtyReg + ')?{m}(?::?(' + SixtyReg + '){s})?\\s*(?:({t})|(Z)|(?:([+-])(\\d{2,2})(?::?(\\d{2,2}))?)?)?|\\s*({t}))';
-            var KanjiDigits = '\u3007\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341\u767e\u5343\u4e07';
+            var TimeFormat = [ "ampm", "hour", "minute", "second", "ampm", "utc", "offset_sign", "offset_hours", "offset_minutes", "ampm" ];
+            var DecimalReg = "(?:[,.]\\d+)?";
+            var HoursReg = "\\d{1,2}" + DecimalReg;
+            var SixtyReg = "[0-5]\\d" + DecimalReg;
+            var RequiredTime = "({t})?\\s*(" + HoursReg + ")(?:{h}(" + SixtyReg + ")?{m}(?::?(" + SixtyReg + "){s})?\\s*(?:({t})|(Z)|(?:([+-])(\\d{2,2})(?::?(\\d{2,2}))?)?)?|\\s*({t}))";
+            var KanjiDigits = "〇一二三四五六七八九十百千万";
             var AsianDigitMap = {};
             var AsianDigitReg;
             var DateArgumentUnits;
@@ -3132,193 +2978,185 @@ img.autolink {\
             var CoreDateFormats = [];
             var CompiledOutputFormats = {};
             var DateFormatTokens = {
-                    'yyyy': function (d) {
-                        return callDateGet(d, 'FullYear');
-                    },
-                    'yy': function (d) {
-                        return callDateGet(d, 'FullYear') % 100;
-                    },
-                    'ord': function (d) {
-                        var date = callDateGet(d, 'Date');
-                        return date + getOrdinalizedSuffix(date);
-                    },
-                    'tz': function (d) {
-                        return d.getUTCOffset();
-                    },
-                    'isotz': function (d) {
-                        return d.getUTCOffset(true);
-                    },
-                    'Z': function (d) {
-                        return d.getUTCOffset();
-                    },
-                    'ZZ': function (d) {
-                        return d.getUTCOffset().replace(/(\d{2})$/, ':$1');
-                    }
-                };
-            var DateUnits = [
-                    {
-                        name: 'year',
-                        method: 'FullYear',
-                        ambiguous: true,
-                        multiplier: function (d) {
-                            var adjust = d ? d.isLeapYear() ? 1 : 0 : 0.25;
-                            return (365 + adjust) * 24 * 60 * 60 * 1000;
-                        }
-                    },
-                    {
-                        name: 'month',
-                        error: 0.919,
-                        method: 'Month',
-                        ambiguous: true,
-                        multiplier: function (d, ms) {
-                            var days = 30.4375, inMonth;
-                            if (d) {
-                                inMonth = d.daysInMonth();
-                                if (ms <= inMonth.days()) {
-                                    days = inMonth;
-                                }
-                            }
-                            return days * 24 * 60 * 60 * 1000;
-                        }
-                    },
-                    {
-                        name: 'week',
-                        method: 'ISOWeek',
-                        multiplier: function () {
-                            return 7 * 24 * 60 * 60 * 1000;
-                        }
-                    },
-                    {
-                        name: 'day',
-                        error: 0.958,
-                        method: 'Date',
-                        ambiguous: true,
-                        multiplier: function () {
-                            return 24 * 60 * 60 * 1000;
-                        }
-                    },
-                    {
-                        name: 'hour',
-                        method: 'Hours',
-                        multiplier: function () {
-                            return 60 * 60 * 1000;
-                        }
-                    },
-                    {
-                        name: 'minute',
-                        method: 'Minutes',
-                        multiplier: function () {
-                            return 60 * 1000;
-                        }
-                    },
-                    {
-                        name: 'second',
-                        method: 'Seconds',
-                        multiplier: function () {
-                            return 1000;
-                        }
-                    },
-                    {
-                        name: 'millisecond',
-                        method: 'Milliseconds',
-                        multiplier: function () {
-                            return 1;
+                yyyy: function(d) {
+                    return callDateGet(d, "FullYear");
+                },
+                yy: function(d) {
+                    return callDateGet(d, "FullYear") % 100;
+                },
+                ord: function(d) {
+                    var date = callDateGet(d, "Date");
+                    return date + getOrdinalizedSuffix(date);
+                },
+                tz: function(d) {
+                    return d.getUTCOffset();
+                },
+                isotz: function(d) {
+                    return d.getUTCOffset(true);
+                },
+                Z: function(d) {
+                    return d.getUTCOffset();
+                },
+                ZZ: function(d) {
+                    return d.getUTCOffset().replace(/(\d{2})$/, ":$1");
+                }
+            };
+            var DateUnits = [ {
+                name: "year",
+                method: "FullYear",
+                ambiguous: true,
+                multiplier: function(d) {
+                    var adjust = d ? d.isLeapYear() ? 1 : 0 : .25;
+                    return (365 + adjust) * 24 * 60 * 60 * 1e3;
+                }
+            }, {
+                name: "month",
+                error: .919,
+                method: "Month",
+                ambiguous: true,
+                multiplier: function(d, ms) {
+                    var days = 30.4375, inMonth;
+                    if (d) {
+                        inMonth = d.daysInMonth();
+                        if (ms <= inMonth.days()) {
+                            days = inMonth;
                         }
                     }
-                ];
+                    return days * 24 * 60 * 60 * 1e3;
+                }
+            }, {
+                name: "week",
+                method: "ISOWeek",
+                multiplier: function() {
+                    return 7 * 24 * 60 * 60 * 1e3;
+                }
+            }, {
+                name: "day",
+                error: .958,
+                method: "Date",
+                ambiguous: true,
+                multiplier: function() {
+                    return 24 * 60 * 60 * 1e3;
+                }
+            }, {
+                name: "hour",
+                method: "Hours",
+                multiplier: function() {
+                    return 60 * 60 * 1e3;
+                }
+            }, {
+                name: "minute",
+                method: "Minutes",
+                multiplier: function() {
+                    return 60 * 1e3;
+                }
+            }, {
+                name: "second",
+                method: "Seconds",
+                multiplier: function() {
+                    return 1e3;
+                }
+            }, {
+                name: "millisecond",
+                method: "Milliseconds",
+                multiplier: function() {
+                    return 1;
+                }
+            } ];
             var Localizations = {};
             function Localization(l) {
                 simpleMerge(this, l);
                 this.compiledFormats = CoreDateFormats.concat();
             }
             Localization.prototype = {
-                getMonth: function (n) {
+                getMonth: function(n) {
                     if (isNumber(n)) {
                         return n - 1;
                     } else {
-                        return this['months'].indexOf(n) % 12;
+                        return this["months"].indexOf(n) % 12;
                     }
                 },
-                getWeekday: function (n) {
-                    return this['weekdays'].indexOf(n) % 7;
+                getWeekday: function(n) {
+                    return this["weekdays"].indexOf(n) % 7;
                 },
-                getNumber: function (n) {
+                getNumber: function(n) {
                     var i;
                     if (isNumber(n)) {
                         return n;
-                    } else if (n && (i = this['numbers'].indexOf(n)) !== -1) {
+                    } else if (n && (i = this["numbers"].indexOf(n)) !== -1) {
                         return (i + 1) % 10;
                     } else {
                         return 1;
                     }
                 },
-                getNumericDate: function (n) {
+                getNumericDate: function(n) {
                     var self = this;
-                    return n.replace(regexp(this['num'], 'g'), function (d) {
+                    return n.replace(regexp(this["num"], "g"), function(d) {
                         var num = self.getNumber(d);
-                        return num || '';
+                        return num || "";
                     });
                 },
-                getUnitIndex: function (n) {
-                    return this['units'].indexOf(n) % 8;
+                getUnitIndex: function(n) {
+                    return this["units"].indexOf(n) % 8;
                 },
-                getRelativeFormat: function (adu) {
-                    return this.convertAdjustedToFormat(adu, adu[2] > 0 ? 'future' : 'past');
+                getRelativeFormat: function(adu) {
+                    return this.convertAdjustedToFormat(adu, adu[2] > 0 ? "future" : "past");
                 },
-                getDuration: function (ms) {
-                    return this.convertAdjustedToFormat(getAdjustedUnit(ms), 'duration');
+                getDuration: function(ms) {
+                    return this.convertAdjustedToFormat(getAdjustedUnit(ms), "duration");
                 },
-                hasVariant: function (code) {
+                hasVariant: function(code) {
                     code = code || this.code;
-                    return code === 'en' || code === 'en-US' ? true : this['variant'];
+                    return code === "en" || code === "en-US" ? true : this["variant"];
                 },
-                matchAM: function (str) {
-                    return str === this['ampm'][0];
+                matchAM: function(str) {
+                    return str === this["ampm"][0];
                 },
-                matchPM: function (str) {
-                    return str && str === this['ampm'][1];
+                matchPM: function(str) {
+                    return str && str === this["ampm"][1];
                 },
-                convertAdjustedToFormat: function (adu, mode) {
-                    var sign, unit, mult, num = adu[0], u = adu[1], ms = adu[2], format = this[mode] || this['relative'];
+                convertAdjustedToFormat: function(adu, mode) {
+                    var sign, unit, mult, num = adu[0], u = adu[1], ms = adu[2], format = this[mode] || this["relative"];
                     if (isFunction(format)) {
                         return format.call(this, num, u, ms, mode);
                     }
-                    mult = this['plural'] && num > 1 ? 1 : 0;
-                    unit = this['units'][mult * 8 + u] || this['units'][u];
-                    if (this['capitalizeUnit'])
-                        unit = simpleCapitalize(unit);
-                    sign = this['modifiers'].filter(function (m) {
-                        return m.name == 'sign' && m.value == (ms > 0 ? 1 : -1);
+                    mult = this["plural"] && num > 1 ? 1 : 0;
+                    unit = this["units"][mult * 8 + u] || this["units"][u];
+                    if (this["capitalizeUnit"]) unit = simpleCapitalize(unit);
+                    sign = this["modifiers"].filter(function(m) {
+                        return m.name == "sign" && m.value == (ms > 0 ? 1 : -1);
                     })[0];
-                    return format.replace(/\{(.*?)\}/g, function (full, match) {
+                    return format.replace(/\{(.*?)\}/g, function(full, match) {
                         switch (match) {
-                        case 'num':
+                          case "num":
                             return num;
-                        case 'unit':
+
+                          case "unit":
                             return unit;
-                        case 'sign':
+
+                          case "sign":
                             return sign.src;
                         }
                     });
                 },
-                getFormats: function () {
-                    return this.cachedFormat ? [this.cachedFormat].concat(this.compiledFormats) : this.compiledFormats;
+                getFormats: function() {
+                    return this.cachedFormat ? [ this.cachedFormat ].concat(this.compiledFormats) : this.compiledFormats;
                 },
-                addFormat: function (src, allowsTime, match, variant, iso) {
+                addFormat: function(src, allowsTime, match, variant, iso) {
                     var to = match || [], loc = this, time, timeMarkers, lastIsNumeral;
-                    src = src.replace(/\s+/g, '[,. ]*');
-                    src = src.replace(/\{([^,]+?)\}/g, function (all, k) {
-                        var value, arr, result, opt = k.match(/\?$/), nc = k.match(/^(\d+)\??$/), slice = k.match(/(\d)(?:-(\d))?/), key = k.replace(/[^a-z]+$/, '');
+                    src = src.replace(/\s+/g, "[,. ]*");
+                    src = src.replace(/\{([^,]+?)\}/g, function(all, k) {
+                        var value, arr, result, opt = k.match(/\?$/), nc = k.match(/^(\d+)\??$/), slice = k.match(/(\d)(?:-(\d))?/), key = k.replace(/[^a-z]+$/, "");
                         if (nc) {
-                            value = loc['tokens'][nc[1]];
+                            value = loc["tokens"][nc[1]];
                         } else if (loc[key]) {
                             value = loc[key];
-                        } else if (loc[key + 's']) {
-                            value = loc[key + 's'];
+                        } else if (loc[key + "s"]) {
+                            value = loc[key + "s"];
                             if (slice) {
                                 arr = [];
-                                value.forEach(function (m, i) {
-                                    var mod = i % (loc['units'] ? 8 : value.length);
+                                value.forEach(function(m, i) {
+                                    var mod = i % (loc["units"] ? 8 : value.length);
                                     if (mod >= slice[1] && mod <= (slice[2] || slice[1])) {
                                         arr.push(m);
                                     }
@@ -3328,27 +3166,24 @@ img.autolink {\
                             value = arrayToAlternates(value);
                         }
                         if (nc) {
-                            result = '(?:' + value + ')';
+                            result = "(?:" + value + ")";
                         } else {
                             if (!match) {
                                 to.push(key);
                             }
-                            result = '(' + value + ')';
+                            result = "(" + value + ")";
                         }
                         if (opt) {
-                            result += '?';
+                            result += "?";
                         }
                         return result;
                     });
                     if (allowsTime) {
                         time = prepareTime(RequiredTime, loc, iso);
-                        timeMarkers = [
-                            't',
-                            '[\\s\\u3000]'
-                        ].concat(loc['timeMarker']);
+                        timeMarkers = [ "t", "[\\s\\u3000]" ].concat(loc["timeMarker"]);
                         lastIsNumeral = src.match(/\\d\{\d,\d\}\)+\??$/);
-                        addDateInputFormat(loc, '(?:' + time + ')[,\\s\\u3000]+?' + src, TimeFormat.concat(to), variant);
-                        addDateInputFormat(loc, src + '(?:[,\\s]*(?:' + timeMarkers.join('|') + (lastIsNumeral ? '+' : '*') + ')' + time + ')?', to.concat(TimeFormat), variant);
+                        addDateInputFormat(loc, "(?:" + time + ")[,\\s\\u3000]+?" + src, TimeFormat.concat(to), variant);
+                        addDateInputFormat(loc, src + "(?:[,\\s]*(?:" + timeMarkers.join("|") + (lastIsNumeral ? "+" : "*") + ")" + time + ")?", to.concat(TimeFormat), variant);
                     } else {
                         addDateInputFormat(loc, src, to, variant);
                     }
@@ -3356,11 +3191,10 @@ img.autolink {\
             };
             function getLocalization(localeCode, fallback) {
                 var loc;
-                if (!isString(localeCode))
-                    localeCode = '';
+                if (!isString(localeCode)) localeCode = "";
                 loc = Localizations[localeCode] || Localizations[localeCode.slice(0, 2)];
                 if (fallback === false && !loc) {
-                    throw new TypeError('Invalid locale.');
+                    throw new TypeError("Invalid locale.");
                 }
                 return loc || CurrentLocalization;
             }
@@ -3369,43 +3203,41 @@ img.autolink {\
                 function initializeField(name) {
                     var val = loc[name];
                     if (isString(val)) {
-                        loc[name] = val.split(',');
+                        loc[name] = val.split(",");
                     } else if (!val) {
                         loc[name] = [];
                     }
                 }
                 function eachAlternate(str, fn) {
-                    str = str.split('+').map(function (split) {
-                        return split.replace(/(.+):(.+)$/, function (full, base, suffixes) {
-                            return suffixes.split('|').map(function (suffix) {
+                    str = str.split("+").map(function(split) {
+                        return split.replace(/(.+):(.+)$/, function(full, base, suffixes) {
+                            return suffixes.split("|").map(function(suffix) {
                                 return base + suffix;
-                            }).join('|');
+                            }).join("|");
                         });
-                    }).join('|');
-                    return str.split('|').forEach(fn);
+                    }).join("|");
+                    return str.split("|").forEach(fn);
                 }
                 function setArray(name, abbreviate, multiple) {
                     var arr = [];
-                    loc[name].forEach(function (full, i) {
+                    loc[name].forEach(function(full, i) {
                         if (abbreviate) {
-                            full += '+' + full.slice(0, 3);
+                            full += "+" + full.slice(0, 3);
                         }
-                        eachAlternate(full, function (day, j) {
+                        eachAlternate(full, function(day, j) {
                             arr[j * multiple + i] = day.toLowerCase();
                         });
                     });
                     loc[name] = arr;
                 }
                 function getDigit(start, stop, allowNumbers) {
-                    var str = '\\d{' + start + ',' + stop + '}';
-                    if (allowNumbers)
-                        str += '|(?:' + arrayToAlternates(loc['numbers']) + ')+';
+                    var str = "\\d{" + start + "," + stop + "}";
+                    if (allowNumbers) str += "|(?:" + arrayToAlternates(loc["numbers"]) + ")+";
                     return str;
                 }
                 function getNum() {
-                    var arr = ['-?\\d+'].concat(loc['articles']);
-                    if (loc['numbers'])
-                        arr = arr.concat(loc['numbers']);
+                    var arr = [ "-?\\d+" ].concat(loc["articles"]);
+                    if (loc["numbers"]) arr = arr.concat(loc["numbers"]);
                     return arrayToAlternates(arr);
                 }
                 function setDefault(name, value) {
@@ -3414,24 +3246,24 @@ img.autolink {\
                 function setModifiers() {
                     var arr = [];
                     loc.modifiersByName = {};
-                    loc['modifiers'].push({
-                        'name': 'day',
-                        'src': 'yesterday',
-                        'value': -1
+                    loc["modifiers"].push({
+                        name: "day",
+                        src: "yesterday",
+                        value: -1
                     });
-                    loc['modifiers'].push({
-                        'name': 'day',
-                        'src': 'today',
-                        'value': 0
+                    loc["modifiers"].push({
+                        name: "day",
+                        src: "today",
+                        value: 0
                     });
-                    loc['modifiers'].push({
-                        'name': 'day',
-                        'src': 'tomorrow',
-                        'value': 1
+                    loc["modifiers"].push({
+                        name: "day",
+                        src: "tomorrow",
+                        value: 1
                     });
-                    loc['modifiers'].forEach(function (modifier) {
+                    loc["modifiers"].forEach(function(modifier) {
                         var name = modifier.name;
-                        eachAlternate(modifier.src, function (t) {
+                        eachAlternate(modifier.src, function(t) {
                             var locEntry = loc[name];
                             loc.modifiersByName[t] = modifier;
                             arr.push({
@@ -3439,42 +3271,42 @@ img.autolink {\
                                 src: t,
                                 value: modifier.value
                             });
-                            loc[name] = locEntry ? locEntry + '|' + t : t;
+                            loc[name] = locEntry ? locEntry + "|" + t : t;
                         });
                     });
-                    loc['day'] += '|' + arrayToAlternates(loc['weekdays']);
-                    loc['modifiers'] = arr;
+                    loc["day"] += "|" + arrayToAlternates(loc["weekdays"]);
+                    loc["modifiers"] = arr;
                 }
                 loc = new Localization(set);
-                initializeField('modifiers');
-                'months,weekdays,units,numbers,articles,tokens,timeMarker,ampm,timeSuffixes,dateParse,timeParse'.split(',').forEach(initializeField);
-                canAbbreviate = !loc['monthSuffix'];
-                setArray('months', canAbbreviate, 12);
-                setArray('weekdays', canAbbreviate, 7);
-                setArray('units', false, 8);
-                setArray('numbers', false, 10);
-                setDefault('code', localeCode);
-                setDefault('date', getDigit(1, 2, loc['digitDate']));
-                setDefault('year', '\'\\d{2}|' + getDigit(4, 4));
-                setDefault('num', getNum());
+                initializeField("modifiers");
+                "months,weekdays,units,numbers,articles,tokens,timeMarker,ampm,timeSuffixes,dateParse,timeParse".split(",").forEach(initializeField);
+                canAbbreviate = !loc["monthSuffix"];
+                setArray("months", canAbbreviate, 12);
+                setArray("weekdays", canAbbreviate, 7);
+                setArray("units", false, 8);
+                setArray("numbers", false, 10);
+                setDefault("code", localeCode);
+                setDefault("date", getDigit(1, 2, loc["digitDate"]));
+                setDefault("year", "'\\d{2}|" + getDigit(4, 4));
+                setDefault("num", getNum());
                 setModifiers();
-                if (loc['monthSuffix']) {
-                    loc['month'] = getDigit(1, 2);
-                    loc['months'] = '1,2,3,4,5,6,7,8,9,10,11,12'.split(',').map(function (n) {
-                        return n + loc['monthSuffix'];
+                if (loc["monthSuffix"]) {
+                    loc["month"] = getDigit(1, 2);
+                    loc["months"] = "1,2,3,4,5,6,7,8,9,10,11,12".split(",").map(function(n) {
+                        return n + loc["monthSuffix"];
                     });
                 }
-                loc['full_month'] = getDigit(1, 2) + '|' + arrayToAlternates(loc['months']);
-                if (loc['timeSuffixes'].length > 0) {
+                loc["full_month"] = getDigit(1, 2) + "|" + arrayToAlternates(loc["months"]);
+                if (loc["timeSuffixes"].length > 0) {
                     loc.addFormat(prepareTime(RequiredTime, loc), false, TimeFormat);
                 }
-                loc.addFormat('{day}', true);
-                loc.addFormat('{month}' + (loc['monthSuffix'] || ''));
-                loc.addFormat('{year}' + (loc['yearSuffix'] || ''));
-                loc['timeParse'].forEach(function (src) {
+                loc.addFormat("{day}", true);
+                loc.addFormat("{month}" + (loc["monthSuffix"] || ""));
+                loc.addFormat("{year}" + (loc["yearSuffix"] || ""));
+                loc["timeParse"].forEach(function(src) {
                     loc.addFormat(src, true);
                 });
-                loc['dateParse'].forEach(function (src) {
+                loc["dateParse"].forEach(function(src) {
                     loc.addFormat(src);
                 });
                 return Localizations[localeCode] = loc;
@@ -3483,7 +3315,7 @@ img.autolink {\
                 locale.compiledFormats.unshift({
                     variant: variant,
                     locale: locale,
-                    reg: regexp('^' + format + '$', 'i'),
+                    reg: regexp("^" + format + "$", "i"),
                     to: match
                 });
             }
@@ -3491,9 +3323,9 @@ img.autolink {\
                 return str.slice(0, 1).toUpperCase() + str.slice(1);
             }
             function arrayToAlternates(arr) {
-                return arr.filter(function (el) {
+                return arr.filter(function(el) {
                     return !!el;
-                }).join('|');
+                }).join("|");
             }
             function getNewDate() {
                 var fn = date.SugarNewDate;
@@ -3504,18 +3336,15 @@ img.autolink {\
                 if (isObjectType(args[0])) {
                     return args;
                 } else if (isNumber(args[0]) && !isNumber(args[1])) {
-                    return [args[0]];
+                    return [ args[0] ];
                 } else if (isString(args[0]) && allowDuration) {
-                    return [
-                        getDateParamsFromString(args[0]),
-                        args[1]
-                    ];
+                    return [ getDateParamsFromString(args[0]), args[1] ];
                 }
                 obj = {};
-                DateArgumentUnits.forEach(function (u, i) {
+                DateArgumentUnits.forEach(function(u, i) {
                     obj[u.name] = args[i];
                 });
-                return [obj];
+                return [ obj ];
             }
             function getDateParamsFromString(str, num) {
                 var match, params = {};
@@ -3530,8 +3359,7 @@ img.autolink {\
             }
             function iterateOverDateUnits(fn, from, to) {
                 var i, unit;
-                if (isUndefined(to))
-                    to = DateUnitsReversed.length;
+                if (isUndefined(to)) to = DateUnitsReversed.length;
                 for (i = from || 0; i < to; i++) {
                     unit = DateUnitsReversed[i];
                     if (fn(unit.name, unit, i) === false) {
@@ -3541,32 +3369,29 @@ img.autolink {\
             }
             function getFormatMatch(match, arr) {
                 var obj = {}, value, num;
-                arr.forEach(function (key, i) {
+                arr.forEach(function(key, i) {
                     value = match[i + 1];
-                    if (isUndefined(value) || value === '')
-                        return;
-                    if (key === 'year') {
-                        obj.yearAsString = value.replace(/'/, '');
+                    if (isUndefined(value) || value === "") return;
+                    if (key === "year") {
+                        obj.yearAsString = value.replace(/'/, "");
                     }
-                    num = parseFloat(value.replace(/'/, '').replace(/,/, '.'));
+                    num = parseFloat(value.replace(/'/, "").replace(/,/, "."));
                     obj[key] = !isNaN(num) ? num : value.toLowerCase();
                 });
                 return obj;
             }
             function cleanDateInput(str) {
-                str = str.trim().replace(/^just (?=now)|\.+$/i, '');
+                str = str.trim().replace(/^just (?=now)|\.+$/i, "");
                 return convertAsianDigits(str);
             }
             function convertAsianDigits(str) {
-                return str.replace(AsianDigitReg, function (full, disallowed, match) {
+                return str.replace(AsianDigitReg, function(full, disallowed, match) {
                     var sum = 0, place = 1, lastWasHolder, lastHolder;
-                    if (disallowed)
-                        return full;
-                    match.split('').reverse().forEach(function (letter) {
+                    if (disallowed) return full;
+                    match.split("").reverse().forEach(function(letter) {
                         var value = AsianDigitMap[letter], holder = value > 9;
                         if (holder) {
-                            if (lastWasHolder)
-                                sum += place;
+                            if (lastWasHolder) sum += place;
                             place *= value / (lastHolder || 1);
                             lastHolder = value;
                         } else {
@@ -3577,8 +3402,7 @@ img.autolink {\
                         }
                         lastWasHolder = holder;
                     });
-                    if (lastWasHolder)
-                        sum += place;
+                    if (lastWasHolder) sum += place;
                     return sum;
                 });
             }
@@ -3590,35 +3414,30 @@ img.autolink {\
                     afterCallbacks.push(fn);
                 }
                 function fireCallbacks() {
-                    afterCallbacks.forEach(function (fn) {
+                    afterCallbacks.forEach(function(fn) {
                         fn.call();
                     });
                 }
                 function setWeekdayOfMonth() {
                     var w = d.getWeekday();
-                    d.setWeekday(7 * (set['num'] - 1) + (w > weekday ? weekday + 7 : weekday));
+                    d.setWeekday(7 * (set["num"] - 1) + (w > weekday ? weekday + 7 : weekday));
                 }
                 function setUnitEdge() {
-                    var modifier = loc.modifiersByName[set['edge']];
-                    iterateOverDateUnits(function (name) {
+                    var modifier = loc.modifiersByName[set["edge"]];
+                    iterateOverDateUnits(function(name) {
                         if (isDefined(set[name])) {
                             unit = name;
                             return false;
                         }
                     }, 4);
-                    if (unit === 'year')
-                        set.specificity = 'month';
-                    else if (unit === 'month' || unit === 'week')
-                        set.specificity = 'day';
-                    d[(modifier.value < 0 ? 'endOf' : 'beginningOf') + simpleCapitalize(unit)]();
-                    if (modifier.value === -2)
-                        d.reset();
+                    if (unit === "year") set.specificity = "month"; else if (unit === "month" || unit === "week") set.specificity = "day";
+                    d[(modifier.value < 0 ? "endOf" : "beginningOf") + simpleCapitalize(unit)]();
+                    if (modifier.value === -2) d.reset();
                 }
                 function separateAbsoluteUnits() {
                     var params;
-                    iterateOverDateUnits(function (name, u, i) {
-                        if (name === 'day')
-                            name = 'date';
+                    iterateOverDateUnits(function(name, u, i) {
+                        if (name === "day") name = "date";
                         if (isDefined(set[name])) {
                             if (i >= unitIndex) {
                                 invalidateDate(d);
@@ -3630,7 +3449,7 @@ img.autolink {\
                         }
                     });
                     if (params) {
-                        afterDateSet(function () {
+                        afterDateSet(function() {
                             d.set(params, true);
                         });
                     }
@@ -3647,97 +3466,97 @@ img.autolink {\
                     baseLocalization = getLocalization(localeCode);
                     f = cleanDateInput(f);
                     if (baseLocalization) {
-                        iterateOverObject(baseLocalization.getFormats(), function (i, dif) {
+                        iterateOverObject(baseLocalization.getFormats(), function(i, dif) {
                             var match = f.match(dif.reg);
                             if (match) {
                                 loc = dif.locale;
                                 set = getFormatMatch(match, dif.to, loc);
                                 loc.cachedFormat = dif;
-                                if (set['utc']) {
+                                if (set["utc"]) {
                                     d.utc();
                                 }
                                 if (set.timestamp) {
                                     set = set.timestamp;
                                     return false;
                                 }
-                                if (dif.variant && !isString(set['month']) && (isString(set['date']) || baseLocalization.hasVariant(localeCode))) {
-                                    tmp = set['month'];
-                                    set['month'] = set['date'];
-                                    set['date'] = tmp;
+                                if (dif.variant && !isString(set["month"]) && (isString(set["date"]) || baseLocalization.hasVariant(localeCode))) {
+                                    tmp = set["month"];
+                                    set["month"] = set["date"];
+                                    set["date"] = tmp;
                                 }
-                                if (set['year'] && set.yearAsString.length === 2) {
-                                    set['year'] = getYearFromAbbreviation(set['year']);
+                                if (set["year"] && set.yearAsString.length === 2) {
+                                    set["year"] = getYearFromAbbreviation(set["year"]);
                                 }
-                                if (set['month']) {
-                                    set['month'] = loc.getMonth(set['month']);
-                                    if (set['shift'] && !set['unit'])
-                                        set['unit'] = loc['units'][7];
+                                if (set["month"]) {
+                                    set["month"] = loc.getMonth(set["month"]);
+                                    if (set["shift"] && !set["unit"]) set["unit"] = loc["units"][7];
                                 }
-                                if (set['weekday'] && set['date']) {
-                                    delete set['weekday'];
-                                } else if (set['weekday']) {
-                                    set['weekday'] = loc.getWeekday(set['weekday']);
-                                    if (set['shift'] && !set['unit'])
-                                        set['unit'] = loc['units'][5];
+                                if (set["weekday"] && set["date"]) {
+                                    delete set["weekday"];
+                                } else if (set["weekday"]) {
+                                    set["weekday"] = loc.getWeekday(set["weekday"]);
+                                    if (set["shift"] && !set["unit"]) set["unit"] = loc["units"][5];
                                 }
-                                if (set['day'] && (tmp = loc.modifiersByName[set['day']])) {
-                                    set['day'] = tmp.value;
+                                if (set["day"] && (tmp = loc.modifiersByName[set["day"]])) {
+                                    set["day"] = tmp.value;
                                     d.reset();
                                     relative = true;
-                                } else if (set['day'] && (weekday = loc.getWeekday(set['day'])) > -1) {
-                                    delete set['day'];
-                                    if (set['num'] && set['month']) {
+                                } else if (set["day"] && (weekday = loc.getWeekday(set["day"])) > -1) {
+                                    delete set["day"];
+                                    if (set["num"] && set["month"]) {
                                         afterDateSet(setWeekdayOfMonth);
-                                        set['day'] = 1;
+                                        set["day"] = 1;
                                     } else {
-                                        set['weekday'] = weekday;
+                                        set["weekday"] = weekday;
                                     }
                                 }
-                                if (set['date'] && !isNumber(set['date'])) {
-                                    set['date'] = loc.getNumericDate(set['date']);
+                                if (set["date"] && !isNumber(set["date"])) {
+                                    set["date"] = loc.getNumericDate(set["date"]);
                                 }
-                                if (loc.matchPM(set['ampm']) && set['hour'] < 12) {
-                                    set['hour'] += 12;
-                                } else if (loc.matchAM(set['ampm']) && set['hour'] === 12) {
-                                    set['hour'] = 0;
+                                if (loc.matchPM(set["ampm"]) && set["hour"] < 12) {
+                                    set["hour"] += 12;
+                                } else if (loc.matchAM(set["ampm"]) && set["hour"] === 12) {
+                                    set["hour"] = 0;
                                 }
-                                if ('offset_hours' in set || 'offset_minutes' in set) {
+                                if ("offset_hours" in set || "offset_minutes" in set) {
                                     d.utc();
-                                    set['offset_minutes'] = set['offset_minutes'] || 0;
-                                    set['offset_minutes'] += set['offset_hours'] * 60;
-                                    if (set['offset_sign'] === '-') {
-                                        set['offset_minutes'] *= -1;
+                                    set["offset_minutes"] = set["offset_minutes"] || 0;
+                                    set["offset_minutes"] += set["offset_hours"] * 60;
+                                    if (set["offset_sign"] === "-") {
+                                        set["offset_minutes"] *= -1;
                                     }
-                                    set['minute'] -= set['offset_minutes'];
+                                    set["minute"] -= set["offset_minutes"];
                                 }
-                                if (set['unit']) {
+                                if (set["unit"]) {
                                     relative = true;
-                                    num = loc.getNumber(set['num']);
-                                    unitIndex = loc.getUnitIndex(set['unit']);
-                                    unit = English['units'][unitIndex];
+                                    num = loc.getNumber(set["num"]);
+                                    unitIndex = loc.getUnitIndex(set["unit"]);
+                                    unit = English["units"][unitIndex];
                                     separateAbsoluteUnits();
-                                    if (set['shift']) {
-                                        num *= (tmp = loc.modifiersByName[set['shift']]) ? tmp.value : 0;
+                                    if (set["shift"]) {
+                                        num *= (tmp = loc.modifiersByName[set["shift"]]) ? tmp.value : 0;
                                     }
-                                    if (set['sign'] && (tmp = loc.modifiersByName[set['sign']])) {
+                                    if (set["sign"] && (tmp = loc.modifiersByName[set["sign"]])) {
                                         num *= tmp.value;
                                     }
-                                    if (isDefined(set['weekday'])) {
-                                        d.set({ 'weekday': set['weekday'] }, true);
-                                        delete set['weekday'];
+                                    if (isDefined(set["weekday"])) {
+                                        d.set({
+                                            weekday: set["weekday"]
+                                        }, true);
+                                        delete set["weekday"];
                                     }
                                     set[unit] = (set[unit] || 0) + num;
                                 }
-                                if (set['edge']) {
+                                if (set["edge"]) {
                                     afterDateSet(setUnitEdge);
                                 }
-                                if (set['year_sign'] === '-') {
-                                    set['year'] *= -1;
+                                if (set["year_sign"] === "-") {
+                                    set["year"] *= -1;
                                 }
-                                iterateOverDateUnits(function (name, unit, i) {
+                                iterateOverDateUnits(function(name, unit, i) {
                                     var value = set[name], fraction = value % 1;
                                     if (fraction) {
-                                        set[DateUnitsReversed[i - 1].name] = round(fraction * (name === 'second' ? 1000 : 60));
+                                        set[DateUnitsReversed[i - 1].name] = round(fraction * (name === "second" ? 1e3 : 60));
                                         set[name] = floor(value);
                                     }
                                 }, 1, 4);
@@ -3746,7 +3565,7 @@ img.autolink {\
                         });
                     }
                     if (!set) {
-                        if (f !== 'now') {
+                        if (f !== "now") {
                             d = new date(f);
                         }
                         if (forceUTC) {
@@ -3769,32 +3588,28 @@ img.autolink {\
                 };
             }
             function getYearFromAbbreviation(year) {
-                return round(callDateGet(getNewDate(), 'FullYear') / 100) * 100 - round(year / 100) * 100 + year;
+                return round(callDateGet(getNewDate(), "FullYear") / 100) * 100 - round(year / 100) * 100 + year;
             }
             function getShortHour(d) {
-                var hours = callDateGet(d, 'Hours');
+                var hours = callDateGet(d, "Hours");
                 return hours === 0 ? 12 : hours - floor(hours / 13) * 12;
             }
             function getWeekNumber(date) {
                 date = date.clone();
-                var dow = callDateGet(date, 'Day') || 7;
+                var dow = callDateGet(date, "Day") || 7;
                 date.addDays(4 - dow).reset();
                 return 1 + floor(date.daysSince(date.clone().beginningOfYear()) / 7);
             }
             function getAdjustedUnit(ms) {
                 var next, ams = abs(ms), value = ams, unitIndex = 0;
-                iterateOverDateUnits(function (name, unit, i) {
+                iterateOverDateUnits(function(name, unit, i) {
                     next = floor(withPrecision(ams / unit.multiplier(), 1));
                     if (next >= 1) {
                         value = next;
                         unitIndex = i;
                     }
                 }, 1);
-                return [
-                    value,
-                    unitIndex,
-                    ms
-                ];
+                return [ value, unitIndex, ms ];
             }
             function getRelativeWithMonthFallback(date) {
                 var adu = getAdjustedUnit(date.millisecondsFromNow());
@@ -3808,67 +3623,65 @@ img.autolink {\
                 return adu[1] === 6 || adu[1] === 5 && adu[0] === 4 && date.daysFromNow() >= getNewDate().daysInMonth();
             }
             function createMeridianTokens(slice, caps) {
-                var fn = function (d, localeCode) {
-                    var hours = callDateGet(d, 'Hours');
-                    return getLocalization(localeCode)['ampm'][floor(hours / 12)] || '';
+                var fn = function(d, localeCode) {
+                    var hours = callDateGet(d, "Hours");
+                    return getLocalization(localeCode)["ampm"][floor(hours / 12)] || "";
                 };
-                createFormatToken('t', fn, 1);
-                createFormatToken('tt', fn);
-                createFormatToken('T', fn, 1, 1);
-                createFormatToken('TT', fn, null, 2);
+                createFormatToken("t", fn, 1);
+                createFormatToken("tt", fn);
+                createFormatToken("T", fn, 1, 1);
+                createFormatToken("TT", fn, null, 2);
             }
             function createWeekdayTokens(slice, caps) {
-                var fn = function (d, localeCode) {
-                    var dow = callDateGet(d, 'Day');
-                    return getLocalization(localeCode)['weekdays'][dow];
+                var fn = function(d, localeCode) {
+                    var dow = callDateGet(d, "Day");
+                    return getLocalization(localeCode)["weekdays"][dow];
                 };
-                createFormatToken('dow', fn, 3);
-                createFormatToken('Dow', fn, 3, 1);
-                createFormatToken('weekday', fn);
-                createFormatToken('Weekday', fn, null, 1);
+                createFormatToken("dow", fn, 3);
+                createFormatToken("Dow", fn, 3, 1);
+                createFormatToken("weekday", fn);
+                createFormatToken("Weekday", fn, null, 1);
             }
             function createMonthTokens(slice, caps) {
-                createMonthToken('mon', 0, 3);
-                createMonthToken('month', 0);
-                createMonthToken('month2', 1);
-                createMonthToken('month3', 2);
+                createMonthToken("mon", 0, 3);
+                createMonthToken("month", 0);
+                createMonthToken("month2", 1);
+                createMonthToken("month3", 2);
             }
             function createMonthToken(token, multiplier, slice) {
-                var fn = function (d, localeCode) {
-                    var month = callDateGet(d, 'Month');
-                    return getLocalization(localeCode)['months'][month + multiplier * 12];
+                var fn = function(d, localeCode) {
+                    var month = callDateGet(d, "Month");
+                    return getLocalization(localeCode)["months"][month + multiplier * 12];
                 };
                 createFormatToken(token, fn, slice);
                 createFormatToken(simpleCapitalize(token), fn, slice, 1);
             }
             function createFormatToken(t, fn, slice, caps) {
-                DateFormatTokens[t] = function (d, localeCode) {
+                DateFormatTokens[t] = function(d, localeCode) {
                     var str = fn(d, localeCode);
-                    if (slice)
-                        str = str.slice(0, slice);
-                    if (caps)
-                        str = str.slice(0, caps).toUpperCase() + str.slice(caps);
+                    if (slice) str = str.slice(0, slice);
+                    if (caps) str = str.slice(0, caps).toUpperCase() + str.slice(caps);
                     return str;
                 };
             }
             function createPaddedToken(t, fn, ms) {
                 DateFormatTokens[t] = fn;
-                DateFormatTokens[t + t] = function (d, localeCode) {
+                DateFormatTokens[t + t] = function(d, localeCode) {
                     return padNumber(fn(d, localeCode), 2);
                 };
                 if (ms) {
-                    DateFormatTokens[t + t + t] = function (d, localeCode) {
+                    DateFormatTokens[t + t + t] = function(d, localeCode) {
                         return padNumber(fn(d, localeCode), 3);
                     };
-                    DateFormatTokens[t + t + t + t] = function (d, localeCode) {
+                    DateFormatTokens[t + t + t + t] = function(d, localeCode) {
                         return padNumber(fn(d, localeCode), 4);
                     };
                 }
             }
             function buildCompiledOutputFormat(format) {
                 var match = format.match(/(\{\w+\})|[^{}]+/g);
-                CompiledOutputFormats[format] = match.map(function (p) {
-                    p.replace(/\{(\w+)\}/, function (full, token) {
+                CompiledOutputFormats[format] = match.map(function(p) {
+                    p.replace(/\{(\w+)\}/, function(full, token) {
                         p = DateFormatTokens[token] || token;
                         return token;
                     });
@@ -3876,7 +3689,7 @@ img.autolink {\
                 });
             }
             function executeCompiledOutputFormat(date, format, localeCode) {
-                var compiledFormat, length, i, t, result = '';
+                var compiledFormat, length, i, t, result = "";
                 compiledFormat = CompiledOutputFormats[format];
                 for (i = 0, length = compiledFormat.length; i < length; i++) {
                     t = compiledFormat[i];
@@ -3887,7 +3700,7 @@ img.autolink {\
             function formatDate(date, format, relative, localeCode) {
                 var adu;
                 if (!date.isValid()) {
-                    return 'Invalid Date';
+                    return "Invalid Date";
                 } else if (Date[format]) {
                     format = Date[format];
                 } else if (isFunction(format)) {
@@ -3902,8 +3715,8 @@ img.autolink {\
                     }
                     return getLocalization(localeCode).getRelativeFormat(adu);
                 }
-                format = format || 'long';
-                if (format === 'short' || format === 'long' || format === 'full') {
+                format = format || "long";
+                if (format === "short" || format === "long" || format === "full") {
                     format = getLocalization(localeCode)[format];
                 }
                 if (!CompiledOutputFormats[format]) {
@@ -3918,22 +3731,21 @@ img.autolink {\
                     loBuffer = hiBuffer = buffer;
                     override = true;
                 }
-                if (!p.date.isValid())
-                    return false;
+                if (!p.date.isValid()) return false;
                 if (p.set && p.set.specificity) {
-                    DateUnits.forEach(function (u, i) {
+                    DateUnits.forEach(function(u, i) {
                         if (u.name === p.set.specificity) {
                             accuracy = u.multiplier(p.date, d - p.date) - 1;
                         }
                     });
                     capitalized = simpleCapitalize(p.set.specificity);
-                    if (p.set['edge'] || p.set['shift']) {
-                        p.date['beginningOf' + capitalized]();
+                    if (p.set["edge"] || p.set["shift"]) {
+                        p.date["beginningOf" + capitalized]();
                     }
-                    if (p.set.specificity === 'month') {
-                        max = p.date.clone()['endOf' + capitalized]().getTime();
+                    if (p.set.specificity === "month") {
+                        max = p.date.clone()["endOf" + capitalized]().getTime();
                     }
-                    if (!override && p.set['sign'] && p.set.specificity != 'millisecond') {
+                    if (!override && p.set["sign"] && p.set.specificity != "millisecond") {
                         loBuffer = 50;
                         hiBuffer = -50;
                     }
@@ -3948,7 +3760,7 @@ img.autolink {\
                 var dMin, dMax, minOffset, maxOffset;
                 dMin = new date(min);
                 dMax = new date(max).utc(d.isUTC());
-                if (callDateGet(dMax, 'Hours') !== 23) {
+                if (callDateGet(dMax, "Hours") !== 23) {
                     minOffset = dMin.getTimezoneOffset();
                     maxOffset = dMax.getTimezoneOffset();
                     if (minOffset !== maxOffset) {
@@ -3960,68 +3772,70 @@ img.autolink {\
             function updateDate(d, params, reset, advance, prefer) {
                 var weekday, specificityIndex;
                 function getParam(key) {
-                    return isDefined(params[key]) ? params[key] : params[key + 's'];
+                    return isDefined(params[key]) ? params[key] : params[key + "s"];
                 }
                 function paramExists(key) {
                     return isDefined(getParam(key));
                 }
                 function uniqueParamExists(key, isDay) {
-                    return paramExists(key) || isDay && paramExists('weekday');
+                    return paramExists(key) || isDay && paramExists("weekday");
                 }
                 function canDisambiguate() {
                     switch (prefer) {
-                    case -1:
+                      case -1:
                         return d > getNewDate();
-                    case 1:
+
+                      case 1:
                         return d < getNewDate();
                     }
                 }
                 if (isNumber(params) && advance) {
-                    params = { 'milliseconds': params };
+                    params = {
+                        milliseconds: params
+                    };
                 } else if (isNumber(params)) {
                     d.setTime(params);
                     return d;
                 }
-                if (isDefined(params['date'])) {
-                    params['day'] = params['date'];
+                if (isDefined(params["date"])) {
+                    params["day"] = params["date"];
                 }
-                iterateOverDateUnits(function (name, unit, i) {
-                    var isDay = name === 'day';
+                iterateOverDateUnits(function(name, unit, i) {
+                    var isDay = name === "day";
                     if (uniqueParamExists(name, isDay)) {
                         params.specificity = name;
                         specificityIndex = +i;
                         return false;
-                    } else if (reset && name !== 'week' && (!isDay || !paramExists('week'))) {
+                    } else if (reset && name !== "week" && (!isDay || !paramExists("week"))) {
                         callDateSet(d, unit.method, isDay ? 1 : 0);
                     }
                 });
-                DateUnits.forEach(function (u, i) {
+                DateUnits.forEach(function(u, i) {
                     var name = u.name, method = u.method, higherUnit = DateUnits[i - 1], value;
                     value = getParam(name);
-                    if (isUndefined(value))
-                        return;
+                    if (isUndefined(value)) return;
                     if (advance) {
-                        if (name === 'week') {
-                            value = (params['day'] || 0) + value * 7;
-                            method = 'Date';
+                        if (name === "week") {
+                            value = (params["day"] || 0) + value * 7;
+                            method = "Date";
                         }
                         value = value * advance + callDateGet(d, method);
-                    } else if (name === 'month' && paramExists('day')) {
-                        callDateSet(d, 'Date', 15);
+                    } else if (name === "month" && paramExists("day")) {
+                        callDateSet(d, "Date", 15);
                     }
                     callDateSet(d, method, value);
-                    if (advance && name === 'month') {
+                    if (advance && name === "month") {
                         checkMonthTraversal(d, value);
                     }
                 });
-                if (!advance && !paramExists('day') && paramExists('weekday')) {
-                    var weekday = getParam('weekday'), isAhead, futurePreferred;
+                if (!advance && !paramExists("day") && paramExists("weekday")) {
+                    var weekday = getParam("weekday"), isAhead, futurePreferred;
                     d.setWeekday(weekday);
                 }
                 if (canDisambiguate()) {
-                    iterateOverDateUnits(function (name, unit) {
-                        var ambiguous = unit.ambiguous || name === 'week' && paramExists('weekday');
-                        if (ambiguous && !uniqueParamExists(name, name === 'day')) {
+                    iterateOverDateUnits(function(name, unit) {
+                        var ambiguous = unit.ambiguous || name === "week" && paramExists("weekday");
+                        if (ambiguous && !uniqueParamExists(name, name === "day")) {
                             d[unit.addMethod](prefer);
                             return false;
                         }
@@ -4031,23 +3845,23 @@ img.autolink {\
             }
             function prepareTime(format, loc, iso) {
                 var timeSuffixMapping = {
-                        'h': 0,
-                        'm': 1,
-                        's': 2
-                    }, add;
+                    h: 0,
+                    m: 1,
+                    s: 2
+                }, add;
                 loc = loc || English;
-                return format.replace(/{([a-z])}/g, function (full, token) {
-                    var separators = [], isHours = token === 'h', tokenIsRequired = isHours && !iso;
-                    if (token === 't') {
-                        return loc['ampm'].join('|');
+                return format.replace(/{([a-z])}/g, function(full, token) {
+                    var separators = [], isHours = token === "h", tokenIsRequired = isHours && !iso;
+                    if (token === "t") {
+                        return loc["ampm"].join("|");
                     } else {
                         if (isHours) {
-                            separators.push(':');
+                            separators.push(":");
                         }
-                        if (add = loc['timeSuffixes'][timeSuffixMapping[token]]) {
-                            separators.push(add + '\\s*');
+                        if (add = loc["timeSuffixes"][timeSuffixMapping[token]]) {
+                            separators.push(add + "\\s*");
                         }
-                        return separators.length === 0 ? '' : '(?:' + separators.join('|') + ')' + (tokenIsRequired ? '' : '?');
+                        return separators.length === 0 ? "" : "(?:" + separators.join("|") + ")" + (tokenIsRequired ? "" : "?");
                     }
                 });
             }
@@ -4055,8 +3869,8 @@ img.autolink {\
                 if (targetMonth < 0) {
                     targetMonth = targetMonth % 12 + 12;
                 }
-                if (targetMonth % 12 != callDateGet(date, 'Month')) {
-                    callDateSet(date, 'Date', 0);
+                if (targetMonth % 12 != callDateGet(date, "Month")) {
+                    callDateSet(date, "Date", 0);
                 }
             }
             function createDate(args, prefer, forceUTC) {
@@ -4078,79 +3892,80 @@ img.autolink {\
                 DateArgumentUnits.splice(2, 1);
             }
             function buildDateMethods() {
-                extendSimilar(date, true, true, DateUnits, function (methods, u, i) {
+                extendSimilar(date, true, true, DateUnits, function(methods, u, i) {
                     var name = u.name, caps = simpleCapitalize(name), multiplier = u.multiplier(), since, until;
-                    u.addMethod = 'add' + caps + 's';
+                    u.addMethod = "add" + caps + "s";
                     function applyErrorMargin(ms) {
-                        var num = ms / multiplier, fraction = num % 1, error = u.error || 0.999;
+                        var num = ms / multiplier, fraction = num % 1, error = u.error || .999;
                         if (fraction && abs(fraction % 1) > error) {
                             num = round(num);
                         }
                         return num < 0 ? ceil(num) : floor(num);
                     }
-                    since = function (f, localeCode) {
+                    since = function(f, localeCode) {
                         return applyErrorMargin(this.getTime() - date.create(f, localeCode).getTime());
                     };
-                    until = function (f, localeCode) {
+                    until = function(f, localeCode) {
                         return applyErrorMargin(date.create(f, localeCode).getTime() - this.getTime());
                     };
-                    methods[name + 'sAgo'] = until;
-                    methods[name + 'sUntil'] = until;
-                    methods[name + 'sSince'] = since;
-                    methods[name + 'sFromNow'] = since;
-                    methods[u.addMethod] = function (num, reset) {
+                    methods[name + "sAgo"] = until;
+                    methods[name + "sUntil"] = until;
+                    methods[name + "sSince"] = since;
+                    methods[name + "sFromNow"] = since;
+                    methods[u.addMethod] = function(num, reset) {
                         var set = {};
                         set[name] = num;
                         return this.advance(set, reset);
                     };
                     buildNumberToDateAlias(u, multiplier);
                     if (i < 3) {
-                        [
-                            'Last',
-                            'This',
-                            'Next'
-                        ].forEach(function (shift) {
-                            methods['is' + shift + caps] = function () {
-                                return compareDate(this, shift + ' ' + name, 'en');
+                        [ "Last", "This", "Next" ].forEach(function(shift) {
+                            methods["is" + shift + caps] = function() {
+                                return compareDate(this, shift + " " + name, "en");
                             };
                         });
                     }
                     if (i < 4) {
-                        methods['beginningOf' + caps] = function () {
+                        methods["beginningOf" + caps] = function() {
                             var set = {};
                             switch (name) {
-                            case 'year':
-                                set['year'] = callDateGet(this, 'FullYear');
+                              case "year":
+                                set["year"] = callDateGet(this, "FullYear");
                                 break;
-                            case 'month':
-                                set['month'] = callDateGet(this, 'Month');
+
+                              case "month":
+                                set["month"] = callDateGet(this, "Month");
                                 break;
-                            case 'day':
-                                set['day'] = callDateGet(this, 'Date');
+
+                              case "day":
+                                set["day"] = callDateGet(this, "Date");
                                 break;
-                            case 'week':
-                                set['weekday'] = 0;
+
+                              case "week":
+                                set["weekday"] = 0;
                                 break;
                             }
                             return this.set(set, true);
                         };
-                        methods['endOf' + caps] = function () {
+                        methods["endOf" + caps] = function() {
                             var set = {
-                                    'hours': 23,
-                                    'minutes': 59,
-                                    'seconds': 59,
-                                    'milliseconds': 999
-                                };
+                                hours: 23,
+                                minutes: 59,
+                                seconds: 59,
+                                milliseconds: 999
+                            };
                             switch (name) {
-                            case 'year':
-                                set['month'] = 11;
-                                set['day'] = 31;
+                              case "year":
+                                set["month"] = 11;
+                                set["day"] = 31;
                                 break;
-                            case 'month':
-                                set['day'] = this.daysInMonth();
+
+                              case "month":
+                                set["day"] = this.daysInMonth();
                                 break;
-                            case 'week':
-                                set['weekday'] = 6;
+
+                              case "week":
+                                set["weekday"] = 6;
                                 break;
                             }
                             return this.set(set, true);
@@ -4159,71 +3974,59 @@ img.autolink {\
                 });
             }
             function buildCoreInputFormats() {
-                English.addFormat('([+-])?(\\d{4,4})[-.]?{full_month}[-.]?(\\d{1,2})?', true, [
-                    'year_sign',
-                    'year',
-                    'month',
-                    'date'
-                ], false, true);
-                English.addFormat('(\\d{1,2})[-.\\/]{full_month}(?:[-.\\/](\\d{2,4}))?', true, [
-                    'date',
-                    'month',
-                    'year'
-                ], true);
-                English.addFormat('{full_month}[-.](\\d{4,4})', false, [
-                    'month',
-                    'year'
-                ]);
-                English.addFormat('\\/Date\\((\\d+(?:[+-]\\d{4,4})?)\\)\\/', false, ['timestamp']);
+                English.addFormat("([+-])?(\\d{4,4})[-.]?{full_month}[-.]?(\\d{1,2})?", true, [ "year_sign", "year", "month", "date" ], false, true);
+                English.addFormat("(\\d{1,2})[-.\\/]{full_month}(?:[-.\\/](\\d{2,4}))?", true, [ "date", "month", "year" ], true);
+                English.addFormat("{full_month}[-.](\\d{4,4})", false, [ "month", "year" ]);
+                English.addFormat("\\/Date\\((\\d+(?:[+-]\\d{4,4})?)\\)\\/", false, [ "timestamp" ]);
                 English.addFormat(prepareTime(RequiredTime, English), false, TimeFormat);
                 CoreDateFormats = English.compiledFormats.slice(0, 7).reverse();
                 English.compiledFormats = English.compiledFormats.slice(7).concat(CoreDateFormats);
             }
             function buildFormatTokens() {
-                createPaddedToken('f', function (d) {
-                    return callDateGet(d, 'Milliseconds');
+                createPaddedToken("f", function(d) {
+                    return callDateGet(d, "Milliseconds");
                 }, true);
-                createPaddedToken('s', function (d) {
-                    return callDateGet(d, 'Seconds');
+                createPaddedToken("s", function(d) {
+                    return callDateGet(d, "Seconds");
                 });
-                createPaddedToken('m', function (d) {
-                    return callDateGet(d, 'Minutes');
+                createPaddedToken("m", function(d) {
+                    return callDateGet(d, "Minutes");
                 });
-                createPaddedToken('h', function (d) {
-                    return callDateGet(d, 'Hours') % 12 || 12;
+                createPaddedToken("h", function(d) {
+                    return callDateGet(d, "Hours") % 12 || 12;
                 });
-                createPaddedToken('H', function (d) {
-                    return callDateGet(d, 'Hours');
+                createPaddedToken("H", function(d) {
+                    return callDateGet(d, "Hours");
                 });
-                createPaddedToken('d', function (d) {
-                    return callDateGet(d, 'Date');
+                createPaddedToken("d", function(d) {
+                    return callDateGet(d, "Date");
                 });
-                createPaddedToken('M', function (d) {
-                    return callDateGet(d, 'Month') + 1;
+                createPaddedToken("M", function(d) {
+                    return callDateGet(d, "Month") + 1;
                 });
                 createMeridianTokens();
                 createWeekdayTokens();
                 createMonthTokens();
-                DateFormatTokens['ms'] = DateFormatTokens['f'];
-                DateFormatTokens['milliseconds'] = DateFormatTokens['f'];
-                DateFormatTokens['seconds'] = DateFormatTokens['s'];
-                DateFormatTokens['minutes'] = DateFormatTokens['m'];
-                DateFormatTokens['hours'] = DateFormatTokens['h'];
-                DateFormatTokens['24hr'] = DateFormatTokens['H'];
-                DateFormatTokens['12hr'] = DateFormatTokens['h'];
-                DateFormatTokens['date'] = DateFormatTokens['d'];
-                DateFormatTokens['day'] = DateFormatTokens['d'];
-                DateFormatTokens['year'] = DateFormatTokens['yyyy'];
+                DateFormatTokens["ms"] = DateFormatTokens["f"];
+                DateFormatTokens["milliseconds"] = DateFormatTokens["f"];
+                DateFormatTokens["seconds"] = DateFormatTokens["s"];
+                DateFormatTokens["minutes"] = DateFormatTokens["m"];
+                DateFormatTokens["hours"] = DateFormatTokens["h"];
+                DateFormatTokens["24hr"] = DateFormatTokens["H"];
+                DateFormatTokens["12hr"] = DateFormatTokens["h"];
+                DateFormatTokens["date"] = DateFormatTokens["d"];
+                DateFormatTokens["day"] = DateFormatTokens["d"];
+                DateFormatTokens["year"] = DateFormatTokens["yyyy"];
             }
             function buildFormatShortcuts() {
-                extendSimilar(date, true, true, 'short,long,full', function (methods, name) {
-                    methods[name] = function (localeCode) {
+                extendSimilar(date, true, true, "short,long,full", function(methods, name) {
+                    methods[name] = function(localeCode) {
                         return formatDate(this, name, false, localeCode);
                     };
                 });
             }
             function buildAsianDigits() {
-                KanjiDigits.split('').forEach(function (digit, value) {
+                KanjiDigits.split("").forEach(function(digit, value) {
                     var holder;
                     if (value > 9) {
                         value = pow(10, value - 9);
@@ -4231,100 +4034,101 @@ img.autolink {\
                     AsianDigitMap[digit] = value;
                 });
                 simpleMerge(AsianDigitMap, NumberNormalizeMap);
-                AsianDigitReg = regexp('([\u671f\u9031\u5468])?([' + KanjiDigits + FullWidthDigits + ']+)(?!\u6628)', 'g');
+                AsianDigitReg = regexp("([期週周])?([" + KanjiDigits + FullWidthDigits + "]+)(?!昨)", "g");
             }
             function buildRelativeAliases() {
-                var special = 'today,yesterday,tomorrow,weekday,weekend,future,past'.split(',');
-                var weekdays = English['weekdays'].slice(0, 7);
-                var months = English['months'].slice(0, 12);
-                extendSimilar(date, true, true, special.concat(weekdays).concat(months), function (methods, name) {
-                    methods['is' + simpleCapitalize(name)] = function (utc) {
+                var special = "today,yesterday,tomorrow,weekday,weekend,future,past".split(",");
+                var weekdays = English["weekdays"].slice(0, 7);
+                var months = English["months"].slice(0, 12);
+                extendSimilar(date, true, true, special.concat(weekdays).concat(months), function(methods, name) {
+                    methods["is" + simpleCapitalize(name)] = function(utc) {
                         return this.is(name, 0, utc);
                     };
                 });
             }
             function buildUTCAliases() {
-                if (date['utc'])
-                    return;
-                date['utc'] = {
-                    'create': function () {
+                if (date["utc"]) return;
+                date["utc"] = {
+                    create: function() {
                         return createDate(arguments, 0, true);
                     },
-                    'past': function () {
+                    past: function() {
                         return createDate(arguments, -1, true);
                     },
-                    'future': function () {
+                    future: function() {
                         return createDate(arguments, 1, true);
                     }
                 };
             }
             function setDateProperties() {
                 extend(date, false, true, {
-                    'RFC1123': '{Dow}, {dd} {Mon} {yyyy} {HH}:{mm}:{ss} {tz}',
-                    'RFC1036': '{Weekday}, {dd}-{Mon}-{yy} {HH}:{mm}:{ss} {tz}',
-                    'ISO8601_DATE': '{yyyy}-{MM}-{dd}',
-                    'ISO8601_DATETIME': '{yyyy}-{MM}-{dd}T{HH}:{mm}:{ss}.{fff}{isotz}'
+                    RFC1123: "{Dow}, {dd} {Mon} {yyyy} {HH}:{mm}:{ss} {tz}",
+                    RFC1036: "{Weekday}, {dd}-{Mon}-{yy} {HH}:{mm}:{ss} {tz}",
+                    ISO8601_DATE: "{yyyy}-{MM}-{dd}",
+                    ISO8601_DATETIME: "{yyyy}-{MM}-{dd}T{HH}:{mm}:{ss}.{fff}{isotz}"
                 });
             }
             extend(date, false, true, {
-                'create': function () {
+                create: function() {
                     return createDate(arguments);
                 },
-                'past': function () {
+                past: function() {
                     return createDate(arguments, -1);
                 },
-                'future': function () {
+                future: function() {
                     return createDate(arguments, 1);
                 },
-                'addLocale': function (localeCode, set) {
+                addLocale: function(localeCode, set) {
                     return setLocalization(localeCode, set);
                 },
-                'setLocale': function (localeCode, set) {
+                setLocale: function(localeCode, set) {
                     var loc = getLocalization(localeCode, false);
                     CurrentLocalization = loc;
-                    if (localeCode && localeCode != loc['code']) {
-                        loc['code'] = localeCode;
+                    if (localeCode && localeCode != loc["code"]) {
+                        loc["code"] = localeCode;
                     }
                     return loc;
                 },
-                'getLocale': function (localeCode) {
+                getLocale: function(localeCode) {
                     return !localeCode ? CurrentLocalization : getLocalization(localeCode, false);
                 },
-                'addFormat': function (format, match, localeCode) {
+                addFormat: function(format, match, localeCode) {
                     addDateInputFormat(getLocalization(localeCode), format, match);
                 }
             });
             extend(date, true, true, {
-                'set': function () {
+                set: function() {
                     var args = collectDateArguments(arguments);
                     return updateDate(this, args[0], args[1]);
                 },
-                'setWeekday': function (dow) {
-                    if (isUndefined(dow))
-                        return;
-                    return callDateSet(this, 'Date', callDateGet(this, 'Date') + dow - callDateGet(this, 'Day'));
+                setWeekday: function(dow) {
+                    if (isUndefined(dow)) return;
+                    return callDateSet(this, "Date", callDateGet(this, "Date") + dow - callDateGet(this, "Day"));
                 },
-                'setISOWeek': function (week) {
-                    var weekday = callDateGet(this, 'Day') || 7;
-                    if (isUndefined(week))
-                        return;
+                setISOWeek: function(week) {
+                    var weekday = callDateGet(this, "Day") || 7;
+                    if (isUndefined(week)) return;
                     this.set({
-                        'month': 0,
-                        'date': 4
+                        month: 0,
+                        date: 4
                     });
-                    this.set({ 'weekday': 1 });
+                    this.set({
+                        weekday: 1
+                    });
                     if (week > 1) {
                         this.addWeeks(week - 1);
                     }
                     if (weekday !== 1) {
-                        this.advance({ 'days': weekday - 1 });
+                        this.advance({
+                            days: weekday - 1
+                        });
                     }
                     return this.getTime();
                 },
-                'getISOWeek': function () {
+                getISOWeek: function() {
                     return getWeekNumber(this);
                 },
-                'beginningOfISOWeek': function () {
+                beginningOfISOWeek: function() {
                     var day = this.getDay();
                     if (day === 0) {
                         day = -6;
@@ -4334,44 +4138,43 @@ img.autolink {\
                     this.setWeekday(day);
                     return this.reset();
                 },
-                'endOfISOWeek': function () {
+                endOfISOWeek: function() {
                     if (this.getDay() !== 0) {
                         this.setWeekday(7);
                     }
                     return this.endOfDay();
                 },
-                'getUTCOffset': function (iso) {
+                getUTCOffset: function(iso) {
                     var offset = this._utc ? 0 : this.getTimezoneOffset();
-                    var colon = iso === true ? ':' : '';
-                    if (!offset && iso)
-                        return 'Z';
+                    var colon = iso === true ? ":" : "";
+                    if (!offset && iso) return "Z";
                     return padNumber(floor(-offset / 60), 2, true) + colon + padNumber(abs(offset % 60), 2);
                 },
-                'utc': function (set) {
-                    defineProperty(this, '_utc', set === true || arguments.length === 0);
+                utc: function(set) {
+                    defineProperty(this, "_utc", set === true || arguments.length === 0);
                     return this;
                 },
-                'isUTC': function () {
+                isUTC: function() {
                     return !!this._utc || this.getTimezoneOffset() === 0;
                 },
-                'advance': function () {
+                advance: function() {
                     var args = collectDateArguments(arguments, true);
                     return updateDate(this, args[0], args[1], 1);
                 },
-                'rewind': function () {
+                rewind: function() {
                     var args = collectDateArguments(arguments, true);
                     return updateDate(this, args[0], args[1], -1);
                 },
-                'isValid': function () {
+                isValid: function() {
                     return !isNaN(this.getTime());
                 },
-                'isAfter': function (d, margin, utc) {
+                isAfter: function(d, margin, utc) {
                     return this.getTime() > date.create(d).getTime() - (margin || 0);
                 },
-                'isBefore': function (d, margin) {
+                isBefore: function(d, margin) {
                     return this.getTime() < date.create(d).getTime() + (margin || 0);
                 },
-                'isBetween': function (d1, d2, margin) {
+                isBetween: function(d1, d2, margin) {
                     var t = this.getTime();
                     var t1 = date.create(d1).getTime();
                     var t2 = date.create(d2).getTime();
@@ -4380,70 +4183,73 @@ img.autolink {\
                     margin = margin || 0;
                     return lo - margin < t && hi + margin > t;
                 },
-                'isLeapYear': function () {
-                    var year = callDateGet(this, 'FullYear');
+                isLeapYear: function() {
+                    var year = callDateGet(this, "FullYear");
                     return year % 4 === 0 && year % 100 !== 0 || year % 400 === 0;
                 },
-                'daysInMonth': function () {
-                    return 32 - callDateGet(new date(callDateGet(this, 'FullYear'), callDateGet(this, 'Month'), 32), 'Date');
+                daysInMonth: function() {
+                    return 32 - callDateGet(new date(callDateGet(this, "FullYear"), callDateGet(this, "Month"), 32), "Date");
                 },
-                'format': function (f, localeCode) {
+                format: function(f, localeCode) {
                     return formatDate(this, f, false, localeCode);
                 },
-                'relative': function (fn, localeCode) {
+                relative: function(fn, localeCode) {
                     if (isString(fn)) {
                         localeCode = fn;
                         fn = null;
                     }
                     return formatDate(this, fn, true, localeCode);
                 },
-                'is': function (d, margin, utc) {
+                is: function(d, margin, utc) {
                     var tmp, comp;
-                    if (!this.isValid())
-                        return;
+                    if (!this.isValid()) return;
                     if (isString(d)) {
                         d = d.trim().toLowerCase();
                         comp = this.clone().utc(utc);
                         switch (true) {
-                        case d === 'future':
+                          case d === "future":
                             return this.getTime() > getNewDate().getTime();
-                        case d === 'past':
+
+                          case d === "past":
                             return this.getTime() < getNewDate().getTime();
-                        case d === 'weekday':
-                            return callDateGet(comp, 'Day') > 0 && callDateGet(comp, 'Day') < 6;
-                        case d === 'weekend':
-                            return callDateGet(comp, 'Day') === 0 || callDateGet(comp, 'Day') === 6;
-                        case (tmp = English['weekdays'].indexOf(d) % 7) > -1:
-                            return callDateGet(comp, 'Day') === tmp;
-                        case (tmp = English['months'].indexOf(d) % 12) > -1:
-                            return callDateGet(comp, 'Month') === tmp;
+
+                          case d === "weekday":
+                            return callDateGet(comp, "Day") > 0 && callDateGet(comp, "Day") < 6;
+
+                          case d === "weekend":
+                            return callDateGet(comp, "Day") === 0 || callDateGet(comp, "Day") === 6;
+
+                          case (tmp = English["weekdays"].indexOf(d) % 7) > -1:
+                            return callDateGet(comp, "Day") === tmp;
+
+                          case (tmp = English["months"].indexOf(d) % 12) > -1:
+                            return callDateGet(comp, "Month") === tmp;
                         }
                     }
                     return compareDate(this, d, null, margin, utc);
                 },
-                'reset': function (unit) {
+                reset: function(unit) {
                     var params = {}, recognized;
-                    unit = unit || 'hours';
-                    if (unit === 'date')
-                        unit = 'days';
-                    recognized = DateUnits.some(function (u) {
-                        return unit === u.name || unit === u.name + 's';
+                    unit = unit || "hours";
+                    if (unit === "date") unit = "days";
+                    recognized = DateUnits.some(function(u) {
+                        return unit === u.name || unit === u.name + "s";
                     });
                     params[unit] = unit.match(/^days?/) ? 1 : 0;
                     return recognized ? this.set(params, true) : this;
                 },
-                'clone': function () {
+                clone: function() {
                     var d = new date(this.getTime());
                     d.utc(!!this._utc);
                     return d;
                 }
             });
             extend(date, true, true, {
-                'iso': function () {
+                iso: function() {
                     return this.toISOString();
                 },
-                'getWeekday': date.prototype.getDay,
-                'getUTCWeekday': date.prototype.getUTCDay
+                getWeekday: date.prototype.getDay,
+                getUTCWeekday: date.prototype.getUTCDay
             });
             function buildNumberToDateAlias(u, multiplier) {
                 var name = u.name, methods = {};
@@ -4457,100 +4263,73 @@ img.autolink {\
                     return createDate(arguments)[u.addMethod](-this);
                 }
                 methods[name] = base;
-                methods[name + 's'] = base;
-                methods[name + 'Before'] = before;
-                methods[name + 'sBefore'] = before;
-                methods[name + 'Ago'] = before;
-                methods[name + 'sAgo'] = before;
-                methods[name + 'After'] = after;
-                methods[name + 'sAfter'] = after;
-                methods[name + 'FromNow'] = after;
-                methods[name + 'sFromNow'] = after;
+                methods[name + "s"] = base;
+                methods[name + "Before"] = before;
+                methods[name + "sBefore"] = before;
+                methods[name + "Ago"] = before;
+                methods[name + "sAgo"] = before;
+                methods[name + "After"] = after;
+                methods[name + "sAfter"] = after;
+                methods[name + "FromNow"] = after;
+                methods[name + "sFromNow"] = after;
                 number.extend(methods);
             }
             extend(number, true, true, {
-                'duration': function (localeCode) {
+                duration: function(localeCode) {
                     return getLocalization(localeCode).getDuration(this);
                 }
             });
-            English = CurrentLocalization = date.addLocale('en', {
-                'plural': true,
-                'timeMarker': 'at',
-                'ampm': 'am,pm',
-                'months': 'January,February,March,April,May,June,July,August,September,October,November,December',
-                'weekdays': 'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
-                'units': 'millisecond:|s,second:|s,minute:|s,hour:|s,day:|s,week:|s,month:|s,year:|s',
-                'numbers': 'one,two,three,four,five,six,seven,eight,nine,ten',
-                'articles': 'a,an,the',
-                'tokens': 'the,st|nd|rd|th,of',
-                'short': '{Month} {d}, {yyyy}',
-                'long': '{Month} {d}, {yyyy} {h}:{mm}{tt}',
-                'full': '{Weekday} {Month} {d}, {yyyy} {h}:{mm}:{ss}{tt}',
-                'past': '{num} {unit} {sign}',
-                'future': '{num} {unit} {sign}',
-                'duration': '{num} {unit}',
-                'modifiers': [
-                    {
-                        'name': 'sign',
-                        'src': 'ago|before',
-                        'value': -1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'from now|after|from|in|later',
-                        'value': 1
-                    },
-                    {
-                        'name': 'edge',
-                        'src': 'last day',
-                        'value': -2
-                    },
-                    {
-                        'name': 'edge',
-                        'src': 'end',
-                        'value': -1
-                    },
-                    {
-                        'name': 'edge',
-                        'src': 'first day|beginning',
-                        'value': 1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'last',
-                        'value': -1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'the|this',
-                        'value': 0
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'next',
-                        'value': 1
-                    }
-                ],
-                'dateParse': [
-                    '{month} {year}',
-                    '{shift} {unit=5-7}',
-                    '{0?} {date}{1}',
-                    '{0?} {edge} of {shift?} {unit=4-7?}{month?}{year?}'
-                ],
-                'timeParse': [
-                    '{num} {unit} {sign}',
-                    '{sign} {num} {unit}',
-                    '{0} {num}{1} {day} of {month} {year?}',
-                    '{weekday?} {month} {date}{1?} {year?}',
-                    '{date} {month} {year}',
-                    '{date} {month}',
-                    '{shift} {weekday}',
-                    '{shift} week {weekday}',
-                    '{weekday} {2?} {shift} week',
-                    '{num} {unit=4-5} {sign} {day}',
-                    '{0?} {date}{1} of {month}',
-                    '{0?}{month?} {date?}{1?} of {shift} {unit=6-7}'
-                ]
+            English = CurrentLocalization = date.addLocale("en", {
+                plural: true,
+                timeMarker: "at",
+                ampm: "am,pm",
+                months: "January,February,March,April,May,June,July,August,September,October,November,December",
+                weekdays: "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday",
+                units: "millisecond:|s,second:|s,minute:|s,hour:|s,day:|s,week:|s,month:|s,year:|s",
+                numbers: "one,two,three,four,five,six,seven,eight,nine,ten",
+                articles: "a,an,the",
+                tokens: "the,st|nd|rd|th,of",
+                "short": "{Month} {d}, {yyyy}",
+                "long": "{Month} {d}, {yyyy} {h}:{mm}{tt}",
+                full: "{Weekday} {Month} {d}, {yyyy} {h}:{mm}:{ss}{tt}",
+                past: "{num} {unit} {sign}",
+                future: "{num} {unit} {sign}",
+                duration: "{num} {unit}",
+                modifiers: [ {
+                    name: "sign",
+                    src: "ago|before",
+                    value: -1
+                }, {
+                    name: "sign",
+                    src: "from now|after|from|in|later",
+                    value: 1
+                }, {
+                    name: "edge",
+                    src: "last day",
+                    value: -2
+                }, {
+                    name: "edge",
+                    src: "end",
+                    value: -1
+                }, {
+                    name: "edge",
+                    src: "first day|beginning",
+                    value: 1
+                }, {
+                    name: "shift",
+                    src: "last",
+                    value: -1
+                }, {
+                    name: "shift",
+                    src: "the|this",
+                    value: 0
+                }, {
+                    name: "shift",
+                    src: "next",
+                    value: 1
+                } ],
+                dateParse: [ "{month} {year}", "{shift} {unit=5-7}", "{0?} {date}{1}", "{0?} {edge} of {shift?} {unit=4-7?}{month?}{year?}" ],
+                timeParse: [ "{num} {unit} {sign}", "{sign} {num} {unit}", "{0} {num}{1} {day} of {month} {year?}", "{weekday?} {month} {date}{1?} {year?}", "{date} {month} {year}", "{date} {month}", "{shift} {weekday}", "{shift} week {weekday}", "{weekday} {2?} {shift} week", "{num} {unit=4-5} {sign} {day}", "{0?} {date}{1} of {month}", "{0?}{month?} {date?}{1?} of {shift} {unit=6-7}" ]
             });
             buildDateUnits();
             buildDateMethods();
@@ -4565,13 +4344,11 @@ img.autolink {\
                 this.start = cloneRangeMember(start);
                 this.end = cloneRangeMember(end);
             }
-            ;
             function getRangeMemberNumericValue(m) {
                 return isString(m) ? m.charCodeAt(0) : m;
             }
             function getRangeMemberPrimitiveValue(m) {
-                if (m == null)
-                    return m;
+                if (m == null) return m;
                 return isDate(m) ? m.getTime() : m.valueOf();
             }
             function cloneRangeMember(m) {
@@ -4594,16 +4371,13 @@ img.autolink {\
                 val = parseInt(match[1]) || 1;
                 unit = match[2].slice(0, 1).toUpperCase() + match[2].slice(1);
                 if (unit.match(/hour|minute|second/i)) {
-                    unit += 's';
-                } else if (unit === 'Year') {
-                    unit = 'FullYear';
-                } else if (unit === 'Day') {
-                    unit = 'Date';
+                    unit += "s";
+                } else if (unit === "Year") {
+                    unit = "FullYear";
+                } else if (unit === "Day") {
+                    unit = "Date";
                 }
-                return [
-                    val,
-                    unit
-                ];
+                return [ val, unit ];
             }
             function incrementDate(current, amount) {
                 var num, unit, val, d;
@@ -4623,27 +4397,26 @@ img.autolink {\
             function incrementNumber(current, amount) {
                 return current + amount;
             }
-            Range.prototype.toString = function () {
-                return this.isValid() ? this.start + '..' + this.end : 'Invalid Range';
+            Range.prototype.toString = function() {
+                return this.isValid() ? this.start + ".." + this.end : "Invalid Range";
             };
             extend(Range, true, true, {
-                'isValid': function () {
+                isValid: function() {
                     return isValidRangeMember(this.start) && isValidRangeMember(this.end) && typeof this.start === typeof this.end;
                 },
-                'span': function () {
+                span: function() {
                     return this.isValid() ? abs(getRangeMemberNumericValue(this.end) - getRangeMemberNumericValue(this.start)) + 1 : NaN;
                 },
-                'contains': function (obj) {
+                contains: function(obj) {
                     var self = this, arr;
-                    if (obj == null)
-                        return false;
+                    if (obj == null) return false;
                     if (obj.start && obj.end) {
                         return obj.start >= this.start && obj.start <= this.end && obj.end >= this.start && obj.end <= this.end;
                     } else {
                         return obj >= this.start && obj <= this.end;
                     }
                 },
-                'every': function (amount, fn) {
+                every: function(amount, fn) {
                     var increment, start = this.start, end = this.end, inverse = end < start, current = start, index = 0, result = [];
                     if (isFunction(amount)) {
                         fn = amount;
@@ -4671,19 +4444,19 @@ img.autolink {\
                     }
                     return result;
                 },
-                'union': function (range) {
+                union: function(range) {
                     return new Range(this.start < range.start ? this.start : range.start, this.end > range.end ? this.end : range.end);
                 },
-                'intersect': function (range) {
+                intersect: function(range) {
                     if (range.start > this.end || range.end < this.start) {
                         return new Range(NaN, NaN);
                     }
                     return new Range(this.start > range.start ? this.start : range.start, this.end < range.end ? this.end : range.end);
                 },
-                'clone': function (range) {
+                clone: function(range) {
                     return new Range(this.start, this.end);
                 },
-                'clamp': function (obj) {
+                clamp: function(obj) {
                     var clamped, start = this.start, end = this.end, min = end < start ? end : start, max = start > end ? start : end;
                     if (obj < min) {
                         clamped = min;
@@ -4695,13 +4468,9 @@ img.autolink {\
                     return cloneRangeMember(clamped);
                 }
             });
-            [
-                number,
-                string,
-                date
-            ].forEach(function (klass) {
+            [ number, string, date ].forEach(function(klass) {
                 extend(klass, false, true, {
-                    'range': function (start, end) {
+                    range: function(start, end) {
                         if (klass.create) {
                             start = klass.create(start);
                             end = klass.create(end);
@@ -4711,65 +4480,60 @@ img.autolink {\
                 });
             });
             extend(number, true, true, {
-                'upto': function (num, fn, step) {
+                upto: function(num, fn, step) {
                     return number.range(this, num).every(step, fn);
                 },
-                'clamp': function (start, end) {
+                clamp: function(start, end) {
                     return new Range(start, end).clamp(this);
                 },
-                'cap': function (max) {
+                cap: function(max) {
                     return this.clamp(Undefined, max);
                 }
             });
-            extend(number, true, true, { 'downto': number.prototype.upto });
-            extend(array, false, function (a) {
+            extend(number, true, true, {
+                downto: number.prototype.upto
+            });
+            extend(array, false, function(a) {
                 return a instanceof Range;
             }, {
-                'create': function (range) {
+                create: function(range) {
                     return range.every();
                 }
             });
             function setDelay(fn, ms, after, scope, args) {
-                if (ms === Infinity)
-                    return;
-                if (!fn.timers)
-                    fn.timers = [];
-                if (!isNumber(ms))
-                    ms = 1;
+                if (ms === Infinity) return;
+                if (!fn.timers) fn.timers = [];
+                if (!isNumber(ms)) ms = 1;
                 fn._canceled = false;
-                fn.timers.push(setTimeout(function () {
+                fn.timers.push(setTimeout(function() {
                     if (!fn._canceled) {
                         after.apply(scope, args || []);
                     }
                 }, ms));
             }
             extend(Function, true, true, {
-                'lazy': function (ms, immediate, limit) {
+                lazy: function(ms, immediate, limit) {
                     var fn = this, queue = [], locked = false, execute, rounded, perExecution, result;
                     ms = ms || 1;
                     limit = limit || Infinity;
                     rounded = ceil(ms);
                     perExecution = round(rounded / ms) || 1;
-                    execute = function () {
+                    execute = function() {
                         var queueLength = queue.length, maxPerRound;
-                        if (queueLength == 0)
-                            return;
+                        if (queueLength == 0) return;
                         maxPerRound = max(queueLength - perExecution, 0);
                         while (queueLength > maxPerRound) {
                             result = Function.prototype.apply.apply(fn, queue.shift());
                             queueLength--;
                         }
-                        setDelay(lazy, rounded, function () {
+                        setDelay(lazy, rounded, function() {
                             locked = false;
                             execute();
                         });
                     };
                     function lazy() {
                         if (queue.length < limit - (locked && immediate ? 1 : 0)) {
-                            queue.push([
-                                this,
-                                arguments
-                            ]);
+                            queue.push([ this, arguments ]);
                         }
                         if (!locked) {
                             locked = true;
@@ -4783,25 +4547,24 @@ img.autolink {\
                     }
                     return lazy;
                 },
-                'throttle': function (ms) {
+                throttle: function(ms) {
                     return this.lazy(ms, true, 1);
                 },
-                'debounce': function (ms) {
+                debounce: function(ms) {
                     var fn = this;
                     function debounced() {
                         debounced.cancel();
                         setDelay(debounced, ms, fn, this, arguments);
                     }
-                    ;
                     return debounced;
                 },
-                'delay': function (ms) {
+                delay: function(ms) {
                     var fn = this;
                     var args = multiArgs(arguments, null, 1);
                     setDelay(fn, ms, fn, fn, args);
                     return fn;
                 },
-                'every': function (ms) {
+                every: function(ms) {
                     var fn = this, args = arguments;
                     args = args.length > 1 ? multiArgs(args, null, 1) : [];
                     function execute() {
@@ -4811,7 +4574,7 @@ img.autolink {\
                     setDelay(fn, ms, execute);
                     return fn;
                 },
-                'cancel': function () {
+                cancel: function() {
                     var timers = this.timers, timer;
                     if (isArray(timers)) {
                         while (timer = timers.shift()) {
@@ -4821,7 +4584,7 @@ img.autolink {\
                     this._canceled = true;
                     return this;
                 },
-                'after': function (num) {
+                after: function(num) {
                     var fn = this, counter = 0, storedArguments = [];
                     if (!isNumber(num)) {
                         num = 1;
@@ -4829,7 +4592,7 @@ img.autolink {\
                         fn.call();
                         return fn;
                     }
-                    return function () {
+                    return function() {
                         var ret;
                         storedArguments.push(multiArgs(arguments));
                         counter++;
@@ -4841,16 +4604,15 @@ img.autolink {\
                         }
                     };
                 },
-                'once': function () {
+                once: function() {
                     return this.throttle(Infinity, true);
                 },
-                'fill': function () {
+                fill: function() {
                     var fn = this, curried = multiArgs(arguments);
-                    return function () {
+                    return function() {
                         var args = multiArgs(arguments);
-                        curried.forEach(function (arg, index) {
-                            if (arg != null || index >= args.length)
-                                args.splice(index, 0, arg);
+                        curried.forEach(function(arg, index) {
+                            if (arg != null || index >= args.length) args.splice(index, 0, arg);
                         });
                         return fn.apply(this, args);
                     };
@@ -4872,50 +4634,49 @@ img.autolink {\
                 return withPrecision(num / divisor, roundTo || 0).format() + unit.trim();
             }
             extend(number, false, true, {
-                'random': function (n1, n2) {
+                random: function(n1, n2) {
                     var minNum, maxNum;
-                    if (arguments.length == 1)
-                        n2 = n1, n1 = 0;
+                    if (arguments.length == 1) n2 = n1, n1 = 0;
                     minNum = min(n1 || 0, isUndefined(n2) ? 1 : n2);
                     maxNum = max(n1 || 0, isUndefined(n2) ? 1 : n2) + 1;
                     return floor(math.random() * (maxNum - minNum) + minNum);
                 }
             });
             extend(number, true, true, {
-                'log': function (base) {
+                log: function(base) {
                     return math.log(this) / (base ? math.log(base) : 1);
                 },
-                'abbr': function (precision) {
-                    return abbreviateNumber(this, precision, 'kmbt', 0, 4);
+                abbr: function(precision) {
+                    return abbreviateNumber(this, precision, "kmbt", 0, 4);
                 },
-                'metric': function (precision, limit) {
-                    return abbreviateNumber(this, precision, 'n\u03bcm kMGTPE', 4, isUndefined(limit) ? 1 : limit);
+                metric: function(precision, limit) {
+                    return abbreviateNumber(this, precision, "nμm kMGTPE", 4, isUndefined(limit) ? 1 : limit);
                 },
-                'bytes': function (precision, limit) {
-                    return abbreviateNumber(this, precision, 'kMGTPE', 0, isUndefined(limit) ? 4 : limit, true) + 'B';
+                bytes: function(precision, limit) {
+                    return abbreviateNumber(this, precision, "kMGTPE", 0, isUndefined(limit) ? 4 : limit, true) + "B";
                 },
-                'isInteger': function () {
+                isInteger: function() {
                     return this % 1 == 0;
                 },
-                'isOdd': function () {
+                isOdd: function() {
                     return !isNaN(this) && !this.isMultipleOf(2);
                 },
-                'isEven': function () {
+                isEven: function() {
                     return this.isMultipleOf(2);
                 },
-                'isMultipleOf': function (num) {
+                isMultipleOf: function(num) {
                     return this % num === 0;
                 },
-                'format': function (place, thousands, decimal) {
-                    var i, str, split, integer, fraction, result = '';
+                format: function(place, thousands, decimal) {
+                    var i, str, split, integer, fraction, result = "";
                     if (isUndefined(thousands)) {
-                        thousands = ',';
+                        thousands = ",";
                     }
                     if (isUndefined(decimal)) {
-                        decimal = '.';
+                        decimal = ".";
                     }
-                    str = (isNumber(place) ? withPrecision(this, place || 0).toFixed(max(place, 0)) : this.toString()).replace(/^-/, '');
-                    split = str.split('.');
+                    str = (isNumber(place) ? withPrecision(this, place || 0).toFixed(max(place, 0)) : this.toString()).replace(/^-/, "");
+                    split = str.split(".");
                     integer = split[0];
                     fraction = split[1];
                     for (i = integer.length; i > 0; i -= 3) {
@@ -4925,14 +4686,14 @@ img.autolink {\
                         result = integer.slice(max(0, i - 3), i) + result;
                     }
                     if (fraction) {
-                        result += decimal + repeatString('0', (place || 0) - fraction.length) + fraction;
+                        result += decimal + repeatString("0", (place || 0) - fraction.length) + fraction;
                     }
-                    return (this < 0 ? '-' : '') + result;
+                    return (this < 0 ? "-" : "") + result;
                 },
-                'hex': function (pad) {
+                hex: function(pad) {
                     return this.pad(pad || 1, false, 16);
                 },
-                'times': function (fn) {
+                times: function(fn) {
                     if (fn) {
                         for (var i = 0; i < this; i++) {
                             fn.call(this, i);
@@ -4940,61 +4701,59 @@ img.autolink {\
                     }
                     return this.toNumber();
                 },
-                'chr': function () {
+                chr: function() {
                     return string.fromCharCode(this);
                 },
-                'pad': function (place, sign, base) {
+                pad: function(place, sign, base) {
                     return padNumber(this, place, sign, base);
                 },
-                'ordinalize': function () {
+                ordinalize: function() {
                     var suffix, num = abs(this), last = parseInt(num.toString().slice(-2));
                     return this + getOrdinalizedSuffix(last);
                 },
-                'toNumber': function () {
+                toNumber: function() {
                     return parseFloat(this, 10);
                 }
             });
             function buildNumber() {
                 function createRoundingFunction(fn) {
-                    return function (precision) {
+                    return function(precision) {
                         return precision ? withPrecision(this, precision, fn) : fn(this);
                     };
                 }
                 extend(number, true, true, {
-                    'ceil': createRoundingFunction(ceil),
-                    'round': createRoundingFunction(round),
-                    'floor': createRoundingFunction(floor)
+                    ceil: createRoundingFunction(ceil),
+                    round: createRoundingFunction(round),
+                    floor: createRoundingFunction(floor)
                 });
-                extendSimilar(number, true, true, 'abs,pow,sin,asin,cos,acos,tan,atan,exp,pow,sqrt', function (methods, name) {
-                    methods[name] = function (a, b) {
+                extendSimilar(number, true, true, "abs,pow,sin,asin,cos,acos,tan,atan,exp,pow,sqrt", function(methods, name) {
+                    methods[name] = function(a, b) {
                         return math[name](this, a, b);
                     };
                 });
             }
             buildNumber();
-            var ObjectTypeMethods = 'isObject,isNaN'.split(',');
-            var ObjectHashMethods = 'keys,values,select,reject,each,merge,clone,equal,watch,tap,has,toQueryString'.split(',');
+            var ObjectTypeMethods = "isObject,isNaN".split(",");
+            var ObjectHashMethods = "keys,values,select,reject,each,merge,clone,equal,watch,tap,has,toQueryString".split(",");
             function setParamsObject(obj, param, value, castBoolean) {
                 var reg = /^(.+?)(\[.*\])$/, paramIsArray, match, allKeys, key;
                 if (match = param.match(reg)) {
                     key = match[1];
-                    allKeys = match[2].replace(/^\[|\]$/g, '').split('][');
-                    allKeys.forEach(function (k) {
+                    allKeys = match[2].replace(/^\[|\]$/g, "").split("][");
+                    allKeys.forEach(function(k) {
                         paramIsArray = !k || k.match(/^\d+$/);
-                        if (!key && isArray(obj))
-                            key = obj.length;
+                        if (!key && isArray(obj)) key = obj.length;
                         if (!hasOwnProperty(obj, key)) {
                             obj[key] = paramIsArray ? [] : {};
                         }
                         obj = obj[key];
                         key = k;
                     });
-                    if (!key && paramIsArray)
-                        key = obj.length.toString();
+                    if (!key && paramIsArray) key = obj.length.toString();
                     setParamsObject(obj, key, value, castBoolean);
-                } else if (castBoolean && value === 'true') {
+                } else if (castBoolean && value === "true") {
                     obj[param] = true;
-                } else if (castBoolean && value === 'false') {
+                } else if (castBoolean && value === "false") {
                     obj[param] = false;
                 } else {
                     obj[param] = value;
@@ -5004,37 +4763,36 @@ img.autolink {\
                 var tmp;
                 if (isArray(obj) || isObjectType(obj) && obj.toString === internalToString) {
                     tmp = [];
-                    iterateOverObject(obj, function (key, value) {
+                    iterateOverObject(obj, function(key, value) {
                         if (base) {
-                            key = base + '[' + key + ']';
+                            key = base + "[" + key + "]";
                         }
                         tmp.push(objectToQueryString(key, value));
                     });
-                    return tmp.join('&');
+                    return tmp.join("&");
                 } else {
-                    if (!base)
-                        return '';
-                    return sanitizeURIComponent(base) + '=' + (isDate(obj) ? obj.getTime() : sanitizeURIComponent(obj));
+                    if (!base) return "";
+                    return sanitizeURIComponent(base) + "=" + (isDate(obj) ? obj.getTime() : sanitizeURIComponent(obj));
                 }
             }
             function sanitizeURIComponent(obj) {
-                return !obj && obj !== false && obj !== 0 ? '' : encodeURIComponent(obj).replace(/%20/g, '+');
+                return !obj && obj !== false && obj !== 0 ? "" : encodeURIComponent(obj).replace(/%20/g, "+");
             }
-            function matchKey(key, match) {
+            function matchInObject(match, key, value) {
                 if (isRegExp(match)) {
                     return match.test(key);
                 } else if (isObjectType(match)) {
-                    return hasOwnProperty(match, key);
+                    return match[key] === value;
                 } else {
                     return key === string(match);
                 }
             }
             function selectFromObject(obj, args, select) {
                 var match, result = obj instanceof Hash ? new Hash() : {};
-                iterateOverObject(obj, function (key, value) {
+                iterateOverObject(obj, function(key, value) {
                     match = false;
-                    flattenedArgs(args, function (arg) {
-                        if (matchKey(key, arg)) {
+                    flattenedArgs(args, function(arg) {
+                        if (matchInObject(arg, key, value)) {
                             match = true;
                         }
                     }, 1);
@@ -5045,19 +4803,19 @@ img.autolink {\
                 return result;
             }
             function buildTypeMethods() {
-                extendSimilar(object, false, true, ClassNames, function (methods, name) {
-                    var method = 'is' + name;
+                extendSimilar(object, false, true, ClassNames, function(methods, name) {
+                    var method = "is" + name;
                     ObjectTypeMethods.push(method);
                     methods[method] = typeChecks[name];
                 });
             }
             function buildObjectExtend() {
-                extend(object, false, function () {
+                extend(object, false, function() {
                     return arguments.length === 0;
                 }, {
-                    'extend': function () {
+                    extend: function() {
                         var methods = ObjectTypeMethods.concat(ObjectHashMethods);
-                        if (typeof EnumerableMethods !== 'undefined') {
+                        if (typeof EnumerableMethods !== "undefined") {
                             methods = methods.concat(EnumerableMethods);
                         }
                         buildObjectInstanceMethods(methods, object);
@@ -5065,89 +4823,86 @@ img.autolink {\
                 });
             }
             extend(object, false, true, {
-                'watch': function (obj, prop, fn) {
-                    if (!definePropertySupport)
-                        return;
+                watch: function(obj, prop, fn) {
+                    if (!definePropertySupport) return;
                     var value = obj[prop];
                     object.defineProperty(obj, prop, {
-                        'enumerable': true,
-                        'configurable': true,
-                        'get': function () {
+                        enumerable: true,
+                        configurable: true,
+                        get: function() {
                             return value;
                         },
-                        'set': function (to) {
+                        set: function(to) {
                             value = fn.call(obj, prop, value, to);
                         }
                     });
                 }
             });
-            extend(object, false, function () {
+            extend(object, false, function() {
                 return arguments.length > 1;
             }, {
-                'keys': function (obj, fn) {
+                keys: function(obj, fn) {
                     var keys = object.keys(obj);
-                    keys.forEach(function (key) {
+                    keys.forEach(function(key) {
                         fn.call(obj, key, obj[key]);
                     });
                     return keys;
                 }
             });
             extend(object, false, true, {
-                'isObject': function (obj) {
+                isObject: function(obj) {
                     return isPlainObject(obj);
                 },
-                'isNaN': function (obj) {
+                isNaN: function(obj) {
                     return isNumber(obj) && obj.valueOf() !== obj.valueOf();
                 },
-                'equal': function (a, b) {
+                equal: function(a, b) {
                     return isEqual(a, b);
                 },
-                'extended': function (obj) {
+                extended: function(obj) {
                     return new Hash(obj);
                 },
-                'merge': function (target, source, deep, resolve) {
-                    var key, val, goDeep;
-                    if (target && typeof source !== 'string') {
+                merge: function(target, source, deep, resolve) {
+                    var key, sourceIsObject, targetIsObject, sourceVal, targetVal, conflict, result;
+                    if (target && typeof source !== "string") {
                         for (key in source) {
-                            if (!hasOwnProperty(source, key) || !target)
-                                continue;
-                            val = source[key];
-                            goDeep = deep && isObjectType(val);
-                            if (isDefined(target[key])) {
-                                if (resolve === false && !goDeep) {
-                                    continue;
-                                }
+                            if (!hasOwnProperty(source, key) || !target) continue;
+                            sourceVal = source[key];
+                            targetVal = target[key];
+                            conflict = isDefined(targetVal);
+                            sourceIsObject = isObjectType(sourceVal);
+                            targetIsObject = isObjectType(targetVal);
+                            result = conflict && resolve === false ? targetVal : sourceVal;
+                            if (conflict) {
                                 if (isFunction(resolve)) {
-                                    val = resolve.call(source, key, target[key], source[key]);
+                                    result = resolve.call(source, key, targetVal, sourceVal);
                                 }
                             }
-                            if (goDeep) {
-                                if (isDate(val)) {
-                                    val = new date(val.getTime());
-                                } else if (isRegExp(val)) {
-                                    val = new regexp(val.source, getRegExpFlags(val));
+                            if (deep && (sourceIsObject || targetIsObject)) {
+                                if (isDate(sourceVal)) {
+                                    result = new date(sourceVal.getTime());
+                                } else if (isRegExp(sourceVal)) {
+                                    result = new regexp(sourceVal.source, getRegExpFlags(sourceVal));
                                 } else {
-                                    if (!target[key])
-                                        target[key] = array.isArray(val) ? [] : {};
-                                    object.merge(target[key], source[key], deep, resolve);
+                                    if (!targetIsObject) target[key] = array.isArray(sourceVal) ? [] : {};
+                                    object.merge(target[key], sourceVal, deep, resolve);
                                     continue;
                                 }
                             }
-                            target[key] = val;
+                            target[key] = result;
                         }
                     }
                     return target;
                 },
-                'values': function (obj, fn) {
+                values: function(obj, fn) {
                     var values = [];
-                    iterateOverObject(obj, function (k, v) {
+                    iterateOverObject(obj, function(k, v) {
                         values.push(v);
-                        if (fn)
-                            fn.call(obj, v);
+                        if (fn) fn.call(obj, v);
                     });
                     return values;
                 },
-                'clone': function (obj, deep) {
+                clone: function(obj, deep) {
                     var target, klass;
                     if (!isObjectType(obj)) {
                         return obj;
@@ -5164,42 +4919,40 @@ img.autolink {\
                     } else if (isPlainObject(obj, klass)) {
                         target = {};
                     } else {
-                        throw new TypeError('Clone must be a basic data type.');
+                        throw new TypeError("Clone must be a basic data type.");
                     }
                     return object.merge(target, obj, deep);
                 },
-                'fromQueryString': function (str, castBoolean) {
+                fromQueryString: function(str, castBoolean) {
                     var result = object.extended(), split;
-                    str = str && str.toString ? str.toString() : '';
-                    str.replace(/^.*?\?/, '').split('&').forEach(function (p) {
-                        var split = p.split('=');
-                        if (split.length !== 2)
-                            return;
+                    str = str && str.toString ? str.toString() : "";
+                    str.replace(/^.*?\?/, "").split("&").forEach(function(p) {
+                        var split = p.split("=");
+                        if (split.length !== 2) return;
                         setParamsObject(result, split[0], decodeURIComponent(split[1]), castBoolean);
                     });
                     return result;
                 },
-                'toQueryString': function (obj, namespace) {
+                toQueryString: function(obj, namespace) {
                     return objectToQueryString(namespace, obj);
                 },
-                'tap': function (obj, arg) {
+                tap: function(obj, arg) {
                     var fn = arg;
                     if (!isFunction(arg)) {
-                        fn = function () {
-                            if (arg)
-                                obj[arg]();
+                        fn = function() {
+                            if (arg) obj[arg]();
                         };
                     }
                     fn.call(obj, obj);
                     return obj;
                 },
-                'has': function (obj, key) {
+                has: function(obj, key) {
                     return hasOwnProperty(obj, key);
                 },
-                'select': function (obj) {
+                select: function(obj) {
                     return selectFromObject(obj, arguments, true);
                 },
-                'reject': function (obj) {
+                reject: function(obj) {
                     return selectFromObject(obj, arguments, false);
                 }
             });
@@ -5207,22 +4960,22 @@ img.autolink {\
             buildObjectExtend();
             buildObjectInstanceMethods(ObjectHashMethods, Hash);
             extend(regexp, false, true, {
-                'escape': function (str) {
+                escape: function(str) {
                     return escapeRegExp(str);
                 }
             });
             extend(regexp, true, true, {
-                'getFlags': function () {
+                getFlags: function() {
                     return getRegExpFlags(this);
                 },
-                'setFlags': function (flags) {
+                setFlags: function(flags) {
                     return regexp(this.source, flags);
                 },
-                'addFlag': function (flag) {
+                addFlag: function(flag) {
                     return this.setFlags(getRegExpFlags(this, flag));
                 },
-                'removeFlag': function (flag) {
-                    return this.setFlags(getRegExpFlags(this).replace(flag, ''));
+                removeFlag: function(flag) {
+                    return this.setFlags(getRegExpFlags(this).replace(flag, ""));
                 }
             });
             function getAcronym(word) {
@@ -5235,30 +4988,32 @@ img.autolink {\
             function checkRepeatRange(num) {
                 num = +num;
                 if (num < 0 || num === Infinity) {
-                    throw new RangeError('Invalid number');
+                    throw new RangeError("Invalid number");
                 }
                 return num;
             }
             function padString(num, padding) {
-                return repeatString(isDefined(padding) ? padding : ' ', num);
+                return repeatString(isDefined(padding) ? padding : " ", num);
             }
             function truncateString(str, length, from, ellipsis, split) {
                 var str1, str2, len1, len2;
                 if (str.length <= length) {
                     return str.toString();
                 }
-                ellipsis = isUndefined(ellipsis) ? '...' : ellipsis;
+                ellipsis = isUndefined(ellipsis) ? "..." : ellipsis;
                 switch (from) {
-                case 'left':
+                  case "left":
                     str2 = split ? truncateOnWord(str, length, true) : str.slice(str.length - length);
                     return ellipsis + str2;
-                case 'middle':
+
+                  case "middle":
                     len1 = ceil(length / 2);
                     len2 = floor(length / 2);
                     str1 = split ? truncateOnWord(str, len1) : str.slice(0, len1);
                     str2 = split ? truncateOnWord(str, len2, true) : str.slice(str.length - len2);
                     return str1 + ellipsis + str2;
-                default:
+
+                  default:
                     str1 = split ? truncateOnWord(str, length) : str.slice(0, length);
                     return str1 + ellipsis;
                 }
@@ -5267,13 +5022,13 @@ img.autolink {\
                 if (fromLeft) {
                     return truncateOnWord(str.reverse(), limit).reverse();
                 }
-                var reg = regexp('(?=[' + getTrimmableCharacters() + '])');
+                var reg = regexp("(?=[" + getTrimmableCharacters() + "])");
                 var words = str.split(reg);
                 var count = 0;
-                return words.filter(function (word) {
+                return words.filter(function(word) {
                     count += word.length;
                     return count <= limit;
-                }).join('');
+                }).join("");
             }
             function numberOrIndex(str, n, from) {
                 if (isString(n)) {
@@ -5292,8 +5047,8 @@ img.autolink {\
                     return;
                 }
                 var base64reg = /[^A-Za-z0-9\+\/\=]/g;
-                btoa = function (str) {
-                    var output = '';
+                btoa = function(str) {
+                    var output = "";
                     var chr1, chr2, chr3;
                     var enc1, enc2, enc3, enc4;
                     var i = 0;
@@ -5311,20 +5066,20 @@ img.autolink {\
                             enc4 = 64;
                         }
                         output = output + key.charAt(enc1) + key.charAt(enc2) + key.charAt(enc3) + key.charAt(enc4);
-                        chr1 = chr2 = chr3 = '';
-                        enc1 = enc2 = enc3 = enc4 = '';
+                        chr1 = chr2 = chr3 = "";
+                        enc1 = enc2 = enc3 = enc4 = "";
                     } while (i < str.length);
                     return output;
                 };
-                atob = function (input) {
-                    var output = '';
+                atob = function(input) {
+                    var output = "";
                     var chr1, chr2, chr3;
                     var enc1, enc2, enc3, enc4;
                     var i = 0;
                     if (input.match(base64reg)) {
-                        throw new Error('String contains invalid base64 characters');
+                        throw new Error("String contains invalid base64 characters");
                     }
-                    input = input.replace(/[^A-Za-z0-9\+\/\=]/g, '');
+                    input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
                     do {
                         enc1 = key.indexOf(input.charAt(i++));
                         enc2 = key.indexOf(input.charAt(i++));
@@ -5340,57 +5095,59 @@ img.autolink {\
                         if (enc4 != 64) {
                             output = output + chr(chr3);
                         }
-                        chr1 = chr2 = chr3 = '';
-                        enc1 = enc2 = enc3 = enc4 = '';
+                        chr1 = chr2 = chr3 = "";
+                        enc1 = enc2 = enc3 = enc4 = "";
                     } while (i < input.length);
                     return output;
                 };
             }
-            extend(string, true, function (reg) {
+            extend(string, true, false, {
+                repeat: function(num) {
+                    num = checkRepeatRange(num);
+                    return repeatString(this, num);
+                }
+            });
+            extend(string, true, function(reg) {
                 return isRegExp(reg) || arguments.length > 2;
             }, {
-                'startsWith': function (reg) {
+                startsWith: function(reg) {
                     var args = arguments, pos = args[1], c = args[2], str = this, source;
-                    if (pos)
-                        str = str.slice(pos);
-                    if (isUndefined(c))
-                        c = true;
-                    source = isRegExp(reg) ? reg.source.replace('^', '') : escapeRegExp(reg);
-                    return regexp('^' + source, c ? '' : 'i').test(str);
+                    if (pos) str = str.slice(pos);
+                    if (isUndefined(c)) c = true;
+                    source = isRegExp(reg) ? reg.source.replace("^", "") : escapeRegExp(reg);
+                    return regexp("^" + source, c ? "" : "i").test(str);
                 },
-                'endsWith': function (reg) {
+                endsWith: function(reg) {
                     var args = arguments, pos = args[1], c = args[2], str = this, source;
-                    if (isDefined(pos))
-                        str = str.slice(0, pos);
-                    if (isUndefined(c))
-                        c = true;
-                    source = isRegExp(reg) ? reg.source.replace('$', '') : escapeRegExp(reg);
-                    return regexp(source + '$', c ? '' : 'i').test(str);
+                    if (isDefined(pos)) str = str.slice(0, pos);
+                    if (isUndefined(c)) c = true;
+                    source = isRegExp(reg) ? reg.source.replace("$", "") : escapeRegExp(reg);
+                    return regexp(source + "$", c ? "" : "i").test(str);
                 }
             });
             extend(string, true, true, {
-                'escapeRegExp': function () {
+                escapeRegExp: function() {
                     return escapeRegExp(this);
                 },
-                'escapeURL': function (param) {
+                escapeURL: function(param) {
                     return param ? encodeURIComponent(this) : encodeURI(this);
                 },
-                'unescapeURL': function (param) {
+                unescapeURL: function(param) {
                     return param ? decodeURI(this) : decodeURIComponent(this);
                 },
-                'escapeHTML': function () {
-                    return this.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;').replace(/\//g, '&#x2f;');
+                escapeHTML: function() {
+                    return this.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\//g, "&#x2f;");
                 },
-                'unescapeHTML': function () {
-                    return this.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, '\'').replace(/&#x2f;/g, '/').replace(/&amp;/g, '&');
+                unescapeHTML: function() {
+                    return this.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&#x2f;/g, "/").replace(/&amp;/g, "&");
                 },
-                'encodeBase64': function () {
+                encodeBase64: function() {
                     return btoa(unescape(encodeURIComponent(this)));
                 },
-                'decodeBase64': function () {
+                decodeBase64: function() {
                     return decodeURIComponent(escape(atob(this)));
                 },
-                'each': function (search, fn) {
+                each: function(search, fn) {
                     var match, i, len;
                     if (isFunction(search)) {
                         fn = search;
@@ -5398,9 +5155,9 @@ img.autolink {\
                     } else if (!search) {
                         search = /[\s\S]/g;
                     } else if (isString(search)) {
-                        search = regexp(escapeRegExp(search), 'gi');
+                        search = regexp(escapeRegExp(search), "gi");
                     } else if (isRegExp(search)) {
-                        search = regexp(search.source, getRegExpFlags(search, 'g'));
+                        search = regexp(search.source, getRegExpFlags(search, "g"));
                     }
                     match = this.match(search) || [];
                     if (fn) {
@@ -5410,115 +5167,111 @@ img.autolink {\
                     }
                     return match;
                 },
-                'shift': function (n) {
-                    var result = '';
+                shift: function(n) {
+                    var result = "";
                     n = n || 0;
-                    this.codes(function (c) {
+                    this.codes(function(c) {
                         result += chr(c + n);
                     });
                     return result;
                 },
-                'codes': function (fn) {
+                codes: function(fn) {
                     var codes = [], i, len;
                     for (i = 0, len = this.length; i < len; i++) {
                         var code = this.charCodeAt(i);
                         codes.push(code);
-                        if (fn)
-                            fn.call(this, code, i);
+                        if (fn) fn.call(this, code, i);
                     }
                     return codes;
                 },
-                'chars': function (fn) {
+                chars: function(fn) {
                     return this.each(fn);
                 },
-                'words': function (fn) {
+                words: function(fn) {
                     return this.trim().each(/\S+/g, fn);
                 },
-                'lines': function (fn) {
+                lines: function(fn) {
                     return this.trim().each(/^.*$/gm, fn);
                 },
-                'paragraphs': function (fn) {
+                paragraphs: function(fn) {
                     var paragraphs = this.trim().split(/[\r\n]{2,}/);
-                    paragraphs = paragraphs.map(function (p) {
-                        if (fn)
-                            var s = fn.call(p);
+                    paragraphs = paragraphs.map(function(p) {
+                        if (fn) var s = fn.call(p);
                         return s ? s : p;
                     });
                     return paragraphs;
                 },
-                'isBlank': function () {
+                isBlank: function() {
                     return this.trim().length === 0;
                 },
-                'has': function (find) {
+                has: function(find) {
                     return this.search(isRegExp(find) ? find : escapeRegExp(find)) !== -1;
                 },
-                'add': function (str, index) {
+                add: function(str, index) {
                     index = isUndefined(index) ? this.length : index;
                     return this.slice(0, index) + str + this.slice(index);
                 },
-                'remove': function (f) {
-                    return this.replace(f, '');
+                remove: function(f) {
+                    return this.replace(f, "");
                 },
-                'reverse': function () {
-                    return this.split('').reverse().join('');
+                reverse: function() {
+                    return this.split("").reverse().join("");
                 },
-                'compact': function () {
-                    return this.trim().replace(/([\r\n\s　])+/g, function (match, whitespace) {
-                        return whitespace === '\u3000' ? whitespace : ' ';
+                compact: function() {
+                    return this.trim().replace(/([\r\n\s　])+/g, function(match, whitespace) {
+                        return whitespace === "　" ? whitespace : " ";
                     });
                 },
-                'at': function () {
+                at: function() {
                     return getEntriesForIndexes(this, arguments, true);
                 },
-                'from': function (from) {
+                from: function(from) {
                     return this.slice(numberOrIndex(this, from, true));
                 },
-                'to': function (to) {
-                    if (isUndefined(to))
-                        to = this.length;
+                to: function(to) {
+                    if (isUndefined(to)) to = this.length;
                     return this.slice(0, numberOrIndex(this, to));
                 },
-                'dasherize': function () {
-                    return this.underscore().replace(/_/g, '-');
+                dasherize: function() {
+                    return this.underscore().replace(/_/g, "-");
                 },
-                'underscore': function () {
-                    return this.replace(/[-\s]+/g, '_').replace(string.Inflector && string.Inflector.acronymRegExp, function (acronym, index) {
-                        return (index > 0 ? '_' : '') + acronym.toLowerCase();
-                    }).replace(/([A-Z\d]+)([A-Z][a-z])/g, '$1_$2').replace(/([a-z\d])([A-Z])/g, '$1_$2').toLowerCase();
+                underscore: function() {
+                    return this.replace(/[-\s]+/g, "_").replace(string.Inflector && string.Inflector.acronymRegExp, function(acronym, index) {
+                        return (index > 0 ? "_" : "") + acronym.toLowerCase();
+                    }).replace(/([A-Z\d]+)([A-Z][a-z])/g, "$1_$2").replace(/([a-z\d])([A-Z])/g, "$1_$2").toLowerCase();
                 },
-                'camelize': function (first) {
-                    return this.underscore().replace(/(^|_)([^_]+)/g, function (match, pre, word, index) {
+                camelize: function(first) {
+                    return this.underscore().replace(/(^|_)([^_]+)/g, function(match, pre, word, index) {
                         var acronym = getAcronym(word), capitalize = first !== false || index > 0;
-                        if (acronym)
-                            return capitalize ? acronym : acronym.toLowerCase();
+                        if (acronym) return capitalize ? acronym : acronym.toLowerCase();
                         return capitalize ? word.capitalize() : word;
                     });
                 },
-                'spacify': function () {
-                    return this.underscore().replace(/_/g, ' ');
+                spacify: function() {
+                    return this.underscore().replace(/_/g, " ");
                 },
-                'stripTags': function () {
-                    var str = this, args = arguments.length > 0 ? arguments : [''];
-                    flattenedArgs(args, function (tag) {
-                        str = str.replace(regexp('</?' + escapeRegExp(tag) + '[^<>]*>', 'gi'), '');
+                stripTags: function() {
+                    var str = this, args = arguments.length > 0 ? arguments : [ "" ];
+                    flattenedArgs(args, function(tag) {
+                        str = str.replace(regexp("</?" + escapeRegExp(tag) + "[^<>]*>", "gi"), "");
                     });
                     return str;
                 },
-                'removeTags': function () {
-                    var str = this, args = arguments.length > 0 ? arguments : ['\\S+'];
-                    flattenedArgs(args, function (t) {
-                        var reg = regexp('<(' + t + ')[^<>]*(?:\\/>|>.*?<\\/\\1>)', 'gi');
-                        str = str.replace(reg, '');
+                removeTags: function() {
+                    var str = this, args = arguments.length > 0 ? arguments : [ "\\S+" ];
+                    flattenedArgs(args, function(t) {
+                        var reg = regexp("<(" + t + ")[^<>]*(?:\\/>|>.*?<\\/\\1>)", "gi");
+                        str = str.replace(reg, "");
                     });
                     return str;
                 },
-                'truncate': function (length, from, ellipsis) {
+                truncate: function(length, from, ellipsis) {
                     return truncateString(this, length, from, ellipsis);
                 },
-                'truncateOnWord': function (length, from, ellipsis) {
+                truncateOnWord: function(length, from, ellipsis) {
                     return truncateString(this, length, from, ellipsis, true);
                 },
-                'pad': function (num, padding) {
+                pad: function(num, padding) {
                     var half, front, back;
                     num = checkRepeatRange(num);
                     half = max(0, num - this.length) / 2;
@@ -5526,57 +5279,53 @@ img.autolink {\
                     back = ceil(half);
                     return padString(front, padding) + this + padString(back, padding);
                 },
-                'padLeft': function (num, padding) {
+                padLeft: function(num, padding) {
                     num = checkRepeatRange(num);
                     return padString(max(0, num - this.length), padding) + this;
                 },
-                'padRight': function (num, padding) {
+                padRight: function(num, padding) {
                     num = checkRepeatRange(num);
                     return this + padString(max(0, num - this.length), padding);
                 },
-                'first': function (num) {
-                    if (isUndefined(num))
-                        num = 1;
+                first: function(num) {
+                    if (isUndefined(num)) num = 1;
                     return this.substr(0, num);
                 },
-                'last': function (num) {
-                    if (isUndefined(num))
-                        num = 1;
+                last: function(num) {
+                    if (isUndefined(num)) num = 1;
                     var start = this.length - num < 0 ? 0 : this.length - num;
                     return this.substr(start);
                 },
-                'repeat': function (num) {
-                    num = checkRepeatRange(num);
-                    return repeatString(this, num);
-                },
-                'toNumber': function (base) {
+                toNumber: function(base) {
                     return stringToNumber(this, base);
                 },
-                'capitalize': function (all) {
+                capitalize: function(all) {
                     var lastResponded;
-                    return this.toLowerCase().replace(all ? /[^']/g : /^\S/, function (lower) {
+                    return this.toLowerCase().replace(all ? /[^']/g : /^\S/, function(lower) {
                         var upper = lower.toUpperCase(), result;
                         result = lastResponded ? lower : upper;
                         lastResponded = upper !== lower;
                         return result;
                     });
                 },
-                'assign': function () {
+                assign: function() {
                     var assign = {};
-                    flattenedArgs(arguments, function (a, i) {
+                    flattenedArgs(arguments, function(a, i) {
                         if (isObjectType(a)) {
                             simpleMerge(assign, a);
                         } else {
                             assign[i + 1] = a;
                         }
                     });
-                    return this.replace(/\{([^{]+?)\}/g, function (m, key) {
+                    return this.replace(/\{([^{]+?)\}/g, function(m, key) {
                         return hasOwnProperty(assign, key) ? assign[key] : m;
                     });
                 }
             });
-            extend(string, true, true, { 'insert': string.prototype.add });
-            buildBase64('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=');
+            extend(string, true, true, {
+                insert: string.prototype.add
+            });
+            buildBase64("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=");
             var plurals = [], singulars = [], uncountables = [], humans = [], acronyms = {}, Downcased, Inflector;
             function removeFromArray(arr, find) {
                 var index = arr.indexOf(find);
@@ -5595,15 +5344,15 @@ img.autolink {\
                 });
             }
             function paramMatchesType(param, type) {
-                return param == type || param == 'all' || !param;
+                return param == type || param == "all" || !param;
             }
             function isUncountable(word) {
-                return uncountables.some(function (uncountable) {
-                    return new regexp('\\b' + uncountable + '$', 'i').test(word);
+                return uncountables.some(function(uncountable) {
+                    return new regexp("\\b" + uncountable + "$", "i").test(word);
                 });
             }
             function inflect(word, pluralize) {
-                word = isString(word) ? word.toString() : '';
+                word = isString(word) ? word.toString() : "";
                 if (word.isBlank() || isUncountable(word)) {
                     return word;
                 } else {
@@ -5611,7 +5360,7 @@ img.autolink {\
                 }
             }
             function runReplacements(word, table) {
-                iterateOverObject(table, function (i, inflection) {
+                iterateOverObject(table, function(i, inflection) {
                     if (word.match(inflection.rule)) {
                         word = word.replace(inflection.rule, inflection.replacement);
                         return false;
@@ -5620,169 +5369,141 @@ img.autolink {\
                 return word;
             }
             function capitalize(word) {
-                return word.replace(/^\W*[a-z]/, function (w) {
+                return word.replace(/^\W*[a-z]/, function(w) {
                     return w.toUpperCase();
                 });
             }
             Inflector = {
-                'acronym': function (word) {
+                acronym: function(word) {
                     acronyms[word.toLowerCase()] = word;
-                    var all = object.keys(acronyms).map(function (key) {
-                            return acronyms[key];
-                        });
-                    Inflector.acronymRegExp = regexp(all.join('|'), 'g');
+                    var all = object.keys(acronyms).map(function(key) {
+                        return acronyms[key];
+                    });
+                    Inflector.acronymRegExp = regexp(all.join("|"), "g");
                 },
-                'plural': function (rule, replacement) {
+                plural: function(rule, replacement) {
                     removeFromUncountablesAndAddTo(plurals, rule, replacement);
                 },
-                'singular': function (rule, replacement) {
+                singular: function(rule, replacement) {
                     removeFromUncountablesAndAddTo(singulars, rule, replacement);
                 },
-                'irregular': function (singular, plural) {
+                irregular: function(singular, plural) {
                     var singularFirst = singular.first(), singularRest = singular.from(1), pluralFirst = plural.first(), pluralRest = plural.from(1), pluralFirstUpper = pluralFirst.toUpperCase(), pluralFirstLower = pluralFirst.toLowerCase(), singularFirstUpper = singularFirst.toUpperCase(), singularFirstLower = singularFirst.toLowerCase();
                     removeFromArray(uncountables, singular);
                     removeFromArray(uncountables, plural);
                     if (singularFirstUpper == pluralFirstUpper) {
-                        Inflector.plural(new regexp('({1}){2}$'.assign(singularFirst, singularRest), 'i'), '$1' + pluralRest);
-                        Inflector.plural(new regexp('({1}){2}$'.assign(pluralFirst, pluralRest), 'i'), '$1' + pluralRest);
-                        Inflector.singular(new regexp('({1}){2}$'.assign(pluralFirst, pluralRest), 'i'), '$1' + singularRest);
+                        Inflector.plural(new regexp("({1}){2}$".assign(singularFirst, singularRest), "i"), "$1" + pluralRest);
+                        Inflector.plural(new regexp("({1}){2}$".assign(pluralFirst, pluralRest), "i"), "$1" + pluralRest);
+                        Inflector.singular(new regexp("({1}){2}$".assign(pluralFirst, pluralRest), "i"), "$1" + singularRest);
                     } else {
-                        Inflector.plural(new regexp('{1}{2}$'.assign(singularFirstUpper, singularRest)), pluralFirstUpper + pluralRest);
-                        Inflector.plural(new regexp('{1}{2}$'.assign(singularFirstLower, singularRest)), pluralFirstLower + pluralRest);
-                        Inflector.plural(new regexp('{1}{2}$'.assign(pluralFirstUpper, pluralRest)), pluralFirstUpper + pluralRest);
-                        Inflector.plural(new regexp('{1}{2}$'.assign(pluralFirstLower, pluralRest)), pluralFirstLower + pluralRest);
-                        Inflector.singular(new regexp('{1}{2}$'.assign(pluralFirstUpper, pluralRest)), singularFirstUpper + singularRest);
-                        Inflector.singular(new regexp('{1}{2}$'.assign(pluralFirstLower, pluralRest)), singularFirstLower + singularRest);
+                        Inflector.plural(new regexp("{1}{2}$".assign(singularFirstUpper, singularRest)), pluralFirstUpper + pluralRest);
+                        Inflector.plural(new regexp("{1}{2}$".assign(singularFirstLower, singularRest)), pluralFirstLower + pluralRest);
+                        Inflector.plural(new regexp("{1}{2}$".assign(pluralFirstUpper, pluralRest)), pluralFirstUpper + pluralRest);
+                        Inflector.plural(new regexp("{1}{2}$".assign(pluralFirstLower, pluralRest)), pluralFirstLower + pluralRest);
+                        Inflector.singular(new regexp("{1}{2}$".assign(pluralFirstUpper, pluralRest)), singularFirstUpper + singularRest);
+                        Inflector.singular(new regexp("{1}{2}$".assign(pluralFirstLower, pluralRest)), singularFirstLower + singularRest);
                     }
                 },
-                'uncountable': function (first) {
+                uncountable: function(first) {
                     var add = array.isArray(first) ? first : multiArgs(arguments);
                     uncountables = uncountables.concat(add);
                 },
-                'human': function (rule, replacement) {
+                human: function(rule, replacement) {
                     humans.unshift({
                         rule: rule,
                         replacement: replacement
                     });
                 },
-                'clear': function (type) {
-                    if (paramMatchesType(type, 'singulars'))
-                        singulars = [];
-                    if (paramMatchesType(type, 'plurals'))
-                        plurals = [];
-                    if (paramMatchesType(type, 'uncountables'))
-                        uncountables = [];
-                    if (paramMatchesType(type, 'humans'))
-                        humans = [];
-                    if (paramMatchesType(type, 'acronyms'))
-                        acronyms = {};
+                clear: function(type) {
+                    if (paramMatchesType(type, "singulars")) singulars = [];
+                    if (paramMatchesType(type, "plurals")) plurals = [];
+                    if (paramMatchesType(type, "uncountables")) uncountables = [];
+                    if (paramMatchesType(type, "humans")) humans = [];
+                    if (paramMatchesType(type, "acronyms")) acronyms = {};
                 }
             };
-            Downcased = [
-                'and',
-                'or',
-                'nor',
-                'a',
-                'an',
-                'the',
-                'so',
-                'but',
-                'to',
-                'of',
-                'at',
-                'by',
-                'from',
-                'into',
-                'on',
-                'onto',
-                'off',
-                'out',
-                'in',
-                'over',
-                'with',
-                'for'
-            ];
-            Inflector.plural(/$/, 's');
-            Inflector.plural(/s$/gi, 's');
-            Inflector.plural(/(ax|test)is$/gi, '$1es');
-            Inflector.plural(/(octop|vir|fung|foc|radi|alumn)(i|us)$/gi, '$1i');
-            Inflector.plural(/(census|alias|status)$/gi, '$1es');
-            Inflector.plural(/(bu)s$/gi, '$1ses');
-            Inflector.plural(/(buffal|tomat)o$/gi, '$1oes');
-            Inflector.plural(/([ti])um$/gi, '$1a');
-            Inflector.plural(/([ti])a$/gi, '$1a');
-            Inflector.plural(/sis$/gi, 'ses');
-            Inflector.plural(/f+e?$/gi, 'ves');
-            Inflector.plural(/(cuff|roof)$/gi, '$1s');
-            Inflector.plural(/([ht]ive)$/gi, '$1s');
-            Inflector.plural(/([^aeiouy]o)$/gi, '$1es');
-            Inflector.plural(/([^aeiouy]|qu)y$/gi, '$1ies');
-            Inflector.plural(/(x|ch|ss|sh)$/gi, '$1es');
-            Inflector.plural(/(matr|vert|ind)(?:ix|ex)$/gi, '$1ices');
-            Inflector.plural(/([ml])ouse$/gi, '$1ice');
-            Inflector.plural(/([ml])ice$/gi, '$1ice');
-            Inflector.plural(/^(ox)$/gi, '$1en');
-            Inflector.plural(/^(oxen)$/gi, '$1');
-            Inflector.plural(/(quiz)$/gi, '$1zes');
-            Inflector.plural(/(phot|cant|hom|zer|pian|portic|pr|quart|kimon)o$/gi, '$1os');
-            Inflector.plural(/(craft)$/gi, '$1');
-            Inflector.plural(/([ft])[eo]{2}(th?)$/gi, '$1ee$2');
-            Inflector.singular(/s$/gi, '');
-            Inflector.singular(/([pst][aiu]s)$/gi, '$1');
-            Inflector.singular(/([aeiouy])ss$/gi, '$1ss');
-            Inflector.singular(/(n)ews$/gi, '$1ews');
-            Inflector.singular(/([ti])a$/gi, '$1um');
-            Inflector.singular(/((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$/gi, '$1$2sis');
-            Inflector.singular(/(^analy)ses$/gi, '$1sis');
-            Inflector.singular(/(i)(f|ves)$/i, '$1fe');
-            Inflector.singular(/([aeolr]f?)(f|ves)$/i, '$1f');
-            Inflector.singular(/([ht]ive)s$/gi, '$1');
-            Inflector.singular(/([^aeiouy]|qu)ies$/gi, '$1y');
-            Inflector.singular(/(s)eries$/gi, '$1eries');
-            Inflector.singular(/(m)ovies$/gi, '$1ovie');
-            Inflector.singular(/(x|ch|ss|sh)es$/gi, '$1');
-            Inflector.singular(/([ml])(ous|ic)e$/gi, '$1ouse');
-            Inflector.singular(/(bus)(es)?$/gi, '$1');
-            Inflector.singular(/(o)es$/gi, '$1');
-            Inflector.singular(/(shoe)s?$/gi, '$1');
-            Inflector.singular(/(cris|ax|test)[ie]s$/gi, '$1is');
-            Inflector.singular(/(octop|vir|fung|foc|radi|alumn)(i|us)$/gi, '$1us');
-            Inflector.singular(/(census|alias|status)(es)?$/gi, '$1');
-            Inflector.singular(/^(ox)(en)?/gi, '$1');
-            Inflector.singular(/(vert|ind)(ex|ices)$/gi, '$1ex');
-            Inflector.singular(/(matr)(ix|ices)$/gi, '$1ix');
-            Inflector.singular(/(quiz)(zes)?$/gi, '$1');
-            Inflector.singular(/(database)s?$/gi, '$1');
-            Inflector.singular(/ee(th?)$/gi, 'oo$1');
-            Inflector.irregular('person', 'people');
-            Inflector.irregular('man', 'men');
-            Inflector.irregular('child', 'children');
-            Inflector.irregular('sex', 'sexes');
-            Inflector.irregular('move', 'moves');
-            Inflector.irregular('save', 'saves');
-            Inflector.irregular('cow', 'kine');
-            Inflector.irregular('goose', 'geese');
-            Inflector.irregular('zombie', 'zombies');
-            Inflector.uncountable('equipment,information,rice,money,species,series,fish,sheep,jeans'.split(','));
+            Downcased = [ "and", "or", "nor", "a", "an", "the", "so", "but", "to", "of", "at", "by", "from", "into", "on", "onto", "off", "out", "in", "over", "with", "for" ];
+            Inflector.plural(/$/, "s");
+            Inflector.plural(/s$/gi, "s");
+            Inflector.plural(/(ax|test)is$/gi, "$1es");
+            Inflector.plural(/(octop|vir|fung|foc|radi|alumn)(i|us)$/gi, "$1i");
+            Inflector.plural(/(census|alias|status)$/gi, "$1es");
+            Inflector.plural(/(bu)s$/gi, "$1ses");
+            Inflector.plural(/(buffal|tomat)o$/gi, "$1oes");
+            Inflector.plural(/([ti])um$/gi, "$1a");
+            Inflector.plural(/([ti])a$/gi, "$1a");
+            Inflector.plural(/sis$/gi, "ses");
+            Inflector.plural(/f+e?$/gi, "ves");
+            Inflector.plural(/(cuff|roof)$/gi, "$1s");
+            Inflector.plural(/([ht]ive)$/gi, "$1s");
+            Inflector.plural(/([^aeiouy]o)$/gi, "$1es");
+            Inflector.plural(/([^aeiouy]|qu)y$/gi, "$1ies");
+            Inflector.plural(/(x|ch|ss|sh)$/gi, "$1es");
+            Inflector.plural(/(matr|vert|ind)(?:ix|ex)$/gi, "$1ices");
+            Inflector.plural(/([ml])ouse$/gi, "$1ice");
+            Inflector.plural(/([ml])ice$/gi, "$1ice");
+            Inflector.plural(/^(ox)$/gi, "$1en");
+            Inflector.plural(/^(oxen)$/gi, "$1");
+            Inflector.plural(/(quiz)$/gi, "$1zes");
+            Inflector.plural(/(phot|cant|hom|zer|pian|portic|pr|quart|kimon)o$/gi, "$1os");
+            Inflector.plural(/(craft)$/gi, "$1");
+            Inflector.plural(/([ft])[eo]{2}(th?)$/gi, "$1ee$2");
+            Inflector.singular(/s$/gi, "");
+            Inflector.singular(/([pst][aiu]s)$/gi, "$1");
+            Inflector.singular(/([aeiouy])ss$/gi, "$1ss");
+            Inflector.singular(/(n)ews$/gi, "$1ews");
+            Inflector.singular(/([ti])a$/gi, "$1um");
+            Inflector.singular(/((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$/gi, "$1$2sis");
+            Inflector.singular(/(^analy)ses$/gi, "$1sis");
+            Inflector.singular(/(i)(f|ves)$/i, "$1fe");
+            Inflector.singular(/([aeolr]f?)(f|ves)$/i, "$1f");
+            Inflector.singular(/([ht]ive)s$/gi, "$1");
+            Inflector.singular(/([^aeiouy]|qu)ies$/gi, "$1y");
+            Inflector.singular(/(s)eries$/gi, "$1eries");
+            Inflector.singular(/(m)ovies$/gi, "$1ovie");
+            Inflector.singular(/(x|ch|ss|sh)es$/gi, "$1");
+            Inflector.singular(/([ml])(ous|ic)e$/gi, "$1ouse");
+            Inflector.singular(/(bus)(es)?$/gi, "$1");
+            Inflector.singular(/(o)es$/gi, "$1");
+            Inflector.singular(/(shoe)s?$/gi, "$1");
+            Inflector.singular(/(cris|ax|test)[ie]s$/gi, "$1is");
+            Inflector.singular(/(octop|vir|fung|foc|radi|alumn)(i|us)$/gi, "$1us");
+            Inflector.singular(/(census|alias|status)(es)?$/gi, "$1");
+            Inflector.singular(/^(ox)(en)?/gi, "$1");
+            Inflector.singular(/(vert|ind)(ex|ices)$/gi, "$1ex");
+            Inflector.singular(/(matr)(ix|ices)$/gi, "$1ix");
+            Inflector.singular(/(quiz)(zes)?$/gi, "$1");
+            Inflector.singular(/(database)s?$/gi, "$1");
+            Inflector.singular(/ee(th?)$/gi, "oo$1");
+            Inflector.irregular("person", "people");
+            Inflector.irregular("man", "men");
+            Inflector.irregular("child", "children");
+            Inflector.irregular("sex", "sexes");
+            Inflector.irregular("move", "moves");
+            Inflector.irregular("save", "saves");
+            Inflector.irregular("cow", "kine");
+            Inflector.irregular("goose", "geese");
+            Inflector.irregular("zombie", "zombies");
+            Inflector.uncountable("equipment,information,rice,money,species,series,fish,sheep,jeans".split(","));
             extend(string, true, true, {
-                'pluralize': function () {
+                pluralize: function() {
                     return inflect(this, true);
                 },
-                'singularize': function () {
+                singularize: function() {
                     return inflect(this, false);
                 },
-                'humanize': function () {
+                humanize: function() {
                     var str = runReplacements(this, humans), acronym;
-                    str = str.replace(/_id$/g, '');
-                    str = str.replace(/(_)?([a-z\d]*)/gi, function (match, _, word) {
+                    str = str.replace(/_id$/g, "");
+                    str = str.replace(/(_)?([a-z\d]*)/gi, function(match, _, word) {
                         acronym = hasOwnProperty(acronyms, word) ? acronyms[word] : null;
-                        return (_ ? ' ' : '') + (acronym || word.toLowerCase());
+                        return (_ ? " " : "") + (acronym || word.toLowerCase());
                     });
                     return capitalize(str);
                 },
-                'titleize': function () {
+                titleize: function() {
                     var fullStopPunctuation = /[.:;!]$/, hasPunctuation, lastHadPunctuation, isFirstOrLast;
-                    return this.spacify().humanize().words(function (word, index, words) {
+                    return this.spacify().humanize().words(function(word, index, words) {
                         hasPunctuation = fullStopPunctuation.test(word);
                         isFirstOrLast = index == 0 || index == words.length - 1 || hasPunctuation || lastHadPunctuation;
                         lastHadPunctuation = hasPunctuation;
@@ -5791,151 +5512,122 @@ img.autolink {\
                         } else {
                             return word;
                         }
-                    }).join(' ');
+                    }).join(" ");
                 },
-                'parameterize': function (separator) {
+                parameterize: function(separator) {
                     var str = this;
-                    if (separator === undefined)
-                        separator = '-';
+                    if (separator === undefined) separator = "-";
                     if (str.normalize) {
                         str = str.normalize();
                     }
                     str = str.replace(/[^a-z0-9\-_]+/gi, separator);
                     if (separator) {
-                        str = str.replace(new regexp('^{sep}+|{sep}+$|({sep}){sep}+'.assign({ 'sep': escapeRegExp(separator) }), 'g'), '$1');
+                        str = str.replace(new regexp("^{sep}+|{sep}+$|({sep}){sep}+".assign({
+                            sep: escapeRegExp(separator)
+                        }), "g"), "$1");
                     }
                     return encodeURI(str.toLowerCase());
                 }
             });
             string.Inflector = Inflector;
             string.Inflector.acronyms = acronyms;
-            var unicodeScripts = [
-                    {
-                        names: ['Arabic'],
-                        source: '\u0600-\u06ff'
-                    },
-                    {
-                        names: ['Cyrillic'],
-                        source: '\u0400-\u04ff'
-                    },
-                    {
-                        names: ['Devanagari'],
-                        source: '\u0900-\u097f'
-                    },
-                    {
-                        names: ['Greek'],
-                        source: '\u0370-\u03ff'
-                    },
-                    {
-                        names: ['Hangul'],
-                        source: '\uac00-\ud7af\u1100-\u11ff'
-                    },
-                    {
-                        names: [
-                            'Han',
-                            'Kanji'
-                        ],
-                        source: '\u4e00-\u9fff\uf900-\ufaff'
-                    },
-                    {
-                        names: ['Hebrew'],
-                        source: '\u0590-\u05ff'
-                    },
-                    {
-                        names: ['Hiragana'],
-                        source: '\u3040-\u309f\u30fb-\u30fc'
-                    },
-                    {
-                        names: ['Kana'],
-                        source: '\u3040-\u30ff\uff61-\uff9f'
-                    },
-                    {
-                        names: ['Katakana'],
-                        source: '\u30a0-\u30ff\uff61-\uff9f'
-                    },
-                    {
-                        names: ['Latin'],
-                        source: '\x01-\x7f\x80-\xff\u0100-\u017f\u0180-\u024f'
-                    },
-                    {
-                        names: ['Thai'],
-                        source: '\u0e00-\u0e7f'
-                    }
-                ];
+            var unicodeScripts = [ {
+                names: [ "Arabic" ],
+                source: "؀-ۿ"
+            }, {
+                names: [ "Cyrillic" ],
+                source: "Ѐ-ӿ"
+            }, {
+                names: [ "Devanagari" ],
+                source: "ऀ-ॿ"
+            }, {
+                names: [ "Greek" ],
+                source: "Ͱ-Ͽ"
+            }, {
+                names: [ "Hangul" ],
+                source: "가-힯ᄀ-ᇿ"
+            }, {
+                names: [ "Han", "Kanji" ],
+                source: "一-鿿豈-﫿"
+            }, {
+                names: [ "Hebrew" ],
+                source: "֐-׿"
+            }, {
+                names: [ "Hiragana" ],
+                source: "぀-ゟ・-ー"
+            }, {
+                names: [ "Kana" ],
+                source: "぀-ヿ｡-ﾟ"
+            }, {
+                names: [ "Katakana" ],
+                source: "゠-ヿ｡-ﾟ"
+            }, {
+                names: [ "Latin" ],
+                source: "--ÿĀ-ſƀ-ɏ"
+            }, {
+                names: [ "Thai" ],
+                source: "฀-๿"
+            } ];
             function buildUnicodeScripts() {
-                unicodeScripts.forEach(function (s) {
-                    var is = regexp('^[' + s.source + '\\s]+$');
-                    var has = regexp('[' + s.source + ']');
-                    s.names.forEach(function (name) {
-                        defineProperty(string.prototype, 'is' + name, function () {
+                unicodeScripts.forEach(function(s) {
+                    var is = regexp("^[" + s.source + "\\s]+$");
+                    var has = regexp("[" + s.source + "]");
+                    s.names.forEach(function(name) {
+                        defineProperty(string.prototype, "is" + name, function() {
                             return is.test(this.trim());
                         });
-                        defineProperty(string.prototype, 'has' + name, function () {
+                        defineProperty(string.prototype, "has" + name, function() {
                             return has.test(this);
                         });
                     });
                 });
             }
-            var widthConversionRanges = [
-                    {
-                        type: 'a',
-                        shift: 65248,
-                        start: 65,
-                        end: 90
-                    },
-                    {
-                        type: 'a',
-                        shift: 65248,
-                        start: 97,
-                        end: 122
-                    },
-                    {
-                        type: 'n',
-                        shift: 65248,
-                        start: 48,
-                        end: 57
-                    },
-                    {
-                        type: 'p',
-                        shift: 65248,
-                        start: 33,
-                        end: 47
-                    },
-                    {
-                        type: 'p',
-                        shift: 65248,
-                        start: 58,
-                        end: 64
-                    },
-                    {
-                        type: 'p',
-                        shift: 65248,
-                        start: 91,
-                        end: 96
-                    },
-                    {
-                        type: 'p',
-                        shift: 65248,
-                        start: 123,
-                        end: 126
-                    }
-                ];
+            var HALF_WIDTH_TO_FULL_WIDTH_TRAVERSAL = 65248;
+            var widthConversionRanges = [ {
+                type: "a",
+                start: 65,
+                end: 90
+            }, {
+                type: "a",
+                start: 97,
+                end: 122
+            }, {
+                type: "n",
+                start: 48,
+                end: 57
+            }, {
+                type: "p",
+                start: 33,
+                end: 47
+            }, {
+                type: "p",
+                start: 58,
+                end: 64
+            }, {
+                type: "p",
+                start: 91,
+                end: 96
+            }, {
+                type: "p",
+                start: 123,
+                end: 126
+            } ];
             var WidthConversionTable;
             var allHankaku = /[\u0020-\u00A5]|[\uFF61-\uFF9F][ﾞﾟ]?/g;
             var allZenkaku = /[\u3000-\u301C]|[\u301A-\u30FC]|[\uFF01-\uFF60]|[\uFFE0-\uFFE6]/g;
-            var hankakuPunctuation = '\uff61\uff64\uff62\uff63\xa5\xa2\xa3';
-            var zenkakuPunctuation = '\u3002\u3001\u300c\u300d\uffe5\uffe0\uffe1';
+            var hankakuPunctuation = "｡､｢｣¥¢£";
+            var zenkakuPunctuation = "。、「」￥￠￡";
             var voicedKatakana = /[カキクケコサシスセソタチツテトハヒフヘホ]/;
             var semiVoicedKatakana = /[ハヒフヘホヲ]/;
-            var hankakuKatakana = '\uff71\uff72\uff73\uff74\uff75\uff67\uff68\uff69\uff6a\uff6b\uff76\uff77\uff78\uff79\uff7a\uff7b\uff7c\uff7d\uff7e\uff7f\uff80\uff81\uff82\uff6f\uff83\uff84\uff85\uff86\uff87\uff88\uff89\uff8a\uff8b\uff8c\uff8d\uff8e\uff8f\uff90\uff91\uff92\uff93\uff94\uff6c\uff95\uff6d\uff96\uff6e\uff97\uff98\uff99\uff9a\uff9b\uff9c\uff66\uff9d\uff70\uff65';
-            var zenkakuKatakana = '\u30a2\u30a4\u30a6\u30a8\u30aa\u30a1\u30a3\u30a5\u30a7\u30a9\u30ab\u30ad\u30af\u30b1\u30b3\u30b5\u30b7\u30b9\u30bb\u30bd\u30bf\u30c1\u30c4\u30c3\u30c6\u30c8\u30ca\u30cb\u30cc\u30cd\u30ce\u30cf\u30d2\u30d5\u30d8\u30db\u30de\u30df\u30e0\u30e1\u30e2\u30e4\u30e3\u30e6\u30e5\u30e8\u30e7\u30e9\u30ea\u30eb\u30ec\u30ed\u30ef\u30f2\u30f3\u30fc\u30fb';
+            var hankakuKatakana = "ｱｲｳｴｵｧｨｩｪｫｶｷｸｹｺｻｼｽｾｿﾀﾁﾂｯﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔｬﾕｭﾖｮﾗﾘﾙﾚﾛﾜｦﾝｰ･";
+            var zenkakuKatakana = "アイウエオァィゥェォカキクケコサシスセソタチツッテトナニヌネノハヒフヘホマミムメモヤャユュヨョラリルレロワヲンー・";
             function convertCharacterWidth(str, args, reg, type) {
                 if (!WidthConversionTable) {
                     buildWidthConversionTables();
                 }
-                var mode = multiArgs(args).join(''), table = WidthConversionTable[type];
-                mode = mode.replace(/all/, '').replace(/(\w)lphabet|umbers?|atakana|paces?|unctuation/g, '$1');
-                return str.replace(reg, function (c) {
+                var mode = multiArgs(args).join(""), table = WidthConversionTable[type];
+                mode = mode.replace(/all/, "").replace(/(\w)lphabet|umbers?|atakana|paces?|unctuation/g, "$1");
+                return str.replace(reg, function(c) {
                     if (table[c] && (!mode || mode.has(table[c].type))) {
                         return table[c].to;
                     } else {
@@ -5946,1206 +5638,936 @@ img.autolink {\
             function buildWidthConversionTables() {
                 var hankaku;
                 WidthConversionTable = {
-                    'zenkaku': {},
-                    'hankaku': {}
+                    zenkaku: {},
+                    hankaku: {}
                 };
-                widthConversionRanges.forEach(function (r) {
-                    simpleRepeat(r.end - r.start + 1, function (n) {
+                widthConversionRanges.forEach(function(r) {
+                    simpleRepeat(r.end - r.start + 1, function(n) {
                         n += r.start;
-                        setWidthConversion(r.type, chr(n), chr(n + r.shift));
+                        setWidthConversion(r.type, chr(n), chr(n + HALF_WIDTH_TO_FULL_WIDTH_TRAVERSAL));
                     });
                 });
-                zenkakuKatakana.each(function (c, i) {
+                zenkakuKatakana.each(function(c, i) {
                     hankaku = hankakuKatakana.charAt(i);
-                    setWidthConversion('k', hankaku, c);
+                    setWidthConversion("k", hankaku, c);
                     if (c.match(voicedKatakana)) {
-                        setWidthConversion('k', hankaku + '\uff9e', c.shift(1));
+                        setWidthConversion("k", hankaku + "ﾞ", c.shift(1));
                     }
                     if (c.match(semiVoicedKatakana)) {
-                        setWidthConversion('k', hankaku + '\uff9f', c.shift(2));
+                        setWidthConversion("k", hankaku + "ﾟ", c.shift(2));
                     }
                 });
-                zenkakuPunctuation.each(function (c, i) {
-                    setWidthConversion('p', hankakuPunctuation.charAt(i), c);
+                zenkakuPunctuation.each(function(c, i) {
+                    setWidthConversion("p", hankakuPunctuation.charAt(i), c);
                 });
-                setWidthConversion('k', '\uff73\uff9e', '\u30f4');
-                setWidthConversion('k', '\uff66\uff9e', '\u30fa');
-                setWidthConversion('s', ' ', '\u3000');
+                setWidthConversion("k", "ｳﾞ", "ヴ");
+                setWidthConversion("k", "ｦﾞ", "ヺ");
+                setWidthConversion("s", " ", "　");
             }
             function setWidthConversion(type, half, full) {
-                WidthConversionTable['zenkaku'][half] = {
+                WidthConversionTable["zenkaku"][half] = {
                     type: type,
                     to: full
                 };
-                WidthConversionTable['hankaku'][full] = {
+                WidthConversionTable["hankaku"][full] = {
                     type: type,
                     to: half
                 };
             }
             extend(string, true, true, {
-                'hankaku': function () {
-                    return convertCharacterWidth(this, arguments, allZenkaku, 'hankaku');
+                hankaku: function() {
+                    return convertCharacterWidth(this, arguments, allZenkaku, "hankaku");
                 },
-                'zenkaku': function () {
-                    return convertCharacterWidth(this, arguments, allHankaku, 'zenkaku');
+                zenkaku: function() {
+                    return convertCharacterWidth(this, arguments, allHankaku, "zenkaku");
                 },
-                'hiragana': function (all) {
+                hiragana: function(all) {
                     var str = this;
                     if (all !== false) {
-                        str = str.zenkaku('k');
+                        str = str.zenkaku("k");
                     }
-                    return str.replace(/[\u30A1-\u30F6]/g, function (c) {
+                    return str.replace(/[\u30A1-\u30F6]/g, function(c) {
                         return c.shift(-96);
                     });
                 },
-                'katakana': function () {
-                    return this.replace(/[\u3041-\u3096]/g, function (c) {
+                katakana: function() {
+                    return this.replace(/[\u3041-\u3096]/g, function(c) {
                         return c.shift(96);
                     });
                 }
             });
             buildUnicodeScripts();
-            Date.addLocale('da', {
-                'plural': true,
-                'months': 'januar,februar,marts,april,maj,juni,juli,august,september,oktober,november,december',
-                'weekdays': 's\xf8ndag|sondag,mandag,tirsdag,onsdag,torsdag,fredag,l\xf8rdag|lordag',
-                'units': 'millisekund:|er,sekund:|er,minut:|ter,tim:e|er,dag:|e,ug:e|er|en,m\xe5ned:|er|en+maaned:|er|en,\xe5r:||et+aar:||et',
-                'numbers': 'en|et,to,tre,fire,fem,seks,syv,otte,ni,ti',
-                'tokens': 'den,for',
-                'articles': 'den',
-                'short': 'd. {d}. {month} {yyyy}',
-                'long': 'den {d}. {month} {yyyy} {H}:{mm}',
-                'full': '{Weekday} den {d}. {month} {yyyy} {H}:{mm}:{ss}',
-                'past': '{num} {unit} {sign}',
-                'future': '{sign} {num} {unit}',
-                'duration': '{num} {unit}',
-                'ampm': 'am,pm',
-                'modifiers': [
-                    {
-                        'name': 'day',
-                        'src': 'forg\xe5rs|i forg\xe5rs|forgaars|i forgaars',
-                        'value': -2
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'i g\xe5r|ig\xe5r|i gaar|igaar',
-                        'value': -1
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'i dag|idag',
-                        'value': 0
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'i morgen|imorgen',
-                        'value': 1
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'over morgon|overmorgen|i over morgen|i overmorgen|iovermorgen',
-                        'value': 2
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'siden',
-                        'value': -1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'om',
-                        'value': 1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'i sidste|sidste',
-                        'value': -1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'denne',
-                        'value': 0
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'n\xe6ste|naeste',
-                        'value': 1
-                    }
-                ],
-                'dateParse': [
-                    '{num} {unit} {sign}',
-                    '{sign} {num} {unit}',
-                    '{1?} {num} {unit} {sign}',
-                    '{shift} {unit=5-7}'
-                ],
-                'timeParse': [
-                    '{0?} {weekday?} {date?} {month} {year}',
-                    '{date} {month}',
-                    '{shift} {weekday}'
-                ]
+            Date.addLocale("da", {
+                plural: true,
+                months: "januar,februar,marts,april,maj,juni,juli,august,september,oktober,november,december",
+                weekdays: "søndag|sondag,mandag,tirsdag,onsdag,torsdag,fredag,lørdag|lordag",
+                units: "millisekund:|er,sekund:|er,minut:|ter,tim:e|er,dag:|e,ug:e|er|en,måned:|er|en+maaned:|er|en,år:||et+aar:||et",
+                numbers: "en|et,to,tre,fire,fem,seks,syv,otte,ni,ti",
+                tokens: "den,for",
+                articles: "den",
+                "short": "d. {d}. {month} {yyyy}",
+                "long": "den {d}. {month} {yyyy} {H}:{mm}",
+                full: "{Weekday} den {d}. {month} {yyyy} {H}:{mm}:{ss}",
+                past: "{num} {unit} {sign}",
+                future: "{sign} {num} {unit}",
+                duration: "{num} {unit}",
+                ampm: "am,pm",
+                modifiers: [ {
+                    name: "day",
+                    src: "forgårs|i forgårs|forgaars|i forgaars",
+                    value: -2
+                }, {
+                    name: "day",
+                    src: "i går|igår|i gaar|igaar",
+                    value: -1
+                }, {
+                    name: "day",
+                    src: "i dag|idag",
+                    value: 0
+                }, {
+                    name: "day",
+                    src: "i morgen|imorgen",
+                    value: 1
+                }, {
+                    name: "day",
+                    src: "over morgon|overmorgen|i over morgen|i overmorgen|iovermorgen",
+                    value: 2
+                }, {
+                    name: "sign",
+                    src: "siden",
+                    value: -1
+                }, {
+                    name: "sign",
+                    src: "om",
+                    value: 1
+                }, {
+                    name: "shift",
+                    src: "i sidste|sidste",
+                    value: -1
+                }, {
+                    name: "shift",
+                    src: "denne",
+                    value: 0
+                }, {
+                    name: "shift",
+                    src: "næste|naeste",
+                    value: 1
+                } ],
+                dateParse: [ "{num} {unit} {sign}", "{sign} {num} {unit}", "{1?} {num} {unit} {sign}", "{shift} {unit=5-7}" ],
+                timeParse: [ "{0?} {weekday?} {date?} {month} {year}", "{date} {month}", "{shift} {weekday}" ]
             });
-            Date.addLocale('de', {
-                'plural': true,
-                'capitalizeUnit': true,
-                'months': 'Januar,Februar,M\xe4rz|Marz,April,Mai,Juni,Juli,August,September,Oktober,November,Dezember',
-                'weekdays': 'Sonntag,Montag,Dienstag,Mittwoch,Donnerstag,Freitag,Samstag',
-                'units': 'Millisekunde:|n,Sekunde:|n,Minute:|n,Stunde:|n,Tag:|en,Woche:|n,Monat:|en,Jahr:|en',
-                'numbers': 'ein:|e|er|en|em,zwei,drei,vier,fuenf,sechs,sieben,acht,neun,zehn',
-                'tokens': 'der',
-                'short': '{d}. {Month} {yyyy}',
-                'long': '{d}. {Month} {yyyy} {H}:{mm}',
-                'full': '{Weekday} {d}. {Month} {yyyy} {H}:{mm}:{ss}',
-                'past': '{sign} {num} {unit}',
-                'future': '{sign} {num} {unit}',
-                'duration': '{num} {unit}',
-                'timeMarker': 'um',
-                'ampm': 'am,pm',
-                'modifiers': [
-                    {
-                        'name': 'day',
-                        'src': 'vorgestern',
-                        'value': -2
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'gestern',
-                        'value': -1
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'heute',
-                        'value': 0
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'morgen',
-                        'value': 1
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\xfcbermorgen|ubermorgen|uebermorgen',
-                        'value': 2
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'vor:|her',
-                        'value': -1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'in',
-                        'value': 1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'letzte:|r|n|s',
-                        'value': -1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'n\xe4chste:|r|n|s+nachste:|r|n|s+naechste:|r|n|s+kommende:n|r',
-                        'value': 1
-                    }
-                ],
-                'dateParse': [
-                    '{sign} {num} {unit}',
-                    '{num} {unit} {sign}',
-                    '{shift} {unit=5-7}'
-                ],
-                'timeParse': [
-                    '{weekday?} {date?} {month} {year?}',
-                    '{shift} {weekday}'
-                ]
+            Date.addLocale("de", {
+                plural: true,
+                capitalizeUnit: true,
+                months: "Januar,Februar,März|Marz,April,Mai,Juni,Juli,August,September,Oktober,November,Dezember",
+                weekdays: "Sonntag,Montag,Dienstag,Mittwoch,Donnerstag,Freitag,Samstag",
+                units: "Millisekunde:|n,Sekunde:|n,Minute:|n,Stunde:|n,Tag:|en,Woche:|n,Monat:|en,Jahr:|en",
+                numbers: "ein:|e|er|en|em,zwei,drei,vier,fuenf,sechs,sieben,acht,neun,zehn",
+                tokens: "der",
+                "short": "{d}. {Month} {yyyy}",
+                "long": "{d}. {Month} {yyyy} {H}:{mm}",
+                full: "{Weekday} {d}. {Month} {yyyy} {H}:{mm}:{ss}",
+                past: "{sign} {num} {unit}",
+                future: "{sign} {num} {unit}",
+                duration: "{num} {unit}",
+                timeMarker: "um",
+                ampm: "am,pm",
+                modifiers: [ {
+                    name: "day",
+                    src: "vorgestern",
+                    value: -2
+                }, {
+                    name: "day",
+                    src: "gestern",
+                    value: -1
+                }, {
+                    name: "day",
+                    src: "heute",
+                    value: 0
+                }, {
+                    name: "day",
+                    src: "morgen",
+                    value: 1
+                }, {
+                    name: "day",
+                    src: "übermorgen|ubermorgen|uebermorgen",
+                    value: 2
+                }, {
+                    name: "sign",
+                    src: "vor:|her",
+                    value: -1
+                }, {
+                    name: "sign",
+                    src: "in",
+                    value: 1
+                }, {
+                    name: "shift",
+                    src: "letzte:|r|n|s",
+                    value: -1
+                }, {
+                    name: "shift",
+                    src: "nächste:|r|n|s+nachste:|r|n|s+naechste:|r|n|s+kommende:n|r",
+                    value: 1
+                } ],
+                dateParse: [ "{sign} {num} {unit}", "{num} {unit} {sign}", "{shift} {unit=5-7}" ],
+                timeParse: [ "{weekday?} {date?} {month} {year?}", "{shift} {weekday}" ]
             });
-            Date.addLocale('es', {
-                'plural': true,
-                'months': 'enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre',
-                'weekdays': 'domingo,lunes,martes,mi\xe9rcoles|miercoles,jueves,viernes,s\xe1bado|sabado',
-                'units': 'milisegundo:|s,segundo:|s,minuto:|s,hora:|s,d\xeda|d\xedas|dia|dias,semana:|s,mes:|es,a\xf1o|a\xf1os|ano|anos',
-                'numbers': 'uno,dos,tres,cuatro,cinco,seis,siete,ocho,nueve,diez',
-                'tokens': 'el,la,de',
-                'short': '{d} {month} {yyyy}',
-                'long': '{d} {month} {yyyy} {H}:{mm}',
-                'full': '{Weekday} {d} {month} {yyyy} {H}:{mm}:{ss}',
-                'past': '{sign} {num} {unit}',
-                'future': '{sign} {num} {unit}',
-                'duration': '{num} {unit}',
-                'timeMarker': 'a las',
-                'ampm': 'am,pm',
-                'modifiers': [
-                    {
-                        'name': 'day',
-                        'src': 'anteayer',
-                        'value': -2
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'ayer',
-                        'value': -1
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'hoy',
-                        'value': 0
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'ma\xf1ana|manana',
-                        'value': 1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'hace',
-                        'value': -1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'dentro de',
-                        'value': 1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'pasad:o|a',
-                        'value': -1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'pr\xf3ximo|pr\xf3xima|proximo|proxima',
-                        'value': 1
-                    }
-                ],
-                'dateParse': [
-                    '{sign} {num} {unit}',
-                    '{num} {unit} {sign}',
-                    '{0?}{1?} {unit=5-7} {shift}',
-                    '{0?}{1?} {shift} {unit=5-7}'
-                ],
-                'timeParse': [
-                    '{shift} {weekday}',
-                    '{weekday} {shift}',
-                    '{date?} {2?} {month} {2?} {year?}'
-                ]
+            Date.addLocale("es", {
+                plural: true,
+                months: "enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre",
+                weekdays: "domingo,lunes,martes,miércoles|miercoles,jueves,viernes,sábado|sabado",
+                units: "milisegundo:|s,segundo:|s,minuto:|s,hora:|s,día|días|dia|dias,semana:|s,mes:|es,año|años|ano|anos",
+                numbers: "uno,dos,tres,cuatro,cinco,seis,siete,ocho,nueve,diez",
+                tokens: "el,la,de",
+                "short": "{d} {month} {yyyy}",
+                "long": "{d} {month} {yyyy} {H}:{mm}",
+                full: "{Weekday} {d} {month} {yyyy} {H}:{mm}:{ss}",
+                past: "{sign} {num} {unit}",
+                future: "{sign} {num} {unit}",
+                duration: "{num} {unit}",
+                timeMarker: "a las",
+                ampm: "am,pm",
+                modifiers: [ {
+                    name: "day",
+                    src: "anteayer",
+                    value: -2
+                }, {
+                    name: "day",
+                    src: "ayer",
+                    value: -1
+                }, {
+                    name: "day",
+                    src: "hoy",
+                    value: 0
+                }, {
+                    name: "day",
+                    src: "mañana|manana",
+                    value: 1
+                }, {
+                    name: "sign",
+                    src: "hace",
+                    value: -1
+                }, {
+                    name: "sign",
+                    src: "dentro de",
+                    value: 1
+                }, {
+                    name: "shift",
+                    src: "pasad:o|a",
+                    value: -1
+                }, {
+                    name: "shift",
+                    src: "próximo|próxima|proximo|proxima",
+                    value: 1
+                } ],
+                dateParse: [ "{sign} {num} {unit}", "{num} {unit} {sign}", "{0?}{1?} {unit=5-7} {shift}", "{0?}{1?} {shift} {unit=5-7}" ],
+                timeParse: [ "{shift} {weekday}", "{weekday} {shift}", "{date?} {2?} {month} {2?} {year?}" ]
             });
-            Date.addLocale('fi', {
-                'plural': true,
-                'timeMarker': 'kello',
-                'ampm': ',',
-                'months': 'tammikuu,helmikuu,maaliskuu,huhtikuu,toukokuu,kes\xe4kuu,hein\xe4kuu,elokuu,syyskuu,lokakuu,marraskuu,joulukuu',
-                'weekdays': 'sunnuntai,maanantai,tiistai,keskiviikko,torstai,perjantai,lauantai',
-                'units': 'millisekun:ti|tia|teja|tina|nin,sekun:ti|tia|teja|tina|nin,minuut:ti|tia|teja|tina|in,tun:ti|tia|teja|tina|nin,p\xe4iv:\xe4|\xe4\xe4|i\xe4|\xe4n\xe4|\xe4n,viik:ko|koa|koja|on|kona,kuukau:si|sia|tta|den|tena,vuo:si|sia|tta|den|tena',
-                'numbers': 'yksi|ensimm\xe4inen,kaksi|toinen,kolm:e|as,nelj\xe4:s,vii:si|des,kuu:si|des,seitsem\xe4:n|s,kahdeksa:n|s,yhdeks\xe4:n|s,kymmene:n|s',
-                'articles': '',
-                'optionals': '',
-                'short': '{d}. {month}ta {yyyy}',
-                'long': '{d}. {month}ta {yyyy} kello {H}.{mm}',
-                'full': '{Weekday}na {d}. {month}ta {yyyy} kello {H}.{mm}',
-                'relative': function (num, unit, ms, format) {
-                    var units = this['units'];
+            Date.addLocale("fi", {
+                plural: true,
+                timeMarker: "kello",
+                ampm: ",",
+                months: "tammikuu,helmikuu,maaliskuu,huhtikuu,toukokuu,kesäkuu,heinäkuu,elokuu,syyskuu,lokakuu,marraskuu,joulukuu",
+                weekdays: "sunnuntai,maanantai,tiistai,keskiviikko,torstai,perjantai,lauantai",
+                units: "millisekun:ti|tia|teja|tina|nin,sekun:ti|tia|teja|tina|nin,minuut:ti|tia|teja|tina|in,tun:ti|tia|teja|tina|nin,päiv:ä|ää|iä|änä|än,viik:ko|koa|koja|on|kona,kuukau:si|sia|tta|den|tena,vuo:si|sia|tta|den|tena",
+                numbers: "yksi|ensimmäinen,kaksi|toinen,kolm:e|as,neljä:s,vii:si|des,kuu:si|des,seitsemä:n|s,kahdeksa:n|s,yhdeksä:n|s,kymmene:n|s",
+                articles: "",
+                optionals: "",
+                "short": "{d}. {month}ta {yyyy}",
+                "long": "{d}. {month}ta {yyyy} kello {H}.{mm}",
+                full: "{Weekday}na {d}. {month}ta {yyyy} kello {H}.{mm}",
+                relative: function(num, unit, ms, format) {
+                    var units = this["units"];
                     function numberWithUnit(mult) {
-                        return (num === 1 ? '' : num + ' ') + units[8 * mult + unit];
+                        return (num === 1 ? "" : num + " ") + units[8 * mult + unit];
                     }
                     switch (format) {
-                    case 'duration':
+                      case "duration":
                         return numberWithUnit(0);
-                    case 'past':
-                        return numberWithUnit(num > 1 ? 1 : 0) + ' sitten';
-                    case 'future':
-                        return numberWithUnit(4) + ' p\xe4\xe4st\xe4';
+
+                      case "past":
+                        return numberWithUnit(num > 1 ? 1 : 0) + " sitten";
+
+                      case "future":
+                        return numberWithUnit(4) + " päästä";
                     }
                 },
-                'modifiers': [
-                    {
-                        'name': 'day',
-                        'src': 'toissa p\xe4iv\xe4n\xe4|toissa p\xe4iv\xe4ist\xe4',
-                        'value': -2
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'eilen|eilist\xe4',
-                        'value': -1
-                    },
-                    {
-                        'name': 'day',
-                        'src': 't\xe4n\xe4\xe4n',
-                        'value': 0
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'huomenna|huomista',
-                        'value': 1
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'ylihuomenna|ylihuomista',
-                        'value': 2
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'sitten|aiemmin',
-                        'value': -1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'p\xe4\xe4st\xe4|kuluttua|my\xf6hemmin',
-                        'value': 1
-                    },
-                    {
-                        'name': 'edge',
-                        'src': 'viimeinen|viimeisen\xe4',
-                        'value': -2
-                    },
-                    {
-                        'name': 'edge',
-                        'src': 'lopussa',
-                        'value': -1
-                    },
-                    {
-                        'name': 'edge',
-                        'src': 'ensimm\xe4inen|ensimm\xe4isen\xe4',
-                        'value': 1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'edellinen|edellisen\xe4|edelt\xe4v\xe4|edelt\xe4v\xe4n\xe4|viime|toissa',
-                        'value': -1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 't\xe4n\xe4|t\xe4m\xe4n',
-                        'value': 0
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'seuraava|seuraavana|tuleva|tulevana|ensi',
-                        'value': 1
-                    }
-                ],
-                'dateParse': [
-                    '{num} {unit} {sign}',
-                    '{sign} {num} {unit}',
-                    '{num} {unit=4-5} {sign} {day}',
-                    '{month} {year}',
-                    '{shift} {unit=5-7}'
-                ],
-                'timeParse': [
-                    '{0} {num}{1} {day} of {month} {year?}',
-                    '{weekday?} {month} {date}{1} {year?}',
-                    '{date} {month} {year}',
-                    '{shift} {weekday}',
-                    '{shift} week {weekday}',
-                    '{weekday} {2} {shift} week',
-                    '{0} {date}{1} of {month}',
-                    '{0}{month?} {date?}{1} of {shift} {unit=6-7}'
-                ]
+                modifiers: [ {
+                    name: "day",
+                    src: "toissa päivänä|toissa päiväistä",
+                    value: -2
+                }, {
+                    name: "day",
+                    src: "eilen|eilistä",
+                    value: -1
+                }, {
+                    name: "day",
+                    src: "tänään",
+                    value: 0
+                }, {
+                    name: "day",
+                    src: "huomenna|huomista",
+                    value: 1
+                }, {
+                    name: "day",
+                    src: "ylihuomenna|ylihuomista",
+                    value: 2
+                }, {
+                    name: "sign",
+                    src: "sitten|aiemmin",
+                    value: -1
+                }, {
+                    name: "sign",
+                    src: "päästä|kuluttua|myöhemmin",
+                    value: 1
+                }, {
+                    name: "edge",
+                    src: "viimeinen|viimeisenä",
+                    value: -2
+                }, {
+                    name: "edge",
+                    src: "lopussa",
+                    value: -1
+                }, {
+                    name: "edge",
+                    src: "ensimmäinen|ensimmäisenä",
+                    value: 1
+                }, {
+                    name: "shift",
+                    src: "edellinen|edellisenä|edeltävä|edeltävänä|viime|toissa",
+                    value: -1
+                }, {
+                    name: "shift",
+                    src: "tänä|tämän",
+                    value: 0
+                }, {
+                    name: "shift",
+                    src: "seuraava|seuraavana|tuleva|tulevana|ensi",
+                    value: 1
+                } ],
+                dateParse: [ "{num} {unit} {sign}", "{sign} {num} {unit}", "{num} {unit=4-5} {sign} {day}", "{month} {year}", "{shift} {unit=5-7}" ],
+                timeParse: [ "{0} {num}{1} {day} of {month} {year?}", "{weekday?} {month} {date}{1} {year?}", "{date} {month} {year}", "{shift} {weekday}", "{shift} week {weekday}", "{weekday} {2} {shift} week", "{0} {date}{1} of {month}", "{0}{month?} {date?}{1} of {shift} {unit=6-7}" ]
             });
-            Date.addLocale('fr', {
-                'plural': true,
-                'months': 'janvier,f\xe9vrier|fevrier,mars,avril,mai,juin,juillet,ao\xfbt,septembre,octobre,novembre,d\xe9cembre|decembre',
-                'weekdays': 'dimanche,lundi,mardi,mercredi,jeudi,vendredi,samedi',
-                'units': 'milliseconde:|s,seconde:|s,minute:|s,heure:|s,jour:|s,semaine:|s,mois,an:|s|n\xe9e|nee',
-                'numbers': 'un:|e,deux,trois,quatre,cinq,six,sept,huit,neuf,dix',
-                'tokens': 'l\'|la|le',
-                'short': '{d} {month} {yyyy}',
-                'long': '{d} {month} {yyyy} {H}:{mm}',
-                'full': '{Weekday} {d} {month} {yyyy} {H}:{mm}:{ss}',
-                'past': '{sign} {num} {unit}',
-                'future': '{sign} {num} {unit}',
-                'duration': '{num} {unit}',
-                'timeMarker': '\xe0',
-                'ampm': 'am,pm',
-                'modifiers': [
-                    {
-                        'name': 'day',
-                        'src': 'hier',
-                        'value': -1
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'aujourd\'hui',
-                        'value': 0
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'demain',
-                        'value': 1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'il y a',
-                        'value': -1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'dans|d\'ici',
-                        'value': 1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'derni:\xe8r|er|\xe8re|ere',
-                        'value': -1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'prochain:|e',
-                        'value': 1
-                    }
-                ],
-                'dateParse': [
-                    '{sign} {num} {unit}',
-                    '{sign} {num} {unit}',
-                    '{0?} {unit=5-7} {shift}'
-                ],
-                'timeParse': [
-                    '{weekday?} {0?} {date?} {month} {year?}',
-                    '{0?} {weekday} {shift}'
-                ]
+            Date.addLocale("fr", {
+                plural: true,
+                months: "janvier,février|fevrier,mars,avril,mai,juin,juillet,août,septembre,octobre,novembre,décembre|decembre",
+                weekdays: "dimanche,lundi,mardi,mercredi,jeudi,vendredi,samedi",
+                units: "milliseconde:|s,seconde:|s,minute:|s,heure:|s,jour:|s,semaine:|s,mois,an:|s|née|nee",
+                numbers: "un:|e,deux,trois,quatre,cinq,six,sept,huit,neuf,dix",
+                tokens: "l'|la|le",
+                "short": "{d} {month} {yyyy}",
+                "long": "{d} {month} {yyyy} {H}:{mm}",
+                full: "{Weekday} {d} {month} {yyyy} {H}:{mm}:{ss}",
+                past: "{sign} {num} {unit}",
+                future: "{sign} {num} {unit}",
+                duration: "{num} {unit}",
+                timeMarker: "à",
+                ampm: "am,pm",
+                modifiers: [ {
+                    name: "day",
+                    src: "hier",
+                    value: -1
+                }, {
+                    name: "day",
+                    src: "aujourd'hui",
+                    value: 0
+                }, {
+                    name: "day",
+                    src: "demain",
+                    value: 1
+                }, {
+                    name: "sign",
+                    src: "il y a",
+                    value: -1
+                }, {
+                    name: "sign",
+                    src: "dans|d'ici",
+                    value: 1
+                }, {
+                    name: "shift",
+                    src: "derni:èr|er|ère|ere",
+                    value: -1
+                }, {
+                    name: "shift",
+                    src: "prochain:|e",
+                    value: 1
+                } ],
+                dateParse: [ "{sign} {num} {unit}", "{sign} {num} {unit}", "{0?} {unit=5-7} {shift}" ],
+                timeParse: [ "{weekday?} {0?} {date?} {month} {year?}", "{0?} {weekday} {shift}" ]
             });
-            Date.addLocale('it', {
-                'plural': true,
-                'months': 'Gennaio,Febbraio,Marzo,Aprile,Maggio,Giugno,Luglio,Agosto,Settembre,Ottobre,Novembre,Dicembre',
-                'weekdays': 'Domenica,Luned:\xec|i,Marted:\xec|i,Mercoled:\xec|i,Gioved:\xec|i,Venerd:\xec|i,Sabato',
-                'units': 'millisecond:o|i,second:o|i,minut:o|i,or:a|e,giorn:o|i,settiman:a|e,mes:e|i,ann:o|i',
-                'numbers': 'un:|a|o|\',due,tre,quattro,cinque,sei,sette,otto,nove,dieci',
-                'tokens': 'l\'|la|il',
-                'short': '{d} {Month} {yyyy}',
-                'long': '{d} {Month} {yyyy} {H}:{mm}',
-                'full': '{Weekday} {d} {Month} {yyyy} {H}:{mm}:{ss}',
-                'past': '{num} {unit} {sign}',
-                'future': '{num} {unit} {sign}',
-                'duration': '{num} {unit}',
-                'timeMarker': 'alle',
-                'ampm': 'am,pm',
-                'modifiers': [
-                    {
-                        'name': 'day',
-                        'src': 'ieri',
-                        'value': -1
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'oggi',
-                        'value': 0
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'domani',
-                        'value': 1
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'dopodomani',
-                        'value': 2
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'fa',
-                        'value': -1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'da adesso',
-                        'value': 1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'scors:o|a',
-                        'value': -1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'prossim:o|a',
-                        'value': 1
-                    }
-                ],
-                'dateParse': [
-                    '{num} {unit} {sign}',
-                    '{0?} {unit=5-7} {shift}',
-                    '{0?} {shift} {unit=5-7}'
-                ],
-                'timeParse': [
-                    '{weekday?} {date?} {month} {year?}',
-                    '{shift} {weekday}'
-                ]
+            Date.addLocale("it", {
+                plural: true,
+                months: "Gennaio,Febbraio,Marzo,Aprile,Maggio,Giugno,Luglio,Agosto,Settembre,Ottobre,Novembre,Dicembre",
+                weekdays: "Domenica,Luned:ì|i,Marted:ì|i,Mercoled:ì|i,Gioved:ì|i,Venerd:ì|i,Sabato",
+                units: "millisecond:o|i,second:o|i,minut:o|i,or:a|e,giorn:o|i,settiman:a|e,mes:e|i,ann:o|i",
+                numbers: "un:|a|o|',due,tre,quattro,cinque,sei,sette,otto,nove,dieci",
+                tokens: "l'|la|il",
+                "short": "{d} {Month} {yyyy}",
+                "long": "{d} {Month} {yyyy} {H}:{mm}",
+                full: "{Weekday} {d} {Month} {yyyy} {H}:{mm}:{ss}",
+                past: "{num} {unit} {sign}",
+                future: "{num} {unit} {sign}",
+                duration: "{num} {unit}",
+                timeMarker: "alle",
+                ampm: "am,pm",
+                modifiers: [ {
+                    name: "day",
+                    src: "ieri",
+                    value: -1
+                }, {
+                    name: "day",
+                    src: "oggi",
+                    value: 0
+                }, {
+                    name: "day",
+                    src: "domani",
+                    value: 1
+                }, {
+                    name: "day",
+                    src: "dopodomani",
+                    value: 2
+                }, {
+                    name: "sign",
+                    src: "fa",
+                    value: -1
+                }, {
+                    name: "sign",
+                    src: "da adesso",
+                    value: 1
+                }, {
+                    name: "shift",
+                    src: "scors:o|a",
+                    value: -1
+                }, {
+                    name: "shift",
+                    src: "prossim:o|a",
+                    value: 1
+                } ],
+                dateParse: [ "{num} {unit} {sign}", "{0?} {unit=5-7} {shift}", "{0?} {shift} {unit=5-7}" ],
+                timeParse: [ "{weekday?} {date?} {month} {year?}", "{shift} {weekday}" ]
             });
-            Date.addLocale('ja', {
-                'monthSuffix': '\u6708',
-                'weekdays': '\u65e5\u66dc\u65e5,\u6708\u66dc\u65e5,\u706b\u66dc\u65e5,\u6c34\u66dc\u65e5,\u6728\u66dc\u65e5,\u91d1\u66dc\u65e5,\u571f\u66dc\u65e5',
-                'units': '\u30df\u30ea\u79d2,\u79d2,\u5206,\u6642\u9593,\u65e5,\u9031\u9593|\u9031,\u30f6\u6708|\u30f5\u6708|\u6708,\u5e74',
-                'short': '{yyyy}\u5e74{M}\u6708{d}\u65e5',
-                'long': '{yyyy}\u5e74{M}\u6708{d}\u65e5 {H}\u6642{mm}\u5206',
-                'full': '{yyyy}\u5e74{M}\u6708{d}\u65e5 {Weekday} {H}\u6642{mm}\u5206{ss}\u79d2',
-                'past': '{num}{unit}{sign}',
-                'future': '{num}{unit}{sign}',
-                'duration': '{num}{unit}',
-                'timeSuffixes': '\u6642,\u5206,\u79d2',
-                'ampm': '\u5348\u524d,\u5348\u5f8c',
-                'modifiers': [
-                    {
-                        'name': 'day',
-                        'src': '\u4e00\u6628\u65e5',
-                        'value': -2
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\u6628\u65e5',
-                        'value': -1
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\u4eca\u65e5',
-                        'value': 0
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\u660e\u65e5',
-                        'value': 1
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\u660e\u5f8c\u65e5',
-                        'value': 2
-                    },
-                    {
-                        'name': 'sign',
-                        'src': '\u524d',
-                        'value': -1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': '\u5f8c',
-                        'value': 1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': '\u53bb|\u5148',
-                        'value': -1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': '\u6765',
-                        'value': 1
-                    }
-                ],
-                'dateParse': ['{num}{unit}{sign}'],
-                'timeParse': [
-                    '{shift}{unit=5-7}{weekday?}',
-                    '{year}\u5e74{month?}\u6708?{date?}\u65e5?',
-                    '{month}\u6708{date?}\u65e5?',
-                    '{date}\u65e5'
-                ]
+            Date.addLocale("ja", {
+                monthSuffix: "月",
+                weekdays: "日曜日,月曜日,火曜日,水曜日,木曜日,金曜日,土曜日",
+                units: "ミリ秒,秒,分,時間,日,週間|週,ヶ月|ヵ月|月,年",
+                "short": "{yyyy}年{M}月{d}日",
+                "long": "{yyyy}年{M}月{d}日 {H}時{mm}分",
+                full: "{yyyy}年{M}月{d}日 {Weekday} {H}時{mm}分{ss}秒",
+                past: "{num}{unit}{sign}",
+                future: "{num}{unit}{sign}",
+                duration: "{num}{unit}",
+                timeSuffixes: "時,分,秒",
+                ampm: "午前,午後",
+                modifiers: [ {
+                    name: "day",
+                    src: "一昨日",
+                    value: -2
+                }, {
+                    name: "day",
+                    src: "昨日",
+                    value: -1
+                }, {
+                    name: "day",
+                    src: "今日",
+                    value: 0
+                }, {
+                    name: "day",
+                    src: "明日",
+                    value: 1
+                }, {
+                    name: "day",
+                    src: "明後日",
+                    value: 2
+                }, {
+                    name: "sign",
+                    src: "前",
+                    value: -1
+                }, {
+                    name: "sign",
+                    src: "後",
+                    value: 1
+                }, {
+                    name: "shift",
+                    src: "去|先",
+                    value: -1
+                }, {
+                    name: "shift",
+                    src: "来",
+                    value: 1
+                } ],
+                dateParse: [ "{num}{unit}{sign}" ],
+                timeParse: [ "{shift}{unit=5-7}{weekday?}", "{year}年{month?}月?{date?}日?", "{month}月{date?}日?", "{date}日" ]
             });
-            Date.addLocale('ko', {
-                'digitDate': true,
-                'monthSuffix': '\uc6d4',
-                'weekdays': '\uc77c\uc694\uc77c,\uc6d4\uc694\uc77c,\ud654\uc694\uc77c,\uc218\uc694\uc77c,\ubaa9\uc694\uc77c,\uae08\uc694\uc77c,\ud1a0\uc694\uc77c',
-                'units': '\ubc00\ub9ac\ucd08,\ucd08,\ubd84,\uc2dc\uac04,\uc77c,\uc8fc,\uac1c\uc6d4|\ub2ec,\ub144',
-                'numbers': '\uc77c|\ud55c,\uc774,\uc0bc,\uc0ac,\uc624,\uc721,\uce60,\ud314,\uad6c,\uc2ed',
-                'short': '{yyyy}\ub144{M}\uc6d4{d}\uc77c',
-                'long': '{yyyy}\ub144{M}\uc6d4{d}\uc77c {H}\uc2dc{mm}\ubd84',
-                'full': '{yyyy}\ub144{M}\uc6d4{d}\uc77c {Weekday} {H}\uc2dc{mm}\ubd84{ss}\ucd08',
-                'past': '{num}{unit} {sign}',
-                'future': '{num}{unit} {sign}',
-                'duration': '{num}{unit}',
-                'timeSuffixes': '\uc2dc,\ubd84,\ucd08',
-                'ampm': '\uc624\uc804,\uc624\ud6c4',
-                'modifiers': [
-                    {
-                        'name': 'day',
-                        'src': '\uadf8\uc800\uaed8',
-                        'value': -2
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\uc5b4\uc81c',
-                        'value': -1
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\uc624\ub298',
-                        'value': 0
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\ub0b4\uc77c',
-                        'value': 1
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\ubaa8\ub808',
-                        'value': 2
-                    },
-                    {
-                        'name': 'sign',
-                        'src': '\uc804',
-                        'value': -1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': '\ud6c4',
-                        'value': 1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': '\uc9c0\ub09c|\uc791',
-                        'value': -1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': '\uc774\ubc88',
-                        'value': 0
-                    },
-                    {
-                        'name': 'shift',
-                        'src': '\ub2e4\uc74c|\ub0b4',
-                        'value': 1
-                    }
-                ],
-                'dateParse': [
-                    '{num}{unit} {sign}',
-                    '{shift?} {unit=5-7}'
-                ],
-                'timeParse': [
-                    '{shift} {unit=5?} {weekday}',
-                    '{year}\ub144{month?}\uc6d4?{date?}\uc77c?',
-                    '{month}\uc6d4{date?}\uc77c?',
-                    '{date}\uc77c'
-                ]
+            Date.addLocale("ko", {
+                digitDate: true,
+                monthSuffix: "월",
+                weekdays: "일요일,월요일,화요일,수요일,목요일,금요일,토요일",
+                units: "밀리초,초,분,시간,일,주,개월|달,년",
+                numbers: "일|한,이,삼,사,오,육,칠,팔,구,십",
+                "short": "{yyyy}년{M}월{d}일",
+                "long": "{yyyy}년{M}월{d}일 {H}시{mm}분",
+                full: "{yyyy}년{M}월{d}일 {Weekday} {H}시{mm}분{ss}초",
+                past: "{num}{unit} {sign}",
+                future: "{num}{unit} {sign}",
+                duration: "{num}{unit}",
+                timeSuffixes: "시,분,초",
+                ampm: "오전,오후",
+                modifiers: [ {
+                    name: "day",
+                    src: "그저께",
+                    value: -2
+                }, {
+                    name: "day",
+                    src: "어제",
+                    value: -1
+                }, {
+                    name: "day",
+                    src: "오늘",
+                    value: 0
+                }, {
+                    name: "day",
+                    src: "내일",
+                    value: 1
+                }, {
+                    name: "day",
+                    src: "모레",
+                    value: 2
+                }, {
+                    name: "sign",
+                    src: "전",
+                    value: -1
+                }, {
+                    name: "sign",
+                    src: "후",
+                    value: 1
+                }, {
+                    name: "shift",
+                    src: "지난|작",
+                    value: -1
+                }, {
+                    name: "shift",
+                    src: "이번",
+                    value: 0
+                }, {
+                    name: "shift",
+                    src: "다음|내",
+                    value: 1
+                } ],
+                dateParse: [ "{num}{unit} {sign}", "{shift?} {unit=5-7}" ],
+                timeParse: [ "{shift} {unit=5?} {weekday}", "{year}년{month?}월?{date?}일?", "{month}월{date?}일?", "{date}일" ]
             });
-            Date.addLocale('nl', {
-                'plural': true,
-                'months': 'januari,februari,maart,april,mei,juni,juli,augustus,september,oktober,november,december',
-                'weekdays': 'zondag|zo,maandag|ma,dinsdag|di,woensdag|woe|wo,donderdag|do,vrijdag|vrij|vr,zaterdag|za',
-                'units': 'milliseconde:|n,seconde:|n,minu:ut|ten,uur,dag:|en,we:ek|ken,maand:|en,jaar',
-                'numbers': 'een,twee,drie,vier,vijf,zes,zeven,acht,negen',
-                'tokens': '',
-                'short': '{d} {Month} {yyyy}',
-                'long': '{d} {Month} {yyyy} {H}:{mm}',
-                'full': '{Weekday} {d} {Month} {yyyy} {H}:{mm}:{ss}',
-                'past': '{num} {unit} {sign}',
-                'future': '{num} {unit} {sign}',
-                'duration': '{num} {unit}',
-                'timeMarker': '\'s|om',
-                'modifiers': [
-                    {
-                        'name': 'day',
-                        'src': 'gisteren',
-                        'value': -1
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'vandaag',
-                        'value': 0
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'morgen',
-                        'value': 1
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'overmorgen',
-                        'value': 2
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'geleden',
-                        'value': -1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'vanaf nu',
-                        'value': 1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'laatste|vorige|afgelopen',
-                        'value': -1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'volgend:|e',
-                        'value': 1
-                    }
-                ],
-                'dateParse': [
-                    '{num} {unit} {sign}',
-                    '{0?} {unit=5-7} {shift}',
-                    '{0?} {shift} {unit=5-7}'
-                ],
-                'timeParse': [
-                    '{weekday?} {date?} {month} {year?}',
-                    '{shift} {weekday}'
-                ]
+            Date.addLocale("nl", {
+                plural: true,
+                months: "januari,februari,maart,april,mei,juni,juli,augustus,september,oktober,november,december",
+                weekdays: "zondag|zo,maandag|ma,dinsdag|di,woensdag|woe|wo,donderdag|do,vrijdag|vrij|vr,zaterdag|za",
+                units: "milliseconde:|n,seconde:|n,minu:ut|ten,uur,dag:|en,we:ek|ken,maand:|en,jaar",
+                numbers: "een,twee,drie,vier,vijf,zes,zeven,acht,negen",
+                tokens: "",
+                "short": "{d} {Month} {yyyy}",
+                "long": "{d} {Month} {yyyy} {H}:{mm}",
+                full: "{Weekday} {d} {Month} {yyyy} {H}:{mm}:{ss}",
+                past: "{num} {unit} {sign}",
+                future: "{num} {unit} {sign}",
+                duration: "{num} {unit}",
+                timeMarker: "'s|om",
+                modifiers: [ {
+                    name: "day",
+                    src: "gisteren",
+                    value: -1
+                }, {
+                    name: "day",
+                    src: "vandaag",
+                    value: 0
+                }, {
+                    name: "day",
+                    src: "morgen",
+                    value: 1
+                }, {
+                    name: "day",
+                    src: "overmorgen",
+                    value: 2
+                }, {
+                    name: "sign",
+                    src: "geleden",
+                    value: -1
+                }, {
+                    name: "sign",
+                    src: "vanaf nu",
+                    value: 1
+                }, {
+                    name: "shift",
+                    src: "laatste|vorige|afgelopen",
+                    value: -1
+                }, {
+                    name: "shift",
+                    src: "volgend:|e",
+                    value: 1
+                } ],
+                dateParse: [ "{num} {unit} {sign}", "{0?} {unit=5-7} {shift}", "{0?} {shift} {unit=5-7}" ],
+                timeParse: [ "{weekday?} {date?} {month} {year?}", "{shift} {weekday}" ]
             });
-            Date.addLocale('pl', {
-                'plural': true,
-                'months': 'Stycze\u0144|Stycznia,Luty|Lutego,Marzec|Marca,Kwiecie\u0144|Kwietnia,Maj|Maja,Czerwiec|Czerwca,Lipiec|Lipca,Sierpie\u0144|Sierpnia,Wrzesie\u0144|Wrze\u015bnia,Pa\u017adziernik|Pa\u017adziernika,Listopad|Listopada,Grudzie\u0144|Grudnia',
-                'weekdays': 'Niedziela|Niedziel\u0119,Poniedzia\u0142ek,Wtorek,\u015arod:a|\u0119,Czwartek,Pi\u0105tek,Sobota|Sobot\u0119',
-                'units': 'milisekund:a|y|,sekund:a|y|,minut:a|y|,godzin:a|y|,dzie\u0144|dni,tydzie\u0144|tygodnie|tygodni,miesi\u0105ce|miesi\u0105ce|miesi\u0119cy,rok|lata|lat',
-                'numbers': 'jeden|jedn\u0105,dwa|dwie,trzy,cztery,pi\u0119\u0107,sze\u015b\u0107,siedem,osiem,dziewi\u0119\u0107,dziesi\u0119\u0107',
-                'optionals': 'w|we,roku',
-                'short': '{d} {Month} {yyyy}',
-                'long': '{d} {Month} {yyyy} {H}:{mm}',
-                'full': '{Weekday}, {d} {Month} {yyyy} {H}:{mm}:{ss}',
-                'past': '{num} {unit} {sign}',
-                'future': '{sign} {num} {unit}',
-                'duration': '{num} {unit}',
-                'timeMarker': 'o',
-                'ampm': 'am,pm',
-                'modifiers': [
-                    {
-                        'name': 'day',
-                        'src': 'przedwczoraj',
-                        'value': -2
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'wczoraj',
-                        'value': -1
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'dzisiaj|dzi\u015b',
-                        'value': 0
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'jutro',
-                        'value': 1
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'pojutrze',
-                        'value': 2
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'temu|przed',
-                        'value': -1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'za',
-                        'value': 1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'zesz\u0142y|zesz\u0142a|ostatni|ostatnia',
-                        'value': -1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'nast\u0119pny|nast\u0119pna|nast\u0119pnego|przysz\u0142y|przysz\u0142a|przysz\u0142ego',
-                        'value': 1
-                    }
-                ],
-                'dateParse': [
-                    '{num} {unit} {sign}',
-                    '{sign} {num} {unit}',
-                    '{month} {year}',
-                    '{shift} {unit=5-7}',
-                    '{0} {shift?} {weekday}'
-                ],
-                'timeParse': [
-                    '{date} {month} {year?} {1}',
-                    '{0} {shift?} {weekday}'
-                ]
+            Date.addLocale("pl", {
+                plural: true,
+                months: "Styczeń|Stycznia,Luty|Lutego,Marzec|Marca,Kwiecień|Kwietnia,Maj|Maja,Czerwiec|Czerwca,Lipiec|Lipca,Sierpień|Sierpnia,Wrzesień|Września,Październik|Października,Listopad|Listopada,Grudzień|Grudnia",
+                weekdays: "Niedziela|Niedzielę,Poniedziałek,Wtorek,Środ:a|ę,Czwartek,Piątek,Sobota|Sobotę",
+                units: "milisekund:a|y|,sekund:a|y|,minut:a|y|,godzin:a|y|,dzień|dni,tydzień|tygodnie|tygodni,miesiące|miesiące|miesięcy,rok|lata|lat",
+                numbers: "jeden|jedną,dwa|dwie,trzy,cztery,pięć,sześć,siedem,osiem,dziewięć,dziesięć",
+                optionals: "w|we,roku",
+                "short": "{d} {Month} {yyyy}",
+                "long": "{d} {Month} {yyyy} {H}:{mm}",
+                full: "{Weekday}, {d} {Month} {yyyy} {H}:{mm}:{ss}",
+                past: "{num} {unit} {sign}",
+                future: "{sign} {num} {unit}",
+                duration: "{num} {unit}",
+                timeMarker: "o",
+                ampm: "am,pm",
+                modifiers: [ {
+                    name: "day",
+                    src: "przedwczoraj",
+                    value: -2
+                }, {
+                    name: "day",
+                    src: "wczoraj",
+                    value: -1
+                }, {
+                    name: "day",
+                    src: "dzisiaj|dziś",
+                    value: 0
+                }, {
+                    name: "day",
+                    src: "jutro",
+                    value: 1
+                }, {
+                    name: "day",
+                    src: "pojutrze",
+                    value: 2
+                }, {
+                    name: "sign",
+                    src: "temu|przed",
+                    value: -1
+                }, {
+                    name: "sign",
+                    src: "za",
+                    value: 1
+                }, {
+                    name: "shift",
+                    src: "zeszły|zeszła|ostatni|ostatnia",
+                    value: -1
+                }, {
+                    name: "shift",
+                    src: "następny|następna|następnego|przyszły|przyszła|przyszłego",
+                    value: 1
+                } ],
+                dateParse: [ "{num} {unit} {sign}", "{sign} {num} {unit}", "{month} {year}", "{shift} {unit=5-7}", "{0} {shift?} {weekday}" ],
+                timeParse: [ "{date} {month} {year?} {1}", "{0} {shift?} {weekday}" ]
             });
-            Date.addLocale('pt', {
-                'plural': true,
-                'months': 'janeiro,fevereiro,mar\xe7o,abril,maio,junho,julho,agosto,setembro,outubro,novembro,dezembro',
-                'weekdays': 'domingo,segunda-feira,ter\xe7a-feira,quarta-feira,quinta-feira,sexta-feira,s\xe1bado|sabado',
-                'units': 'milisegundo:|s,segundo:|s,minuto:|s,hora:|s,dia:|s,semana:|s,m\xeas|m\xeases|mes|meses,ano:|s',
-                'numbers': 'um,dois,tr\xeas|tres,quatro,cinco,seis,sete,oito,nove,dez,uma,duas',
-                'tokens': 'a,de',
-                'short': '{d} de {month} de {yyyy}',
-                'long': '{d} de {month} de {yyyy} {H}:{mm}',
-                'full': '{Weekday}, {d} de {month} de {yyyy} {H}:{mm}:{ss}',
-                'past': '{num} {unit} {sign}',
-                'future': '{sign} {num} {unit}',
-                'duration': '{num} {unit}',
-                'timeMarker': '\xe0s',
-                'ampm': 'am,pm',
-                'modifiers': [
-                    {
-                        'name': 'day',
-                        'src': 'anteontem',
-                        'value': -2
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'ontem',
-                        'value': -1
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'hoje',
-                        'value': 0
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'amanh:\xe3|a',
-                        'value': 1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'atr\xe1s|atras|h\xe1|ha',
-                        'value': -1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'daqui a',
-                        'value': 1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'passad:o|a',
-                        'value': -1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'pr\xf3ximo|pr\xf3xima|proximo|proxima',
-                        'value': 1
-                    }
-                ],
-                'dateParse': [
-                    '{num} {unit} {sign}',
-                    '{sign} {num} {unit}',
-                    '{0?} {unit=5-7} {shift}',
-                    '{0?} {shift} {unit=5-7}'
-                ],
-                'timeParse': [
-                    '{date?} {1?} {month} {1?} {year?}',
-                    '{0?} {shift} {weekday}'
-                ]
+            Date.addLocale("pt", {
+                plural: true,
+                months: "janeiro,fevereiro,março,abril,maio,junho,julho,agosto,setembro,outubro,novembro,dezembro",
+                weekdays: "domingo,segunda-feira,terça-feira,quarta-feira,quinta-feira,sexta-feira,sábado|sabado",
+                units: "milisegundo:|s,segundo:|s,minuto:|s,hora:|s,dia:|s,semana:|s,mês|mêses|mes|meses,ano:|s",
+                numbers: "um,dois,três|tres,quatro,cinco,seis,sete,oito,nove,dez,uma,duas",
+                tokens: "a,de",
+                "short": "{d} de {month} de {yyyy}",
+                "long": "{d} de {month} de {yyyy} {H}:{mm}",
+                full: "{Weekday}, {d} de {month} de {yyyy} {H}:{mm}:{ss}",
+                past: "{num} {unit} {sign}",
+                future: "{sign} {num} {unit}",
+                duration: "{num} {unit}",
+                timeMarker: "às",
+                ampm: "am,pm",
+                modifiers: [ {
+                    name: "day",
+                    src: "anteontem",
+                    value: -2
+                }, {
+                    name: "day",
+                    src: "ontem",
+                    value: -1
+                }, {
+                    name: "day",
+                    src: "hoje",
+                    value: 0
+                }, {
+                    name: "day",
+                    src: "amanh:ã|a",
+                    value: 1
+                }, {
+                    name: "sign",
+                    src: "atrás|atras|há|ha",
+                    value: -1
+                }, {
+                    name: "sign",
+                    src: "daqui a",
+                    value: 1
+                }, {
+                    name: "shift",
+                    src: "passad:o|a",
+                    value: -1
+                }, {
+                    name: "shift",
+                    src: "próximo|próxima|proximo|proxima",
+                    value: 1
+                } ],
+                dateParse: [ "{num} {unit} {sign}", "{sign} {num} {unit}", "{0?} {unit=5-7} {shift}", "{0?} {shift} {unit=5-7}" ],
+                timeParse: [ "{date?} {1?} {month} {1?} {year?}", "{0?} {shift} {weekday}" ]
             });
-            Date.addLocale('ru', {
-                'months': '\u042f\u043d\u0432\u0430\u0440:\u044f|\u044c,\u0424\u0435\u0432\u0440\u0430\u043b:\u044f|\u044c,\u041c\u0430\u0440\u0442:\u0430|,\u0410\u043f\u0440\u0435\u043b:\u044f|\u044c,\u041c\u0430:\u044f|\u0439,\u0418\u044e\u043d:\u044f|\u044c,\u0418\u044e\u043b:\u044f|\u044c,\u0410\u0432\u0433\u0443\u0441\u0442:\u0430|,\u0421\u0435\u043d\u0442\u044f\u0431\u0440:\u044f|\u044c,\u041e\u043a\u0442\u044f\u0431\u0440:\u044f|\u044c,\u041d\u043e\u044f\u0431\u0440:\u044f|\u044c,\u0414\u0435\u043a\u0430\u0431\u0440:\u044f|\u044c',
-                'weekdays': '\u0412\u043e\u0441\u043a\u0440\u0435\u0441\u0435\u043d\u044c\u0435,\u041f\u043e\u043d\u0435\u0434\u0435\u043b\u044c\u043d\u0438\u043a,\u0412\u0442\u043e\u0440\u043d\u0438\u043a,\u0421\u0440\u0435\u0434\u0430,\u0427\u0435\u0442\u0432\u0435\u0440\u0433,\u041f\u044f\u0442\u043d\u0438\u0446\u0430,\u0421\u0443\u0431\u0431\u043e\u0442\u0430',
-                'units': '\u043c\u0438\u043b\u043b\u0438\u0441\u0435\u043a\u0443\u043d\u0434:\u0430|\u0443|\u044b|,\u0441\u0435\u043a\u0443\u043d\u0434:\u0430|\u0443|\u044b|,\u043c\u0438\u043d\u0443\u0442:\u0430|\u0443|\u044b|,\u0447\u0430\u0441:||\u0430|\u043e\u0432,\u0434\u0435\u043d\u044c|\u0434\u0435\u043d\u044c|\u0434\u043d\u044f|\u0434\u043d\u0435\u0439,\u043d\u0435\u0434\u0435\u043b:\u044f|\u044e|\u0438|\u044c|\u0435,\u043c\u0435\u0441\u044f\u0446:||\u0430|\u0435\u0432|\u0435,\u0433\u043e\u0434|\u0433\u043e\u0434|\u0433\u043e\u0434\u0430|\u043b\u0435\u0442|\u0433\u043e\u0434\u0443',
-                'numbers': '\u043e\u0434:\u0438\u043d|\u043d\u0443,\u0434\u0432:\u0430|\u0435,\u0442\u0440\u0438,\u0447\u0435\u0442\u044b\u0440\u0435,\u043f\u044f\u0442\u044c,\u0448\u0435\u0441\u0442\u044c,\u0441\u0435\u043c\u044c,\u0432\u043e\u0441\u0435\u043c\u044c,\u0434\u0435\u0432\u044f\u0442\u044c,\u0434\u0435\u0441\u044f\u0442\u044c',
-                'tokens': '\u0432|\u043d\u0430,\u0433\u043e\u0434\u0430',
-                'short': '{d} {month} {yyyy} \u0433\u043e\u0434\u0430',
-                'long': '{d} {month} {yyyy} \u0433\u043e\u0434\u0430 {H}:{mm}',
-                'full': '{Weekday} {d} {month} {yyyy} \u0433\u043e\u0434\u0430 {H}:{mm}:{ss}',
-                'relative': function (num, unit, ms, format) {
+            Date.addLocale("ru", {
+                months: "Январ:я|ь,Феврал:я|ь,Март:а|,Апрел:я|ь,Ма:я|й,Июн:я|ь,Июл:я|ь,Август:а|,Сентябр:я|ь,Октябр:я|ь,Ноябр:я|ь,Декабр:я|ь",
+                weekdays: "Воскресенье,Понедельник,Вторник,Среда,Четверг,Пятница,Суббота",
+                units: "миллисекунд:а|у|ы|,секунд:а|у|ы|,минут:а|у|ы|,час:||а|ов,день|день|дня|дней,недел:я|ю|и|ь|е,месяц:||а|ев|е,год|год|года|лет|году",
+                numbers: "од:ин|ну,дв:а|е,три,четыре,пять,шесть,семь,восемь,девять,десять",
+                tokens: "в|на,года",
+                "short": "{d} {month} {yyyy} года",
+                "long": "{d} {month} {yyyy} года {H}:{mm}",
+                full: "{Weekday} {d} {month} {yyyy} года {H}:{mm}:{ss}",
+                relative: function(num, unit, ms, format) {
                     var numberWithUnit, last = num.toString().slice(-1), mult;
                     switch (true) {
-                    case num >= 11 && num <= 15:
+                      case num >= 11 && num <= 15:
                         mult = 3;
                         break;
-                    case last == 1:
+
+                      case last == 1:
                         mult = 1;
                         break;
-                    case last >= 2 && last <= 4:
+
+                      case last >= 2 && last <= 4:
                         mult = 2;
                         break;
-                    default:
+
+                      default:
                         mult = 3;
                     }
-                    numberWithUnit = num + ' ' + this['units'][mult * 8 + unit];
+                    numberWithUnit = num + " " + this["units"][mult * 8 + unit];
                     switch (format) {
-                    case 'duration':
+                      case "duration":
                         return numberWithUnit;
-                    case 'past':
-                        return numberWithUnit + ' \u043d\u0430\u0437\u0430\u0434';
-                    case 'future':
-                        return '\u0447\u0435\u0440\u0435\u0437 ' + numberWithUnit;
+
+                      case "past":
+                        return numberWithUnit + " назад";
+
+                      case "future":
+                        return "через " + numberWithUnit;
                     }
                 },
-                'timeMarker': '\u0432',
-                'ampm': ' \u0443\u0442\u0440\u0430, \u0432\u0435\u0447\u0435\u0440\u0430',
-                'modifiers': [
-                    {
-                        'name': 'day',
-                        'src': '\u043f\u043e\u0437\u0430\u0432\u0447\u0435\u0440\u0430',
-                        'value': -2
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\u0432\u0447\u0435\u0440\u0430',
-                        'value': -1
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\u0441\u0435\u0433\u043e\u0434\u043d\u044f',
-                        'value': 0
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\u0437\u0430\u0432\u0442\u0440\u0430',
-                        'value': 1
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\u043f\u043e\u0441\u043b\u0435\u0437\u0430\u0432\u0442\u0440\u0430',
-                        'value': 2
-                    },
-                    {
-                        'name': 'sign',
-                        'src': '\u043d\u0430\u0437\u0430\u0434',
-                        'value': -1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': '\u0447\u0435\u0440\u0435\u0437',
-                        'value': 1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': '\u043f\u0440\u043e\u0448\u043b:\u044b\u0439|\u043e\u0439|\u043e\u043c',
-                        'value': -1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': '\u0441\u043b\u0435\u0434\u0443\u044e\u0449:\u0438\u0439|\u0435\u0439|\u0435\u043c',
-                        'value': 1
-                    }
-                ],
-                'dateParse': [
-                    '{num} {unit} {sign}',
-                    '{sign} {num} {unit}',
-                    '{month} {year}',
-                    '{0?} {shift} {unit=5-7}'
-                ],
-                'timeParse': [
-                    '{date} {month} {year?} {1?}',
-                    '{0?} {shift} {weekday}'
-                ]
+                timeMarker: "в",
+                ampm: " утра, вечера",
+                modifiers: [ {
+                    name: "day",
+                    src: "позавчера",
+                    value: -2
+                }, {
+                    name: "day",
+                    src: "вчера",
+                    value: -1
+                }, {
+                    name: "day",
+                    src: "сегодня",
+                    value: 0
+                }, {
+                    name: "day",
+                    src: "завтра",
+                    value: 1
+                }, {
+                    name: "day",
+                    src: "послезавтра",
+                    value: 2
+                }, {
+                    name: "sign",
+                    src: "назад",
+                    value: -1
+                }, {
+                    name: "sign",
+                    src: "через",
+                    value: 1
+                }, {
+                    name: "shift",
+                    src: "прошл:ый|ой|ом",
+                    value: -1
+                }, {
+                    name: "shift",
+                    src: "следующ:ий|ей|ем",
+                    value: 1
+                } ],
+                dateParse: [ "{num} {unit} {sign}", "{sign} {num} {unit}", "{month} {year}", "{0?} {shift} {unit=5-7}" ],
+                timeParse: [ "{date} {month} {year?} {1?}", "{0?} {shift} {weekday}" ]
             });
-            Date.addLocale('sv', {
-                'plural': true,
-                'months': 'januari,februari,mars,april,maj,juni,juli,augusti,september,oktober,november,december',
-                'weekdays': 's\xf6ndag|sondag,m\xe5ndag:|en+mandag:|en,tisdag,onsdag,torsdag,fredag,l\xf6rdag|lordag',
-                'units': 'millisekund:|er,sekund:|er,minut:|er,timm:e|ar,dag:|ar,veck:a|or|an,m\xe5nad:|er|en+manad:|er|en,\xe5r:||et+ar:||et',
-                'numbers': 'en|ett,tv\xe5|tva,tre,fyra,fem,sex,sju,\xe5tta|atta,nio,tio',
-                'tokens': 'den,f\xf6r|for',
-                'articles': 'den',
-                'short': 'den {d} {month} {yyyy}',
-                'long': 'den {d} {month} {yyyy} {H}:{mm}',
-                'full': '{Weekday} den {d} {month} {yyyy} {H}:{mm}:{ss}',
-                'past': '{num} {unit} {sign}',
-                'future': '{sign} {num} {unit}',
-                'duration': '{num} {unit}',
-                'ampm': 'am,pm',
-                'modifiers': [
-                    {
-                        'name': 'day',
-                        'src': 'f\xf6rrg\xe5r|i f\xf6rrg\xe5r|if\xf6rrg\xe5r|forrgar|i forrgar|iforrgar',
-                        'value': -2
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'g\xe5r|i g\xe5r|ig\xe5r|gar|i gar|igar',
-                        'value': -1
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'dag|i dag|idag',
-                        'value': 0
-                    },
-                    {
-                        'name': 'day',
-                        'src': 'morgon|i morgon|imorgon',
-                        'value': 1
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\xf6ver morgon|\xf6vermorgon|i \xf6ver morgon|i \xf6vermorgon|i\xf6vermorgon|over morgon|overmorgon|i over morgon|i overmorgon|iovermorgon',
-                        'value': 2
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'sedan|sen',
-                        'value': -1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': 'om',
-                        'value': 1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'i f\xf6rra|f\xf6rra|i forra|forra',
-                        'value': -1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'denna',
-                        'value': 0
-                    },
-                    {
-                        'name': 'shift',
-                        'src': 'n\xe4sta|nasta',
-                        'value': 1
-                    }
-                ],
-                'dateParse': [
-                    '{num} {unit} {sign}',
-                    '{sign} {num} {unit}',
-                    '{1?} {num} {unit} {sign}',
-                    '{shift} {unit=5-7}'
-                ],
-                'timeParse': [
-                    '{0?} {weekday?} {date?} {month} {year}',
-                    '{date} {month}',
-                    '{shift} {weekday}'
-                ]
+            Date.addLocale("sv", {
+                plural: true,
+                months: "januari,februari,mars,april,maj,juni,juli,augusti,september,oktober,november,december",
+                weekdays: "söndag|sondag,måndag:|en+mandag:|en,tisdag,onsdag,torsdag,fredag,lördag|lordag",
+                units: "millisekund:|er,sekund:|er,minut:|er,timm:e|ar,dag:|ar,veck:a|or|an,månad:|er|en+manad:|er|en,år:||et+ar:||et",
+                numbers: "en|ett,två|tva,tre,fyra,fem,sex,sju,åtta|atta,nio,tio",
+                tokens: "den,för|for",
+                articles: "den",
+                "short": "den {d} {month} {yyyy}",
+                "long": "den {d} {month} {yyyy} {H}:{mm}",
+                full: "{Weekday} den {d} {month} {yyyy} {H}:{mm}:{ss}",
+                past: "{num} {unit} {sign}",
+                future: "{sign} {num} {unit}",
+                duration: "{num} {unit}",
+                ampm: "am,pm",
+                modifiers: [ {
+                    name: "day",
+                    src: "förrgår|i förrgår|iförrgår|forrgar|i forrgar|iforrgar",
+                    value: -2
+                }, {
+                    name: "day",
+                    src: "går|i går|igår|gar|i gar|igar",
+                    value: -1
+                }, {
+                    name: "day",
+                    src: "dag|i dag|idag",
+                    value: 0
+                }, {
+                    name: "day",
+                    src: "morgon|i morgon|imorgon",
+                    value: 1
+                }, {
+                    name: "day",
+                    src: "över morgon|övermorgon|i över morgon|i övermorgon|iövermorgon|over morgon|overmorgon|i over morgon|i overmorgon|iovermorgon",
+                    value: 2
+                }, {
+                    name: "sign",
+                    src: "sedan|sen",
+                    value: -1
+                }, {
+                    name: "sign",
+                    src: "om",
+                    value: 1
+                }, {
+                    name: "shift",
+                    src: "i förra|förra|i forra|forra",
+                    value: -1
+                }, {
+                    name: "shift",
+                    src: "denna",
+                    value: 0
+                }, {
+                    name: "shift",
+                    src: "nästa|nasta",
+                    value: 1
+                } ],
+                dateParse: [ "{num} {unit} {sign}", "{sign} {num} {unit}", "{1?} {num} {unit} {sign}", "{shift} {unit=5-7}" ],
+                timeParse: [ "{0?} {weekday?} {date?} {month} {year}", "{date} {month}", "{shift} {weekday}" ]
             });
-            Date.addLocale('zh-CN', {
-                'variant': true,
-                'monthSuffix': '\u6708',
-                'weekdays': '\u661f\u671f\u65e5|\u5468\u65e5,\u661f\u671f\u4e00|\u5468\u4e00,\u661f\u671f\u4e8c|\u5468\u4e8c,\u661f\u671f\u4e09|\u5468\u4e09,\u661f\u671f\u56db|\u5468\u56db,\u661f\u671f\u4e94|\u5468\u4e94,\u661f\u671f\u516d|\u5468\u516d',
-                'units': '\u6beb\u79d2,\u79d2\u949f,\u5206\u949f,\u5c0f\u65f6,\u5929,\u4e2a\u661f\u671f|\u5468,\u4e2a\u6708,\u5e74',
-                'tokens': '\u65e5|\u53f7',
-                'short': '{yyyy}\u5e74{M}\u6708{d}\u65e5',
-                'long': '{yyyy}\u5e74{M}\u6708{d}\u65e5 {tt}{h}:{mm}',
-                'full': '{yyyy}\u5e74{M}\u6708{d}\u65e5 {weekday} {tt}{h}:{mm}:{ss}',
-                'past': '{num}{unit}{sign}',
-                'future': '{num}{unit}{sign}',
-                'duration': '{num}{unit}',
-                'timeSuffixes': '\u70b9|\u65f6,\u5206\u949f?,\u79d2',
-                'ampm': '\u4e0a\u5348,\u4e0b\u5348',
-                'modifiers': [
-                    {
-                        'name': 'day',
-                        'src': '\u524d\u5929',
-                        'value': -2
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\u6628\u5929',
-                        'value': -1
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\u4eca\u5929',
-                        'value': 0
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\u660e\u5929',
-                        'value': 1
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\u540e\u5929',
-                        'value': 2
-                    },
-                    {
-                        'name': 'sign',
-                        'src': '\u524d',
-                        'value': -1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': '\u540e',
-                        'value': 1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': '\u4e0a|\u53bb',
-                        'value': -1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': '\u8fd9',
-                        'value': 0
-                    },
-                    {
-                        'name': 'shift',
-                        'src': '\u4e0b|\u660e',
-                        'value': 1
-                    }
-                ],
-                'dateParse': [
-                    '{num}{unit}{sign}',
-                    '{shift}{unit=5-7}'
-                ],
-                'timeParse': [
-                    '{shift}{weekday}',
-                    '{year}\u5e74{month?}\u6708?{date?}{0?}',
-                    '{month}\u6708{date?}{0?}',
-                    '{date}[\u65e5\u53f7]'
-                ]
+            Date.addLocale("zh-CN", {
+                variant: true,
+                monthSuffix: "月",
+                weekdays: "星期日|周日,星期一|周一,星期二|周二,星期三|周三,星期四|周四,星期五|周五,星期六|周六",
+                units: "毫秒,秒钟,分钟,小时,天,个星期|周,个月,年",
+                tokens: "日|号",
+                "short": "{yyyy}年{M}月{d}日",
+                "long": "{yyyy}年{M}月{d}日 {tt}{h}:{mm}",
+                full: "{yyyy}年{M}月{d}日 {weekday} {tt}{h}:{mm}:{ss}",
+                past: "{num}{unit}{sign}",
+                future: "{num}{unit}{sign}",
+                duration: "{num}{unit}",
+                timeSuffixes: "点|时,分钟?,秒",
+                ampm: "上午,下午",
+                modifiers: [ {
+                    name: "day",
+                    src: "前天",
+                    value: -2
+                }, {
+                    name: "day",
+                    src: "昨天",
+                    value: -1
+                }, {
+                    name: "day",
+                    src: "今天",
+                    value: 0
+                }, {
+                    name: "day",
+                    src: "明天",
+                    value: 1
+                }, {
+                    name: "day",
+                    src: "后天",
+                    value: 2
+                }, {
+                    name: "sign",
+                    src: "前",
+                    value: -1
+                }, {
+                    name: "sign",
+                    src: "后",
+                    value: 1
+                }, {
+                    name: "shift",
+                    src: "上|去",
+                    value: -1
+                }, {
+                    name: "shift",
+                    src: "这",
+                    value: 0
+                }, {
+                    name: "shift",
+                    src: "下|明",
+                    value: 1
+                } ],
+                dateParse: [ "{num}{unit}{sign}", "{shift}{unit=5-7}" ],
+                timeParse: [ "{shift}{weekday}", "{year}年{month?}月?{date?}{0?}", "{month}月{date?}{0?}", "{date}[日号]" ]
             });
-            Date.addLocale('zh-TW', {
-                'monthSuffix': '\u6708',
-                'weekdays': '\u661f\u671f\u65e5|\u9031\u65e5,\u661f\u671f\u4e00|\u9031\u4e00,\u661f\u671f\u4e8c|\u9031\u4e8c,\u661f\u671f\u4e09|\u9031\u4e09,\u661f\u671f\u56db|\u9031\u56db,\u661f\u671f\u4e94|\u9031\u4e94,\u661f\u671f\u516d|\u9031\u516d',
-                'units': '\u6beb\u79d2,\u79d2\u9418,\u5206\u9418,\u5c0f\u6642,\u5929,\u500b\u661f\u671f|\u9031,\u500b\u6708,\u5e74',
-                'tokens': '\u65e5|\u865f',
-                'short': '{yyyy}\u5e74{M}\u6708{d}\u65e5',
-                'long': '{yyyy}\u5e74{M}\u6708{d}\u65e5 {tt}{h}:{mm}',
-                'full': '{yyyy}\u5e74{M}\u6708{d}\u65e5 {Weekday} {tt}{h}:{mm}:{ss}',
-                'past': '{num}{unit}{sign}',
-                'future': '{num}{unit}{sign}',
-                'duration': '{num}{unit}',
-                'timeSuffixes': '\u9ede|\u6642,\u5206\u9418?,\u79d2',
-                'ampm': '\u4e0a\u5348,\u4e0b\u5348',
-                'modifiers': [
-                    {
-                        'name': 'day',
-                        'src': '\u524d\u5929',
-                        'value': -2
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\u6628\u5929',
-                        'value': -1
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\u4eca\u5929',
-                        'value': 0
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\u660e\u5929',
-                        'value': 1
-                    },
-                    {
-                        'name': 'day',
-                        'src': '\u5f8c\u5929',
-                        'value': 2
-                    },
-                    {
-                        'name': 'sign',
-                        'src': '\u524d',
-                        'value': -1
-                    },
-                    {
-                        'name': 'sign',
-                        'src': '\u5f8c',
-                        'value': 1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': '\u4e0a|\u53bb',
-                        'value': -1
-                    },
-                    {
-                        'name': 'shift',
-                        'src': '\u9019',
-                        'value': 0
-                    },
-                    {
-                        'name': 'shift',
-                        'src': '\u4e0b|\u660e',
-                        'value': 1
-                    }
-                ],
-                'dateParse': [
-                    '{num}{unit}{sign}',
-                    '{shift}{unit=5-7}'
-                ],
-                'timeParse': [
-                    '{shift}{weekday}',
-                    '{year}\u5e74{month?}\u6708?{date?}{0?}',
-                    '{month}\u6708{date?}{0?}',
-                    '{date}[\u65e5\u865f]'
-                ]
+            Date.addLocale("zh-TW", {
+                monthSuffix: "月",
+                weekdays: "星期日|週日,星期一|週一,星期二|週二,星期三|週三,星期四|週四,星期五|週五,星期六|週六",
+                units: "毫秒,秒鐘,分鐘,小時,天,個星期|週,個月,年",
+                tokens: "日|號",
+                "short": "{yyyy}年{M}月{d}日",
+                "long": "{yyyy}年{M}月{d}日 {tt}{h}:{mm}",
+                full: "{yyyy}年{M}月{d}日 {Weekday} {tt}{h}:{mm}:{ss}",
+                past: "{num}{unit}{sign}",
+                future: "{num}{unit}{sign}",
+                duration: "{num}{unit}",
+                timeSuffixes: "點|時,分鐘?,秒",
+                ampm: "上午,下午",
+                modifiers: [ {
+                    name: "day",
+                    src: "前天",
+                    value: -2
+                }, {
+                    name: "day",
+                    src: "昨天",
+                    value: -1
+                }, {
+                    name: "day",
+                    src: "今天",
+                    value: 0
+                }, {
+                    name: "day",
+                    src: "明天",
+                    value: 1
+                }, {
+                    name: "day",
+                    src: "後天",
+                    value: 2
+                }, {
+                    name: "sign",
+                    src: "前",
+                    value: -1
+                }, {
+                    name: "sign",
+                    src: "後",
+                    value: 1
+                }, {
+                    name: "shift",
+                    src: "上|去",
+                    value: -1
+                }, {
+                    name: "shift",
+                    src: "這",
+                    value: 0
+                }, {
+                    name: "shift",
+                    src: "下|明",
+                    value: 1
+                } ],
+                dateParse: [ "{num}{unit}{sign}", "{shift}{unit=5-7}" ],
+                timeParse: [ "{shift}{weekday}", "{year}年{month?}月?{date?}{0?}", "{month}月{date?}{0?}", "{date}[日號]" ]
             });
-        }());
+        }).call(this);
     });
-    require('/src\\wowboardhelpers.ls');
-}.call(this, this));
+    require("/src/wowboardhelpers.ls");
+}).call(this, this);
