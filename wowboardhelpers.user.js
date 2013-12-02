@@ -1467,9 +1467,9 @@
         if ("Menu" in w) {
             old = w.Menu.show;
             w.Menu.show = function(arg$, arg1$, options) {
-                var ref$, key$, x, ref1$;
+                var ref$, key$, ref1$;
                 options == null && (options = {});
-                (ref$ = w.Menu.dataIndex)[key$ = x = (ref1$ = options.set) != null ? ref1$ : "base"] == null && (ref$[key$] = []);
+                (ref$ = w.Menu.dataIndex)[key$ = (ref1$ = options.set) != null ? ref1$ : "base"] == null && (ref$[key$] = []);
                 return old.apply(this, arguments);
             };
         }
@@ -1633,7 +1633,7 @@ tr:not(.stickied) a[data-tooltip] {\
   font-weight: bold;\
 }\
 #account-characters .see-messages {\
-  background-image: url("http://eu.battle.net/wow/static/images/icons/context.gif");\
+  background-image: url(\"http://eu.battle.net/wow/static/images/icons/context.gif\");\
   background-position: 0 -30px;\
   display: inline-block;\
   margin-bottom: -10px;\

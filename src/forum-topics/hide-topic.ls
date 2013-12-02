@@ -25,8 +25,7 @@ for post-pages in $$ 'tbody.regular .post-pages'
 	tr = post-pages.parentNode
 	topic-id = tr.id.slice 'postRow'length
 
-	if topic-id in hidden-topics
-		hide tr
+	hide tr if topic-id in hidden-topics
 
 	let tr, topic-id
 		el template-hide-topic hidden: topic-id in hidden-topics

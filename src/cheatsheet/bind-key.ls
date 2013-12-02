@@ -2,7 +2,7 @@ require! <[lib/lang]>
 {$} = require 'lib/dom'
 
 html = $ 'html'
-module.exports = bind-key = !(binds, lang-key, cb) ->
+module.exports = bind-key = (binds, lang-key, cb) !->
 	cheatsheet[binds.toUpperCase!chars! * ', '] = lang lang-key
 
 	codes = binds.toUpperCase!codes!map (0 +)

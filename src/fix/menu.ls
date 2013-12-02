@@ -7,6 +7,6 @@ require! '../w'
 if 'Menu' of w
 	old = w.Menu.show
 	w.Menu.show = (, , options = {}) ->
-		w.Menu.dataIndex[x=options.set ? 'base'] ?= []
+		w.Menu.dataIndex[options.set ? 'base'] ?= []
 
 		old ...

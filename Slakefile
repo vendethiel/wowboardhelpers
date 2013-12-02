@@ -62,7 +62,7 @@ task 'build' 'build userscript' !->
   if css-change or not css
     console.time 'CSS'
     try
-      css := compile-styles!trim!replace /\n/g '\\\n'
+      css := compile-styles!trim!replace /\n/g '\\\n' .replace /"/g '\\"'
     catch {message}
       errinfo "Stylus: #message"
       return
