@@ -15,7 +15,7 @@
 	br
 
 	ul
-		for character in @characters.exclude @current
+		for character in @characters.exclude @current when character
 			li(style='#{["display: none" if @toggle]}')
 				= character
 				a.see-messages(href="#{posts-of character}")

@@ -280,6 +280,7 @@
                 }
             });
             lang.simplifyTime = require("/lib/lang/simplify-time.ls", module);
+            lang.locale = l;
             return lang;
         }();
         function import$(obj, src) {
@@ -1309,10 +1310,15 @@
         multiChars = require("/src/topic-characters/multi-chars.ls", module);
     });
     require.define("/src/topic-characters/multi-chars.ls", function(module, exports, __dirname, __filename) {
-        var ref$, $$, el, templateMultiChars, accountCharacters, that, modified, i$, len$, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul, children, limit, replace$ = "".replace, slice$ = [].slice;
-        ref$ = require("/lib/dom/index.ls", module), $$ = ref$.$$, el = ref$.el;
+        var lang, ref$, $, $$, el, templateMultiChars, that, accountCharacters, modified, i$, len$, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul, children, limit, replace$ = "".replace, slice$ = [].slice;
+        lang = require("/lib/lang/index.ls", module);
+        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, $$ = ref$.$$, el = ref$.el;
         templateMultiChars = require("/src/topic-characters/templates/multi-chars.ne", module);
-        accountCharacters = (that = localStorage.getItem("accountCharacters")) ? JSON.parse(that) : {};
+        if (that = (ref$ = localStorage.accountCharacters, delete localStorage.accountCharacters, 
+        ref$)) {
+            localStorage.setItem(lang.locale + "-accountCharacters", that);
+        }
+        accountCharacters = (that = localStorage.getItem(lang.locale + "-accountCharacters")) ? JSON.parse(that) : {};
         function clean(it) {
             it = replace$.call(it, "context-link", "");
             it = replace$.call(it, 'xmlns="http://www.w3.org/1999/xhtml" ', "");
@@ -1336,8 +1342,9 @@
                 accountCharacters[account].push(link);
             }
         }
+        debugger;
         if (modified) {
-            localStorage.setItem("accountCharacters", JSON.stringify(accountCharacters));
+            localStorage.setItem(lang.locale + "-accountCharacters", JSON.stringify(accountCharacters));
         }
         for (i$ = 0, len$ = (ref$ = $$(".post:not(.hidden) .post-character")).length; i$ < len$; ++i$) {
             postCharacter = ref$[i$];
@@ -1349,8 +1356,7 @@
             if (characters.length === 1) {
                 continue;
             }
-            postDetail = postCharacter.parentNode.querySelector(".post-detail");
-            height = postDetail.offsetHeight;
+            postDetail = $(".post-detail", postCharacter.parentNode), height = postDetail.offsetHeight;
             toggle = characters.length > 2 && height < 130 + (characters.length - 1) * 15;
             postCharacter.appendChild(el(templateMultiChars({
                 toggle: toggle,
@@ -1363,7 +1369,7 @@
                 if ((limit = ((height - 130) / 15).floor()) > 1) {
                     children.to(limit).each(fn$);
                 }
-                toggle = postCharacter.querySelector(".toggle");
+                toggle = $(".toggle", postCharacter);
                 fn1$.call(this, ul, children, toggle, postCharacter);
             }
         }
@@ -6568,6 +6574,117 @@ img.autolink {\
                 timeParse: [ "{shift}{weekday}", "{year}年{month?}月?{date?}{0?}", "{month}月{date?}{0?}", "{date}[日號]" ]
             });
         }).call(this);
+    });
+    require.define("/src/topic-characters/multi-chars.ls", function(module, exports, __dirname, __filename) {
+        var lang, ref$, $, $$, el, templateMultiChars, that, accountCharacters, modified, i$, len$, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul, children, limit, replace$ = "".replace, slice$ = [].slice;
+        lang = require("/lib/lang/index.ls", module);
+        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, $$ = ref$.$$, el = ref$.el;
+        templateMultiChars = require("/src/topic-characters/templates/multi-chars.ne", module);
+        if (that = (ref$ = localStorage.accountCharacters, delete localStorage.accountCharacters, 
+        ref$)) {
+            localStorage.setItem(lang.locale + "-accountCharacters", that);
+        }
+        accountCharacters = (that = localStorage.getItem(lang.locale + "-accountCharacters")) ? JSON.parse(that) : {};
+        function clean(it) {
+            it = replace$.call(it, "context-link", "");
+            it = replace$.call(it, 'xmlns="http://www.w3.org/1999/xhtml" ', "");
+            return it;
+        }
+        modified = false;
+        for (i$ = 0, len$ = (ref$ = $$(".post-character")).length; i$ < len$; ++i$) {
+            postCharacter = ref$[i$];
+            iconIgnore = postCharacter.querySelector(".icon-ignore");
+            if (!iconIgnore) {
+                continue;
+            }
+            link = clean(postCharacter.querySelector(".user-name > a").outerHTML.trim());
+            ref1$ = /ignore\(([0-9]+)/.exec(iconIgnore.getAttribute("onclick").toString()), 
+            account = ref1$[1];
+            ref1$ = postCharacter.dataset;
+            ref1$.account = account;
+            ref1$.link = link;
+            if (!in$(link, accountCharacters[account] || (accountCharacters[account] = []))) {
+                modified = true;
+                accountCharacters[account].push(link);
+            }
+        }
+        if (modified) {
+            localStorage.setItem(lang.locale + "-accountCharacters", JSON.stringify(accountCharacters));
+        }
+        for (i$ = 0, len$ = (ref$ = $$(".post:not(.hidden) .post-character")).length; i$ < len$; ++i$) {
+            postCharacter = ref$[i$];
+            ref1$ = postCharacter.dataset, account = ref1$.account, current = ref1$.link;
+            if (!account) {
+                continue;
+            }
+            characters = accountCharacters[account].exclude(null);
+            if (characters.length === 1) {
+                continue;
+            }
+            postDetail = $(".post-detail", postCharacter.parentNode), height = postDetail.offsetHeight;
+            toggle = characters.length > 2 && height < 130 + (characters.length - 1) * 15;
+            postCharacter.appendChild(el(templateMultiChars({
+                toggle: toggle,
+                current: current,
+                characters: characters
+            })));
+            if (toggle) {
+                ul = postCharacter.querySelector("ul"), children = ul.children;
+                children = slice$.call(children);
+                if ((limit = ((height - 130) / 15).floor()) > 1) {
+                    children.to(limit).each(fn$);
+                }
+                toggle = $(".toggle", postCharacter);
+                fn1$.call(this, ul, children, toggle, postCharacter);
+            }
+        }
+        function in$(x, xs) {
+            var i = -1, l = xs.length >>> 0;
+            while (++i < l) if (x === xs[i]) return true;
+            return false;
+        }
+        function fn$(it) {
+            return it.style.display = "";
+        }
+        function fn1$(ul, children, toggle, postCharacter) {
+            toggle.onclick = function() {
+                children.each(function(it) {
+                    return it.style.display = "";
+                });
+                postCharacter.querySelector(".toggler").style.display = "none";
+                return toggle.onclick = function() {};
+            };
+        }
+    });
+    require.define("/src/topic-characters/templates/multi-chars.ne", function(module, exports, __dirname, __filename) {
+        var lang, postsOf, join, join$ = [].join;
+        lang = require("/lib/lang/index.ls", module);
+        postsOf = function(it) {
+            var name, ref$;
+            name = [ (ref$ = it.split("/"))[5], ref$[4] ];
+            name[1] = name[1].humanize();
+            return "http://eu.battle.net/wow/fr/search?f=post&amp;a=" + join$.call(name, "%40") + "&amp;sort=time";
+        };
+        join = function(it) {
+            if (it) {
+                return it.join("");
+            } else {
+                return "";
+            }
+        };
+        module.exports = function(locals, extra) {
+            var character;
+            return '    <div id="account-characters"><h1 class="toggle">' + (lang("otherCharacters") || "") + "\n" + ((locals.toggle ? '<span class="toggler">' + (" [+]" || "") + "</span>" : void 8) || "") + "</h1><br/><ul>" + (join(function() {
+                var i$, ref$, len$, results$ = [];
+                for (i$ = 0, len$ = (ref$ = locals.characters.exclude(locals.current)).length; i$ < len$; ++i$) {
+                    character = ref$[i$];
+                    if (character) {
+                        results$.push('<li style="' + [ locals.toggle ? "display: none" : void 8 ] + '">' + (character || "") + '<a href="' + postsOf(character) + '" class="see-messages"></a></li>');
+                    }
+                }
+                return results$;
+            }()) || "") + "</ul></div>";
+        };
     });
     require("/src/wowboardhelpers.ls");
 }).call(this, this);

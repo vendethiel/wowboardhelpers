@@ -18,3 +18,5 @@ module.exports = class lang # acts like a proxy to avoid unneeded keys
 			it
 
 	@simplify-time = require './simplify-time'
+
+	@locale = l

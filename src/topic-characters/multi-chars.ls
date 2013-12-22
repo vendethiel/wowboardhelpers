@@ -1,7 +1,11 @@
-{$$, el} = require 'lib/dom'
+require! <[lib/lang]>
+{$, $$, el} = require 'lib/dom'
 template-multi-chars = require './templates/multi-chars'
 
-account-characters = if localStorage.getItem 'accountCharacters'
+# TEMPORARY
+if delete localStorage.accountCharacters
+	localStorage.setItem "#{lang.locale}-accountCharacters" that
+account-characters = if localStorage.getItem "#{lang.locale}-accountCharacters"
 	JSON.parse that
 else {}
 
@@ -14,14 +18,14 @@ modified = false # avoid saving if useless
 
 for post-character in $$ '.post-character'
 	icon-ignore = post-character.querySelector '.icon-ignore'
-	continue unless icon-ignore # self account
-	# yes <| binds tighter than =, fuck LS
-	link = clean post-character.querySelector('.user-name > a')outerHTML.trim!
+	continue unless icon-ignore # own account
+	# temp parens until LS 1.2.1
+	link = (clean <| post-character.querySelector '.user-name > a' .outerHTML.trim!)
 
 	# need to use getAttribute() for chrome because it sucks
 	# and it's returned as a string, which should be the same in other browsers
 	# since it's a DOM thing, but better safe than sorry ...
-	[, account] = /ignore\(([0-9]+)/ == icon-ignore.getAttribute('onclick')toString!
+	[, account] = /ignore\(([0-9]+)/ == icon-ignore.getAttribute 'onclick' .toString!
 	
 	post-character.dataset <<< {account, link}
 
@@ -30,17 +34,16 @@ for post-character in $$ '.post-character'
 		account-characters[account]push link
 
 if modified # save it !
-	localStorage.setItem 'accountCharacters' JSON.stringify account-characters
+	localStorage.setItem "#{lang.locale}-accountCharacters" JSON.stringify account-characters
 
 for post-character in $$ '.post:not(.hidden) .post-character'
 	{account, link: current} = post-character.dataset
 	continue unless account
 
-	characters = account-characters[account]
+	characters = account-characters[account]exclude null
 	continue if characters.length is 1
 
-	post-detail = post-character.parentNode.querySelector '.post-detail'
-	height = post-detail.offset-height
+	{offset-height: height}:post-detail = $ '.post-detail' post-character.parentNode
 
 	# no toggler for one char (2 is because the current is ignored)
 	# base 130 (h1 = 15) + approx 15 for each char (-1 for the current)
@@ -56,9 +59,9 @@ for post-character in $$ '.post:not(.hidden) .post-character'
 		# floor it to display the max possible. if we have 8.2 we want
 		# it to be 8 (displayed) so that we'll have one hidden
 		if (limit = ((height - 130) / 15)floor!) > 1
-			children.to(limit)each (.style.display = '')
+			children.to limit .each (.style.display = '')
 
-		toggle = post-character.querySelector '.toggle'
+		toggle = $ '.toggle', post-character
 
 		let ul, children, toggle
 			toggle.onclick = ->
