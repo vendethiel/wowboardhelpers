@@ -6,11 +6,13 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 4.2.1
+// @version 4.2.2
 // ==/UserScript==
  * TODO
 - jump to page for topics too
  * changelog
+ * 4.2.2
+ *  Add <[First Last]> for topic pages
  * 4.2.1
  *  "Jump to page" via "p" bind or expander ("...")
  * 4.2

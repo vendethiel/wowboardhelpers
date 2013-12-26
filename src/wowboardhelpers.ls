@@ -17,10 +17,10 @@ require './fix'
 if require './topic'
 	require './topic-characters'
 	require './topic-posts'
+	require './topic-layout'
 
 	if require './textarea'
 		require './reply'
-
 
 if require './forum'
 	require './forum-actions'

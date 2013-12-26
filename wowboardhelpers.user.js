@@ -7,11 +7,13 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 4.2.1
+// @version 4.2.2
 // ==/UserScript==
  * TODO
 - jump to page for topics too
  * changelog
+ * 4.2.2
+ *  Add <[First Last]> for topic pages
  * 4.2.1
  *  "Jump to page" via "p" bind or expander ("...")
  * 4.2
@@ -195,6 +197,7 @@
         if (require("/src/topic.ls", module)) {
             require("/src/topic-characters/index.ls", module);
             require("/src/topic-posts/index.ls", module);
+            require("/src/topic-layout/index.ls", module);
             if (require("/src/textarea.ls", module)) {
                 require("/src/reply/index.ls", module);
             }
@@ -324,7 +327,9 @@
             pageTop: "Go to top",
             pageBottom: "Go to bottom",
             login: "Login",
-            newTopic: "New topic"
+            newTopic: "New topic",
+            pageFirst: "First",
+            pageLast: "Last"
         };
     });
     require.define("/lib/lang/fr.ls", function(module, exports, __dirname, __filename) {
@@ -358,7 +363,9 @@
             pageTop: "Haut de page",
             pageBottom: "Bas de page",
             login: "Connexion",
-            newTopic: "Nouveau sujet"
+            newTopic: "Nouveau sujet",
+            pageFirst: "Première",
+            pageLast: "Dernière"
         };
     });
     require.define("/lib/dom/index.ls", function(module, exports, __dirname, __filename) {
@@ -1247,6 +1254,42 @@
             return '<div class="clear-textarea">X</div>';
         };
     });
+    require.define("/src/topic-layout/index.ls", function(module, exports, __dirname, __filename) {
+        var pagination;
+        pagination = require("/src/topic-layout/pagination.ls", module);
+    });
+    require.define("/src/topic-layout/pagination.ls", function(module, exports, __dirname, __filename) {
+        var $$, templatePagination, topic, ref$, page, url, uls, ul, pagination, paginationHtml, i$, x$, len$;
+        $$ = require("/lib/dom/index.ls", module).$$;
+        templatePagination = require("/src/topic-layout/templates/pagination.ne", module);
+        topic = require("/src/topic.ls", module);
+        ref$ = topic.dataset, page = ref$.page, url = ref$.url;
+        uls = $$("ul.ui-pagination"), ul = uls[0], pagination = ul.innerHTML;
+        paginationHtml = templatePagination({
+            page: page,
+            url: url,
+            pagination: pagination,
+            max: +(ref$ = $$("li:not(.cap-item) span", ul))[ref$.length - 1].innerHTML
+        });
+        for (i$ = 0, len$ = uls.length; i$ < len$; ++i$) {
+            x$ = uls[i$];
+            x$.innerHTML = paginationHtml;
+        }
+    });
+    require.define("/src/topic-layout/templates/pagination.ne", function(module, exports, __dirname, __filename) {
+        var lang, join;
+        lang = require("/lib/lang/index.ls", module);
+        join = function(it) {
+            if (it) {
+                return it.join("");
+            } else {
+                return "";
+            }
+        };
+        module.exports = function(locals, extra) {
+            return "    " + ((locals.page > 2 ? '<li class="cap-item"><a href="' + locals.url + '?page=1">' + lang.pageFirst + "</a></li>" : void 8) || "") + "\n" + (locals.pagination || "") + "\n" + ((locals.max - locals.page > 2 ? '<li class="cap-item"><a href="' + locals.url + "?page=" + locals.max + '">' + lang.pageLast + "</a></li>" : void 8) || "");
+        };
+    });
     require.define("/src/topic-posts/index.ls", function(module, exports, __dirname, __filename) {
         var jumps, autolink, updateCount;
         jumps = require("/src/topic-posts/jumps/index.ls", module);
@@ -1342,7 +1385,6 @@
                 accountCharacters[account].push(link);
             }
         }
-        debugger;
         if (modified) {
             localStorage.setItem(lang.locale + "-accountCharacters", JSON.stringify(accountCharacters));
         }
@@ -1352,7 +1394,7 @@
             if (!account) {
                 continue;
             }
-            characters = accountCharacters[account];
+            characters = accountCharacters[account].exclude(null);
             if (characters.length === 1) {
                 continue;
             }
@@ -6574,117 +6616,6 @@ img.autolink {\
                 timeParse: [ "{shift}{weekday}", "{year}年{month?}月?{date?}{0?}", "{month}月{date?}{0?}", "{date}[日號]" ]
             });
         }).call(this);
-    });
-    require.define("/src/topic-characters/multi-chars.ls", function(module, exports, __dirname, __filename) {
-        var lang, ref$, $, $$, el, templateMultiChars, that, accountCharacters, modified, i$, len$, postCharacter, iconIgnore, link, ref1$, account, current, characters, postDetail, height, toggle, ul, children, limit, replace$ = "".replace, slice$ = [].slice;
-        lang = require("/lib/lang/index.ls", module);
-        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, $$ = ref$.$$, el = ref$.el;
-        templateMultiChars = require("/src/topic-characters/templates/multi-chars.ne", module);
-        if (that = (ref$ = localStorage.accountCharacters, delete localStorage.accountCharacters, 
-        ref$)) {
-            localStorage.setItem(lang.locale + "-accountCharacters", that);
-        }
-        accountCharacters = (that = localStorage.getItem(lang.locale + "-accountCharacters")) ? JSON.parse(that) : {};
-        function clean(it) {
-            it = replace$.call(it, "context-link", "");
-            it = replace$.call(it, 'xmlns="http://www.w3.org/1999/xhtml" ', "");
-            return it;
-        }
-        modified = false;
-        for (i$ = 0, len$ = (ref$ = $$(".post-character")).length; i$ < len$; ++i$) {
-            postCharacter = ref$[i$];
-            iconIgnore = postCharacter.querySelector(".icon-ignore");
-            if (!iconIgnore) {
-                continue;
-            }
-            link = clean(postCharacter.querySelector(".user-name > a").outerHTML.trim());
-            ref1$ = /ignore\(([0-9]+)/.exec(iconIgnore.getAttribute("onclick").toString()), 
-            account = ref1$[1];
-            ref1$ = postCharacter.dataset;
-            ref1$.account = account;
-            ref1$.link = link;
-            if (!in$(link, accountCharacters[account] || (accountCharacters[account] = []))) {
-                modified = true;
-                accountCharacters[account].push(link);
-            }
-        }
-        if (modified) {
-            localStorage.setItem(lang.locale + "-accountCharacters", JSON.stringify(accountCharacters));
-        }
-        for (i$ = 0, len$ = (ref$ = $$(".post:not(.hidden) .post-character")).length; i$ < len$; ++i$) {
-            postCharacter = ref$[i$];
-            ref1$ = postCharacter.dataset, account = ref1$.account, current = ref1$.link;
-            if (!account) {
-                continue;
-            }
-            characters = accountCharacters[account].exclude(null);
-            if (characters.length === 1) {
-                continue;
-            }
-            postDetail = $(".post-detail", postCharacter.parentNode), height = postDetail.offsetHeight;
-            toggle = characters.length > 2 && height < 130 + (characters.length - 1) * 15;
-            postCharacter.appendChild(el(templateMultiChars({
-                toggle: toggle,
-                current: current,
-                characters: characters
-            })));
-            if (toggle) {
-                ul = postCharacter.querySelector("ul"), children = ul.children;
-                children = slice$.call(children);
-                if ((limit = ((height - 130) / 15).floor()) > 1) {
-                    children.to(limit).each(fn$);
-                }
-                toggle = $(".toggle", postCharacter);
-                fn1$.call(this, ul, children, toggle, postCharacter);
-            }
-        }
-        function in$(x, xs) {
-            var i = -1, l = xs.length >>> 0;
-            while (++i < l) if (x === xs[i]) return true;
-            return false;
-        }
-        function fn$(it) {
-            return it.style.display = "";
-        }
-        function fn1$(ul, children, toggle, postCharacter) {
-            toggle.onclick = function() {
-                children.each(function(it) {
-                    return it.style.display = "";
-                });
-                postCharacter.querySelector(".toggler").style.display = "none";
-                return toggle.onclick = function() {};
-            };
-        }
-    });
-    require.define("/src/topic-characters/templates/multi-chars.ne", function(module, exports, __dirname, __filename) {
-        var lang, postsOf, join, join$ = [].join;
-        lang = require("/lib/lang/index.ls", module);
-        postsOf = function(it) {
-            var name, ref$;
-            name = [ (ref$ = it.split("/"))[5], ref$[4] ];
-            name[1] = name[1].humanize();
-            return "http://eu.battle.net/wow/fr/search?f=post&amp;a=" + join$.call(name, "%40") + "&amp;sort=time";
-        };
-        join = function(it) {
-            if (it) {
-                return it.join("");
-            } else {
-                return "";
-            }
-        };
-        module.exports = function(locals, extra) {
-            var character;
-            return '    <div id="account-characters"><h1 class="toggle">' + (lang("otherCharacters") || "") + "\n" + ((locals.toggle ? '<span class="toggler">' + (" [+]" || "") + "</span>" : void 8) || "") + "</h1><br/><ul>" + (join(function() {
-                var i$, ref$, len$, results$ = [];
-                for (i$ = 0, len$ = (ref$ = locals.characters.exclude(locals.current)).length; i$ < len$; ++i$) {
-                    character = ref$[i$];
-                    if (character) {
-                        results$.push('<li style="' + [ locals.toggle ? "display: none" : void 8 ] + '">' + (character || "") + '<a href="' + postsOf(character) + '" class="see-messages"></a></li>');
-                    }
-                }
-                return results$;
-            }()) || "") + "</ul></div>";
-        };
     });
     require("/src/wowboardhelpers.ls");
 }).call(this, this);

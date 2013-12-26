@@ -22,3 +22,6 @@ module.exports =
 	page-bottom: 'Go to bottom'
 	login: 'Login'
 	new-topic: 'New topic'
+
+	page-first: 'First'
+	page-last: 'Last'

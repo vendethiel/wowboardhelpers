@@ -40,6 +40,7 @@ for post-character in $$ '.post:not(.hidden) .post-character'
 	{account, link: current} = post-character.dataset
 	continue unless account
 
+	# excluding null because stuff gets randomly corrupted
 	characters = account-characters[account]exclude null
 	continue if characters.length is 1
 

@@ -35,3 +35,6 @@ module.exports =
 	page-bottom: 'Bas de page'
 	login: 'Connexion'
 	new-topic: 'Nouveau sujet'
+
+	page-first: 'Première'
+	page-last: 'Dernière'

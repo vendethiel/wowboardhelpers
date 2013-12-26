@@ -40,9 +40,10 @@ cjs-options =
       # trap it, triggered when last-changed is a .styl
 
     '.ne': en-ast (src, filename) ->
-      try src = nephrite src, filename
+      try
+        src = nephrite src, filename
+        ls-parse src, filename
       catch {message} => errinfo "Nephrite (#filename): #message"
-      ls-parse src, filename
 
     '.ls': en-ast ls-parse
 
