@@ -11,6 +11,8 @@
  * TODO
 - jump to page for topics too
  * changelog
+ * 4.2.3
+ *  Make multi-chars localized
  * 4.2.2
  *  Add <[First Last]> for topic pages
  * 4.2.1
