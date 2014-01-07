@@ -6,11 +6,16 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 4.2.2
+// @version 4.2.5
 // ==/UserScript==
  * TODO
 - jump to page for topics too
  * changelog
+ * 4.2.5
+ *  Fix updater
+ *  Updater now updates even if there are new messages
+ * 4.2.4
+ *  Fix limit to 10 memes
  * 4.2.3
  *  Make multi-chars localized
  * 4.2.2

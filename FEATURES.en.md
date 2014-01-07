@@ -24,3 +24,4 @@ Topic :
  - Shows a memebox to rapidly insert memes in your answers
  - Typing "j" makes you jump to the last read post
  - Display seen alts
+ - "First"/"Link" page links

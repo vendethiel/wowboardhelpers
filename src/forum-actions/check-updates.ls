@@ -14,8 +14,8 @@ $ '#forum-actions-top'
 
 
 # XXX should parse somehow to know what the actual fuck is going on
-# XXX should try to use sugar's Fn#every somehow
-refresh = ->
+timeout = 15.seconds!
+do refresh = ->
 	ajax.get document.location, !->
 		unless @status is 200
 			console.log "encountered status #{@status} while checking for updates; forum might be unstable"
@@ -39,7 +39,3 @@ refresh = ->
 
 			h1.innerHTML = "<a href='#{document.location}'>#{lang.new-messages}</a> : 
 			#{['<br />' if title.length > 30]}#title"
-
-#timeout clearing is in hide-topic
-timeout = 15.seconds!
-module.exports = setTimeout refresh, timeout

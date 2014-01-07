@@ -25,3 +25,4 @@ Topic :
  - Affiche une "memebox" pour mettre des memes rapidement
  - Appuyer sur "j" vous amène au dernier message lu
  - Montre les autres personnages avec qui un joueur a posté
+ - Liens "Première"/"Dernière" page

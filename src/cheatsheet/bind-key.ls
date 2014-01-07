@@ -13,7 +13,7 @@ module.exports = bind-key = (binds, lang-key, cb) !->
 		return unless it.target is html # not typing
 		it.preventDefault!
 
-		cb!
+		cb it
 
 # This should be in index.ls (?)
 bind-key.cheatsheet = cheatsheet = {}

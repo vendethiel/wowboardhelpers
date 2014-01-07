@@ -39,7 +39,7 @@ cjs-options =
     '.styl': ->
       # trap it, triggered when last-changed is a .styl
 
-    '.ne': en-ast (src, filename) ->
+    '.ne': en-ast (src, filename) -> # TODO make it composable ?
       try
         src = nephrite src, filename
         ls-parse src, filename
@@ -60,13 +60,12 @@ var ast, css, css-change
 
 ast-node = uglify-js.AST_Node
 task 'build' 'build userscript' !->
-  if css-change or not css
+  if css-change or not css # recompile css if first time OR css changed
     console.time 'CSS'
     try
       css := compile-styles!trim!replace /\n/g '\\\n' .replace /"/g '\\"'
     catch {message}
-      errinfo "Stylus: #message"
-      return
+      return errinfo "Stylus: #message"
     console.timeEnd 'CSS'
 
   unless css-change

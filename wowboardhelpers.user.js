@@ -7,11 +7,15 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 4.2.2
+// @version 4.2.4
 // ==/UserScript==
  * TODO
 - jump to page for topics too
  * changelog
+ * 4.2.4
+ *  Fix limit to 10 memes
+ * 4.2.3
+ *  Make multi-chars localized
  * 4.2.2
  *  Add <[First Last]> for topic pages
  * 4.2.1
@@ -438,7 +442,7 @@
                     return;
                 }
                 it.preventDefault();
-                cb();
+                cb(it);
             });
         };
         bindKey.cheatsheet = cheatsheet = {};
@@ -609,9 +613,6 @@
             }
             fn$.call(this, tr, topicId, postPages);
         }
-        if ($("tbody.regular tr:not(.hidden):not(.read)")) {
-            clearTimeout(require("/src/forum-actions/check-updates.ls", module));
-        }
         function in$(x, xs) {
             var i = -1, l = xs.length >>> 0;
             while (++i < l) if (x === xs[i]) return true;
@@ -634,56 +635,6 @@
             };
             postPages.insertBefore(x$, postPages.children[0]);
         }
-    });
-    require.define("/src/forum-actions/check-updates.ls", function(module, exports, __dirname, __filename) {
-        var lang, ajax, tbodyRegular, ref$, $, node, firstTopicId, trHtml, aEndHtml, tbodyHtml, x$, h1, refresh, timeout;
-        lang = require("/lib/lang/index.ls", module);
-        ajax = require("/lib/ajax/index.ls", module);
-        tbodyRegular = require("/src/tbody-regular.ls", module);
-        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, node = ref$.node;
-        firstTopicId = tbodyRegular.children[0].id.slice("postRow".length);
-        trHtml = '<tr id="postRow' + firstTopicId;
-        aEndHtml = 'data-tooltip-options=\'{"location": "mouse"}\'>';
-        tbodyHtml = '<tbody class="regular">';
-        x$ = $("#forum-actions-top");
-        x$.insertBefore(h1 = node("h1"), (ref$ = x$.children)[ref$.length - 1]);
-        refresh = function() {
-            return ajax.get(document.location, function() {
-                var afterRegular, startPos, title;
-                if (this.status !== 200) {
-                    console.log("encountered status " + this.status + " while checking for updates; forum might be unstable");
-                    return;
-                }
-                h1.innerHTML = lang.checkingNew;
-                afterRegular = this.response.slice(tbodyHtml.length + this.response.indexOf(tbodyHtml)).trim();
-                if (afterRegular.startsWith(trHtml)) {
-                    h1.innerHTML += " <u>" + lang.noNew + "</u>";
-                    setTimeout(function() {
-                        return h1.innerHTML = "";
-                    }, 1500);
-                    setTimeout(refresh, timeout);
-                } else {
-                    startPos = aEndHtml.length + afterRegular.indexOf(aEndHtml);
-                    afterRegular = afterRegular.slice(startPos);
-                    title = afterRegular.to(afterRegular.indexOf("<")).trim();
-                    h1.innerHTML = "<a href='" + document.location + "'>" + lang.newMessages + "</a> : " + [ title.length > 30 ? "<br />" : void 8 ] + title;
-                }
-            });
-        };
-        timeout = 15..seconds();
-        module.exports = setTimeout(refresh, timeout);
-    });
-    require.define("/lib/ajax/index.ls", function(module, exports, __dirname, __filename) {
-        module.exports = {
-            get: function(url, success) {
-                var x$;
-                x$ = new XMLHttpRequest();
-                x$.open("GET", url);
-                x$.onload = success;
-                x$.send();
-                return x$;
-            }
-        };
     });
     require.define("/src/forum-topics/templates/hide-topic.ne", function(module, exports, __dirname, __filename) {
         var join;
@@ -959,6 +910,55 @@
         jumps = require("/src/forum-actions/jumps/index.ls", module);
         checkUpdates = require("/src/forum-actions/check-updates.ls", module);
     });
+    require.define("/src/forum-actions/check-updates.ls", function(module, exports, __dirname, __filename) {
+        var lang, ajax, tbodyRegular, ref$, $, node, firstTopicId, trHtml, aEndHtml, tbodyHtml, x$, h1, timeout, refresh;
+        lang = require("/lib/lang/index.ls", module);
+        ajax = require("/lib/ajax/index.ls", module);
+        tbodyRegular = require("/src/tbody-regular.ls", module);
+        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, node = ref$.node;
+        firstTopicId = tbodyRegular.children[0].id.slice("postRow".length);
+        trHtml = '<tr id="postRow' + firstTopicId;
+        aEndHtml = 'data-tooltip-options=\'{"location": "mouse"}\'>';
+        tbodyHtml = '<tbody class="regular">';
+        x$ = $("#forum-actions-top");
+        x$.insertBefore(h1 = node("h1"), (ref$ = x$.children)[ref$.length - 1]);
+        timeout = 15..seconds();
+        (refresh = function() {
+            return ajax.get(document.location, function() {
+                var afterRegular, startPos, title;
+                if (this.status !== 200) {
+                    console.log("encountered status " + this.status + " while checking for updates; forum might be unstable");
+                    return;
+                }
+                h1.innerHTML = lang.checkingNew;
+                afterRegular = this.response.slice(tbodyHtml.length + this.response.indexOf(tbodyHtml)).trim();
+                if (afterRegular.startsWith(trHtml)) {
+                    h1.innerHTML += " <u>" + lang.noNew + "</u>";
+                    setTimeout(function() {
+                        return h1.innerHTML = "";
+                    }, 1500);
+                    setTimeout(refresh, timeout);
+                } else {
+                    startPos = aEndHtml.length + afterRegular.indexOf(aEndHtml);
+                    afterRegular = afterRegular.slice(startPos);
+                    title = afterRegular.to(afterRegular.indexOf("<")).trim();
+                    h1.innerHTML = "<a href='" + document.location + "'>" + lang.newMessages + "</a> : " + [ title.length > 30 ? "<br />" : void 8 ] + title;
+                }
+            });
+        })();
+    });
+    require.define("/lib/ajax/index.ls", function(module, exports, __dirname, __filename) {
+        module.exports = {
+            get: function(url, success) {
+                var x$;
+                x$ = new XMLHttpRequest();
+                x$.open("GET", url);
+                x$.onload = success;
+                x$.send();
+                return x$;
+            }
+        };
+    });
     require.define("/src/forum-actions/jumps/index.ls", function(module, exports, __dirname, __filename) {
         var newTopic, page;
         newTopic = require("/src/forum-actions/jumps/new-topic.ls", module);
@@ -1044,13 +1044,26 @@
         textarea = require("/src/textarea.ls", module);
         w = require("/src/w.ls", module);
         $ = require("/lib/dom/index.ls", module).$;
-        bindKey("r", "quick-quote", function() {
-            var that, x$;
-            if (that = w.getSelection().toString()) {
+        bindKey("r", "quick-quote", function(it) {
+            var that, ref$;
+            if (that = typeof chrome != "undefined" && chrome !== null ? (ref$ = chrome.tabs) != null ? ref$.executeScript : void 8 : void 8) {
+                that({
+                    code: "window.getSelection().toString()"
+                }, function(arg$) {
+                    var val;
+                    val = arg$[0];
+                    return fillQuote(val);
+                });
+            } else if (w != null && w.getSelection().toString()) {
+                fillQuote(it);
+            }
+            function fillQuote(it) {
+                var x$;
                 x$ = textarea;
-                x$.value += (x$.value ? "\n" : "") + ("[quote]" + that + "[/quote]");
+                x$.value += (x$.value ? "\n" : "") + ("[quote]" + it + "[/quote]");
                 x$.selectionStart = x$.selectionEnd = x$.value.length;
                 x$.focus();
+                return x$;
             }
             $("#forum-actions-bottom").scrollIntoView();
         });
@@ -1187,14 +1200,16 @@
                 }
                 approximates = [];
                 i = 0;
-                for (name in ref$ = memes) {
+                meme: for (name in ref$ = memes) {
                     url = ref$[name];
                     switch (name.indexOf(value)) {
                       case -1:
+                        break;
+
                       case 0:
                         appendMeme(name, url);
                         if (++i > 10) {
-                            break;
+                            break meme;
                         }
                         break;
 
@@ -1264,16 +1279,19 @@
         templatePagination = require("/src/topic-layout/templates/pagination.ne", module);
         topic = require("/src/topic.ls", module);
         ref$ = topic.dataset, page = ref$.page, url = ref$.url;
-        uls = $$("ul.ui-pagination"), ul = uls[0], pagination = ul.innerHTML;
-        paginationHtml = templatePagination({
-            page: page,
-            url: url,
-            pagination: pagination,
-            max: +(ref$ = $$("li:not(.cap-item) span", ul))[ref$.length - 1].innerHTML
-        });
-        for (i$ = 0, len$ = uls.length; i$ < len$; ++i$) {
-            x$ = uls[i$];
-            x$.innerHTML = paginationHtml;
+        uls = $$("ul.ui-pagination");
+        if (uls.length) {
+            ul = uls[0], pagination = ul.innerHTML;
+            paginationHtml = templatePagination({
+                page: page,
+                url: url,
+                pagination: pagination,
+                max: +(ref$ = $$("li:not(.cap-item) span", ul))[ref$.length - 1].innerHTML
+            });
+            for (i$ = 0, len$ = uls.length; i$ < len$; ++i$) {
+                x$ = uls[i$];
+                x$.innerHTML = paginationHtml;
+            }
         }
     });
     require.define("/src/topic-layout/templates/pagination.ne", function(module, exports, __dirname, __filename) {

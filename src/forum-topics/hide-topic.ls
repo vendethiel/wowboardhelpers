@@ -41,7 +41,3 @@ for post-pages in $$ 'tbody.regular .post-pages'
 
 			# add it as the first element in .post-pages
 			post-pages.insertBefore .., post-pages.children.0
-
-# ensure we don't check updates if we already have updates
-if $ 'tbody.regular tr:not(.hidden):not(.read)'
-	clearTimeout require '../forum-actions/check-updates'

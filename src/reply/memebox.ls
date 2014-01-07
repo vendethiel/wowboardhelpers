@@ -48,12 +48,13 @@ if $ '.post.general'
 		return unless value
 
 		approximates = []; i = 0
-		for name, url of memes # {...extra-memes, ...memes}
+		:meme for name, url of memes # {...extra-memes, ...memes}
 			switch name.indexOf value
-			| -1 0
+			| -1 => # ignore
+			| 0
 				append-meme name, url
 
-				break if ++i > 10
+				break meme if ++i > 10
 			| _
 				approximates.push [name, url]
 
