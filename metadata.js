@@ -6,11 +6,13 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 4.2.5
+// @version 4.2.6
 // ==/UserScript==
  * TODO
 - jump to page for topics too
  * changelog
+ * 4.2.6
+ *  Stop triggering update checking if page is not 1
  * 4.2.5
  *  Fix updater
  *  Updater now updates even if there are new messages

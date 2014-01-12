@@ -1,4 +1,4 @@
-require! <[lib/lang lib/ajax ../tbody-regular]>
+require! <[lib/lang lib/ajax ../tbody-regular ../forum]>
 {$, node} = require 'lib/dom'
 
 # we DON'T delay parsing because server reponse won't be ordered
@@ -15,7 +15,7 @@ $ '#forum-actions-top'
 
 # XXX should parse somehow to know what the actual fuck is going on
 timeout = 15.seconds!
-do refresh = ->
+refresh = ->
 	ajax.get document.location, !->
 		unless @status is 200
 			console.log "encountered status #{@status} while checking for updates; forum might be unstable"
@@ -29,7 +29,7 @@ do refresh = ->
 			h1.innerHTML += " <u>#{lang.no-new}</u>"
 			setTimeout -> #clear message
 				h1.innerHTML = ""
-			, 1_500ms
+			, 1_500_ms
 			setTimeout refresh, timeout # here we go again
 		else
 			#get new post title
@@ -39,3 +39,5 @@ do refresh = ->
 
 			h1.innerHTML = "<a href='#{document.location}'>#{lang.new-messages}</a> : 
 			#{['<br />' if title.length > 30]}#title"
+
+refresh is forum.dataset.page > 1

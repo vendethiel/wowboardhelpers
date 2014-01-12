@@ -7,11 +7,14 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 4.2.4
+// @version 4.2.5
 // ==/UserScript==
  * TODO
 - jump to page for topics too
  * changelog
+ * 4.2.5
+ *  Fix updater
+ *  Updater now updates even if there are new messages
  * 4.2.4
  *  Fix limit to 10 memes
  * 4.2.3
@@ -911,10 +914,11 @@
         checkUpdates = require("/src/forum-actions/check-updates.ls", module);
     });
     require.define("/src/forum-actions/check-updates.ls", function(module, exports, __dirname, __filename) {
-        var lang, ajax, tbodyRegular, ref$, $, node, firstTopicId, trHtml, aEndHtml, tbodyHtml, x$, h1, timeout, refresh;
+        var lang, ajax, tbodyRegular, forum, ref$, $, node, firstTopicId, trHtml, aEndHtml, tbodyHtml, x$, h1, timeout, refresh;
         lang = require("/lib/lang/index.ls", module);
         ajax = require("/lib/ajax/index.ls", module);
         tbodyRegular = require("/src/tbody-regular.ls", module);
+        forum = require("/src/forum.ls", module);
         ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, node = ref$.node;
         firstTopicId = tbodyRegular.children[0].id.slice("postRow".length);
         trHtml = '<tr id="postRow' + firstTopicId;
@@ -923,7 +927,7 @@
         x$ = $("#forum-actions-top");
         x$.insertBefore(h1 = node("h1"), (ref$ = x$.children)[ref$.length - 1]);
         timeout = 15..seconds();
-        (refresh = function() {
+        refresh = function() {
             return ajax.get(document.location, function() {
                 var afterRegular, startPos, title;
                 if (this.status !== 200) {
@@ -945,7 +949,15 @@
                     h1.innerHTML = "<a href='" + document.location + "'>" + lang.newMessages + "</a> : " + [ title.length > 30 ? "<br />" : void 8 ] + title;
                 }
             });
-        })();
+        };
+        refresh === (ref$ = forum.dataset.page) && ref$ > 1;
+    });
+    require.define("/src/forum.ls", function(module, exports, __dirname, __filename) {
+        var that, x$, ref$, split$ = "".split;
+        module.exports = (that = document.getElementById("posts")) ? (x$ = that.dataset, 
+        ref$ = split$.call(document.location, "?"), x$["url"] = ref$[0], x$["query"] = ref$[1], 
+        x$.page = ((ref$ = /\?page=([0-9]+)/.exec(document.location)) != null ? ref$[1] : void 8) || 1, 
+        x$.id = (ref$ = split$.call(that.dataset.url, "/"))[ref$.length - 2], that) : null;
     });
     require.define("/lib/ajax/index.ls", function(module, exports, __dirname, __filename) {
         module.exports = {
@@ -995,11 +1007,6 @@
                 document.location += "topic";
             });
         }
-    });
-    require.define("/src/forum.ls", function(module, exports, __dirname, __filename) {
-        var that, ref$, split$ = "".split;
-        module.exports = (that = document.getElementById("posts")) ? (that.dataset.id = split$.call((ref$ = split$.call(document.location, "/"))[ref$.length - 2], "?")[0], 
-        that) : null;
     });
     require.define("/src/reply/index.ls", function(module, exports, __dirname, __filename) {
         var clearTextarea, memebox, preview, quickQuote, rememberReply;
