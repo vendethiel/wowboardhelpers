@@ -16,6 +16,8 @@ module.exports =
 	quick-quote: 'Quote the selected part'
 	jump-to-last-read: 'Jump to last read message'
 	jump-to-page: 'Jump to page'
+	jump-to-next-page: 'Jump to next page'
+	jump-to-prev-page: 'Jump to prev page'
 	page-number: 'Page number'
 
 	page-top: 'Go to top'

@@ -7,11 +7,13 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 4.2.5
+// @version 4.2.6
 // ==/UserScript==
  * TODO
 - jump to page for topics too
  * changelog
+ * 4.2.6
+ *  Stop triggering update checking if page is not 1
  * 4.2.5
  *  Fix updater
  *  Updater now updates even if there are new messages
@@ -189,6 +191,144 @@
     require.define = function(file, fn) {
         require.modules[file] = fn;
     };
+    require.define("/src/topic-posts/index.ls", function(module, exports, __dirname, __filename) {
+        var autolink, updateCount;
+        autolink = require("/src/topic-posts/autolink.ls", module);
+        updateCount = require("/src/topic-posts/update-count.ls", module);
+    });
+    require.define("/src/topic-posts/update-count.ls", function(module, exports, __dirname, __filename) {
+        var topic, $$, pages, postCount, ref$, lastPosterName;
+        topic = require("/src/topic.ls", module);
+        $$ = require("/lib/dom/index.ls", module).$$;
+        pages = $$("#forum-actions-top .ui-pagination li:not(.cap-item)");
+        if (pages && needUpdate()) {
+            postCount = (ref$ = topic.getElementsByClassName("post-info"))[ref$.length - 1].getElementsByTagName("a")[0].getAttribute("href").from(1);
+            lastPosterName = (ref$ = $$(".char-name-code", topic))[ref$.length - 1].innerHTML.trim();
+            localStorage.setItem("topic_" + topic.dataset.id, postCount);
+            localStorage.setItem("topic_lp_" + topic.dataset.id, lastPosterName);
+        }
+        function needUpdate() {
+            return !pages.length || pages.length && "current" === pages[pages.length - 1].className || !localStorage.getItem("topic_" + topic.dataset.id);
+        }
+    });
+    require.define("/lib/dom/index.ls", function(module, exports, __dirname, __filename) {
+        module.exports = {
+            $: require("/lib/dom/$.ls", module),
+            $$: require("/lib/dom/$$.ls", module),
+            el: require("/lib/dom/el.ls", module),
+            node: require("/lib/dom/node.ls", module)
+        };
+    });
+    require.define("/lib/dom/node.ls", function(module, exports, __dirname, __filename) {
+        module.exports = function() {
+            function node(tag, props) {
+                props == null && (props = {});
+                return import$(document.createElement(tag), props);
+            }
+            return node;
+        }();
+        function import$(obj, src) {
+            var own = {}.hasOwnProperty;
+            for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+            return obj;
+        }
+    });
+    require.define("/lib/dom/el.ls", function(module, exports, __dirname, __filename) {
+        module.exports = function(it) {
+            var x$, e;
+            x$ = document.createElement("div");
+            try {
+                x$.innerHTML = it;
+            } catch (e$) {
+                e = e$;
+                console.log("failing html", it);
+            }
+            return x$.firstElementChild;
+            return x$;
+        };
+    });
+    require.define("/lib/dom/$$.ls", function(module, exports, __dirname, __filename) {
+        module.exports = function(it, ctx) {
+            ctx == null && (ctx = document);
+            return ctx.querySelectorAll(it);
+        };
+    });
+    require.define("/lib/dom/$.ls", function(module, exports, __dirname, __filename) {
+        module.exports = function(it, ctx) {
+            ctx == null && (ctx = document);
+            return ctx.querySelector(it);
+        };
+    });
+    require.define("/src/topic.ls", function(module, exports, __dirname, __filename) {
+        var that, x$, ref$, i$, replace$ = "".replace, split$ = "".split;
+        module.exports = (that = document.getElementById("thread")) ? (x$ = that.dataset, 
+        x$.url = replace$.call(split$.call(document.location, "?")[0], /#[0-9]+/, ""), x$.page = ((ref$ = /\?page=([0-9]+)/.exec(document.location)) != null ? ref$[1] : void 8) || 1, 
+        ref$ = split$.call(x$.url, "/"), i$ = ref$.length - 2, x$.topicId = ref$[i$], x$.id = ref$[i$ + 1], 
+        ref$, that) : null;
+    });
+    require.define("/src/topic-posts/autolink.ls", function(module, exports, __dirname, __filename) {
+        var autolink, $$, i$, ref$, len$, post;
+        autolink = require("/lib/autolink/index.ls", module);
+        $$ = require("/lib/dom/index.ls", module).$$;
+        for (i$ = 0, len$ = (ref$ = $$(".post-detail")).length; i$ < len$; ++i$) {
+            post = ref$[i$];
+            if (post.parentNode.parentNode.parentNode.parentNode.parentNode.classList.contains("blizzard")) {
+                continue;
+            }
+            autolink(post);
+        }
+    });
+    require.define("/lib/autolink/index.ls", function(module, exports, __dirname, __filename) {
+        var extensions, rules, ajax, replace$ = "".replace;
+        extensions = "(?:com|net|org|eu|fr|jp|us|co.uk|me)";
+        rules = [ [ /(?:https?:\/\/)?(?:(?:www|m)\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g, '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5#$3$4$6" frameborder="0"></iframe>' ], [ /\((https?:\/\/)([^<\s\)]+)\)/g, '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" data-autolink="paren-specialcase" target="_blank">$2</a>)' ], [ RegExp("(^|>|;|\\s)(?:https?:\\/\\/)?([\\w\\.\\-]+\\." + extensions + "(/[^<\\s]*)?(?=[\\s<]|$))", "g"), '$1<a class="external" rel="noreferrer" href="http://$2" data-autolink="protocol-specialcase" title="$2" target="_blank">$2</a>' ], [ /([^"'\/]|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g, '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" data-autolink="quote-specialcase" target="_blank">$3</a>' ], [ RegExp("(^|>|;|\\s)((?!(?:www\\.)?dropbox)[\\w\\.\\-]+\\." + extensions + "(/[^.<\\s]*)\\.(jpg|png|gif|jpeg)(?=[\\s<]|$)|puu\\.sh/[a-zA-Z0-9]+)", "g"), '$1<img src="http://$2" alt="$2" class="autolink" />' ] ];
+        module.exports = elAutolink;
+        ajax = require("/lib/ajax/index.ls", module);
+        function elAutolink(el) {
+            var h, r, ref$, url, e;
+            try {
+                h = autolink(el.innerHTML);
+                r = /\>((?:http:\/\/)?[a-z]{2}\.battle\.net\/[^<\s.]*)/g;
+                while ((ref$ = r.exec(h)) != null && (url = ref$[1], ref$)) {
+                    fn$.call(this, url);
+                }
+                return el.innerHTML = h;
+            } catch (e$) {
+                e = e$;
+                return console.log("Unable to generate valid HTML : " + h + " (" + e + ")");
+            }
+            function fn$(url) {
+                var fullUrl;
+                fullUrl = url.has("http://") ? url : "http://" + url;
+                ajax.get(fullUrl, function() {
+                    var that;
+                    if (that = /<title>(.+)<\/title>/.exec(this.response)) {
+                        el.innerHTML = el.innerHTML.replace(">" + url, ">" + replace$.call(that[1], " - World of Warcraft", ""));
+                    }
+                });
+            }
+        }
+        function autolink(it) {
+            var i$, ref$, len$, ref1$, pattern, replacement;
+            for (i$ = 0, len$ = (ref$ = rules).length; i$ < len$; ++i$) {
+                ref1$ = ref$[i$], pattern = ref1$[0], replacement = ref1$[1];
+                it = it.replace(pattern, replacement);
+            }
+            return it;
+        }
+    });
+    require.define("/lib/ajax/index.ls", function(module, exports, __dirname, __filename) {
+        module.exports = {
+            get: function(url, success) {
+                var x$;
+                x$ = new XMLHttpRequest();
+                x$.open("GET", url);
+                x$.onload = success;
+                x$.send();
+                return x$;
+            }
+        };
+    });
     require.define("/src/wowboardhelpers.ls", function(module, exports, __dirname, __filename) {
         console.log("Ahhhh…greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !");
         console.time("wowboardhelpers");
@@ -205,6 +345,7 @@
             require("/src/topic-characters/index.ls", module);
             require("/src/topic-posts/index.ls", module);
             require("/src/topic-layout/index.ls", module);
+            require("/src/topic-jumps/index.ls", module);
             if (require("/src/textarea.ls", module)) {
                 require("/src/reply/index.ls", module);
             }
@@ -330,6 +471,8 @@
             quickQuote: "Quote the selected part",
             jumpToLastRead: "Jump to last read message",
             jumpToPage: "Jump to page",
+            jumpToNextPage: "Jump to next page",
+            jumpToPrevPage: "Jump to prev page",
             pageNumber: "Page number",
             pageTop: "Go to top",
             pageBottom: "Go to bottom",
@@ -366,6 +509,8 @@
             quickQuote: "Citer le bout de message sélectionné",
             jumpToLastRead: "Aller au dernier message lu",
             jumpToPage: "Aller à la page",
+            jumpToNextPage: "Aller à la page suivante",
+            jumpToPrevPage: "Aller à la page précédente",
             pageNumber: "N° de la page",
             pageTop: "Haut de page",
             pageBottom: "Bas de page",
@@ -373,54 +518,6 @@
             newTopic: "Nouveau sujet",
             pageFirst: "Première",
             pageLast: "Dernière"
-        };
-    });
-    require.define("/lib/dom/index.ls", function(module, exports, __dirname, __filename) {
-        module.exports = {
-            $: require("/lib/dom/$.ls", module),
-            $$: require("/lib/dom/$$.ls", module),
-            el: require("/lib/dom/el.ls", module),
-            node: require("/lib/dom/node.ls", module)
-        };
-    });
-    require.define("/lib/dom/node.ls", function(module, exports, __dirname, __filename) {
-        module.exports = function() {
-            function node(tag, props) {
-                props == null && (props = {});
-                return import$(document.createElement(tag), props);
-            }
-            return node;
-        }();
-        function import$(obj, src) {
-            var own = {}.hasOwnProperty;
-            for (var key in src) if (own.call(src, key)) obj[key] = src[key];
-            return obj;
-        }
-    });
-    require.define("/lib/dom/el.ls", function(module, exports, __dirname, __filename) {
-        module.exports = function(it) {
-            var x$, e;
-            x$ = document.createElement("div");
-            try {
-                x$.innerHTML = it;
-            } catch (e$) {
-                e = e$;
-                console.log("failing html", it);
-            }
-            return x$.firstElementChild;
-            return x$;
-        };
-    });
-    require.define("/lib/dom/$$.ls", function(module, exports, __dirname, __filename) {
-        module.exports = function(it, ctx) {
-            ctx == null && (ctx = document);
-            return ctx.querySelectorAll(it);
-        };
-    });
-    require.define("/lib/dom/$.ls", function(module, exports, __dirname, __filename) {
-        module.exports = function(it, ctx) {
-            ctx == null && (ctx = document);
-            return ctx.querySelector(it);
         };
     });
     require.define("/src/cheatsheet/bind-key.ls", function(module, exports, __dirname, __filename) {
@@ -652,6 +749,11 @@
             return "" + ((locals.hidden ? '<a class="last-read show-topic">✓</a>' : '<a class="last-read hide-topic">X</a>') || "");
         };
     });
+    require.define("/src/tbody-regular.ls", function(module, exports, __dirname, __filename) {
+        var $;
+        $ = require("/lib/dom/index.ls", module).$;
+        module.exports = $("tbody.regular");
+    });
     require.define("/src/forum-topics/move-redirects.ls", function(module, exports, __dirname, __filename) {
         var tbodyRegular, i$, ref$, len$, status, tr;
         tbodyRegular = require("/src/tbody-regular.ls", module);
@@ -877,6 +979,11 @@
         x$.style.cursor = "pointer";
         forumOptions.appendChild(x$);
     });
+    require.define("/src/forum-options.ls", function(module, exports, __dirname, __filename) {
+        var $;
+        $ = require("/lib/dom/index.ls", module).$;
+        module.exports = $(".forum-options");
+    });
     require.define("/src/forum-layout/set-view.ls", function(module, exports, __dirname, __filename) {
         var ref$, $, $$, states, posts, i$, len$, state, slice$ = [].slice;
         ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, $$ = ref$.$$;
@@ -907,6 +1014,49 @@
         x$ = $(".forum-options");
         x$.parentNode.removeChild(x$);
         $(".content-trail").appendChild(x$);
+    });
+    require.define("/src/forum-layout/mar.ls", function(module, exports, __dirname, __filename) {
+        var lang, fetchSiblings, forumOptions, tbodyRegular, node, allRead, buttonMar, x$, split$ = "".split;
+        lang = require("/lib/lang/index.ls", module);
+        fetchSiblings = require("/lib/fetch-siblings/index.ls", module);
+        forumOptions = require("/src/forum-options.ls", module);
+        tbodyRegular = require("/src/tbody-regular.ls", module);
+        node = require("/lib/dom/index.ls", module).node;
+        allRead = false;
+        module.exports = buttonMar = node("a", {
+            innerHTML: "MAR",
+            title: lang.mar,
+            onclick: function() {
+                var i$, ref$, len$, row, topicId, siblings, x$;
+                if (allRead) {
+                    return;
+                }
+                allRead = !allRead;
+                for (i$ = 0, len$ = (ref$ = tbodyRegular.children).length; i$ < len$; ++i$) {
+                    row = ref$[i$];
+                    if (row.classList.contains("read")) {
+                        continue;
+                    }
+                    topicId = row.id.slice("postRow".length);
+                    siblings = fetchSiblings(row.children[0], {
+                        slice: 5
+                    });
+                    x$ = bind$(localStorage, "setItem");
+                    x$("topic_" + topicId, split$.call(siblings.lastPost.children[0].href, "#")[1]);
+                    x$("topic_lp_" + topicId, siblings.author.innerHTML.trim());
+                    row.classList.add("read");
+                }
+                forumOptions.removeChild(buttonMar);
+            }
+        });
+        x$ = buttonMar;
+        x$.style.cursor = "pointer";
+        forumOptions.appendChild(x$);
+        function bind$(obj, key, target) {
+            return function() {
+                return (target || obj)[key].apply(obj, arguments);
+            };
+        }
     });
     require.define("/src/forum-actions/index.ls", function(module, exports, __dirname, __filename) {
         var jumps, checkUpdates;
@@ -959,18 +1109,6 @@
         x$.page = ((ref$ = /\?page=([0-9]+)/.exec(document.location)) != null ? ref$[1] : void 8) || 1, 
         x$.id = (ref$ = split$.call(that.dataset.url, "/"))[ref$.length - 2], that) : null;
     });
-    require.define("/lib/ajax/index.ls", function(module, exports, __dirname, __filename) {
-        module.exports = {
-            get: function(url, success) {
-                var x$;
-                x$ = new XMLHttpRequest();
-                x$.open("GET", url);
-                x$.onload = success;
-                x$.send();
-                return x$;
-            }
-        };
-    });
     require.define("/src/forum-actions/jumps/index.ls", function(module, exports, __dirname, __filename) {
         var newTopic, page;
         newTopic = require("/src/forum-actions/jumps/new-topic.ls", module);
@@ -1007,6 +1145,13 @@
                 document.location += "topic";
             });
         }
+    });
+    require.define("/src/forum.ls", function(module, exports, __dirname, __filename) {
+        var that, x$, ref$, split$ = "".split;
+        module.exports = (that = document.getElementById("posts")) ? (x$ = that.dataset, 
+        ref$ = split$.call(document.location, "?"), x$["url"] = ref$[0], x$["query"] = ref$[1], 
+        x$.page = ((ref$ = /\?page=([0-9]+)/.exec(document.location)) != null ? ref$[1] : void 8) || 1, 
+        x$.id = (ref$ = split$.call(that.dataset.url, "/"))[ref$.length - 2], that) : null;
     });
     require.define("/src/reply/index.ls", function(module, exports, __dirname, __filename) {
         var clearTextarea, memebox, preview, quickQuote, rememberReply;
@@ -1115,45 +1260,6 @@
             return function() {
                 return (target || obj)[key].apply(obj, arguments);
             };
-        }
-    });
-    require.define("/lib/autolink/index.ls", function(module, exports, __dirname, __filename) {
-        var extensions, rules, ajax, replace$ = "".replace;
-        extensions = "(?:com|net|org|eu|fr|jp|us|co.uk|me)";
-        rules = [ [ /(?:https?:\/\/)?(?:(?:www|m)\.)?(youtu\.be\/([\w\-_]+)(\?[&=\w\-_;\#]*)?|youtube\.com\/watch\?([&=\w\-_;\.\?\#\%]*)v=([\w\-_]+)([&=\w\-\._;\?\#\%]*))/g, '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/$2$5#$3$4$6" frameborder="0"></iframe>' ], [ /\((https?:\/\/)([^<\s\)]+)\)/g, '(<a class="external" rel="noreferrer" href="$1$2" title="$1$2" data-autolink="paren-specialcase" target="_blank">$2</a>)' ], [ RegExp("(^|>|;|\\s)(?:https?:\\/\\/)?([\\w\\.\\-]+\\." + extensions + "(/[^<\\s]*)?(?=[\\s<]|$))", "g"), '$1<a class="external" rel="noreferrer" href="http://$2" data-autolink="protocol-specialcase" title="$2" target="_blank">$2</a>' ], [ /([^"'\/]|^)(https?:\/\/)(?![a-z]{2}\.battle\.net)([^<\s\)]+)/g, '$1<a class="external" rel="noreferrer" href="$2$3" title="$2$3" data-autolink="quote-specialcase" target="_blank">$3</a>' ], [ RegExp("(^|>|;|\\s)((?!(?:www\\.)?dropbox)[\\w\\.\\-]+\\." + extensions + "(/[^.<\\s]*)\\.(jpg|png|gif|jpeg)(?=[\\s<]|$)|puu\\.sh/[a-zA-Z0-9]+)", "g"), '$1<img src="http://$2" alt="$2" class="autolink" />' ] ];
-        module.exports = elAutolink;
-        ajax = require("/lib/ajax/index.ls", module);
-        function elAutolink(el) {
-            var h, r, ref$, url, e;
-            try {
-                h = autolink(el.innerHTML);
-                r = /\>((?:http:\/\/)?[a-z]{2}\.battle\.net\/[^<\s.]*)/g;
-                while ((ref$ = r.exec(h)) != null && (url = ref$[1], ref$)) {
-                    fn$.call(this, url);
-                }
-                return el.innerHTML = h;
-            } catch (e$) {
-                e = e$;
-                return console.log("Unable to generate valid HTML : " + h + " (" + e + ")");
-            }
-            function fn$(url) {
-                var fullUrl;
-                fullUrl = url.has("http://") ? url : "http://" + url;
-                ajax.get(fullUrl, function() {
-                    var that;
-                    if (that = /<title>(.+)<\/title>/.exec(this.response)) {
-                        el.innerHTML = el.innerHTML.replace(">" + url, ">" + replace$.call(that[1], " - World of Warcraft", ""));
-                    }
-                });
-            }
-        }
-        function autolink(it) {
-            var i$, ref$, len$, ref1$, pattern, replacement;
-            for (i$ = 0, len$ = (ref$ = rules).length; i$ < len$; ++i$) {
-                ref1$ = ref$[i$], pattern = ref1$[0], replacement = ref1$[1];
-                it = it.replace(pattern, replacement);
-            }
-            return it;
         }
     });
     require.define("/src/reply/memebox.ls", function(module, exports, __dirname, __filename) {
@@ -1276,6 +1382,12 @@
             return '<div class="clear-textarea">X</div>';
         };
     });
+    require.define("/src/textarea.ls", function(module, exports, __dirname, __filename) {
+        var topic, $;
+        topic = require("/src/topic.ls", module);
+        $ = require("/lib/dom/index.ls", module).$;
+        module.exports = topic ? $("#post-edit textarea") : null;
+    });
     require.define("/src/topic-layout/index.ls", function(module, exports, __dirname, __filename) {
         var pagination;
         pagination = require("/src/topic-layout/pagination.ls", module);
@@ -1316,8 +1428,7 @@
         };
     });
     require.define("/src/topic-posts/index.ls", function(module, exports, __dirname, __filename) {
-        var jumps, autolink, updateCount;
-        jumps = require("/src/topic-posts/jumps/index.ls", module);
+        var autolink, updateCount;
         autolink = require("/src/topic-posts/autolink.ls", module);
         updateCount = require("/src/topic-posts/update-count.ls", module);
     });
@@ -1346,29 +1457,6 @@
                 continue;
             }
             autolink(post);
-        }
-    });
-    require.define("/src/topic-posts/jumps/index.ls", function(module, exports, __dirname, __filename) {
-        var unread;
-        unread = require("/src/topic-posts/jumps/unread.ls", module);
-    });
-    require.define("/src/topic-posts/jumps/unread.ls", function(module, exports, __dirname, __filename) {
-        var topic, bindKey, $$, lastPostId;
-        topic = require("/src/topic.ls", module);
-        bindKey = require("/src/cheatsheet/bind-key.ls", module);
-        $$ = require("/lib/dom/index.ls", module).$$;
-        if (lastPostId = localStorage.getItem("topic_" + topic.dataset.id)) {
-            bindKey("jf", "jump-to-last-read", function() {
-                var lastPostPage, ref$;
-                lastPostPage = Math.ceil(lastPostId / 20);
-                if (topic.dataset.page < lastPostPage) {
-                    document.location = topic.dataset.url + ("?page=" + lastPostPage);
-                } else {
-                    if ((ref$ = $$(".post-detail")[lastPostId % 20 - 1]) != null) {
-                        ref$.scrollIntoView();
-                    }
-                }
-            });
         }
     });
     require.define("/src/topic-characters/index.ls", function(module, exports, __dirname, __filename) {
@@ -6642,5 +6730,140 @@ img.autolink {\
             });
         }).call(this);
     });
+    require.define("/src/topic-jumps/index.ls", function(module, exports, __dirname, __filename) {
+        var unread;
+        unread = require("/src/topic-jumps/unread.ls", module);
+    });
+    require.define("/src/topic-jumps/unread.ls", function(module, exports, __dirname, __filename) {
+        var topic, bindKey, $$, lastPostId;
+        topic = require("/src/topic.ls", module);
+        bindKey = require("/src/cheatsheet/bind-key.ls", module);
+        $$ = require("/lib/dom/index.ls", module).$$;
+        if (lastPostId = localStorage.getItem("topic_" + topic.dataset.id)) {
+            bindKey("jf", "jump-to-last-read", function() {
+                var lastPostPage, ref$;
+                lastPostPage = Math.ceil(lastPostId / 20);
+                if (topic.dataset.page < lastPostPage) {
+                    document.location = topic.dataset.url + ("?page=" + lastPostPage);
+                } else {
+                    if ((ref$ = $$(".post-detail")[lastPostId % 20 - 1]) != null) {
+                        ref$.scrollIntoView();
+                    }
+                }
+            });
+        }
+    });
+    require.define("/src/topic-jumps/page-nav.ls", function(module, exports, __dirname, __filename) {});
+    require.define("/src/topic-jumps/page-nav.ls", function(module, exports, __dirname, __filename) {
+        var topic, bindKey, $, curPage;
+        topic = require("/src/topic.ls", module);
+        bindKey = require("/src/cheatsheet/bind-key.ls", module);
+        $ = require("/lib/dom/index.ls", module).$;
+        curPage = $(".ui-pagination li.current");
+        if (curPage.previousElementSibling) {
+            bindKey("aq", "jump-to-prev-page", function() {
+                var ref$, page, url;
+                ref$ = topic.dataset, page = ref$.page, url = ref$.url;
+                document.location = url + "?page=" + --page;
+            });
+        }
+        if (curPage.nextElementSibling) {
+            bindKey("ed", "jump-to-next-page", function() {
+                var ref$, page, url;
+                ref$ = topic.dataset, page = ref$.page, url = ref$.url;
+                document.location = url + "?page=" + ++page;
+            });
+        }
+    });
+    require.define("/src/topic-jumps/index.ls", function(module, exports, __dirname, __filename) {
+        var unread, pageNav;
+        unread = require("/src/topic-jumps/unread.ls", module);
+        pageNav = require("/src/topic-jumps/page-nav.ls", module);
+    });
+    require.define("/src/topic-jumps/unread.ls", function(module, exports, __dirname, __filename) {
+        var topic, bindKey, $$, lastPostId;
+        topic = require("/src/topic.ls", module);
+        bindKey = require("/src/cheatsheet/bind-key.ls", module);
+        $$ = require("/lib/dom/index.ls", module).$$;
+        if (lastPostId = localStorage.getItem("topic_" + topic.dataset.id)) {
+            bindKey("jf", "jump-to-last-read", function() {
+                var lastPostPage, ref$;
+                lastPostPage = Math.ceil(lastPostId / 20);
+                if (topic.dataset.page < lastPostPage) {
+                    document.location = topic.dataset.url + ("?page=" + lastPostPage);
+                } else {
+                    if ((ref$ = $$(".post-detail")[lastPostId % 20 - 1]) != null) {
+                        ref$.scrollIntoView();
+                    }
+                }
+            });
+        }
+    });
+    require.define("/lib/lang/en.ls", function(module, exports, __dirname, __filename) {
+        module.exports = {
+            timeIndex: 0,
+            timeOutdex: -1,
+            lastMessage: "Last",
+            toggleSticky: "Show/Hide stickies",
+            mar: "Mark all as read",
+            fewSecondsAgo: "few seconds ago",
+            newMessages: "There are new message(s)",
+            checkingNew: "Checking new messages ...",
+            noNew: "No new message.",
+            otherCharacters: "Other characters",
+            cheatsheet: "Cheatsheet",
+            quickQuote: "Quote the selected part",
+            jumpToLastRead: "Jump to last read message",
+            jumpToPage: "Jump to page",
+            jumpToNextPage: "Jump to next page",
+            jumpToPrevPage: "Jump to prev page",
+            pageNumber: "Page number",
+            pageTop: "Go to top",
+            pageBottom: "Go to bottom",
+            login: "Login",
+            newTopic: "New topic",
+            pageFirst: "First",
+            pageLast: "Last"
+        };
+    });
+    require.define("/lib/lang/fr.ls", function(module, exports, __dirname, __filename) {
+        module.exports = {
+            timeIndex: 3,
+            timeOutdex: 0,
+            toggleSticky: "Afficher/Cacher les post-its",
+            mar: "Tout marquer comme lu",
+            newMessages: "Il y a des nouveau(x) message(s)",
+            checkingNew: "Vérification des nouveaux messages ...",
+            noNew: "Pas de nouveau message.",
+            fewSecondsAgo: "il y a quelques secondes",
+            seconde: "second",
+            second: "seconde",
+            heure: "hour",
+            hour: "heure",
+            jour: "day",
+            day: "jour",
+            few: "quelques",
+            lastMessage: "Message",
+            htmlOverrides: {
+                ".replies": "REPS",
+                ".poster": "Dernier"
+            },
+            otherCharacters: "Autres personnages",
+            cheatsheet: "Raccourcis",
+            quickQuote: "Citer le bout de message sélectionné",
+            jumpToLastRead: "Aller au dernier message lu",
+            jumpToPage: "Aller à la page",
+            jumpToNextPage: "Aller à la page suivante",
+            jumpToPrevPage: "Aller à la page précédente",
+            pageNumber: "N° de la page",
+            pageTop: "Haut de page",
+            pageBottom: "Bas de page",
+            login: "Connexion",
+            newTopic: "Nouveau sujet",
+            pageFirst: "Première",
+            pageLast: "Dernière"
+        };
+    });
+    require.define("/metadata.js", function(module, exports, __dirname, __filename) {});
     require("/src/wowboardhelpers.ls");
 }).call(this, this);

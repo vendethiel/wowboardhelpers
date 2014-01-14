@@ -29,6 +29,8 @@ module.exports =
 	quick-quote: 'Citer le bout de message sélectionné'
 	jump-to-last-read: 'Aller au dernier message lu'
 	jump-to-page: 'Aller à la page'
+	jump-to-next-page: 'Aller à la page suivante'
+	jump-to-prev-page: 'Aller à la page précédente'
 	page-number: 'N° de la page'
 
 	page-top: 'Haut de page'

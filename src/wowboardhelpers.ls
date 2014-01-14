@@ -18,6 +18,7 @@ if require './topic'
 	require './topic-characters'
 	require './topic-posts'
 	require './topic-layout'
+	require './topic-jumps'
 
 	if require './textarea'
 		require './reply'

@@ -29,7 +29,7 @@ refresh = ->
 			h1.innerHTML += " <u>#{lang.no-new}</u>"
 			setTimeout -> #clear message
 				h1.innerHTML = ""
-			, 1_500_ms
+			, 1_500ms
 			setTimeout refresh, timeout # here we go again
 		else
 			#get new post title

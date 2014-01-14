@@ -1,1 +1,1 @@
-require! <[./jumps ./autolink ./update-count]>
+require! <[./autolink ./update-count]>
