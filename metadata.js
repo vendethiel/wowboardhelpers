@@ -6,11 +6,16 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 4.3.0
+// @version 5.0.0
 // ==/UserScript==
  * TODO
 - jump to page for topics too
  * changelog
+ * 5.0.0
+ *  ______________
+ * |              |
+ * | NEW FORUMS ! |
+ * |______________|
  * 4.3.0
  *  Added next / previous page links
  *  Moved topic jumps to its own folder

@@ -11,11 +11,11 @@ module.exports = button-mar = node 'a' innerHTML: 'MAR' title: lang.mar, onclick
 		continue if row.classList.contains 'read'
 
 		topic-id = row.id.slice 'postRow'length
-		siblings = fetch-siblings row.children.0, slice: 5
+		siblings = fetch-siblings row.children.0
 
-		localStorage~setItem
-			.. "topic_#topic-id"    (siblings.last-post.children.0.href / '#')1
-			.. "topic_lp_#topic-id" siblings.author.innerHTML.trim!
+		localStorage
+			.."topic_#topic-id"    = (siblings'last-post-cell'children.0.href / '#')1
+			.."topic_lp_#topic-id" = siblings'author-cell'innerHTML.trim!
 
 		row.classList.add 'read'
 

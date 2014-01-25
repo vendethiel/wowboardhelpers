@@ -3,8 +3,8 @@
 
 if cheatsheet.size!
 	possible-divs =
-		'.forum-info' # forum topics page
-		'.talkback form'
+		'.forum-wrapper'
+		'.forum-actions-bottom'
 
 	template-cheatsheet = require './templates/cheatsheet'
 
@@ -14,6 +14,7 @@ if cheatsheet.size!
 				ul = ..querySelector 'ul'
 				ul.style.display = 'none'
 
-				..querySelector '.toggler' .onclick = ->
+				..querySelector '.toggler' .onclick = !->
 					ul.style.display = ['none' '']find (!= ul.style.display)
+					it.preventDefault!
 		break

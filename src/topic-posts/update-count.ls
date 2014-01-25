@@ -11,7 +11,7 @@ if pages and need-update!
 		.[*-1]getElementsByTagName 'a' .0 #bikoz :last-child sucks ballzzzz
 		.getAttribute 'href' .from 1 #remove #
 
-	last-poster-name = $$('.char-name-code', topic)[*-1]innerHTML.trim!
+	last-poster-name = $$('.poster-name', topic)[*-1]innerHTML.trim!
 
 	#mark as read
 	localStorage.setItem "topic_#{topic.dataset.id}" post-count

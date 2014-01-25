@@ -4,7 +4,7 @@
   "author": "Nami-Doc <nami.d0c.0@gmail.com>",
   "dependencies": {
     "LiveScript": "1.2.0",
-    "stylus": "0.41.0",
+    "stylus": "0.42.1",
     "nib": "1.0.0",
     "commonjs-everywhere": "0.9.4",
     "acorn": "0.1.0",

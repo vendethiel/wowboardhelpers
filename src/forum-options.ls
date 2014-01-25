@@ -1,3 +1,8 @@
-{$} = require 'lib/dom'
+{$, node} = require 'lib/dom'
 
-module.exports = $ '.forum-options'
+actions-right = $ '.forum-actions-top .actions-right'
+	..insertBefore do
+		forum-options = node 'div' className: 'forum-options'
+		$ '.inner-search-wrapper' ..
+
+module.exports = forum-options

@@ -1,7 +1,7 @@
 require! <[../textarea ../topic]>
 {$} = require 'lib/dom'
 
-submit = $ '.post [type=submit]'
+submit = $ '#new-post [type=submit]'
 
 unless textarea.value #i.e. you have to wait for the timeout
 	textarea.value = localStorage.getItem "post_#{topic.dataset.id}" or ''

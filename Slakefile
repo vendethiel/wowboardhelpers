@@ -1,4 +1,4 @@
-require! <[fs LiveScript nephrite stylus uglify-js acorn]>
+require! <[fs LiveScript nephrite stylus uglify-js acorn nib]>
 {exec} = require 'child_process'
 cjs = require 'commonjs-everywhere'
 
@@ -18,10 +18,10 @@ errinfo = ->
   console.log '\007'
 
 compile-styles = ->
-  filename = stylefile
-  nib read(filename)+'' {filename} .render!
+  style read(stylefile)+'' filename: stylefile .render!
 
-nib = -> stylus ... .use require(\nib)!
+style = ->
+  stylus ... .use nib!
 
 ls-parse = (src, filename) ->
   try LiveScript.compile src, {+bare, filename}
@@ -43,6 +43,7 @@ cjs-options =
       try
         src = nephrite src, filename
         ls-parse src, filename
+        ls-parse src, filename
       catch {message} => errinfo "Nephrite (#filename): #message"
 
     '.ls': en-ast ls-parse
@@ -56,7 +57,7 @@ last-changed = entry-point
 traverse-deps = cjs~traverseDependencies
 bundle = cjs~bundle
 
-var ast, css, css-change
+var ast, css, css-change, code
 
 ast-node = uglify-js.AST_Node
 task 'build' 'build userscript' !->
@@ -68,7 +69,7 @@ task 'build' 'build userscript' !->
       return errinfo "Stylus: #message"
     console.timeEnd 'CSS'
 
-  unless css-change
+  if not code or not css-change
     try
       console.time 'CJS'
       new-deps = traverse-deps last-changed, __dirname, cjs-options
@@ -78,7 +79,7 @@ task 'build' 'build userscript' !->
       console.timeEnd 'CJS'
 
       console.time 'gen'
-      code = ast-node
+      code := ast-node
         .from_mozilla_ast ast
         .print_to_string {+beautify}
       console.timeEnd 'gen'

@@ -20,12 +20,12 @@ for post-character in $$ '.post-character'
 	icon-ignore = post-character.querySelector '.icon-ignore'
 	continue unless icon-ignore # own account
 	# temp parens until LS 1.2.1
-	link = (clean <| post-character.querySelector '.user-name > a' .outerHTML.trim!)
+	link = (clean <| post-character.querySelector '.bnet-username > a' .outerHTML.trim!)
 
 	# need to use getAttribute() for chrome because it sucks
 	# and it's returned as a string, which should be the same in other browsers
 	# since it's a DOM thing, but better safe than sorry ...
-	[, account] = /ignore\(([0-9]+)/ == icon-ignore.getAttribute 'onclick' .toString!
+	[, account] = /ignoreUser\(this, ([0-9]+)/ == icon-ignore.getAttribute 'onclick' .toString!
 	
 	post-character.dataset <<< {account, link}
 
@@ -36,7 +36,7 @@ for post-character in $$ '.post-character'
 if modified # save it !
 	localStorage.setItem "#{lang.locale}-accountCharacters" JSON.stringify account-characters
 
-for post-character in $$ '.post:not(.hidden) .post-character'
+for post-character in $$ '.topic-post:not(.hidden) .post-character'
 	{account, link: current} = post-character.dataset
 	continue unless account
 

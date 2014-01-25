@@ -5,8 +5,8 @@
 	span.clear
 	#cheatsheet
 		// what's wrong with you blizz ?
-		a.toggler.ui-button.button1
-			span: span= lang.cheatsheet
+		button.toggler.ui-button.button1
+			span.button-left: span.button-right= lang.cheatsheet
 
 		ul
 			for key, val of @cheatsheet

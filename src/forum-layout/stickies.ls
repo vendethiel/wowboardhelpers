@@ -2,7 +2,8 @@ require! <[lib/lang ../forum-options]>
 {$, node} = require 'lib/dom'
 
 #remove sticky part (tbody.sticky)
-sticky = $ '.sticky'
+sticky = $ 'tbody.stickied-topics'
+
 unless 'show' is localStorage.getItem 'show-stickies'
 	sticky.style.display = 'none'
 

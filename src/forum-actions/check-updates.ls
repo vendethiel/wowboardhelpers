@@ -7,7 +7,7 @@ tr-html = """<tr id="postRow#first-topic-id"""
 a-end-html = 'data-tooltip-options=\'{"location": "mouse"}\'>'
 tbody-html = '<tbody class="regular">'
 
-$ '#forum-actions-top'
+$ '.forum-actions-top'
 	..insertBefore do
 		h1 = node 'h1'
 		..children[*-1]

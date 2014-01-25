@@ -1,3 +1,3 @@
 {$} = require 'lib/dom'
 
-module.exports = $ 'tbody.regular'
+module.exports = $ 'tbody.regular-topics'
