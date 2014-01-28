@@ -11,6 +11,8 @@
  * TODO
 - jump to page for topics too
  * changelog
+ * 5.1.0
+ *  Fix topic hiding
  * 5.0.0
  *  ______________
  * |              |

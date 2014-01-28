@@ -17,27 +17,21 @@ hidden-topics = (localStorage.getItem "hidden_topics" or "") / ";"
 	if it.querySelector '.last-read'
 		that.parentNode.removeChild that
 
-for post-pages in $$ 'tbody.regular .post-pages'
-	if post-pages.querySelector '.last-read'
-		# we're gonna use .last-read as a placeholder, and we have to remove the old anyway
-		post-pages.removeChild that
-
-	tr = post-pages.parentNode
+for let {children: [pages-wrapper], parentNode: tr}:post-pages in $$ '.post-pages-cell', tbody-regular
 	topic-id = tr.id.slice 'postRow'length
 
 	hide tr if topic-id in hidden-topics
 
-	let tr, topic-id
-		el template-hide-topic hidden: topic-id in hidden-topics
-			..onclick = ->
-				if topic-id in hidden-topics
-					post-pages.removeChild ..
-					hidden-topics.splice hidden-topics.indexOf(topic-id), 1
-				else
-					hide tr
-					hidden-topics.push topic-id
+	el template-hide-topic hidden: topic-id in hidden-topics
+		..onclick = ->
+			if topic-id in hidden-topics
+				pages-wrapper.removeChild ..
+				hidden-topics.splice hidden-topics.indexOf(topic-id), 1
+			else
+				hide tr
+				hidden-topics.push topic-id
 
-				save-hiddens!
+			save-hiddens!
 
-			# add it as the first element in .post-pages
-			post-pages.insertBefore .., post-pages.children.0
+		# add it as the first element in .post-pages-cell .pages-wrapper
+		pages-wrapper.insertBefore .., pages-wrapper.children.0

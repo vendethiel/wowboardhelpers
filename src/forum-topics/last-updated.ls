@@ -22,7 +22,7 @@ for {parentNode: {parentNode: tr}:td}:post in $$ '.topic-title'
 	{'post-pages-cell': pages, 'last-post-cell':  {children: [last-post-link]}:last-post} = fetch-siblings td
 	last-poster-name = $ '.author-name' last-post .innerHTML
 
-	post-count = (last-post-link.href / '#')1
+	[, post-count] = last-post-link.href / '#'
 
 	unless pages.querySelector 'ul' #no pages
 		pages.innerHTML = template-default-pagination {post.href}
@@ -37,13 +37,13 @@ for {parentNode: {parentNode: tr}:td}:post in $$ '.topic-title'
 			state = TSTATE_CHK if that in characters
 
 	# we've read the last answer
-	if state is TSTATE_CHK
-		tr.className = 'read'
-		
+	tr.className = if state is TSTATE_CHK
 		if pages.querySelector '.last-read'
 			pages.removeChild that
+		
+		'read'
 	else
-		tr.className = 'unread' # never trust blizz
+		'unread' # never trust blizz
 
 	# if we already went to the topic
 	unless state is TSTATE_UNK
@@ -71,7 +71,6 @@ for {parentNode: {parentNode: tr}:td}:post in $$ '.topic-title'
  * returns 0 if no information were found
  */
 function check-topic(id, count, last-poster)
-	debugger
 	match localStorage.getItem "topic_#id"
 	| (> count)
 		if last-poster == get-last-poster id

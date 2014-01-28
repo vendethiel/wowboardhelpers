@@ -1,17 +1,17 @@
-types = show hide
-colors = green red
-for type, i in types
-	a.{type}-topic
+$types = {show: green, hide: red}
+for $type, $color in $types
+	a.{$type}-topic
 		cursor: pointer
-		color: colors[i]
+		float: left
+		margin-top: 13px
+		color: $color
 
 		&:hover
-			color: colors[i] !important
+			color: $color !important
 
-//this moves things a bit ...
+// display:none moves things a bit ...
 .last-read
 	opacity: 0
 
-tr:hover
-	.last-read
-		opacity: 1
+tr:hover .last-read
+	opacity: 1

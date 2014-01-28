@@ -474,7 +474,7 @@
     require.define("/src/forum-layout/hide-mar.ls", function(module, exports, __dirname, __filename) {
         var $;
         $ = require("/lib/dom/index.ls", module).$;
-        if (!$(".regular > .unread:not(.hidden)")) {
+        if (!$("tbody.regular-topics > .unread:not(.hidden)")) {
             require("/src/forum-options.ls", module).removeChild(require("/src/forum-layout/mar.ls", module));
         }
     });
@@ -501,12 +501,10 @@
                         continue;
                     }
                     topicId = row.id.slice("postRow".length);
-                    siblings = fetchSiblings(row.children[0], {
-                        slice: 5
-                    });
-                    x$ = bind$(localStorage, "setItem");
-                    x$("topic_" + topicId, split$.call(siblings.lastPost.children[0].href, "#")[1]);
-                    x$("topic_lp_" + topicId, siblings.author.innerHTML.trim());
+                    siblings = fetchSiblings(row.children[0]);
+                    x$ = localStorage;
+                    x$["topic_" + topicId] = split$.call(siblings["last-post-cell"].children[0].href, "#")[1];
+                    x$["topic_lp_" + topicId] = siblings["author-cell"].innerHTML.trim();
                     row.classList.add("read");
                 }
                 forumOptions.removeChild(buttonMar);
@@ -515,11 +513,6 @@
         x$ = buttonMar;
         x$.style.cursor = "pointer";
         forumOptions.appendChild(x$);
-        function bind$(obj, key, target) {
-            return function() {
-                return (target || obj)[key].apply(obj, arguments);
-            };
-        }
     });
     require.define("/src/tbody-regular.ls", function(module, exports, __dirname, __filename) {
         var $;
@@ -676,61 +669,51 @@
     require.define("/src/forum-topics/move-redirects.ls", function(module, exports, __dirname, __filename) {
         var tbodyRegular, i$, ref$, len$, status, tr;
         tbodyRegular = require("/src/tbody-regular.ls", module);
-        for (i$ = 0, len$ = (ref$ = tbodyRegular.querySelectorAll(".post-status")).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = tbodyRegular.querySelectorAll(".status-text")).length; i$ < len$; ++i$) {
             status = ref$[i$];
-            tr = status.parentNode.parentNode;
+            tr = status.parentNode.parentNode.parentNode;
             tr.className += " hidden redirect";
             tbodyRegular.removeChild(tr);
             tbodyRegular.appendChild(tr);
         }
     });
     require.define("/src/forum-topics/last-updated.ls", function(module, exports, __dirname, __filename) {
-        var fetchSiblings, characters, ref$, $, $$, el, node, templateAuthor, templateTtLastUpdated, templateDefaultPagination, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, i$, len$, post, children, div, a, td, topicId, ref1$, pages, lastPost, postCount, state, that, split$ = "".split;
+        var fetchSiblings, characters, ref$, $, $$, el, node, templateDefaultPagination, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, i$, len$, post, td, tr, topicId, ref1$, pages, lastPost, lastPostLink, lastPosterName, postCount, state, that, split$ = "".split;
         fetchSiblings = require("/lib/fetch-siblings/index.ls", module);
         characters = require("/src/characters.ls", module);
         ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, $$ = ref$.$$, el = ref$.el, 
         node = ref$.node;
-        templateAuthor = require("/src/forum-topics/templates/author.ne", module);
-        templateTtLastUpdated = require("/src/forum-topics/templates/tt-last-updated.ne", module);
         templateDefaultPagination = require("/src/forum-topics/templates/default-pagination.ne", module);
         TSTATE_UNK = 0;
         TSTATE_ALR = 1;
         TSTATE_CHK = 2;
         for (i$ = 0, len$ = (ref$ = $$(".topic-title")).length; i$ < len$; ++i$) {
-            post = ref$[i$], children = post.children, div = children[0], a = children[1], td = post.parentNode;
+            post = ref$[i$], td = post.parentNode, tr = td.parentNode;
             if ($(".employee-icon", post) || $(".status-text", post)) {
                 continue;
             }
-            topicId = td.dataset.topicId;
-            debugger;
-            ref1$ = fetchSiblings(post), pages = ref1$["post-pages-cell"], lastPost = ref1$["last-post-cell"];
-            postCount = split$.call(lastPost.href, "#")[1];
+            topicId = tr.dataset.topicId;
+            ref1$ = fetchSiblings(td), pages = ref1$["post-pages-cell"], lastPost = ref1$["last-post-cell"], 
+            lastPostLink = lastPost.children[0];
+            lastPosterName = $(".author-name", lastPost).innerHTML;
+            ref1$ = split$.call(lastPostLink.href, "#"), postCount = ref1$[1];
             if (!pages.querySelector("ul")) {
                 pages.innerHTML = templateDefaultPagination({
-                    href: a.href
+                    href: post.href
                 });
             }
-            state = checkTopic(topicId, postCount, authorName);
+            state = checkTopic(topicId, postCount, lastPosterName);
             if (state !== TSTATE_CHK) {
-                if (that = characters && authorName) {
+                if (that = characters && lastPosterName) {
                     if (in$(that, characters)) {
                         state = TSTATE_CHK;
                     }
                 }
-                if (replies == 0 && in$(authorName.trim(), characters)) {
-                    state = TSTATE_CHK;
-                }
             }
-            if (state === TSTATE_CHK) {
-                td.className = "read";
-                if (that = pages.querySelector(".last-read")) {
-                    pages.removeChild(that);
-                }
-            } else {
-                td.className = "unread";
-            }
+            tr.className = state === TSTATE_CHK ? ((that = pages.querySelector(".last-read")) && pages.removeChild(that), 
+            "read") : "unread";
             if (state !== TSTATE_UNK) {
-                a.href = (ref1$ = pages.getElementsByTagName("a"))[ref1$.length - 1].href;
+                post.href = (ref1$ = pages.getElementsByTagName("a"))[ref1$.length - 1].href;
             }
             markState(post, state);
         }
@@ -785,32 +768,6 @@
         };
         module.exports = function(locals, extra) {
             return '<ul class="ui-pagination"><li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li></ul>';
-        };
-    });
-    require.define("/src/forum-topics/templates/tt-last-updated.ne", function(module, exports, __dirname, __filename) {
-        var join;
-        join = function(it) {
-            if (it) {
-                return it.join("");
-            } else {
-                return "";
-            }
-        };
-        module.exports = function(locals, extra) {
-            return '<div class="tt-last-updated"><br/>' + (locals.text || "") + "</div>";
-        };
-    });
-    require.define("/src/forum-topics/templates/author.ne", function(module, exports, __dirname, __filename) {
-        var join;
-        join = function(it) {
-            if (it) {
-                return it.join("");
-            } else {
-                return "";
-            }
-        };
-        module.exports = function(locals, extra) {
-            return '    <span class="' + [ "poster", locals.own ? "own-poster" : void 8, locals.cm ? "type-blizzard" : void 8 ].join(" ") + '">' + ((locals.cm ? '<img src="/wow/static/images/layout/cms/icon_blizzard.gif" alt="CM"/>' : void 8) || "") + "\n" + (locals.name || "") + "</span>";
         };
     });
     require.define("/src/characters.ls", function(module, exports, __dirname, __filename) {
@@ -1240,14 +1197,14 @@
         bindKey = require("/src/cheatsheet/bind-key.ls", module);
         $ = require("/lib/dom/index.ls", module).$;
         curPage = $(".ui-pagination li.current");
-        if (curPage.previousElementSibling) {
+        if (curPage != null && curPage.previousElementSibling) {
             bindKey("aq", "jump-to-prev-page", function() {
                 var ref$, page, url;
                 ref$ = topic.dataset, page = ref$.page, url = ref$.url;
                 document.location = url + "?page=" + --page;
             });
         }
-        if (curPage.nextElementSibling) {
+        if (curPage != null && curPage.nextElementSibling) {
             bindKey("ed", "jump-to-next-page", function() {
                 var ref$, page, url;
                 ref$ = topic.dataset, page = ref$.page, url = ref$.url;
@@ -1603,6 +1560,8 @@
 }\
 a.show-topic {\
   cursor: pointer;\
+  float: left;\
+  margin-top: 13px;\
   color: #008000;\
 }\
 a.show-topic:hover {\
@@ -1610,6 +1569,8 @@ a.show-topic:hover {\
 }\
 a.hide-topic {\
   cursor: pointer;\
+  float: left;\
+  margin-top: 13px;\
   color: #f00;\
 }\
 a.hide-topic:hover {\
@@ -6588,92 +6549,72 @@ img.autolink {\
             });
         }).call(this);
     });
-    require.define("/src/forum-topics/last-updated.ls", function(module, exports, __dirname, __filename) {
-        var fetchSiblings, characters, ref$, $, $$, el, node, templateDefaultPagination, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, i$, len$, post, td, tr, topicId, ref1$, pages, lastPost, lastPostLink, lastPosterName, postCount, state, that, split$ = "".split;
-        fetchSiblings = require("/lib/fetch-siblings/index.ls", module);
-        characters = require("/src/characters.ls", module);
-        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, $$ = ref$.$$, el = ref$.el, 
-        node = ref$.node;
-        templateDefaultPagination = require("/src/forum-topics/templates/default-pagination.ne", module);
-        TSTATE_UNK = 0;
-        TSTATE_ALR = 1;
-        TSTATE_CHK = 2;
-        for (i$ = 0, len$ = (ref$ = $$(".topic-title")).length; i$ < len$; ++i$) {
-            post = ref$[i$], td = post.parentNode, tr = td.parentNode;
-            if ($(".employee-icon", post) || $(".status-text", post)) {
-                continue;
-            }
-            topicId = tr.dataset.topicId;
-            ref1$ = fetchSiblings(td), pages = ref1$["post-pages-cell"], lastPost = ref1$["last-post-cell"], 
-            lastPostLink = lastPost.children[0];
-            lastPosterName = $(".author-name", lastPost).innerHTML;
-            postCount = split$.call(lastPostLink.href, "#")[1];
-            if (!pages.querySelector("ul")) {
-                pages.innerHTML = templateDefaultPagination({
-                    href: post.href
-                });
-            }
-            state = checkTopic(topicId, postCount, lastPosterName);
-            if (state !== TSTATE_CHK) {
-                if (that = characters && lastPosterName) {
-                    if (in$(that, characters)) {
-                        state = TSTATE_CHK;
-                    }
-                }
-            }
-            if (state === TSTATE_CHK) {
-                tr.className = "read";
-                if (that = pages.querySelector(".last-read")) {
-                    pages.removeChild(that);
-                }
-            } else {
-                tr.className = "unread";
-            }
-            if (state !== TSTATE_UNK) {
-                post.href = (ref1$ = pages.getElementsByTagName("a"))[ref1$.length - 1].href;
-            }
-            markState(post, state);
+    require.define("/src/forum-topics/hide-topic.ls", function(module, exports, __dirname, __filename) {
+        var tbodyRegular, ref$, $, $$, el, templateHideTopic, hiddenTopics, i$, len$, split$ = "".split, join$ = [].join;
+        tbodyRegular = require("/src/tbody-regular.ls", module);
+        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, $$ = ref$.$$, el = ref$.el;
+        templateHideTopic = require("/src/forum-topics/templates/hide-topic.ne", module);
+        hiddenTopics = split$.call(localStorage.getItem("hidden_topics") || "", ";");
+        function saveHiddens() {
+            localStorage.setItem("hidden_topics", join$.call(hiddenTopics, ";"));
         }
-        function markState(node, state) {
-            var innerHTML, states;
-            innerHTML = node.innerHTML;
-            states = [ "?", "!", "✓" ];
-            node.innerHTML = "<b>[" + states[state] + "]</b> " + innerHTML;
-        }
-        function checkTopic(id, count, lastPoster) {
-            debugger;
-            var ref$;
-            switch (ref$ = [ localStorage.getItem("topic_" + id) ], false) {
-              case !function(it) {
-                    return it > count;
-                }(ref$[0]):
-                if (lastPoster === getLastPoster(id)) {
-                    return TSTATE_CHK;
-                } else {
-                    return TSTATE_ALR;
-                }
-                break;
-
-              case !function(it) {
-                    return it === count;
-                }(ref$[0]):
-                return TSTATE_CHK;
-
-              case !(0 === ref$[0] || null === ref$[0]):
-                return TSTATE_UNK;
-
-              default:
-                return TSTATE_ALR;
+        function hide(it) {
+            var that;
+            it.parentNode.removeChild(it);
+            tbodyRegular.appendChild(it);
+            it.className += " hidden";
+            if (that = it.querySelector(".last-read")) {
+                that.parentNode.removeChild(that);
             }
         }
-        function getLastPoster(it) {
-            return localStorage.getItem("topic_lp_" + it);
+        for (i$ = 0, len$ = $$(".post-pages-cell", tbodyRegular).length; i$ < len$; ++i$) {
+            fn$.call(this, $$(".post-pages-cell", tbodyRegular)[i$]);
         }
         function in$(x, xs) {
             var i = -1, l = xs.length >>> 0;
             while (++i < l) if (x === xs[i]) return true;
             return false;
         }
+        function fn$(postPages) {
+            var pagesWrapper, tr, topicId, x$;
+            pagesWrapper = postPages.children[0], tr = postPages.parentNode;
+            topicId = tr.id.slice("postRow".length);
+            if (in$(topicId, hiddenTopics)) {
+                hide(tr);
+            }
+            x$ = el(templateHideTopic({
+                hidden: in$(topicId, hiddenTopics)
+            }));
+            x$.onclick = function() {
+                if (in$(topicId, hiddenTopics)) {
+                    pagesWrapper.removeChild(x$);
+                    hiddenTopics.splice(hiddenTopics.indexOf(topicId), 1);
+                } else {
+                    hide(tr);
+                    hiddenTopics.push(topicId);
+                }
+                return saveHiddens();
+            };
+            pagesWrapper.insertBefore(x$, pagesWrapper.children[0]);
+        }
+    });
+    require.define("/src/forum-topics/templates/hide-topic.ne", function(module, exports, __dirname, __filename) {
+        var join;
+        join = function(it) {
+            if (it) {
+                return it.join("");
+            } else {
+                return "";
+            }
+        };
+        module.exports = function(locals, extra) {
+            return "" + ((locals.hidden ? '<a class="last-read show-topic">✓</a>' : '<a class="last-read hide-topic">X</a>') || "");
+        };
+    });
+    require.define("/src/tbody-regular.ls", function(module, exports, __dirname, __filename) {
+        var $;
+        $ = require("/lib/dom/index.ls", module).$;
+        module.exports = $("tbody.regular-topics");
     });
     require.define("/src/forum-topics/templates/default-pagination.ne", function(module, exports, __dirname, __filename) {
         var join;
@@ -6685,120 +6626,9 @@ img.autolink {\
             }
         };
         module.exports = function(locals, extra) {
-            return '<ul class="ui-pagination"><li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li></ul>';
+            return '<div class="pages-wrapper"><ul class="ui-pagination"><li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li></ul></div>';
         };
     });
-    require.define("/src/characters.ls", function(module, exports, __dirname, __filename) {
-        var $$, characters, slice$ = [].slice;
-        $$ = require("/lib/dom/index.ls", module).$$;
-        characters = slice$.call($$(".char-wrapper .name"));
-        if (characters.length) {
-            characters = characters.map("innerHTML");
-        }
-        module.exports = characters;
-    });
-    require.define("/lib/fetch-siblings/index.ls", function(module, exports, __dirname, __filename) {
-        module.exports = function() {
-            function fetchSiblings(elem, arg$) {
-                var ref$, slice, ref1$, indexBy, results$ = {};
-                ref$ = arg$ != null ? arg$ : {}, slice = (ref1$ = ref$.slice) != null ? ref1$ : 0, 
-                indexBy = (ref1$ = ref$.indexBy) != null ? ref1$ : "className";
-                while (elem != null && (elem = elem.nextElementSibling)) {
-                    results$[(ref$ = elem[indexBy].slice(slice).split(" "))[ref$.length - 1]] = elem;
-                }
-                return results$;
-            }
-            return fetchSiblings;
-        }();
-    });
-    require.define("/src/forum-layout/hide-mar.ls", function(module, exports, __dirname, __filename) {
-        var $;
-        $ = require("/lib/dom/index.ls", module).$;
-        if (!$("tbody.regular-topics > .unread:not(.hidden)")) {
-            require("/src/forum-options.ls", module).removeChild(require("/src/forum-layout/mar.ls", module));
-        }
-    });
-    require.define("/src/forum-layout/mar.ls", function(module, exports, __dirname, __filename) {
-        var lang, fetchSiblings, forumOptions, tbodyRegular, node, allRead, buttonMar, x$, split$ = "".split;
-        lang = require("/lib/lang/index.ls", module);
-        fetchSiblings = require("/lib/fetch-siblings/index.ls", module);
-        forumOptions = require("/src/forum-options.ls", module);
-        tbodyRegular = require("/src/tbody-regular.ls", module);
-        node = require("/lib/dom/index.ls", module).node;
-        allRead = false;
-        module.exports = buttonMar = node("a", {
-            innerHTML: "MAR",
-            title: lang.mar,
-            onclick: function() {
-                var i$, ref$, len$, row, topicId, siblings, x$;
-                if (allRead) {
-                    return;
-                }
-                allRead = !allRead;
-                for (i$ = 0, len$ = (ref$ = tbodyRegular.children).length; i$ < len$; ++i$) {
-                    row = ref$[i$];
-                    if (row.classList.contains("read")) {
-                        continue;
-                    }
-                    topicId = row.id.slice("postRow".length);
-                    siblings = fetchSiblings(row.children[0]);
-                    x$ = localStorage;
-                    x$["topic_" + topicId] = split$.call(siblings["last-post-cell"].children[0].href, "#")[1];
-                    x$["topic_lp_" + topicId] = siblings["author-cell"].innerHTML.trim();
-                    row.classList.add("read");
-                }
-                forumOptions.removeChild(buttonMar);
-            }
-        });
-        x$ = buttonMar;
-        x$.style.cursor = "pointer";
-        forumOptions.appendChild(x$);
-    });
-    require.define("/src/tbody-regular.ls", function(module, exports, __dirname, __filename) {
-        var $;
-        $ = require("/lib/dom/index.ls", module).$;
-        module.exports = $("tbody.regular-topics");
-    });
-    require.define("/src/forum-options.ls", function(module, exports, __dirname, __filename) {
-        var ref$, $, node, x$, actionsRight, forumOptions;
-        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, node = ref$.node;
-        x$ = actionsRight = $(".forum-actions-top .actions-right");
-        x$.insertBefore(forumOptions = node("div", {
-            className: "forum-options"
-        }), $(".inner-search-wrapper", x$));
-        module.exports = forumOptions;
-    });
-    require.define("/src/forum-topics/move-redirects.ls", function(module, exports, __dirname, __filename) {
-        var tbodyRegular, i$, ref$, len$, status, tr;
-        tbodyRegular = require("/src/tbody-regular.ls", module);
-        for (i$ = 0, len$ = (ref$ = tbodyRegular.querySelectorAll(".status-text")).length; i$ < len$; ++i$) {
-            status = ref$[i$];
-            tr = status.parentNode.parentNode.parentNode;
-            tr.className += " hidden redirect";
-            tbodyRegular.removeChild(tr);
-            tbodyRegular.appendChild(tr);
-        }
-    });
-    require.define("/src/topic-jumps/page-nav.ls", function(module, exports, __dirname, __filename) {
-        var topic, bindKey, $, curPage;
-        topic = require("/src/topic.ls", module);
-        bindKey = require("/src/cheatsheet/bind-key.ls", module);
-        $ = require("/lib/dom/index.ls", module).$;
-        curPage = $(".ui-pagination li.current");
-        if (curPage != null && curPage.previousElementSibling) {
-            bindKey("aq", "jump-to-prev-page", function() {
-                var ref$, page, url;
-                ref$ = topic.dataset, page = ref$.page, url = ref$.url;
-                document.location = url + "?page=" + --page;
-            });
-        }
-        if (curPage != null && curPage.nextElementSibling) {
-            bindKey("ed", "jump-to-next-page", function() {
-                var ref$, page, url;
-                ref$ = topic.dataset, page = ref$.page, url = ref$.url;
-                document.location = url + "?page=" + ++page;
-            });
-        }
-    });
+    require.define("/metadata.js", function(module, exports, __dirname, __filename) {});
     require("/src/wowboardhelpers.ls");
 }).call(this, this);
