@@ -7,11 +7,13 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 5.0.0
+// @version 5.1.0
 // ==/UserScript==
  * TODO
-- jump to page for topics too
+ *  = See issues : https://github.com/Nami-Doc/wowboardhelpers/issues
  * changelog
+ * 5.1.0
+ *  Fix topic hiding
  * 5.0.0
  *  ______________
  * |              |
@@ -601,7 +603,7 @@
         };
     });
     require.define("/src/forum-topics/hide-topic.ls", function(module, exports, __dirname, __filename) {
-        var tbodyRegular, ref$, $, $$, el, templateHideTopic, hiddenTopics, i$, len$, postPages, that, tr, topicId, split$ = "".split, join$ = [].join;
+        var tbodyRegular, ref$, $, $$, el, templateHideTopic, hiddenTopics, i$, len$, split$ = "".split, join$ = [].join;
         tbodyRegular = require("/src/tbody-regular.ls", module);
         ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, $$ = ref$.$$, el = ref$.el;
         templateHideTopic = require("/src/forum-topics/templates/hide-topic.ne", module);
@@ -618,31 +620,27 @@
                 that.parentNode.removeChild(that);
             }
         }
-        for (i$ = 0, len$ = (ref$ = $$("tbody.regular .post-pages")).length; i$ < len$; ++i$) {
-            postPages = ref$[i$];
-            if (that = postPages.querySelector(".last-read")) {
-                postPages.removeChild(that);
-            }
-            tr = postPages.parentNode;
-            topicId = tr.id.slice("postRow".length);
-            if (in$(topicId, hiddenTopics)) {
-                hide(tr);
-            }
-            fn$.call(this, tr, topicId, postPages);
+        for (i$ = 0, len$ = $$(".post-pages-cell", tbodyRegular).length; i$ < len$; ++i$) {
+            fn$.call(this, $$(".post-pages-cell", tbodyRegular)[i$]);
         }
         function in$(x, xs) {
             var i = -1, l = xs.length >>> 0;
             while (++i < l) if (x === xs[i]) return true;
             return false;
         }
-        function fn$(tr, topicId, postPages) {
-            var x$;
+        function fn$(postPages) {
+            var pagesWrapper, tr, topicId, x$;
+            pagesWrapper = postPages.children[0], tr = postPages.parentNode;
+            topicId = tr.id.slice("postRow".length);
+            if (in$(topicId, hiddenTopics)) {
+                hide(tr);
+            }
             x$ = el(templateHideTopic({
                 hidden: in$(topicId, hiddenTopics)
             }));
             x$.onclick = function() {
                 if (in$(topicId, hiddenTopics)) {
-                    postPages.removeChild(x$);
+                    pagesWrapper.removeChild(x$);
                     hiddenTopics.splice(hiddenTopics.indexOf(topicId), 1);
                 } else {
                     hide(tr);
@@ -650,7 +648,7 @@
                 }
                 return saveHiddens();
             };
-            postPages.insertBefore(x$, postPages.children[0]);
+            pagesWrapper.insertBefore(x$, pagesWrapper.children[0]);
         }
     });
     require.define("/src/forum-topics/templates/hide-topic.ne", function(module, exports, __dirname, __filename) {
@@ -767,7 +765,7 @@
             }
         };
         module.exports = function(locals, extra) {
-            return '<ul class="ui-pagination"><li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li></ul>';
+            return '<div class="pages-wrapper"><ul class="ui-pagination"><li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li></ul></div>';
         };
     });
     require.define("/src/characters.ls", function(module, exports, __dirname, __filename) {
@@ -1303,9 +1301,9 @@
         }
     });
     require.define("/src/topic-characters/index.ls", function(module, exports, __dirname, __filename) {
-        var contextLinks, improveTopic, multiChars;
+        var contextLinks, realm, multiChars;
         contextLinks = require("/src/topic-characters/context-links.ls", module);
-        improveTopic = require("/src/topic-characters/improve-topic.ls", module);
+        realm = require("/src/topic-characters/realm.ls", module);
         multiChars = require("/src/topic-characters/multi-chars.ls", module);
     });
     require.define("/src/topic-characters/multi-chars.ls", function(module, exports, __dirname, __filename) {
@@ -1417,7 +1415,7 @@
             }()) || "") + "</ul></div>";
         };
     });
-    require.define("/src/topic-characters/improve-topic.ls", function(module, exports, __dirname, __filename) {
+    require.define("/src/topic-characters/realm.ls", function(module, exports, __dirname, __filename) {
         var i$, ref$, len$, infos, realm, ref1$;
         for (i$ = 0, len$ = (ref$ = document.getElementsByClassName("character-info")).length; i$ < len$; ++i$) {
             infos = ref$[i$];
@@ -6549,86 +6547,25 @@ img.autolink {\
             });
         }).call(this);
     });
-    require.define("/src/forum-topics/hide-topic.ls", function(module, exports, __dirname, __filename) {
-        var tbodyRegular, ref$, $, $$, el, templateHideTopic, hiddenTopics, i$, len$, split$ = "".split, join$ = [].join;
-        tbodyRegular = require("/src/tbody-regular.ls", module);
-        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, $$ = ref$.$$, el = ref$.el;
-        templateHideTopic = require("/src/forum-topics/templates/hide-topic.ne", module);
-        hiddenTopics = split$.call(localStorage.getItem("hidden_topics") || "", ";");
-        function saveHiddens() {
-            localStorage.setItem("hidden_topics", join$.call(hiddenTopics, ";"));
-        }
-        function hide(it) {
-            var that;
-            it.parentNode.removeChild(it);
-            tbodyRegular.appendChild(it);
-            it.className += " hidden";
-            if (that = it.querySelector(".last-read")) {
-                that.parentNode.removeChild(that);
-            }
-        }
-        for (i$ = 0, len$ = $$(".post-pages-cell", tbodyRegular).length; i$ < len$; ++i$) {
-            fn$.call(this, $$(".post-pages-cell", tbodyRegular)[i$]);
-        }
-        function in$(x, xs) {
-            var i = -1, l = xs.length >>> 0;
-            while (++i < l) if (x === xs[i]) return true;
-            return false;
-        }
-        function fn$(postPages) {
-            var pagesWrapper, tr, topicId, x$;
-            pagesWrapper = postPages.children[0], tr = postPages.parentNode;
-            topicId = tr.id.slice("postRow".length);
-            if (in$(topicId, hiddenTopics)) {
-                hide(tr);
-            }
-            x$ = el(templateHideTopic({
-                hidden: in$(topicId, hiddenTopics)
-            }));
-            x$.onclick = function() {
-                if (in$(topicId, hiddenTopics)) {
-                    pagesWrapper.removeChild(x$);
-                    hiddenTopics.splice(hiddenTopics.indexOf(topicId), 1);
-                } else {
-                    hide(tr);
-                    hiddenTopics.push(topicId);
-                }
-                return saveHiddens();
-            };
-            pagesWrapper.insertBefore(x$, pagesWrapper.children[0]);
-        }
-    });
-    require.define("/src/forum-topics/templates/hide-topic.ne", function(module, exports, __dirname, __filename) {
-        var join;
-        join = function(it) {
-            if (it) {
-                return it.join("");
-            } else {
-                return "";
-            }
-        };
-        module.exports = function(locals, extra) {
-            return "" + ((locals.hidden ? '<a class="last-read show-topic">✓</a>' : '<a class="last-read hide-topic">X</a>') || "");
-        };
-    });
-    require.define("/src/tbody-regular.ls", function(module, exports, __dirname, __filename) {
-        var $;
-        $ = require("/lib/dom/index.ls", module).$;
-        module.exports = $("tbody.regular-topics");
-    });
-    require.define("/src/forum-topics/templates/default-pagination.ne", function(module, exports, __dirname, __filename) {
-        var join;
-        join = function(it) {
-            if (it) {
-                return it.join("");
-            } else {
-                return "";
-            }
-        };
-        module.exports = function(locals, extra) {
-            return '<div class="pages-wrapper"><ul class="ui-pagination"><li><a data-pagenum=\'1\' rel="np" href="' + locals.href + '">1</a></li></ul></div>';
-        };
-    });
     require.define("/metadata.js", function(module, exports, __dirname, __filename) {});
+    require.define("/src/topic-characters/realm.ls", function(module, exports, __dirname, __filename) {
+        var $$, i$, ref$, len$, infos, link, ref1$, realm, split$ = "".split;
+        $$ = require("/lib/dom/index.ls", module).$$;
+        for (i$ = 0, len$ = (ref$ = $$(".user-details")).length; i$ < len$; ++i$) {
+            infos = ref$[i$];
+            link = (ref1$ = infos.querySelector(".icon-profile.link-first")) != null ? ref1$.getAttribute("href") : void 8;
+            if (!link) {
+                continue;
+            }
+            if (link.has("//")) {
+                continue;
+            }
+            ref1$ = split$.call(link, "/"), realm = ref1$[4];
+            realm = realm.replace("-", " ").capitalize(true).replace(" ", "-");
+            if ((ref1$ = infos.querySelector(".character-desc")) != null) {
+                ref1$.innerHTML += "<br />" + realm;
+            }
+        }
+    });
     require("/src/wowboardhelpers.ls");
 }).call(this, this);

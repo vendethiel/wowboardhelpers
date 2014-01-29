@@ -6,13 +6,14 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 5.0.0
+// @version 5.1.0
 // ==/UserScript==
  * TODO
-- jump to page for topics too
+ *  = See issues : https://github.com/Nami-Doc/wowboardhelpers/issues
  * changelog
  * 5.1.0
  *  Fix topic hiding
+ *  Fix char realm display
  * 5.0.0
  *  ______________
  * |              |
