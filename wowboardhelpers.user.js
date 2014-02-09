@@ -14,6 +14,7 @@
  * changelog
  * 5.1.0
  *  Fix topic hiding
+ *  Fix char realm display
  * 5.0.0
  *  ______________
  * |              |
@@ -1416,14 +1417,19 @@
         };
     });
     require.define("/src/topic-characters/realm.ls", function(module, exports, __dirname, __filename) {
-        var i$, ref$, len$, infos, realm, ref1$;
-        for (i$ = 0, len$ = (ref$ = document.getElementsByClassName("character-info")).length; i$ < len$; ++i$) {
+        var $$, i$, ref$, len$, infos, link, ref1$, realm, split$ = "".split;
+        $$ = require("/lib/dom/index.ls", module).$$;
+        for (i$ = 0, len$ = (ref$ = $$(".user-details")).length; i$ < len$; ++i$) {
             infos = ref$[i$];
-            realm = infos.querySelector(".context-user span");
-            if (!realm) {
+            link = (ref1$ = infos.querySelector(".icon-profile.link-first")) != null ? ref1$.getAttribute("href") : void 8;
+            if (!link) {
                 continue;
             }
-            realm = realm.innerHTML;
+            if (link.has("//")) {
+                continue;
+            }
+            ref1$ = split$.call(link, "/"), realm = ref1$[4];
+            realm = realm.replace("-", " ").capitalize(true).replace(" ", "-");
             if ((ref1$ = infos.querySelector(".character-desc")) != null) {
                 ref1$.innerHTML += "<br />" + realm;
             }
@@ -6546,26 +6552,6 @@ img.autolink {\
                 timeParse: [ "{shift}{weekday}", "{year}年{month?}月?{date?}{0?}", "{month}月{date?}{0?}", "{date}[日號]" ]
             });
         }).call(this);
-    });
-    require.define("/metadata.js", function(module, exports, __dirname, __filename) {});
-    require.define("/src/topic-characters/realm.ls", function(module, exports, __dirname, __filename) {
-        var $$, i$, ref$, len$, infos, link, ref1$, realm, split$ = "".split;
-        $$ = require("/lib/dom/index.ls", module).$$;
-        for (i$ = 0, len$ = (ref$ = $$(".user-details")).length; i$ < len$; ++i$) {
-            infos = ref$[i$];
-            link = (ref1$ = infos.querySelector(".icon-profile.link-first")) != null ? ref1$.getAttribute("href") : void 8;
-            if (!link) {
-                continue;
-            }
-            if (link.has("//")) {
-                continue;
-            }
-            ref1$ = split$.call(link, "/"), realm = ref1$[4];
-            realm = realm.replace("-", " ").capitalize(true).replace(" ", "-");
-            if ((ref1$ = infos.querySelector(".character-desc")) != null) {
-                ref1$.innerHTML += "<br />" + realm;
-            }
-        }
     });
     require("/src/wowboardhelpers.ls");
 }).call(this, this);
