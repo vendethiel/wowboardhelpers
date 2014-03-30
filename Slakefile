@@ -43,7 +43,6 @@ cjs-options =
       try
         src = nephrite src, filename
         ls-parse src, filename
-        ls-parse src, filename
       catch {message} => errinfo "Nephrite (#filename): #message"
 
     '.ls': en-ast ls-parse
