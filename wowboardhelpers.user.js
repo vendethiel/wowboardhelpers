@@ -924,7 +924,7 @@
         rememberReply = require("/src/reply/remember-reply.ls", module);
     });
     require.define("/src/reply/remember-reply.ls", function(module, exports, __dirname, __filename) {
-        var textarea, topic, $, submit;
+        var textarea, topic, $, submit, w, oldCb;
         textarea = require("/src/textarea.ls", module);
         topic = require("/src/topic.ls", module);
         $ = require("/lib/dom/index.ls", module).$;
@@ -938,6 +938,13 @@
         submit.onclick = function() {
             return localStorage.setItem("post_" + topic.dataset.id, "");
         };
+        if (w = require("/src/w.ls", module)) {
+            oldCb = w.CharSelect.afterCallback;
+            w.CharSelect.afterCallback = function() {
+                textarea.value = localStorage.getItem("post_" + topic.dataset.id) || "";
+                oldCb();
+            };
+        }
     });
     require.define("/src/topic.ls", function(module, exports, __dirname, __filename) {
         var $, that, x$, ref$, i$, replace$ = "".replace, split$ = "".split;
@@ -1440,7 +1447,7 @@
         topic = require("/src/topic.ls", module);
         el = require("/lib/dom/index.ls", module).el;
         templateContextLinks = require("/src/topic-characters/templates/context-links.ne", module);
-        for (i$ = 0, len$ = (ref$ = topic.querySelectorAll(".context-links")).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = topic.querySelectorAll("#post-list .context-links")).length; i$ < len$; ++i$) {
             context = ref$[i$];
             if (context.children.length === 1) {
                 continue;
@@ -6553,5 +6560,6 @@ img.autolink {\
             });
         }).call(this);
     });
+    require.define("/metadata.js", function(module, exports, __dirname, __filename) {});
     require("/src/wowboardhelpers.ls");
 }).call(this, this);

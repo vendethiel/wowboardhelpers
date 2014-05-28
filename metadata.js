@@ -6,11 +6,14 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 5.1.0
+// @version 5.2.0
 // ==/UserScript==
  * TODO
  *  = See issues : https://github.com/Nami-Doc/wowboardhelpers/issues
  * changelog
+ * 5.2.0
+ *  Removed context links from post character infos
+ *  Fill back textarea with your answer draft when you change character
  * 5.1.0
  *  Fix topic hiding
  *  Fix char realm display

@@ -2,15 +2,16 @@
   "name": "wowboardhelpers",
   "version": "0.0.1",
   "author": "Nami-Doc <nami.d0c.0@gmail.com>",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "LiveScript": "1.2.0",
-    "stylus": "0.42.1",
-    "nib": "1.0.0",
-    "commonjs-everywhere": "0.9.4",
+    "stylus": "0.45.1",
+    "nib": "1.0.2",
+    "commonjs-everywhere": "0.9.7",
     "acorn": "0.1.0",
-    "uglify-js": "2.4.6",
+    "uglify-js": "2.4.13",
     "glob": "*",
-    "gaze": "0.4.3",
+    "gaze": "0.6.4",
     "nephrite": "2.3.2",
 
 
