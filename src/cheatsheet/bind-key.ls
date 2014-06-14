@@ -1,7 +1,7 @@
 require! <[lib/lang]>
 {$} = require 'lib/dom'
 
-html = $ 'html'
+html = $ 'html'; body = $ 'body'
 module.exports = bind-key = (binds, lang-key, cb) !->
 	cheatsheet[binds.toUpperCase!chars! * ', '] = lang lang-key
 
@@ -10,7 +10,7 @@ module.exports = bind-key = (binds, lang-key, cb) !->
 	document.addEventListener 'keydown' !->
 		return if it.altKey or it.ctrlKey or it.shiftKey
 		return unless it.keyCode in codes
-		return unless it.target is html # not typing
+		return unless it.target in [html, body] # not typing
 		it.preventDefault!
 
 		cb it

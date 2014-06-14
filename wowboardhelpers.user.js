@@ -7,11 +7,15 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
-// @version 5.1.0
+// @grant unsafeWindow
+// @version 5.2.0
 // ==/UserScript==
  * TODO
  *  = See issues : https://github.com/Nami-Doc/wowboardhelpers/issues
  * changelog
+ * 5.2.0
+ *  Removed context links from post character infos
+ *  Fill back textarea with your answer draft when you change character
  * 5.1.0
  *  Fix topic hiding
  *  Fix char realm display
@@ -443,10 +447,11 @@
         };
     });
     require.define("/src/cheatsheet/bind-key.ls", function(module, exports, __dirname, __filename) {
-        var lang, $, html, bindKey, cheatsheet, join$ = [].join;
+        var lang, $, html, body, bindKey, cheatsheet, join$ = [].join;
         lang = require("/lib/lang/index.ls", module);
         $ = require("/lib/dom/index.ls", module).$;
         html = $("html");
+        body = $("body");
         module.exports = bindKey = function(binds, langKey, cb) {
             var codes;
             cheatsheet[join$.call(binds.toUpperCase().chars(), ", ")] = lang(langKey);
@@ -454,13 +459,14 @@
                 return 0 + it;
             });
             document.addEventListener("keydown", function(it) {
+                var ref$;
                 if (it.altKey || it.ctrlKey || it.shiftKey) {
                     return;
                 }
                 if (!in$(it.keyCode, codes)) {
                     return;
                 }
-                if (it.target !== html) {
+                if ((ref$ = it.target) !== html && ref$ !== body) {
                     return;
                 }
                 it.preventDefault();
@@ -946,6 +952,27 @@
             };
         }
     });
+    require.define("/src/w.ls", function(module, exports, __dirname, __filename) {
+        var node, w;
+        node = require("/lib/dom/index.ls", module).node;
+        w = typeof unsafeWindow != "undefined" && unsafeWindow !== null ? unsafeWindow : window;
+        if (!w.Wow) {
+            w = w.window = function() {
+                var ret, el, that;
+                el = document.createElement("a");
+                el.setAttribute("onclick", "return window;");
+                if (that = typeof el.onclick === "function" ? el.onclick() : void 8) {
+                    el = that;
+                }
+                if (!el.Wow) {
+                    console.log("It seems you're using Google Chrome, which is a bad browser and disables some of the features Wow Board Helpers provides.");
+                    console.log("You may want to try the Injector version of this UserScript, which should resolve your problems.");
+                }
+                return el;
+            }.call(this);
+        }
+        module.exports = w;
+    });
     require.define("/src/topic.ls", function(module, exports, __dirname, __filename) {
         var $, that, x$, ref$, i$, replace$ = "".replace, split$ = "".split;
         $ = require("/lib/dom/index.ls", module).$;
@@ -967,7 +994,7 @@
         textarea = require("/src/textarea.ls", module);
         w = require("/src/w.ls", module);
         $ = require("/lib/dom/index.ls", module).$;
-        bindKey("r", "quick-quote", function(it) {
+        bindKey("r", "quick-quote", function() {
             var that, ref$;
             if (that = typeof chrome != "undefined" && chrome !== null ? (ref$ = chrome.tabs) != null ? ref$.executeScript : void 8 : void 8) {
                 that({
@@ -977,8 +1004,8 @@
                     val = arg$[0];
                     return fillQuote(val);
                 });
-            } else if (w != null && w.getSelection().toString()) {
-                fillQuote(it);
+            } else if (that = w != null ? w.getSelection().toString() : void 8) {
+                fillQuote(that);
             }
             function fillQuote(it) {
                 var x$;
@@ -990,27 +1017,6 @@
             }
             $("#forum-actions-bottom").scrollIntoView();
         });
-    });
-    require.define("/src/w.ls", function(module, exports, __dirname, __filename) {
-        var node, w;
-        node = require("/lib/dom/index.ls", module).node;
-        w = typeof unsafeWindow != "undefined" && unsafeWindow !== null ? unsafeWindow : window;
-        if (!w.Cms) {
-            w = w.window = function() {
-                var ret, el, that;
-                el = document.createElement("a");
-                el.setAttribute("onclick", "return window;");
-                if (that = typeof el.onclick === "function" ? el.onclick() : void 8) {
-                    el = that;
-                }
-                if (!el.Cms) {
-                    console.log("It seems you're using Google Chrome, which is a bad browser and disables some of the features Wow Board Helpers provides.");
-                    console.log("You may want to try the Injector version of this UserScript, which should resolve your problems.");
-                }
-                return el;
-            }.call(this);
-        }
-        module.exports = w;
     });
     require.define("/src/reply/preview.ls", function(module, exports, __dirname, __filename) {
         var w, autolink, $, postPreview, old;

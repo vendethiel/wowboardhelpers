@@ -6,11 +6,16 @@
 // @match http://eu.battle.net/wow/en/forum/*
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
+// @grant unsafeWindow
 // @version 5.2.0
 // ==/UserScript==
  * TODO
  *  = See issues : https://github.com/Nami-Doc/wowboardhelpers/issues
  * changelog
+ * 5.3.0
+ *  Fix unsafeWindow access on Firefox
+ *  Fix key bindings
+ *  Fix quick quote
  * 5.2.0
  *  Removed context links from post character infos
  *  Fill back textarea with your answer draft when you change character

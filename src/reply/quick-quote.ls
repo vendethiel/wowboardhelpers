@@ -6,7 +6,7 @@ bind-key 'r' 'quick-quote' !->
 		[val] <- that code: 'window.getSelection().toString()'
 		fill-quote val
 	else if w?getSelection!toString!
-		fill-quote it
+		fill-quote that
 
 	function fill-quote
 		textarea
