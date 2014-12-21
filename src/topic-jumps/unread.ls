@@ -1,5 +1,5 @@
 require! <[src/topic src/cheatsheet/bind-key]>
-{$$} = require 'lib/dom'
+{$} = require 'lib/dom'
 
 # cache it cause the script will modify it
 if last-post-id = localStorage.getItem "topic_#{topic.dataset.id}"
@@ -9,4 +9,4 @@ if last-post-id = localStorage.getItem "topic_#{topic.dataset.id}"
 		if topic.dataset.page < last-post-page
 			document.location = topic.dataset.url + "?page=#last-post-page"
 		else
-			$$ '.post-detail' .[(last-post-id % 20) - 1]?scrollIntoView!
+			$(".post-info .post-info-wrapper .post-index[href='##{last-post-id}'")?scrollIntoView!

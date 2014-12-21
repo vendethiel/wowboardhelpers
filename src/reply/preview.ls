@@ -5,7 +5,7 @@ post-preview = $ '#post-preview'
 
 # let's replace BML preview to add
 # our autolink feature
-if 'BML' of w
+if w?BML?
 	old = w.BML~preview
 	w.BML.preview = !(content, target, callback) ->
 		old content, target, !->

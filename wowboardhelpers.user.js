@@ -13,6 +13,10 @@
  * TODO
  *  = See issues : https://github.com/Nami-Doc/wowboardhelpers/issues
  * changelog
+ * 5.3.0
+ *  Fix unsafeWindow access on Firefox
+ *  Fix key bindings
+ *  Fix quick quote
  * 5.2.0
  *  Removed context links from post character infos
  *  Fill back textarea with your answer draft when you change character
@@ -957,19 +961,9 @@
         node = require("/lib/dom/index.ls", module).node;
         w = typeof unsafeWindow != "undefined" && unsafeWindow !== null ? unsafeWindow : window;
         if (!w.Wow) {
-            w = w.window = function() {
-                var ret, el, that;
-                el = document.createElement("a");
-                el.setAttribute("onclick", "return window;");
-                if (that = typeof el.onclick === "function" ? el.onclick() : void 8) {
-                    el = that;
-                }
-                if (!el.Wow) {
-                    console.log("It seems you're using Google Chrome, which is a bad browser and disables some of the features Wow Board Helpers provides.");
-                    console.log("You may want to try the Injector version of this UserScript, which should resolve your problems.");
-                }
-                return el;
-            }.call(this);
+            w = void 8;
+            console.log("It seems you're using Google Chrome, which is a bad browser and disables some of the features Wow Board Helpers provides.");
+            console.log("You may want to try the Injector version of this UserScript, which should resolve your problems.");
         }
         module.exports = w;
     });
@@ -1024,7 +1018,7 @@
         autolink = require("/lib/autolink/index.ls", module);
         $ = require("/lib/dom/index.ls", module).$;
         postPreview = $("#post-preview");
-        if ("BML" in w) {
+        if ((w != null ? w.BML : void 8) != null) {
             old = bind$(w.BML, "preview");
             w.BML.preview = function(content, target, callback) {
                 old(content, target, function() {
@@ -1225,10 +1219,10 @@
         }
     });
     require.define("/src/topic-jumps/unread.ls", function(module, exports, __dirname, __filename) {
-        var topic, bindKey, $$, lastPostId;
+        var topic, bindKey, $, lastPostId;
         topic = require("/src/topic.ls", module);
         bindKey = require("/src/cheatsheet/bind-key.ls", module);
-        $$ = require("/lib/dom/index.ls", module).$$;
+        $ = require("/lib/dom/index.ls", module).$;
         if (lastPostId = localStorage.getItem("topic_" + topic.dataset.id)) {
             bindKey("jf", "jump-to-last-read", function() {
                 var lastPostPage, ref$;
@@ -1236,7 +1230,7 @@
                 if (topic.dataset.page < lastPostPage) {
                     document.location = topic.dataset.url + ("?page=" + lastPostPage);
                 } else {
-                    if ((ref$ = $$(".post-detail")[lastPostId % 20 - 1]) != null) {
+                    if ((ref$ = $(".post-info .post-info-wrapper .post-index[href='#" + lastPostId + "'")) != null) {
                         ref$.scrollIntoView();
                     }
                 }
@@ -1485,7 +1479,7 @@
     require.define("/src/fix/menu.ls", function(module, exports, __dirname, __filename) {
         var w, old;
         w = require("/src/w.ls", module);
-        if ("Menu" in w) {
+        if ((w != null ? w.Menu : void 8) != null) {
             old = w.Menu.show;
             w.Menu.show = function(arg$, arg1$, options) {
                 var ref$, key$, ref1$;
@@ -6566,6 +6560,5 @@ img.autolink {\
             });
         }).call(this);
     });
-    require.define("/metadata.js", function(module, exports, __dirname, __filename) {});
     require("/src/wowboardhelpers.ls");
 }).call(this, this);
