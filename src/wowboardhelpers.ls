@@ -1,4 +1,4 @@
-console.log 'Ahhhh…greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !'
+console.log 'Ahhhh…greetings ! Want to help on this ? Head over to http://github.com/vendethiel/wowboardhelpers !'
 console.time 'wowboardhelpers'
 
 console.time 'WBH: Sugar'

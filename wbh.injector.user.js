@@ -7,7 +7,7 @@
 // @match http://us.battle.net/wow/en/forum/*
 // @author Tel
 // @version 0.0.1
-// @run-at document-start
+// @run-at document-end
 // ==/UserScript==
 *
 * This file is an injector for Wow Board Helpers.
@@ -25,7 +25,7 @@ setTimeout(function () {
 	var salt = Math.round(Math.random() * 1000000)
 
 	var script = document.createElement('script')
-	script.src = "https://dl.dropboxusercontent.com/u/105712836/wbh/wowboardhelpers.user.js?"+salt
+	script.src = "http://localhost/wowboardhelpers/wowboardhelpers.user.js?"+salt
 
 	document.head.insertBefore(script, document.head.firstChild)
 }, 100);

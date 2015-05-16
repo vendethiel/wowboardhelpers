@@ -1,4 +1,4 @@
-require! '../tbody-regular'
+tbody-regular = require '../tbody-regular'
 {$, $$, el} = require 'lib/dom'
 template-hide-topic = require './templates/hide-topic'
 
@@ -17,12 +17,13 @@ hidden-topics = (localStorage.getItem "hidden_topics" or "") / ";"
 	if it.querySelector '.last-read'
 		that.parentNode.removeChild that
 
-for let {children: [pages-wrapper], parentNode: tr}:post-pages in $$ '.post-pages-cell', tbody-regular
+for let tr in $$ '.regular-topic'
 	topic-id = tr.id.slice 'postRow'length
+	pages-wrapper = $ '.post-pages-cell' tr
 
 	hide tr if topic-id in hidden-topics
 
-	el template-hide-topic hidden: topic-id in hidden-topics
+	el template-hide-topic {hidden: topic-id in hidden-topics}
 		..onclick = ->
 			if topic-id in hidden-topics
 				pages-wrapper.removeChild ..
@@ -33,5 +34,5 @@ for let {children: [pages-wrapper], parentNode: tr}:post-pages in $$ '.post-page
 
 			save-hiddens!
 
-		# add it as the first element in .post-pages-cell .pages-wrapper
+		# add it as the first element in .post-pages-cell.pages-wrapper, before the ul
 		pages-wrapper.insertBefore .., pages-wrapper.children.0

@@ -11,8 +11,10 @@
 // @version 5.2.0
 // ==/UserScript==
  * TODO
- *  = See issues : https://github.com/Nami-Doc/wowboardhelpers/issues
+ *  = See issues : https://github.com/vendethiel/wowboardhelpers/issues
  * changelog
+ * 5.4.0
+ *  Fix issues
  * 5.3.0
  *  Fix unsafeWindow access on Firefox
  *  Fix key bindings
@@ -211,7 +213,7 @@
         require.modules[file] = fn;
     };
     require.define("/src/wowboardhelpers.ls", function(module, exports, __dirname, __filename) {
-        console.log("Ahhhh…greetings ! Want to help on this ? Head over to http://github.com/Nami-Doc/wowboardhelpers !");
+        console.log("Ahhhh…greetings ! Want to help on this ? Head over to http://github.com/vendethiel/wowboardhelpers !");
         console.time("wowboardhelpers");
         console.time("WBH: Sugar");
         require("/node_modules/sugar/release/sugar-full.development.js", module);
@@ -484,77 +486,6 @@
             return false;
         }
     });
-    require.define("/src/forum-layout/hide-mar.ls", function(module, exports, __dirname, __filename) {
-        var $;
-        $ = require("/lib/dom/index.ls", module).$;
-        if (!$("tbody.regular-topics > .unread:not(.hidden)")) {
-            require("/src/forum-options.ls", module).removeChild(require("/src/forum-layout/mar.ls", module));
-        }
-    });
-    require.define("/src/forum-layout/mar.ls", function(module, exports, __dirname, __filename) {
-        var lang, fetchSiblings, forumOptions, tbodyRegular, node, allRead, buttonMar, x$, split$ = "".split;
-        lang = require("/lib/lang/index.ls", module);
-        fetchSiblings = require("/lib/fetch-siblings/index.ls", module);
-        forumOptions = require("/src/forum-options.ls", module);
-        tbodyRegular = require("/src/tbody-regular.ls", module);
-        node = require("/lib/dom/index.ls", module).node;
-        allRead = false;
-        module.exports = buttonMar = node("a", {
-            innerHTML: "MAR",
-            title: lang.mar,
-            onclick: function() {
-                var i$, ref$, len$, row, topicId, siblings, x$;
-                if (allRead) {
-                    return;
-                }
-                allRead = !allRead;
-                for (i$ = 0, len$ = (ref$ = tbodyRegular.children).length; i$ < len$; ++i$) {
-                    row = ref$[i$];
-                    if (row.classList.contains("read")) {
-                        continue;
-                    }
-                    topicId = row.id.slice("postRow".length);
-                    siblings = fetchSiblings(row.children[0]);
-                    x$ = localStorage;
-                    x$["topic_" + topicId] = split$.call(siblings["last-post-cell"].children[0].href, "#")[1];
-                    x$["topic_lp_" + topicId] = siblings["author-cell"].innerHTML.trim();
-                    row.classList.add("read");
-                }
-                forumOptions.removeChild(buttonMar);
-            }
-        });
-        x$ = buttonMar;
-        x$.style.cursor = "pointer";
-        forumOptions.appendChild(x$);
-    });
-    require.define("/src/tbody-regular.ls", function(module, exports, __dirname, __filename) {
-        var $;
-        $ = require("/lib/dom/index.ls", module).$;
-        module.exports = $("tbody.regular-topics");
-    });
-    require.define("/src/forum-options.ls", function(module, exports, __dirname, __filename) {
-        var ref$, $, node, x$, actionsRight, forumOptions;
-        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, node = ref$.node;
-        x$ = actionsRight = $(".forum-actions-top .actions-right");
-        x$.insertBefore(forumOptions = node("div", {
-            className: "forum-options"
-        }), $(".inner-search-wrapper", x$));
-        module.exports = forumOptions;
-    });
-    require.define("/lib/fetch-siblings/index.ls", function(module, exports, __dirname, __filename) {
-        module.exports = function() {
-            function fetchSiblings(elem, arg$) {
-                var ref$, slice, ref1$, indexBy, results$ = {};
-                ref$ = arg$ != null ? arg$ : {}, slice = (ref1$ = ref$.slice) != null ? ref1$ : 0, 
-                indexBy = (ref1$ = ref$.indexBy) != null ? ref1$ : "className";
-                while (elem != null && (elem = elem.nextElementSibling)) {
-                    results$[(ref$ = elem[indexBy].slice(slice).split(" "))[ref$.length - 1]] = elem;
-                }
-                return results$;
-            }
-            return fetchSiblings;
-        }();
-    });
     require.define("/src/forum-topics/index.ls", function(module, exports, __dirname, __filename) {
         var lastUpdated, moveRedirects, hideTopic, times;
         lastUpdated = require("/src/forum-topics/last-updated.ls", module);
@@ -562,133 +493,8 @@
         hideTopic = require("/src/forum-topics/hide-topic.ls", module);
         times = require("/src/forum-topics/times.ls", module);
     });
-    require.define("/src/forum-topics/times.ls", function(module, exports, __dirname, __filename) {
-        var lang, parseTime, $$, current, postTitles, dates, i$, len$, postTitle, postTimestamp, date, timestamp;
-        lang = require("/lib/lang/index.ls", module);
-        parseTime = require("/lib/parse-time/index.ls", module);
-        $$ = require("/lib/dom/index.ls", module).$$;
-        current = Date.now();
-        postTitles = $$(".post-title[data-date-string]");
-        dates = [];
-        for (i$ = 0, len$ = postTitles.length; i$ < len$; ++i$) {
-            postTitle = postTitles[i$];
-            postTimestamp = parseTime(postTitle.dataset.dateString);
-            date = Date.create(current - postTimestamp);
-            timestamp = date.getTime();
-            dates[timestamp] = date;
-            postTitle.dataset.timestamp = timestamp;
-        }
-        (function() {
-            var i$, ref$, len$, postTitle, date, results$ = [];
-            for (i$ = 0, len$ = (ref$ = postTitles).length; i$ < len$; ++i$) {
-                postTitle = ref$[i$];
-                date = dates[postTitle.dataset.timestamp];
-                results$.push(postTitle.querySelector(".relative-date").innerHTML = date.relative());
-            }
-            return results$;
-        }).every(10..seconds());
-    });
-    require.define("/lib/parse-time/index.ls", function(module, exports, __dirname, __filename) {
-        var lang, units, res$, i$, ref$, len$, name, split$ = "".split;
-        lang = require("/lib/lang/index.ls", module);
-        res$ = {};
-        for (i$ = 0, len$ = (ref$ = [ "second", "minute", "hour", "day" ]).length; i$ < len$; ++i$) {
-            name = ref$[i$];
-            res$[name] = 1[name]();
-        }
-        units = res$;
-        module.exports = function(it) {
-            var total, i$, ref$, len$, timespan, ref1$, count, unit;
-            total = 0;
-            for (i$ = 0, len$ = (ref$ = split$.call(it, ", ")).length; i$ < len$; ++i$) {
-                timespan = ref$[i$];
-                ref1$ = split$.call(timespan, " "), count = ref1$[0], unit = ref1$[1];
-                count = +count;
-                if (count === lang("few")) {
-                    count = 5;
-                    unit = lang("second");
-                }
-                total += count * units[lang(lang.singularize(unit))];
-            }
-            return total;
-        };
-    });
-    require.define("/src/forum-topics/hide-topic.ls", function(module, exports, __dirname, __filename) {
-        var tbodyRegular, ref$, $, $$, el, templateHideTopic, hiddenTopics, i$, len$, split$ = "".split, join$ = [].join;
-        tbodyRegular = require("/src/tbody-regular.ls", module);
-        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, $$ = ref$.$$, el = ref$.el;
-        templateHideTopic = require("/src/forum-topics/templates/hide-topic.ne", module);
-        hiddenTopics = split$.call(localStorage.getItem("hidden_topics") || "", ";");
-        function saveHiddens() {
-            localStorage.setItem("hidden_topics", join$.call(hiddenTopics, ";"));
-        }
-        function hide(it) {
-            var that;
-            it.parentNode.removeChild(it);
-            tbodyRegular.appendChild(it);
-            it.className += " hidden";
-            if (that = it.querySelector(".last-read")) {
-                that.parentNode.removeChild(that);
-            }
-        }
-        for (i$ = 0, len$ = $$(".post-pages-cell", tbodyRegular).length; i$ < len$; ++i$) {
-            fn$.call(this, $$(".post-pages-cell", tbodyRegular)[i$]);
-        }
-        function in$(x, xs) {
-            var i = -1, l = xs.length >>> 0;
-            while (++i < l) if (x === xs[i]) return true;
-            return false;
-        }
-        function fn$(postPages) {
-            var pagesWrapper, tr, topicId, x$;
-            pagesWrapper = postPages.children[0], tr = postPages.parentNode;
-            topicId = tr.id.slice("postRow".length);
-            if (in$(topicId, hiddenTopics)) {
-                hide(tr);
-            }
-            x$ = el(templateHideTopic({
-                hidden: in$(topicId, hiddenTopics)
-            }));
-            x$.onclick = function() {
-                if (in$(topicId, hiddenTopics)) {
-                    pagesWrapper.removeChild(x$);
-                    hiddenTopics.splice(hiddenTopics.indexOf(topicId), 1);
-                } else {
-                    hide(tr);
-                    hiddenTopics.push(topicId);
-                }
-                return saveHiddens();
-            };
-            pagesWrapper.insertBefore(x$, pagesWrapper.children[0]);
-        }
-    });
-    require.define("/src/forum-topics/templates/hide-topic.ne", function(module, exports, __dirname, __filename) {
-        var join;
-        join = function(it) {
-            if (it) {
-                return it.join("");
-            } else {
-                return "";
-            }
-        };
-        module.exports = function(locals, extra) {
-            return "" + ((locals.hidden ? '<a class="last-read show-topic">✓</a>' : '<a class="last-read hide-topic">X</a>') || "");
-        };
-    });
-    require.define("/src/forum-topics/move-redirects.ls", function(module, exports, __dirname, __filename) {
-        var tbodyRegular, i$, ref$, len$, status, tr;
-        tbodyRegular = require("/src/tbody-regular.ls", module);
-        for (i$ = 0, len$ = (ref$ = tbodyRegular.querySelectorAll(".status-text")).length; i$ < len$; ++i$) {
-            status = ref$[i$];
-            tr = status.parentNode.parentNode.parentNode;
-            tr.className += " hidden redirect";
-            tbodyRegular.removeChild(tr);
-            tbodyRegular.appendChild(tr);
-        }
-    });
     require.define("/src/forum-topics/last-updated.ls", function(module, exports, __dirname, __filename) {
-        var fetchSiblings, characters, ref$, $, $$, el, node, templateDefaultPagination, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, i$, len$, post, td, tr, topicId, ref1$, pages, lastPost, lastPostLink, lastPosterName, postCount, state, that, split$ = "".split;
-        fetchSiblings = require("/lib/fetch-siblings/index.ls", module);
+        var characters, ref$, $, $$, el, node, templateDefaultPagination, TSTATE_UNK, TSTATE_ALR, TSTATE_CHK, i$, len$, tr, topicTitle, topicId, titleCell, lastPost, lastPostLink, pages, lastPosterName, ref1$, postCount, state, that, split$ = "".split, replace$ = "".replace;
         characters = require("/src/characters.ls", module);
         ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, $$ = ref$.$$, el = ref$.el, 
         node = ref$.node;
@@ -696,19 +502,18 @@
         TSTATE_UNK = 0;
         TSTATE_ALR = 1;
         TSTATE_CHK = 2;
-        for (i$ = 0, len$ = (ref$ = $$(".topic-title")).length; i$ < len$; ++i$) {
-            post = ref$[i$], td = post.parentNode, tr = td.parentNode;
-            if ($(".employee-icon", post) || $(".status-text", post)) {
-                continue;
-            }
+        for (i$ = 0, len$ = (ref$ = $$(".regular-topic")).length; i$ < len$; ++i$) {
+            tr = ref$[i$];
+            topicTitle = $(".topic-title", tr);
             topicId = tr.dataset.topicId;
-            ref1$ = fetchSiblings(td), pages = ref1$["post-pages-cell"], lastPost = ref1$["last-post-cell"], 
-            lastPostLink = lastPost.children[0];
+            titleCell = $(".title-cell", tr);
+            lastPost = $(".last-post-cell", tr), lastPostLink = lastPost.children[0];
+            pages = $(".post-pages-cell", titleCell);
             lastPosterName = $(".author-name", lastPost).innerHTML;
             ref1$ = split$.call(lastPostLink.href, "#"), postCount = ref1$[1];
             if (!pages.querySelector("ul")) {
                 pages.innerHTML = templateDefaultPagination({
-                    href: post.href
+                    href: lastPostLink.href
                 });
             }
             state = checkTopic(topicId, postCount, lastPosterName);
@@ -719,18 +524,18 @@
                     }
                 }
             }
-            tr.className = state === TSTATE_CHK ? ((that = pages.querySelector(".last-read")) && pages.removeChild(that), 
-            "read") : "unread";
+            tr.className = replace$.call(tr.className, /(?:un)?read/, "");
+            tr.className += " " + (state === TSTATE_CHK ? ((that = pages.querySelector(".last-read")) && pages.removeChild(that), 
+            "read") : "unread");
             if (state !== TSTATE_UNK) {
-                post.href = (ref1$ = pages.getElementsByTagName("a"))[ref1$.length - 1].href;
+                topicTitle.href = (ref1$ = pages.getElementsByTagName("a"))[ref1$.length - 1].href;
             }
-            markState(post, state);
+            markState($(".topic-title", titleCell), state);
         }
         function markState(node, state) {
-            var innerHTML, states;
-            innerHTML = node.innerHTML;
+            var states;
             states = [ "?", "!", "✓" ];
-            node.innerHTML = "<b>[" + states[state] + "]</b> " + innerHTML;
+            node.innerHTML = "<b>[" + states[state] + "]</b> " + node.innerHTML;
         }
         function checkTopic(id, count, lastPoster) {
             var ref$;
@@ -788,142 +593,12 @@
         }
         module.exports = characters;
     });
-    require.define("/src/forum-layout/index.ls", function(module, exports, __dirname, __filename) {
-        var mar, moveActions, stickies;
-        mar = require("/src/forum-layout/mar.ls", module);
-        moveActions = require("/src/forum-layout/move-actions.ls", module);
-        stickies = require("/src/forum-layout/stickies.ls", module);
-    });
-    require.define("/src/forum-layout/stickies.ls", function(module, exports, __dirname, __filename) {
-        var lang, forumOptions, ref$, $, node, sticky, buttonSticky, x$;
-        lang = require("/lib/lang/index.ls", module);
-        forumOptions = require("/src/forum-options.ls", module);
-        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, node = ref$.node;
-        sticky = $("tbody.stickied-topics");
-        if ("show" !== localStorage.getItem("show-stickies")) {
-            sticky.style.display = "none";
-        }
-        module.exports = buttonSticky = node("a", {
-            innerHTML: "Post-its",
-            title: lang.toggleSticky,
-            onclick: function() {
-                var s;
-                (s = sticky.style).display = [ "none", "" ].find(function(it) {
-                    return it !== s.display;
-                });
-                localStorage.setItem("show-stickies", s.display) || "show";
-            }
-        });
-        x$ = buttonSticky;
-        x$.style.cursor = "pointer";
-        forumOptions.appendChild(x$);
-    });
-    require.define("/src/forum-layout/move-actions.ls", function(module, exports, __dirname, __filename) {
-        var $, x$;
-        $ = require("/lib/dom/index.ls", module).$;
-        x$ = $(".forum-options");
-        x$.parentNode.removeChild(x$);
-        $(".content-trail").appendChild(x$);
-    });
-    require.define("/src/forum-actions/index.ls", function(module, exports, __dirname, __filename) {
-        var jumps, checkUpdates;
-        jumps = require("/src/forum-actions/jumps/index.ls", module);
-        checkUpdates = require("/src/forum-actions/check-updates.ls", module);
-    });
-    require.define("/src/forum-actions/check-updates.ls", function(module, exports, __dirname, __filename) {
-        var lang, ajax, tbodyRegular, forum, ref$, $, node, firstTopicId, trHtml, aEndHtml, tbodyHtml, x$, h1, timeout, refresh;
-        lang = require("/lib/lang/index.ls", module);
-        ajax = require("/lib/ajax/index.ls", module);
-        tbodyRegular = require("/src/tbody-regular.ls", module);
-        forum = require("/src/forum.ls", module);
-        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, node = ref$.node;
-        firstTopicId = tbodyRegular.children[0].id.slice("postRow".length);
-        trHtml = '<tr id="postRow' + firstTopicId;
-        aEndHtml = 'data-tooltip-options=\'{"location": "mouse"}\'>';
-        tbodyHtml = '<tbody class="regular">';
-        x$ = $(".forum-actions-top");
-        x$.insertBefore(h1 = node("h1"), (ref$ = x$.children)[ref$.length - 1]);
-        timeout = 15..seconds();
-        refresh = function() {
-            return ajax.get(document.location, function() {
-                var afterRegular, startPos, title;
-                if (this.status !== 200) {
-                    console.log("encountered status " + this.status + " while checking for updates; forum might be unstable");
-                    return;
-                }
-                h1.innerHTML = lang.checkingNew;
-                afterRegular = this.response.slice(tbodyHtml.length + this.response.indexOf(tbodyHtml)).trim();
-                if (afterRegular.startsWith(trHtml)) {
-                    h1.innerHTML += " <u>" + lang.noNew + "</u>";
-                    setTimeout(function() {
-                        return h1.innerHTML = "";
-                    }, 1500);
-                    setTimeout(refresh, timeout);
-                } else {
-                    startPos = aEndHtml.length + afterRegular.indexOf(aEndHtml);
-                    afterRegular = afterRegular.slice(startPos);
-                    title = afterRegular.to(afterRegular.indexOf("<")).trim();
-                    h1.innerHTML = "<a href='" + document.location + "'>" + lang.newMessages + "</a> : " + [ title.length > 30 ? "<br />" : void 8 ] + title;
-                }
-            });
-        };
-        refresh === (ref$ = forum.dataset.page) && ref$ > 1;
-    });
     require.define("/src/forum.ls", function(module, exports, __dirname, __filename) {
-        var $, that, x$, ref$, split$ = "".split;
+        var $, that, x$, ref$, ref1$, split$ = "".split;
         $ = require("/lib/dom/index.ls", module).$;
         module.exports = (that = $("#forum-topics")) ? (x$ = that.dataset, ref$ = split$.call(document.location, "?"), 
         x$["url"] = ref$[0], x$["query"] = ref$[1], x$.page = ((ref$ = /\?page=([0-9]+)/.exec(document.location)) != null ? ref$[1] : void 8) || 1, 
-        x$.id = (ref$ = split$.call(that.dataset.url, "/"))[ref$.length - 2], that) : void 8;
-    });
-    require.define("/lib/ajax/index.ls", function(module, exports, __dirname, __filename) {
-        module.exports = {
-            get: function(url, success) {
-                var x$;
-                x$ = new XMLHttpRequest();
-                x$.open("GET", url);
-                x$.onload = success;
-                x$.send();
-                return x$;
-            }
-        };
-    });
-    require.define("/src/forum-actions/jumps/index.ls", function(module, exports, __dirname, __filename) {
-        var newTopic, page;
-        newTopic = require("/src/forum-actions/jumps/new-topic.ls", module);
-        page = require("/src/forum-actions/jumps/page.ls", module);
-    });
-    require.define("/src/forum-actions/jumps/page.ls", function(module, exports, __dirname, __filename) {
-        var bindKey, page;
-        bindKey = require("/src/cheatsheet/bind-key.ls", module);
-        page = require("/src/forum-actions/page.ls", module);
-        bindKey("p", "jump-to-page", page);
-    });
-    require.define("/src/forum-actions/page.ls", function(module, exports, __dirname, __filename) {
-        var lang, $$, jump, i$, x$, ref$, len$, join$ = [].join, slice$ = [].slice;
-        lang = require("/lib/lang/index.ls", module);
-        $$ = require("/lib/dom/index.ls", module).$$;
-        module.exports = jump = function() {
-            var page;
-            page = prompt(lang("page-number"));
-            if (+page + "" === page) {
-                document.location = join$.call(slice$.call((document.location + "").split("/"), 0, -1), "/") + ("/?page=" + (page > 1 ? page : 1));
-            }
-        };
-        for (i$ = 0, len$ = (ref$ = $$(".forum-actions .expander")).length; i$ < len$; ++i$) {
-            x$ = ref$[i$];
-            x$.onclick = jump;
-        }
-    });
-    require.define("/src/forum-actions/jumps/new-topic.ls", function(module, exports, __dirname, __filename) {
-        var bindKey, $;
-        bindKey = require("/src/cheatsheet/bind-key.ls", module);
-        $ = require("/lib/dom/index.ls", module).$;
-        if (!$("a.button1.disabled")) {
-            bindKey("n", "new-topic", function() {
-                document.location += "topic";
-            });
-        }
+        x$.id = (ref1$ = split$.call(that.dataset.url, "/"))[ref1$.length - 2], that) : void 8;
     });
     require.define("/src/reply/index.ls", function(module, exports, __dirname, __filename) {
         var clearTextarea, memebox, preview, quickQuote, rememberReply;
@@ -965,16 +640,16 @@
             console.log("It seems you're using Google Chrome, which is a bad browser and disables some of the features Wow Board Helpers provides.");
             console.log("You may want to try the Injector version of this UserScript, which should resolve your problems.");
         }
-        module.exports = w;
+        module.exports = w || {};
     });
     require.define("/src/topic.ls", function(module, exports, __dirname, __filename) {
-        var $, that, x$, ref$, i$, replace$ = "".replace, split$ = "".split;
+        var $, that, x$, ref$, ref1$, i$, replace$ = "".replace, split$ = "".split;
         $ = require("/lib/dom/index.ls", module).$;
         module.exports = (that = $("#post-list")) ? (that = that.parentNode.parentNode, 
         x$ = that.dataset, x$.url = replace$.call(split$.call(document.location, "?")[0], /#[0-9]+/, ""), 
         x$.page = ((ref$ = /\?page=([0-9]+)/.exec(document.location)) != null ? ref$[1] : void 8) || 1, 
-        ref$ = split$.call(x$.url, "/"), i$ = ref$.length - 2, x$.topicId = ref$[i$], x$.id = ref$[i$ + 1], 
-        ref$, that) : null;
+        ref1$ = split$.call(x$.url, "/"), i$ = ref1$.length - 2, x$.topicId = ref1$[i$], 
+        x$.id = ref1$[i$ + 1], ref1$, that) : null;
     });
     require.define("/src/textarea.ls", function(module, exports, __dirname, __filename) {
         var topic, $;
@@ -1071,6 +746,18 @@
             }
             return it;
         }
+    });
+    require.define("/lib/ajax/index.ls", function(module, exports, __dirname, __filename) {
+        module.exports = {
+            get: function(url, success) {
+                var x$;
+                x$ = new XMLHttpRequest();
+                x$.open("GET", url);
+                x$.onload = success;
+                x$.send();
+                return x$;
+            }
+        };
     });
     require.define("/src/reply/memebox.ls", function(module, exports, __dirname, __filename) {
         var memes, textarea, ref$, $, el, templateMemebox, that, addMeme, appendMeme, memebox, ul, replace$ = "".replace;
@@ -1374,7 +1061,7 @@
                     children.to(limit).each(fn$);
                 }
                 toggle = $(".toggle", postCharacter);
-                fn1$.call(this, ul, children, toggle, postCharacter);
+                fn1$.call(this, ul, children, toggle);
             }
         }
         function in$(x, xs) {
@@ -1385,7 +1072,7 @@
         function fn$(it) {
             return it.style.display = "";
         }
-        function fn1$(ul, children, toggle, postCharacter) {
+        function fn1$(ul, children, toggle) {
             toggle.onclick = function() {
                 children.each(function(it) {
                     return it.style.display = "";
@@ -1424,7 +1111,7 @@
         };
     });
     require.define("/src/topic-characters/realm.ls", function(module, exports, __dirname, __filename) {
-        var $$, i$, ref$, len$, infos, link, ref1$, realm, split$ = "".split;
+        var $$, i$, ref$, len$, infos, link, ref1$, ref2$, realm, split$ = "".split;
         $$ = require("/lib/dom/index.ls", module).$$;
         for (i$ = 0, len$ = (ref$ = $$(".user-details")).length; i$ < len$; ++i$) {
             infos = ref$[i$];
@@ -1435,10 +1122,10 @@
             if (link.has("//")) {
                 continue;
             }
-            ref1$ = split$.call(link, "/"), realm = ref1$[4];
+            ref2$ = split$.call(link, "/"), realm = ref2$[4];
             realm = realm.replace("-", " ").capitalize(true).replace(" ", "-");
-            if ((ref1$ = infos.querySelector(".character-desc")) != null) {
-                ref1$.innerHTML += "<br />" + realm;
+            if ((ref2$ = infos.querySelector(".character-desc")) != null) {
+                ref2$.innerHTML += "<br />" + realm;
             }
         }
     });
@@ -1595,6 +1282,12 @@ tr:hover .last-read {\
 }\
 .view-forum .forum-topics .post-pages-cell .last-read-page .last-read-arrow {\
   display: none;\
+}\
+.view-forum .forum-topics .post-pages-cell .pages-wrapper {\
+  display: inline;\
+}\
+.view-forum .forum-topics .post-pages-cell .ui-pagination {\
+  background: none;\
 }\
 #account-characters {\
   margin-top: 10px;\
@@ -1979,7 +1672,7 @@ img.autolink {\
                 return string.fromCharCode(num);
             }
             function getTrimmableCharacters() {
-                return "	\n\f\r   ᠎             \u2028\u2029　﻿";
+                return "	\n\f\r   ᠎             \u2028\u2029　\ufeff";
             }
             function repeatString(str, num) {
                 var result = "", str = str.toString();
@@ -6559,6 +6252,319 @@ img.autolink {\
                 timeParse: [ "{shift}{weekday}", "{year}年{month?}月?{date?}{0?}", "{month}月{date?}{0?}", "{date}[日號]" ]
             });
         }).call(this);
+    });
+    require.define("/src/forum-topics/times.ls", function(module, exports, __dirname, __filename) {
+        var lang, parseTime, $$, current, postTitles, dates, i$, len$, postTitle, postTimestamp, date, timestamp;
+        lang = require("/lib/lang/index.ls", module);
+        parseTime = require("/lib/parse-time/index.ls", module);
+        $$ = require("/lib/dom/index.ls", module).$$;
+        current = Date.now();
+        postTitles = $$(".post-title[data-date-string]");
+        dates = [];
+        for (i$ = 0, len$ = postTitles.length; i$ < len$; ++i$) {
+            postTitle = postTitles[i$];
+            postTimestamp = parseTime(postTitle.dataset.dateString);
+            date = Date.create(current - postTimestamp);
+            timestamp = date.getTime();
+            dates[timestamp] = date;
+            postTitle.dataset.timestamp = timestamp;
+        }
+        (function() {
+            var i$, ref$, len$, postTitle, date, results$ = [];
+            for (i$ = 0, len$ = (ref$ = postTitles).length; i$ < len$; ++i$) {
+                postTitle = ref$[i$];
+                date = dates[postTitle.dataset.timestamp];
+                results$.push(postTitle.querySelector(".relative-date").innerHTML = date.relative());
+            }
+            return results$;
+        }).every(10..seconds());
+    });
+    require.define("/lib/parse-time/index.ls", function(module, exports, __dirname, __filename) {
+        var lang, units, res$, i$, ref$, len$, name, split$ = "".split;
+        lang = require("/lib/lang/index.ls", module);
+        res$ = {};
+        for (i$ = 0, len$ = (ref$ = [ "second", "minute", "hour", "day" ]).length; i$ < len$; ++i$) {
+            name = ref$[i$];
+            res$[name] = 1[name]();
+        }
+        units = res$;
+        module.exports = function(it) {
+            var total, i$, ref$, len$, timespan, ref1$, count, unit;
+            total = 0;
+            for (i$ = 0, len$ = (ref$ = split$.call(it, ", ")).length; i$ < len$; ++i$) {
+                timespan = ref$[i$];
+                ref1$ = split$.call(timespan, " "), count = ref1$[0], unit = ref1$[1];
+                count = +count;
+                if (count === lang("few")) {
+                    count = 5;
+                    unit = lang("second");
+                }
+                total += count * units[lang(lang.singularize(unit))];
+            }
+            return total;
+        };
+    });
+    require.define("/src/forum-topics/hide-topic.ls", function(module, exports, __dirname, __filename) {
+        var tbodyRegular, ref$, $, $$, el, templateHideTopic, hiddenTopics, i$, len$, split$ = "".split, join$ = [].join;
+        tbodyRegular = require("/src/tbody-regular.ls", module);
+        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, $$ = ref$.$$, el = ref$.el;
+        templateHideTopic = require("/src/forum-topics/templates/hide-topic.ne", module);
+        hiddenTopics = split$.call(localStorage.getItem("hidden_topics") || "", ";");
+        function saveHiddens() {
+            localStorage.setItem("hidden_topics", join$.call(hiddenTopics, ";"));
+        }
+        function hide(it) {
+            var that;
+            it.parentNode.removeChild(it);
+            tbodyRegular.appendChild(it);
+            it.className += " hidden";
+            if (that = it.querySelector(".last-read")) {
+                that.parentNode.removeChild(that);
+            }
+        }
+        for (i$ = 0, len$ = (ref$ = $$(".regular-topic")).length; i$ < len$; ++i$) {
+            fn$.call(this, ref$[i$]);
+        }
+        function in$(x, xs) {
+            var i = -1, l = xs.length >>> 0;
+            while (++i < l) if (x === xs[i]) return true;
+            return false;
+        }
+        function fn$(tr) {
+            var topicId, pagesWrapper, x$;
+            topicId = tr.id.slice("postRow".length);
+            pagesWrapper = $(".post-pages-cell", tr);
+            if (in$(topicId, hiddenTopics)) {
+                hide(tr);
+            }
+            x$ = el(templateHideTopic({
+                hidden: in$(topicId, hiddenTopics)
+            }));
+            x$.onclick = function() {
+                if (in$(topicId, hiddenTopics)) {
+                    pagesWrapper.removeChild(x$);
+                    hiddenTopics.splice(hiddenTopics.indexOf(topicId), 1);
+                } else {
+                    hide(tr);
+                    hiddenTopics.push(topicId);
+                }
+                return saveHiddens();
+            };
+            pagesWrapper.insertBefore(x$, pagesWrapper.children[0]);
+        }
+    });
+    require.define("/src/forum-topics/templates/hide-topic.ne", function(module, exports, __dirname, __filename) {
+        var join;
+        join = function(it) {
+            if (it) {
+                return it.join("");
+            } else {
+                return "";
+            }
+        };
+        module.exports = function(locals, extra) {
+            return "" + ((locals.hidden ? '<a class="last-read show-topic">✓</a>' : '<a class="last-read hide-topic">X</a>') || "");
+        };
+    });
+    require.define("/src/tbody-regular.ls", function(module, exports, __dirname, __filename) {
+        var $;
+        $ = require("/lib/dom/index.ls", module).$;
+        module.exports = $("tbody.regular-topics");
+    });
+    require.define("/src/forum-topics/move-redirects.ls", function(module, exports, __dirname, __filename) {
+        var tbodyRegular, i$, ref$, len$, status, tr;
+        tbodyRegular = require("/src/tbody-regular.ls", module);
+        for (i$ = 0, len$ = (ref$ = tbodyRegular.querySelectorAll(".status-text")).length; i$ < len$; ++i$) {
+            status = ref$[i$];
+            tr = status.parentNode.parentNode.parentNode;
+            tr.className += " hidden redirect";
+            tbodyRegular.removeChild(tr);
+            tbodyRegular.appendChild(tr);
+        }
+    });
+    require.define("/src/forum-layout/hide-mar.ls", function(module, exports, __dirname, __filename) {
+        var $;
+        $ = require("/lib/dom/index.ls", module).$;
+        if (!$("tbody.regular-topics > .unread:not(.hidden)")) {
+            require("/src/forum-options.ls", module).removeChild(require("/src/forum-layout/mar.ls", module));
+        }
+    });
+    require.define("/src/forum-layout/mar.ls", function(module, exports, __dirname, __filename) {
+        var lang, fetchSiblings, forumOptions, tbodyRegular, node, allRead, buttonMar, x$, split$ = "".split;
+        lang = require("/lib/lang/index.ls", module);
+        fetchSiblings = require("/lib/fetch-siblings/index.ls", module);
+        forumOptions = require("/src/forum-options.ls", module);
+        tbodyRegular = require("/src/tbody-regular.ls", module);
+        node = require("/lib/dom/index.ls", module).node;
+        allRead = false;
+        module.exports = buttonMar = node("a", {
+            innerHTML: "MAR",
+            title: lang.mar,
+            onclick: function() {
+                var i$, ref$, len$, row, topicId, siblings, x$;
+                if (allRead) {
+                    return;
+                }
+                allRead = !allRead;
+                for (i$ = 0, len$ = (ref$ = tbodyRegular.children).length; i$ < len$; ++i$) {
+                    row = ref$[i$];
+                    if (row.classList.contains("read")) {
+                        continue;
+                    }
+                    topicId = row.id.slice("postRow".length);
+                    siblings = fetchSiblings(row.children[0]);
+                    x$ = localStorage;
+                    x$["topic_" + topicId] = split$.call(siblings["last-post-cell"].children[0].href, "#")[1];
+                    x$["topic_lp_" + topicId] = siblings["author-cell"].innerHTML.trim();
+                    row.classList.add("read");
+                }
+                forumOptions.removeChild(buttonMar);
+            }
+        });
+        x$ = buttonMar;
+        x$.style.cursor = "pointer";
+        forumOptions.appendChild(x$);
+    });
+    require.define("/src/forum-options.ls", function(module, exports, __dirname, __filename) {
+        var ref$, $, node, x$, actionsRight, forumOptions;
+        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, node = ref$.node;
+        x$ = actionsRight = $(".forum-actions-top .paging-wrapper");
+        x$.insertBefore(forumOptions = node("div", {
+            className: "forum-options"
+        }), $(".inner-search-wrapper", x$));
+        module.exports = forumOptions;
+    });
+    require.define("/lib/fetch-siblings/index.ls", function(module, exports, __dirname, __filename) {
+        module.exports = function() {
+            function fetchSiblings(elem, arg$) {
+                var ref$, slice, ref1$, indexBy, resultObj$ = {};
+                ref$ = arg$ != null ? arg$ : {}, slice = (ref1$ = ref$.slice) != null ? ref1$ : 0, 
+                indexBy = (ref1$ = ref$.indexBy) != null ? ref1$ : "className";
+                while (elem != null && (elem = elem.nextElementSibling)) {
+                    resultObj$[(ref$ = elem[indexBy].slice(slice).split(" "))[ref$.length - 1]] = elem;
+                }
+                return resultObj$;
+            }
+            return fetchSiblings;
+        }();
+    });
+    require.define("/src/forum-layout/index.ls", function(module, exports, __dirname, __filename) {
+        var mar, moveActions, stickies;
+        mar = require("/src/forum-layout/mar.ls", module);
+        moveActions = require("/src/forum-layout/move-actions.ls", module);
+        stickies = require("/src/forum-layout/stickies.ls", module);
+    });
+    require.define("/src/forum-layout/stickies.ls", function(module, exports, __dirname, __filename) {
+        var lang, forumOptions, ref$, $, node, sticky, buttonSticky, x$;
+        lang = require("/lib/lang/index.ls", module);
+        forumOptions = require("/src/forum-options.ls", module);
+        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, node = ref$.node;
+        sticky = $("tbody.stickied-topics");
+        if ("show" !== localStorage.getItem("show-stickies")) {
+            sticky.style.display = "none";
+        }
+        module.exports = buttonSticky = node("a", {
+            innerHTML: "Post-its",
+            title: lang.toggleSticky,
+            onclick: function() {
+                var s;
+                (s = sticky.style).display = [ "none", "" ].find(function(it) {
+                    return it !== s.display;
+                });
+                localStorage.setItem("show-stickies", s.display) || "show";
+            }
+        });
+        x$ = buttonSticky;
+        x$.style.cursor = "pointer";
+        forumOptions.appendChild(x$);
+    });
+    require.define("/src/forum-layout/move-actions.ls", function(module, exports, __dirname, __filename) {
+        var $, x$;
+        $ = require("/lib/dom/index.ls", module).$;
+        x$ = $(".forum-options");
+        x$.parentNode.removeChild(x$);
+        $(".content-trail").appendChild(x$);
+    });
+    require.define("/src/forum-actions/index.ls", function(module, exports, __dirname, __filename) {
+        var jumps, checkUpdates;
+        jumps = require("/src/forum-actions/jumps/index.ls", module);
+        checkUpdates = require("/src/forum-actions/check-updates.ls", module);
+    });
+    require.define("/src/forum-actions/check-updates.ls", function(module, exports, __dirname, __filename) {
+        var lang, ajax, tbodyRegular, forum, ref$, $, node, firstTopicId, trHtml, aEndHtml, tbodyHtml, x$, h1, timeout, refresh;
+        lang = require("/lib/lang/index.ls", module);
+        ajax = require("/lib/ajax/index.ls", module);
+        tbodyRegular = require("/src/tbody-regular.ls", module);
+        forum = require("/src/forum.ls", module);
+        ref$ = require("/lib/dom/index.ls", module), $ = ref$.$, node = ref$.node;
+        firstTopicId = tbodyRegular.children[0].id.slice("postRow".length);
+        trHtml = '<tr id="postRow' + firstTopicId;
+        aEndHtml = 'data-tooltip-options=\'{"location": "mouse"}\'>';
+        tbodyHtml = '<tbody class="regular">';
+        x$ = $(".forum-actions-top");
+        x$.insertBefore(h1 = node("h1"), (ref$ = x$.children)[ref$.length - 1]);
+        timeout = 15..seconds();
+        refresh = function() {
+            return ajax.get(document.location, function() {
+                var afterRegular, startPos, title;
+                if (this.status !== 200) {
+                    console.log("encountered status " + this.status + " while checking for updates; forum might be unstable");
+                    return;
+                }
+                h1.innerHTML = lang.checkingNew;
+                afterRegular = this.response.slice(tbodyHtml.length + this.response.indexOf(tbodyHtml)).trim();
+                if (afterRegular.startsWith(trHtml)) {
+                    h1.innerHTML += " <u>" + lang.noNew + "</u>";
+                    setTimeout(function() {
+                        return h1.innerHTML = "";
+                    }, 1500);
+                    setTimeout(refresh, timeout);
+                } else {
+                    startPos = aEndHtml.length + afterRegular.indexOf(aEndHtml);
+                    afterRegular = afterRegular.slice(startPos);
+                    title = afterRegular.to(afterRegular.indexOf("<")).trim();
+                    h1.innerHTML = "<a href='" + document.location + "'>" + lang.newMessages + "</a> : " + [ title.length > 30 ? "<br />" : void 8 ] + title;
+                }
+            });
+        };
+        refresh === (ref$ = forum.dataset.page) && ref$ > 1;
+    });
+    require.define("/src/forum-actions/jumps/index.ls", function(module, exports, __dirname, __filename) {
+        var newTopic, page;
+        newTopic = require("/src/forum-actions/jumps/new-topic.ls", module);
+        page = require("/src/forum-actions/jumps/page.ls", module);
+    });
+    require.define("/src/forum-actions/jumps/page.ls", function(module, exports, __dirname, __filename) {
+        var bindKey, page;
+        bindKey = require("/src/cheatsheet/bind-key.ls", module);
+        page = require("/src/forum-actions/page.ls", module);
+        bindKey("p", "jump-to-page", page);
+    });
+    require.define("/src/forum-actions/page.ls", function(module, exports, __dirname, __filename) {
+        var lang, $$, jump, i$, x$, ref$, len$, join$ = [].join, slice$ = [].slice;
+        lang = require("/lib/lang/index.ls", module);
+        $$ = require("/lib/dom/index.ls", module).$$;
+        module.exports = jump = function() {
+            var page;
+            page = prompt(lang("page-number"));
+            if (+page + "" === page) {
+                document.location = join$.call(slice$.call((document.location + "").split("/"), 0, -1), "/") + ("/?page=" + (page > 1 ? page : 1));
+            }
+        };
+        for (i$ = 0, len$ = (ref$ = $$(".forum-actions .expander")).length; i$ < len$; ++i$) {
+            x$ = ref$[i$];
+            x$.onclick = jump;
+        }
+    });
+    require.define("/src/forum-actions/jumps/new-topic.ls", function(module, exports, __dirname, __filename) {
+        var bindKey, $;
+        bindKey = require("/src/cheatsheet/bind-key.ls", module);
+        $ = require("/lib/dom/index.ls", module).$;
+        if (!$("a.button1.disabled")) {
+            bindKey("n", "new-topic", function() {
+                document.location += "topic";
+            });
+        }
     });
     require("/src/wowboardhelpers.ls");
 }).call(this, this);

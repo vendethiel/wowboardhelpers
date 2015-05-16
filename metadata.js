@@ -10,8 +10,10 @@
 // @version 5.2.0
 // ==/UserScript==
  * TODO
- *  = See issues : https://github.com/Nami-Doc/wowboardhelpers/issues
+ *  = See issues : https://github.com/vendethiel/wowboardhelpers/issues
  * changelog
+ * 5.4.0
+ *  Fix issues
  * 5.3.0
  *  Fix unsafeWindow access on Firefox
  *  Fix key bindings
