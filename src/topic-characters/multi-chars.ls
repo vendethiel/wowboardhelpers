@@ -2,9 +2,6 @@ require! <[lib/lang]>
 {$, $$, el} = require 'lib/dom'
 template-multi-chars = require './templates/multi-chars'
 
-# TEMPORARY
-if delete localStorage.accountCharacters
-	localStorage.setItem "#{lang.locale}-accountCharacters" that
 account-characters = if localStorage.getItem "#{lang.locale}-accountCharacters"
 	JSON.parse that
 else {}
@@ -19,8 +16,7 @@ modified = false # avoid saving if useless
 for post-character in $$ '.post-character'
 	icon-ignore = post-character.querySelector '.icon-ignore'
 	continue unless icon-ignore # own account
-	# temp parens until LS 1.2.1
-	link = (clean <| post-character.querySelector '.bnet-username > a' .outerHTML.trim!)
+	link = clean <| post-character.querySelector '.bnet-username > a' .outerHTML.trim!
 
 	# need to use getAttribute() for chrome because it sucks
 	# and it's returned as a string, which should be the same in other browsers
